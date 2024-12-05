@@ -1,1 +1,1 @@
-# esup-stagetrek
+# ESUP-StageTrek
