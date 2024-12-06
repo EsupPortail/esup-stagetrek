@@ -1,0 +1,46 @@
+<?php
+
+use Application\Controller\Convention\ConventionStageController;
+use Application\Form\Convention\ConventionStageTeleversementForm;
+use Application\Form\Convention\Fieldset\ConventionStageTeleversementFieldset;
+use Application\View\Helper\Convention\ConventionViewHelper;
+
+/**
+ * @see ConventionStageController::televerserAction()
+ *
+ * @var ConventionStageTeleversementForm $form
+ */
+$fe = $this->formErrors();
+$fcg = $this->formControlGroup();
+$fr = $this->formrow();
+$fct = $this->formControlText();
+$fh = $this->formHidden();
+/** @var ConventionStageTeleversementFieldset $fieldset */
+$fieldset = $form->getEntityFieldset();
+/** @var ConventionViewHelper $vh */
+$vh = $this->convention();
+?>
+
+<div class="fieldset">
+    <?= $this->form()->openTag($form->prepare()) ?>
+    <div class="row">
+        <div class="col-md-12">
+            <?= $fe($form->prepare(), $form::INVALIDE_ERROR_MESSAGE) ?>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <?= $fcg($fieldset->get($fieldset::INPUT_FILE)); ?>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <?= $fcg($form->get($form::INPUT_SUBMIT)); ?>
+        </div>
+    </div>
+
+    <?= $this->formHidden($form->get($form::CSRF)); ?>
+    <?= $this->form()->closeTag(); ?>
+</div>

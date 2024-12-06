@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Application\Entity\Db\SessionStage" table="session_stage">
+    <indexes>
+      <index name="IDX_19012BBF544BFD58" columns="annee_universitaire_id"/>
+      <index name="IDX_19012BBF7A45358C" columns="groupe_id"/>
+    </indexes>
+    <unique-constraints>
+      <unique-constraint name="session_stage_id_unique" columns="id"/>
+    </unique-constraints>
+    <id name="id" type="bigint" column="id">
+      <generator strategy="SEQUENCE"/>
+      <sequence-generator sequence-name="session_stage_id_seq" allocation-size="1" initial-value="1"/>
+    </id>
+    <field name="libelle" type="string" column="libelle" length="255" nullable="true">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="dateCalculOrdresAffectations" type="datetime" column="date_calcul_ordres_affectations" nullable="false"/>
+    <field name="dateDebutChoix" type="datetime" column="date_debut_choix" nullable="false"/>
+    <field name="dateFinChoix" type="datetime" column="date_fin_choix" nullable="false"/>
+    <field name="dateCommission" type="datetime" column="date_commission" nullable="false"/>
+    <field name="dateDebutStage" type="datetime" column="date_debut_stage" nullable="false"/>
+    <field name="dateFinStage" type="datetime" column="date_fin_stage" nullable="false"/>
+    <field name="dateDebutValidation" type="datetime" column="date_debut_validation" nullable="false"/>
+    <field name="dateFinValidation" type="datetime" column="date_fin_validation" nullable="false"/>
+    <field name="dateDebutEvaluation" type="datetime" column="date_debut_evaluation" nullable="false"/>
+    <field name="dateFinEvaluation" type="datetime" column="date_fin_evaluation" nullable="false"/>
+    <field name="sessionRattrapage" type="boolean" column="session_rattrapage" nullable="false">
+      <options>
+        <option name="default">false</option>
+      </options>
+    </field>
+
+    <many-to-one field="anneeUniversitaire" target-entity="Application\Entity\Db\AnneeUniversitaire" fetch="LAZY">
+      <join-columns>
+        <join-column name="annee_universitaire_id" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="groupe" target-entity="Application\Entity\Db\Groupe" fetch="LAZY">
+      <join-columns>
+        <join-column name="groupe_id" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+
+    <many-to-many field="etudiants" mapped-by="sessionsStages" target-entity="Application\Entity\Db\Etudiant"/>
+
+    <!--    Liens entre la session et les stages -->
+    <one-to-many field="stages" target-entity="Application\Entity\Db\Stage" mapped-by="sessionStage" />
+
+    <!-- Pour avoir les sessions-stage-entity-linker et donc les places ouvertes, recommandé ...  -->
+    <one-to-many target-entity="Application\Entity\Db\SessionStageTerrainLinker" mapped-by="sessionStage" field="terrainLinker"/>
+
+
+    <!--    État de la session-->
+    <many-to-many field="etats" target-entity="UnicaenEtat\Entity\Db\EtatInstance" fetch="LAZY">
+      <join-table name="session_stage_etat_linker">
+        <join-columns>
+          <join-column name="session_stage_id" referenced-column-name="id"/>
+        </join-columns>
+        <inverse-join-columns>
+          <join-column name="etat_instance_id" referenced-column-name="id"/>
+        </inverse-join-columns>
+      </join-table>
+    </many-to-many>
+
+
+    <one-to-one field="sessionPrecedente" target-entity="Application\Entity\Db\SessionStage">
+      <join-column name="session_stage_precedente_id" referenced-column-name="id" />
+    </one-to-one>
+
+    <one-to-one field="sessionSuivante" target-entity="Application\Entity\Db\SessionStage">
+      <join-column name="session_stage_suivante_id" referenced-column-name="id" />
+    </one-to-one>
+
+  </entity>
+</doctrine-mapping>

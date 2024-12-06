@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Application\Entity\Db\SessionStageTerrainLinker" table="session_stage_terrain_linker">
+    <indexes>
+      <index name="IDX_97C6D850A934B1FB" columns="session_stage_id"/>
+      <index name="IDX_97C6D850FEF753E0" columns="terrain_stage_id"/>
+    </indexes>
+    <unique-constraints>
+      <unique-constraint name="session_terrain_linker_unique" columns="session_stage_id,terrain_stage_id"/>
+    </unique-constraints>
+    <id name="id" type="bigint" column="id">
+      <generator strategy="SEQUENCE"/>
+      <sequence-generator sequence-name="session_stage_terrain_linker_id_seq" allocation-size="1" initial-value="1"/>
+    </id>
+    <field name="nbPlacesOuvertes" type="integer" column="nb_places_ouvertes" nullable="false">
+      <options>
+        <option name="unsigned"/>
+        <option name="default">0</option>
+      </options>
+    </field>
+    <field name="nbPlacesPreAffectees" type="integer" column="nb_places_pre_affectees" nullable="false">
+      <options>
+        <option name="unsigned"/>
+        <option name="default">0</option>
+      </options>
+    </field>
+    <field name="nbPlacesAffectees" type="integer" column="nb_places_affectees" nullable="false">
+      <options>
+        <option name="unsigned"/>
+        <option name="default">0</option>
+      </options>
+    </field>
+    <field name="nbPlacesRecommandees" type="integer" column="nb_places_recommandees" nullable="false">
+      <options>
+        <option name="unsigned"/>
+        <option name="default">0</option>
+      </options>
+    </field>
+    <field name="nbPlacesDisponibles" type="integer" column="nb_places_disponibles" nullable="false">
+      <options>
+        <option name="unsigned"/>
+        <option name="default">0</option>
+      </options>
+    </field>
+    <many-to-one field="sessionStage" target-entity="Application\Entity\Db\SessionStage" fetch="LAZY">
+      <join-columns>
+        <join-column name="session_stage_id" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="terrainStage" target-entity="Application\Entity\Db\TerrainStage" fetch="LAZY">
+      <join-columns>
+        <join-column name="terrain_stage_id" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+
+    <many-to-one field="niveauDemande" target-entity="Application\Entity\Db\TerrainStageNiveauDemande" fetch="LAZY">
+      <join-columns>
+        <join-column name="terrain_stage_niveau_demande_id" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+
+<!--    TODO : a supprimer-->
+    <field name="degreDemande" type="integer" column="degre_demande" nullable="true">
+    </field>
+    <field name="libelleDemande" type="string" column="libelle_demande" length="20" nullable="true">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+
+  </entity>
+</doctrine-mapping>

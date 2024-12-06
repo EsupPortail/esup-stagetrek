@@ -1,0 +1,133 @@
+<?php
+
+use Application\Controller\Terrain\TerrainStageController;
+use Application\Entity\Db\ContactTerrain;
+use Application\Entity\Db\TerrainStage;
+use Application\Provider\Misc\Icone;
+use Application\Provider\Privilege\ContactPrivileges;
+use Application\View\Helper\Contacts\ContactTerrainViewHelper;
+
+
+/**
+ * @see TerrainStageController::afficherAction()
+
+ * @var TerrainStage $terrainStage
+ */
+
+$tableId = "liste-contacts-terrain-".$terrainStage->getId();
+
+/** @var ContactTerrainViewHelper $vh */
+$vh = $this->contactTerrain();
+$canEdit = $vh->hasPrivilege(ContactPrivileges::CONTACT_TERRAIN_MODIFIER);
+$canDelete = $vh->hasPrivilege(ContactPrivileges::CONTACT_TERRAIN_SUPPRIMER);
+?>
+
+<div class="row">
+    <div class="col-md-12">
+        <table id="<?= $tableId ?>" class="table table-hover table-condensed table-data">
+            <thead>
+            <tr>
+                <th class="col-md-4 all" data-priority="2">Nom / Prénom</th>
+                <th class="col-md-3" data-priority="1">Libellé</th>
+                <th class="col-md-4" data-priority="3">Mail</th>
+                <th class="col-md-2" data-priority="9">Téléphone</th>
+                <th class="none">Visible par les étudiants ?</th>
+                <th class="none">Responsable de stage ?</th>
+                <th class="none">Peut valider le stage ?</th>
+                <th class="none">Signataire de la convention de stage ?</th>
+                <th class="none">Mails automatiques</th>
+                <?php if($canEdit || $canDelete) :?>
+                    <th class="col-md-1 all no-search no-sort text-end">Actions</th>
+                <?php endif; ?>
+            </tr>
+            </thead>
+            <tbody>
+            <?php /** @var ContactTerrain $ct */
+            foreach ($terrainStage->getContactsTerrains() as $ct):
+                $vh->setContact($ct->getContact());
+                $vh->setContactTerrain($ct);
+                ?>
+                <tr class="<?= (!$ct->isActif()) ? "bg-muted" : "" ?>">
+                    <td data-filter="<?=$ct->getDisplayName()?>">
+                        <?= $ct->getDisplayName() ?>
+                    </td>
+                    <td><?= $ct->getLibelle() ?></td>
+                    <td data-filter="<?= $ct->getEmail() ?>" data-order="<?= ($ct->getEmail()) ?? -1 ?>">
+                        <?= ($ct->getEmail() && $ct->getEmail() != "") ? $ct->getEmail() : '<span class="text-muted">Non renseigné</span>' ?>
+                    </td>
+                    <td data-filter="<?= $ct->getTelephone() ?>"
+                        data-order="<?= ($ct->getTelephone()) ?? -1 ?>">
+                        <?= ($ct->getTelephone() && $ct->getTelephone() != "") ? $ct->getTelephone() : '<span class="text-muted">Non renseigné</span>' ?>
+                    </td>
+                    <td class=""><span class="mx-1"></span><?= ($ct->isVisibleParEtudiant()) ? "Oui" : "Non" ?>
+                    </td>
+                    <td class=""><span class="mx-1"></span><?= ($ct->isResponsableStage()) ? "Oui" : "Non" ?>
+                    </td>
+                    <td class="">
+                        <span class="mx-1"></span><?= ($ct->canValiderStage()) ? "Oui" : "Non" ?>
+                    </td>
+                    <td class="">
+                        <span class="mx-1"></span> <?= ($ct->isSignataireConvention()) ? "Oui" : "Non" ?>
+                        <?php if ($ct->isSignataireConvention()) : ?>
+                            <div class="mx-3 text-small">
+                                Priorité dans l'ordre d'affichage des signataires :
+                                <?= ($ct->getPrioriteOrdreSignature()) ?? 0 ?>
+                            </div>
+                        <?php endif; ?>
+                    </td>
+                    <td class="">
+                        <?php if ($ct->sendMailAuto()) : ?>
+                            <?php if ($ct->getEmail() == ""): ?>
+                                <div class="mx-3">
+                                    Le contact n'as pas d'adresse mails valide
+                                </div>
+                            <?php endif; ?>
+                            <?php if ($ct->sendMailAutoListeEtudiantsStage()) : ?>
+                                <div class="mx-3 text-small">Liste des étudiants inscrits à une session de stage
+                                </div>
+                            <?php endif; ?>
+                            <?php if ($ct->sendMailAutoValidationStage()) : ?>
+                                <div class="mx-3 text-small">Demande de validation du stage</div>
+                            <?php endif; ?>
+                            <?php if ($ct->sendMailAutoRappelValidationStage()) : ?>
+                                <div class="mx-3 text-small">Rappel de validation du stage</div>
+                            <?php endif; ?>
+                        <?php else: ?>
+                            <span class="mx-1"></span> Aucun
+                        <?php endif; ?>
+                    </td>
+                    <?php if($canEdit || $canDelete) :?>
+                    <td class="text-end">
+                        <?= $vh->lienModifier(Icone::MODIFIER, ['class'=>'mx-1 text-primary ajax-modal'])?>
+                        <?= $vh->lienSupprimer(Icone::SUPPRIMER, ['class'=>'mx-1 text-danger ajax-modal'])?>
+                    </td>
+                    <?php endif; ?>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        let options = generateDataTableSetings(
+            {
+                stateSave: true,
+                retrieve: true,
+                responsive: true,
+                paging:false,
+                searching:false,
+                info:false,
+                "order": [[1, "asc"], [0, "asc"], [2, "asc"]],
+                "lengthMenu": [[50, 100, 250, -1], [50, 100, 250, "Tous"]],
+                'dom': "<'row' <'col-sm-12 col-md-6 'l><'col-sm-12 col-md-6' f>>" +
+                    "<'row' <'col-sm-12'tr> >" +
+                    "<'row' <'col-sm-12 col-md-5'i> <'col-sm-12 col-md-7'p>>",
+            }
+        );
+        $("#<?= $tableId ?>").on('draw.dt', function () {
+            $('[data-bs-toggle="popover"]').popover({html: true});
+        }).DataTable(options);
+    });
+</script>

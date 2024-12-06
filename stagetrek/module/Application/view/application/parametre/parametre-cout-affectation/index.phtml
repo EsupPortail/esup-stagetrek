@@ -1,0 +1,50 @@
+<?php
+
+use Application\Controller\Parametre\ParametreCoutAffectationController;
+use Application\Entity\Db\ParametreCoutAffectation;
+use Application\Provider\Privilege\ParametrePrivileges;
+use Application\View\Helper\Parametres\ParametreCoutAffectationViewHelper;
+
+/**
+ * @see ParametreCoutAffectationController::indexAction()
+ * @var ParametreCoutAffectation[] $parametres
+ */
+$this->headTitle("Paramères");
+
+/** @var ParametreCoutAffectationViewHelper $vh **/
+$vh = $this->parametreCoutAffectation();
+
+$canAdd = $vh->hasPrivilege(ParametrePrivileges::PARAMETRE_AJOUTER);
+?>
+
+
+<h1 class="page-header">
+    <span class="icon">
+        <i class="fas fa-cog"></i>
+    </span>
+    Gestion des coûts d'affectations
+</h1>
+
+<div class="card mt-3">
+<?php if($canAdd) :?>
+    <div class="card-header card-sub-header text-end">
+        <?= $vh->lienAjouter() ?>
+    </div>
+<?php endif; ?>
+<div class="card-body" id="parametres-content" data-url="<?= $this->url(ParametreCoutAffectationController::ROUTE_LISTER, [], [], true) ?>">
+    <?= $vh->renderListe($parametres) ?>
+</div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        let body = $("body");
+
+        body.on("<?=ParametreCoutAffectationController::EVENT_AJOUTER?> "
+            + "<?=ParametreCoutAffectationController::EVENT_MODIFIER?> "
+            + "<?=ParametreCoutAffectationController::EVENT_SUPPRIMER?> "
+            , function () {
+                $("#parametres-content").refresh();
+            });
+    })
+</script>

@@ -1,0 +1,48 @@
+<?php
+
+use Application\Controller\Etudiant\EtudiantController;
+use Application\Entity\Db\Etudiant;
+use Application\Form\Etudiant\EtudiantRechercheForm;
+use Application\View\Helper\Etudiant\EtudiantViewHelper;
+
+/**
+ * @see EtudiantController::indexAction()
+
+ * @var EtudiantRechercheForm $form
+ * @var Etudiant[] $etudiants
+ */
+
+/** @var EtudiantViewHelper $vh */
+$vh = $this->etudiant();
+
+$title = "Les étudiants";
+$this->headTitle($this->translate("Les étudiants"));
+
+?>
+
+<h1 class="page-header">
+    <span class="icon">
+        <i class="fas fa-user"></i>
+    </span>
+    <?= $title ?>
+</h1>
+
+<div class="my-3">
+<?= $vh->renderRechercheForm($form); ?>
+</div>
+
+<?php if (isset($etudiants)): ?>
+<div class="my-3">
+    <?= $vh->renderListe($etudiants) ?>
+</div>
+<?php endif ?>
+
+<script>
+    $(function () {
+        let body = $("body");
+        body.on("<?= EtudiantController::EVENT_AJOUTER ?> "
+            , function () {
+                window.location.reload();
+            });
+    });
+</script>

@@ -1,0 +1,31 @@
+<?php
+
+use Application\Controller\Convention\ModeleConventionController;
+use Application\Form\Misc\ConfirmationForm;
+
+
+/**
+ * @see ModeleConventionController::supprimerAction()
+ *
+ * @var PhpRenderer         $this
+ * @var string              $title
+ * @var ConfirmationForm    $form
+ */
+?>
+
+<div class="card card-danger">
+    <h1 class="page-header card-header">
+        <span class="icon icon-supprimer"></span>
+        <?= $title ?>
+    </h1>
+    <div class="card-body">
+        <?= $this->confirmation($form); ?>
+    </div>
+</div>
+<script>
+    $(function () {
+        let body = $("body");
+        body.off("<?= ModeleConventionController::EVENT_SUPPRIMER?>", closeModal)
+            .one("<?= ModeleConventionController::EVENT_SUPPRIMER?>", closeModal);
+    });
+</script>

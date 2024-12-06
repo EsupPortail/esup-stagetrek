@@ -1,0 +1,77 @@
+<?php
+
+use Application\Entity\Db\ModeleConventionStage;
+use Application\Entity\Db\TerrainStage;
+use Application\Provider\Misc\Icone;
+use Application\View\Helper\Convention\ModeleConventionViewHelper;
+
+
+/**
+ * @see ModeleConventionViewHelper::renderListeTerrains()
+ *
+
+ * @var ModeleConventionStage $modeleConventionStage
+ */
+
+$tableId = "liste-terrains-modele-".$modeleConventionStage->getId();
+
+$vh = $this->terrainStage();
+$terrains = $modeleConventionStage->getTerrainsStages();
+?>
+
+<div class="row">
+    <div class="col-md-12">
+        <table id="<?= $tableId ?>" class="table table-hover table-condensed data-table">
+            <thead>
+            <tr>
+                <th class="hidden">Catégorie</th>
+                <th class="hidden">Catégorie</th>
+                <th class="col-md-11">Terrain</th>
+                <th class="col-md-1 no-search no-sort text-end">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php /** @var TerrainStage $terrain */
+            foreach ($terrains as $terrain):
+                $categorie  = $terrain->getCategorieStage();
+                $vh->setTerrainStage($terrain);
+                ?>
+                <tr>
+                    <td class="hidden"><?= $categorie->getLibelle() ?></td>
+                    <td class="hidden" data-order="<?= $categorie->getOrdre() ?>"></td>
+                    <td>
+                        <?= $terrain->getLibelle() ?>
+                        <?= (!$terrain->isActif()) ? "<span class='text-small text-muted mx-3'>(Inactif)</span>" : null ?>
+                    </td>
+
+                    <td class="text-end">
+                        <?=$vh->lienAfficher(Icone::AFFICHER, ['class'=> "text-primary"])?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        let options = generateDataTableSetings(
+            {
+                stateSave: false,
+                retrieve: true,
+                searching: true,
+                paging: false,
+                info: false,
+                "order": [[1, "asc"], [2, "asc"]],
+                "orderFixed": {
+                    "pre": [ 1, 'asc' ],
+                },
+                rowGroup: {
+                    dataSrc: 0
+                },
+            }
+        );
+        $("#<?= $tableId ?>").DataTable(options);
+    })
+</script>

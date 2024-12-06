@@ -1,0 +1,89 @@
+<?php
+
+use Application\Form\Misc\ImportForm;
+
+use UnicaenApp\View\Helper\Messenger;
+
+/**
+ * Template par défaut pour les importations
+ * @var ImportForm $form
+ * @var string $importTemplateTitle
+ * @var array  $importTemplate
+ */
+
+$fe = $this->formErrors();
+$fr = $this->formrow();
+$fcg = $this->formControlGroup();
+
+if(!isset($importTemplateTitle)){
+    $importTemplateTitle="template_importation";
+}
+?>
+
+<?php //Cas ou le formulaire n'existe pas. Probablement inutile.
+if (!$form) :?>
+    <div class="fieldset">
+        <div class="messenger row">
+            <div class="col-md-12">
+                <?= $this->messenger()->setCurrentMessagesFromFlashMessengerWithNoNamespace(); ?>
+            </div>
+        </div>
+    </div>
+<?php return; endif; ?>
+
+<div class="fieldset">
+    <?= $this->form()->openTag($form->prepare()) ?>
+
+    <?php //affichage des messages
+    $namespace = $form->getMessageNamespace() . Messenger::NAMESPACED_SEVERITY_SEPARATOR . "*";
+    $msg = $this->messenger()->addCurrentMessagesFromFlashMessengerWithNamespace($namespace);
+    ?>
+    <?php if ($msg && $msg->hasMessages()) : ?>
+    <div class="messenger row my-3">
+        <div class="col-md-12">
+            <?= $msg ?>
+        </div>
+    </div>
+    <?php endif; ?>
+
+    <?= $fe($form->prepare(), ImportForm::INVALIDE_ERROR_MESSAGE) ?>
+    <?php foreach ($form->getHiddenElements() as $hiddenElement) {
+        echo $fr($hiddenElement);
+    } ?>
+
+    <div class="row">
+        <div class="col-md-6">
+            <?php
+                echo $this->formlabel($form->get(ImportForm::INPUT_IMPORT_FILE));
+                $form->get(ImportForm::INPUT_IMPORT_FILE)->setLabel("");
+            ?>
+
+           <?= $this->terrainStage()->renderLienImportTemplate($importTemplateTitle, $importTemplate); ?>
+            <?= $this->formControlGroup($form->get(ImportForm::INPUT_IMPORT_FILE)); ?>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <?php foreach ($form->getCheckboxElements() as $checkbox) {
+                echo $fcg($checkbox);
+            } ?>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <?= $fcg($form->get(ImportForm::INPUT_SUBMIT)); ?>
+        </div>
+    </div>
+    <?= $this->formHidden($form->get(ImportForm::CSRF)); ?>
+    <?= $this->form()->closeTag(); ?>
+</div>
+
+<?php if(isset($importTemplate) && sizeof($importTemplate)>0): ?>
+<script>
+    $('#import-template').on('click', function() {
+        let tableau = <?php echo json_encode($importTemplate); ?>;
+        downloadCSVFromJson('<?=$importTemplateTitle?>.csv', tableau);
+    });
+</script>
+<?php endif; ?>

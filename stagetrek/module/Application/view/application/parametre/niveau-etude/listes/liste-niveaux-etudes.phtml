@@ -1,0 +1,58 @@
+<?php
+
+use Application\Controller\Parametre\NiveauEtudeController;
+use Application\Entity\Db\NiveauEtude;
+use Application\Provider\Misc\Icone;
+use Application\Provider\Privilege\ParametrePrivileges;
+use Application\View\Helper\Parametres\NiveauEtudeViewHelper;
+
+/**
+ * @see NiveauEtudeController::listerAction()
+ * @var NiveauEtude[] $niveaux
+ */
+/** @var NiveauEtudeViewHelper $vh */
+$vh = $this->niveauEtude();
+$canEdit = $vh->hasPrivilege(ParametrePrivileges::NIVEAU_ETUDE_MODIFIER);
+$canDelete = $vh->hasPrivilege(ParametrePrivileges::NIVEAU_ETUDE_SUPPRIMER);
+$actionMenu = $canEdit || $canDelete;
+?>
+
+<?php $tableId = "liste-niveaux-etudes" ?>
+
+<div class="row">
+    <div class="col-md-12">
+        <table id="<?= $tableId ?>" class="table table-hover table-condensed table-data">
+            <thead>
+            <tr>
+                <th class="col-md-1" data-type="num">Ordre</th>
+                <th class="col-md-5">Libellé</th>
+                <th class="col-md-2 text-center" data-type="num">Nombre de stage(s)</th>
+                <th class="col-md-4">Niveau d'étude précédent</th>
+                <?php if ($actionMenu) : ?>
+                    <th class="no-sort no-search col-md-1">Actions</th>
+                <?php endif; ?>
+            </tr>
+            </thead>
+            <tbody>
+            <?php
+            /** @var NiveauEtude $niveau */
+            foreach ($niveaux as $niveau) :
+                $vh->setNiveauEtude($niveau);
+                ?>
+                <tr>
+                    <td><?= $niveau->getOrdre() ?> </td>
+                    <td><?= $niveau->getLibelle() ?> </td>
+                    <td class="text-center"><?= $niveau->getNbStages() ?> </td>
+                    <td><?= ($niveau->getNiveauEtudeParent()) ? $niveau->getNiveauEtudeParent()->getLibelle() : "" ?> </td>
+                    <?php if ($actionMenu) : ?>
+                        <td class="text-end">
+                            <?= $vh->lienModifier(Icone::MODIFIER, ['class' => 'text-primary ajax-modal']) ?>
+                            <?= $vh->lienSupprimer(Icone::SUPPRIMER, ['class' => 'text-danger ajax-modal']) ?>
+                        </td>
+                    <?php endif; ?>
+                </tr>
+            <?php endforeach; ?>
+            <tbody>
+        </table>
+    </div>
+</div>

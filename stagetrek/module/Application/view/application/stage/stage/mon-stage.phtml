@@ -1,0 +1,205 @@
+<?php
+
+use Application\Controller\Preference\PreferenceController;
+use Application\Controller\Stage\StageController;
+use Application\Entity\Db\Stage;
+use Application\View\Helper\Preferences\PreferenceViewHelper;
+use Application\View\Helper\SessionsStages\SessionStageViewHelper;
+use Application\View\Helper\Stages\StageViewHelper;
+use Application\View\Helper\Stages\ValidationStageViewHelper;
+
+/**
+ * @see StageController::monStageAction()
+ *
+ * @var Stage $stage
+ */
+
+/** @var StageViewHelper $vh */
+$vh = $this->stage();
+$vh->setVueEtudiante(true);
+$vh->setStage($stage);
+
+/** @var ValidationStageViewHelper $validationVh */
+$validationVh = $this->validation();
+$validationVh->setVueEtudiante(true);
+$validationVh->setStage($stage);
+
+$annee = $stage->getAnneeUniversitaire();
+
+/** @var PreferenceViewHelper $preferenceVh */
+$preferenceVh = $this->preference();
+$preferenceVh->setVueEtudiante(true);
+$preferenceVh->setStage($stage);
+$canEditPreferences = $preferenceVh->actionAllowed(PreferenceController::ACTION_MODIFIER_PREFERENCES);
+
+
+/** @var SessionStageViewHelper $sessionVh */
+$sessionVh = $this->sessionStage();
+$sessionVh->setVueEtudiante(true);
+$sessionVh->setSessionStage($stage->getSessionStage());
+
+$affectationStage = $stage->getAffectationStage();
+$terrain1 = ($affectationStage) ? $affectationStage->getTerrainStage() : null;
+$terrain2 = ($affectationStage) ? $affectationStage->getTerrainStageSecondaire() : null;
+
+$today = new DateTime();
+$canSeeAffectation = (isset($affectationStage)
+    && $affectationStage->isVisibleByEtudiant()
+);
+?>
+
+<h1 class="page-header">
+        <span class="icon">
+        <i class="fas fa-notes-medical"></i>
+    </span>
+    <?= $vh->lienStagePrecedent() ?>
+    Stage n°<?= $stage->getNumero() ?> - <?= $stage->getLibelle() ?>
+    <?= $vh->lienStageSuivant() ?>
+    <div class="fs-4 text-muted">
+        Stage
+        du <?= $stage->getDateDebutStage()->format('d/m/Y') ?>
+        au <?= $stage->getDateFinStage()->format('d/m/Y') ?>
+    </div>
+    <div class="fs-4 text-muted">
+        <?php
+        if($canSeeAffectation && isset($terrain1)) {
+            echo "".$terrain1->getLibelle();
+        }
+        if($canSeeAffectation && isset($terrain2)) {
+            echo " et ". $terrain2->getLibelle();
+        }
+        ?>
+    </div>
+</h1>
+
+<?php if($canSeeAffectation && ($stage->hasStageSecondaire() || $stage->isStageSecondaire())):
+    //Navigation entre stage principaux et stage secondaire
+    $stage1 = ($stage->isStageSecondaire()) ?  $stage->getStagePrincipal() : $stage;
+    $stage2 = ($stage->isStagePrincipal()) ?  $stage->getStageSecondaire() : $stage;
+    ?>
+    <div class="row">
+        <div class="col-md-12">
+            <?= $vh->setStage($stage1)->lienAfficher("Affectation principale", [
+                'class' => ($stage->isStagePrincipal()) ? 'btn-affectation-type btn btn-success' : 'btn-affectation-type btn btn-secondary',
+                'title' => "Afficher l'affectation principale du stage"
+            ]) ?>
+            <?= $vh->setStage($stage2)->lienAfficher("Affectation secondaire", [
+                'class' => ($stage->isStageSecondaire()) ? 'btn-affectation-type btn btn-success' : 'btn-affectation-type btn btn-secondary',
+                'title' => "Afficher l'affectation secondaire du stage"
+            ]) ?>
+        </div>
+    </div>
+<?php  $vh->setStage($stage); endif; ?>
+
+<nav>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <button class="nav-link active" id="nav-infos" data-bs-toggle="tab" data-bs-target="#infos" type="button"
+                role="tab" aria-controls="infos" aria-selected="true">Informations
+        </button>
+        <button class="nav-link" id="nav-preferences" data-bs-toggle="tab" data-bs-target="#preferences" type="button"
+                role="tab" aria-controls="preferences" aria-selected="false">Préférences
+        </button>
+        <button class="nav-link" id="nav-affectation" data-bs-toggle="tab" data-bs-target="#affectation" type="button"
+                role="tab" aria-controls="affectation" aria-selected="false">Affectation
+        </button>
+        <button class="nav-link" id="nav-contacts" data-bs-toggle="tab" data-bs-target="#contacts" type="button"
+                role="tab" aria-controls="contacts" aria-selected="false">Contacts
+        </button>
+        <button class="nav-link" id="nav-validation" data-bs-toggle="tab" data-bs-target="#validation" type="button"
+                role="tab" aria-controls="validation" aria-selected="false">Validation
+        </button>
+    </div>
+</nav>
+
+<div class="card tab-content" id="nav-tabContent">
+    <div class="tab-pane fade show active" id="infos" role="tabpanel" aria-labelledby="nav-infos">
+        <div class="card-body">
+            <div class="">
+                <?= $vh->renderInfos() ?>
+                <hr/>
+                <?php if($annee->hasEtatEnConstruction()) :?>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="alert alert-info">
+                                <strong>Les informations sur le stage sont en cours de modification.</strong>
+                                <br/> Les dates données ici risque d'être modifiées.
+                            </div>
+                        </div>
+                    </div>
+                <?php endif; ?>
+                <?= $sessionVh->renderDates() ?>
+            </div>
+        </div>
+        <div class="card-footer">
+            <?= $this->backButton("Mes stages")->backTo($this->url(StageController::ROUTE_MES_STAGES, [], [], true)) ?>
+        </div>
+    </div>
+
+    <div class="tab-pane fade show" id="preferences" role="tabpanel" aria-labelledby="nav-preferences">
+        <?php if($canEditPreferences) :?>
+            <div class="card-header card-sub-header text-end">
+                <?= $preferenceVh->lienModifierPreferences() ?>
+            </div>
+        <?php endif; ?>
+        <?php /** @see PreferenceController::listerAction() */
+        $url = $this->url(PreferenceController::ROUTE_LISTER, ['stage' => $stage->getId()], [], true);
+        ?>
+        <div id="preferences-content" class="card-body" data-url="<?= $url ?>">
+            <?= $preferenceVh->renderListe($stage->getPreferences()->toArray()) ?>
+        </div>
+    </div>
+
+    <div class="tab-pane fade show" id="affectation" role="tabpanel" aria-labelledby="nav-affectation">
+        <div class="card-body">
+        <?= $vh->renderAffectationInfos(); ?>
+        </div>
+    </div>
+
+    <div class="tab-pane fade show" id="contacts" role="tabpanel" aria-labelledby="nav-contacts">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <?= $vh->renderListeContacts() ?>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane fade show" id="validation" role="tabpanel" aria-labelledby="nav-validation">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <?= $validationVh->render()?>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    $(function () {
+        let url = document.location.toString();
+        if (url.match('#')) {
+            let onglet = url.split('#')[1]
+            $('#nav-' +  onglet + '').trigger('click');
+        }
+
+        //Pour garder l'onglet actif lors d'un changement de vue
+        $('.btn-affectation-type').on('click', function (event){
+            event.preventDefault()
+            let ongletActif = $('.nav-link.active');
+            window.location.href = event.target.href+ongletActif.data('bs-target')
+
+        })
+
+        let body = $("body");
+        body.on("<?= PreferenceController::EVENT_MODIFIER ?> "
+            + "<?= PreferenceController::EVENT_MODIFIER ?> "
+            + "<?= PreferenceController::EVENT_SUPPRIMER ?> "
+            , function (event) {
+                $("#preferences-content").refresh();
+            });
+    });
+</script>

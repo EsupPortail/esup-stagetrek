@@ -1,0 +1,108 @@
+<?php
+
+use Application\Controller\Affectation\AffectationController;
+use Application\Entity\Db\AffectationStage;
+use Application\Form\Affectation\AffectationStageForm;
+use Application\Form\Affectation\Fieldset\AffectationStageFieldset;
+
+/**
+ * @see AffectationController::modifierAction()
+ * @var string $title
+ * @var AffectationStageForm $form
+ * @var AffectationStage $affectationStage
+ */
+
+$fe = $this->formErrors();
+$fcg = $this->formControlGroup();
+$fr = $this->formrow();
+$fct = $this->formControlText();
+
+$title = $form->getTitle();
+/** @var AffectationStageFieldset $fieldset */
+$fieldset = $form->getEntityFieldset();
+?>
+
+<div class="fieldset">
+    <?= $this->form()->openTag($form->prepare()) ?>
+    <?= $fe($form->prepare(), AffectationStageForm::INVALIDE_ERROR_MESSAGE) ?>
+    <?= $fr($fieldset->get(AffectationStageFieldset::ID)); ?>
+    <?= $fr($fieldset->get(AffectationStageFieldset::STAGE)); ?>
+    <div class="row">
+        <div class="col-md-6">
+            <?= $fcg($fieldset->get(AffectationStageFieldset::TERRAIN_STAGE)) ?>
+            <?= $fcg($fieldset->get(AffectationStageFieldset::TERRAIN_STAGE_SECONDAIRE)) ?>
+        </div>
+        <div class="col-md-6 cat-1">
+            <label>Légendes</label>
+            <ul class="list-unstyled">
+                <li class="my-3"> <?= $fieldset->getBadgePlaces(1,2) ?> Nombre de stage(s) affecté(s) sur le terrain / Nombre de place(s) ouverte(s)
+                </li>
+                <li class="my-3"> <?= $fieldset->getBadgePreferenceRang("x") ?> Classement du terrain de stage dans les
+                    préférences
+                </li>
+                <li class="my-3"> <?= $fieldset->getBadgeAffectation() ?> Terrain actuellement affecté
+                </li>
+                <li class="my-3"> <?= $fieldset->getBadgeDesactive() ?> Terrain normalement non disponible
+                    <span class="text-small text-muted">
+                        (terrain désactivé, contraintes ...)
+                    </span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <?= $fcg($fieldset->get(AffectationStageFieldset::COUT_TERRAIN)) ?>
+            <?= $fcg($fieldset->get(AffectationStageFieldset::BONUS_MALUS)) ?>
+        </div>
+        <div class="col-md-6">
+            <?= $fcg($fieldset->get(AffectationStageFieldset::INFOS)) ?>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-xs-12">
+            <label>État</label>
+        </div>
+            <?php if($affectationStage->hasEtatValidee()) :?>
+            <div class="col-md-12 col-xs-12">
+                <div class="alert alert-info">
+                    L'affectation est actuellement <strong>validée</strong>. <br/>
+                    Toutes modification nécessite de <strong>reconfirmer la validation</strong>.
+                </div>
+            </div>
+            <?php endif;?>
+        <div class="col-md-6 col-xs-12">
+            <div class="form-check form-switch">
+                <?= $fcg($fieldset->get(AffectationStageFieldset::PRE_VALIDER)) ?>
+                <?= $fcg($fieldset->get(AffectationStageFieldset::VALIDER)) ?>
+                <?= $fcg($fieldset->get(AffectationStageFieldset::STAGE_NON_EFFECTUE)) ?>
+                <div class="text-small">
+                    Un stage marqué comme <strong>non effectué</strong> est pris en compte dans le calcul du score de l'étudiant uniquement si l'affectation est également validée.<br/>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xs-12">
+            <div class="form-check form-switch">
+                <?= $fcg($fieldset->get(AffectationStageFieldset::SEND_MAIL)) ?>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <?= $this->formControlGroup($form->get(AffectationStageForm::INPUT_SUBMIT)); ?>
+        </div>
+    </div>
+
+    <?= $this->formHidden($form->get(AffectationStageForm::CSRF)); ?>
+    <?= $this->form()->closeTag(); ?>
+
+</div>
+<script>
+    $(function () {
+        $('.selectpicker').selectpicker('render');
+    })
+</script>
+

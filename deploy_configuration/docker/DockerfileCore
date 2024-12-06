@@ -1,0 +1,170 @@
+FROM php:8.2-fpm-bullseye
+
+ENV PHP_VERSION=8.2
+
+RUN if [ -f ./deploy_configuration/proxy/.env_proxy ]; then \
+    COPY ./deploy_configuration/proxy/.env_proxy /; \
+    echp "copie du fichier de proxy" /; \
+fi
+COPY ./deploy_configuration/proxy/proxy.sh /
+RUN chmod +x /proxy.sh
+
+RUN sh /proxy.sh
+
+ARG HTTP_PROXY
+ARG APPLICATION_ENV
+ARG CONSOLE_ENV
+ENV http_proxy=$HTTP_PROXY
+ENV https_proxy=$HTTP_PROXY
+ENV HTTP_PROXY=$HTTP_PROXY
+ENV HTTPS_PROXY=$HTTP_PROXY
+
+# Vérifiez si la variable d'environnement http_proxy est définie
+RUN if [ -n "$http_proxy" ]; then \
+    # Si elle est définie, exécutez les commandes pour configurer le proxy \
+    pear config-set http_proxy ${http_proxy}; \
+    touch /etc/apt/apt.conf.d/05proxy; \
+    echo 'Acquire::HTTP::Proxy "'$http_proxy'";' >> /etc/apt/apt.conf.d/05proxy; \
+    echo 'Acquire::HTTPS::Prox "'$http_proxy'";' >> /etc/apt/apt.conf.d/05proxy; \
+    echo 'Acquire::ftp::Proxy "'$http_proxy'";' >> /etc/apt/apt.conf.d/05proxy; \
+    echo "Proxy configuré dans le système de packages avec la valeur $http_proxy" && true; \
+fi
+
+# Deploy configuration & sources
+RUN mkdir /var/www/html/stagetrek
+WORKDIR /var/www/html/stagetrek/
+COPY ./stagetrek /var/www/html/stagetrek/
+
+# Préparation des variables d'environnement
+COPY ./.env_example /var/www/html/stagetrek
+
+WORKDIR /var/www/html/stagetrek/
+
+# Prepare packages management
+RUN rm -f /etc/apt/preferences.d/no-debian-php
+RUN apt-get update && apt-get install -y \
+    git \
+    libc6 \
+    wget \
+    gnupg2 \apt-transport-https  \
+    lsb-release  \
+    ca-certificates
+
+RUN apt-get -qq update && apt-get -y install \
+    apt-transport-https  \
+    lsb-release  \
+    ca-certificates  \
+    curl
+
+RUN curl -sSLo /usr/share/keyrings/deb.sury.org-php.gpg https://packages.sury.org/php/apt.gpg
+RUN sh -c 'echo "deb [signed-by=/usr/share/keyrings/deb.sury.org-php.gpg] https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list'
+RUN wget -e use_proxy=on -e https_proxy=$HTTP_PROXY --no-check-certificate -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
+RUN echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/php.list
+
+
+RUN apt-get upgrade -y && apt-get update -y
+RUN docker-php-ext-install bcmath
+
+#!!! important car l'instal de Shib fait des requête curl
+RUN apt-get install -y php-curl
+
+RUN apt-get update && \
+    apt-get install -y \
+        zlib1g-dev libpng-dev
+RUN docker-php-ext-install gd
+RUN docker-php-ext-install gettext
+RUN docker-php-ext-install iconv
+RUN apt-get install -y libicu-dev  && docker-php-ext-configure intl
+RUN docker-php-ext-install intl
+RUN apt-get install -y libldap2-dev
+RUN docker-php-ext-install ldap
+RUN docker-php-ext-install opcache
+RUN apt-get install -y libpq-dev
+RUN docker-php-ext-install pgsql
+RUN docker-php-ext-install pdo
+RUN docker-php-ext-install pdo_pgsql
+RUN docker-php-ext-enable pdo_pgsql
+RUN docker-php-ext-configure pgsql
+
+RUN docker-php-ext-install pdo_mysql
+RUN docker-php-ext-enable pdo_mysql
+
+RUN apt-get install -y libxml2-dev
+RUN docker-php-ext-install soap
+RUN docker-php-ext-install xml
+RUN apt-get install -y libzip-dev
+RUN docker-php-ext-install zip
+
+RUN apt-get install -y libz-dev libmemcached-dev && \
+    apt-get install -y memcached libmemcached-tools
+
+# XDebug from source for dev
+#RUN if [ "$APPLICATION_ENV" = "development" ]; then \
+ # echo 'Mode "'$APPLICATION_ENV'" Installation de xdebug'; \
+ RUN pecl install xdebug; \
+  docker-php-ext-enable xdebug;
+#fi
+
+##ssl
+#RUN docker-php-ext-install openssl
+
+# Prepare PHP
+RUN rm /usr/local/etc/php-fpm.conf
+RUN rm /usr/local/etc/php-fpm.d/www.conf
+
+# Build Stagetrek-app
+# Install composer
+RUN curl -sS https://getcomposer.org/installer -o /tmp/composer-setup.php
+RUN HASH=`curl -sS https://composer.github.io/installer.sig`
+RUN echo $HASH
+RUN php -r "if (hash_file('SHA384', '/tmp/composer-setup.php') === '$HASH') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+RUN php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer --version=2.2.22
+
+# Build Stagetrek
+WORKDIR /var/www/html/stagetrek/
+
+# Problème sur unicaenLdap, fixe temporaire
+RUN composer update unicaen/ldap
+RUN composer install --no-dev --no-suggest --optimize-autoloader
+RUN composer update
+
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
+#Clean the Proxy env
+ENV HTTP_PROXY ""
+ENV HTTPS_PROXY ""
+ENV http_proxy ""
+ENV https_proxy ""
+RUN rm -f /etc/apt/apt.conf.d/05proxy
+
+RUN chown -R www-data:www-data /var/www/html/stagetrek/
+ENV COMPOSER_ALLOW_SUPERUSER=0
+
+RUN chown www-data:www-data generate_env.sh
+
+RUN mkdir -p /run/docker-entrypoint-init.d/
+COPY ./deploy_configuration/core/entrypoint.sh /run/docker-entrypoint-init.d/
+RUN chmod u+x /run/docker-entrypoint-init.d/entrypoint.sh
+
+#install de nano ne pas dépendre de vim
+RUN apt-get install -y nano
+
+WORKDIR /var/www/html/stagetrek/
+
+#install de suprervisor
+RUN apt-get install -y supervisor
+COPY ./deploy_configuration/core/supervisord.conf /
+
+#install des crons et des logs
+RUN apt-get update && apt-get -y install cron
+RUN apt-get update && apt-get -y install moreutils
+RUN apt-get update && apt-get -y install logrotate
+RUN mkdir -p  /etc/logrotate.d
+RUN mkdir -p  /bin/stagetrek
+COPY ./deploy_configuration/core/cron/cron-service /etc/cron.d/stagetrek
+RUN chmod 0644 /etc/cron.d/stagetrek
+COPY ./deploy_configuration/core/cron/logrotate-service /etc/logrotate.d/stagetrek
+COPY ./deploy_configuration/core/bin /bin/stagetrek
+RUN chmod -R u+x /bin/stagetrek
+
+WORKDIR /var/www/html/stagetrek/

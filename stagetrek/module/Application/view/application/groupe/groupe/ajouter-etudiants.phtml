@@ -1,0 +1,198 @@
+<?php
+
+use Application\Controller\Groupe\GroupeController;
+use Application\Entity\Db\Etudiant;
+use Application\Entity\Db\Groupe;
+
+use UnicaenApp\View\Helper\Messenger;
+
+/**
+ * @see GroupeController::ajouterEtudiantsAction()
+ *
+
+ * @var Groupe $groupe
+ * @var Etudiant[] $etudiants
+ * @var String $title
+ */
+
+$tableId = "ajouter-etudiants-" . $groupe->getId() . "-liste";
+$formId = "ajouter-etudiants-" . $groupe->getId() . "-form";
+?>
+
+
+    <h1 class="page-header">
+        <i class="fas fa-users"></i>
+    </span>
+        <?= $title ?>
+    </h1>
+
+    <div class="card">
+        <div class="card-header">Informations</div>
+        <div class="card-body ">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">L'ajout d'un étudiant l'inscrira automatiquement à l'ensemble des stages du groupes.</li>
+                <li class="list-group-item">Un étudiant ne peux pas être inscrit dans plusieurs groupes de la même année universitaire.</li>
+                <li class="list-group-item">Si vous ne trouvez-pas un étudiant, vérifier que celui-ci n'est pas
+                    déjà inscrit dans le groupe et qu'il est bien présent dans l'application.
+                </li>
+            </ul>
+            <?php if (empty($etudiants)) : ?>
+                <div class="card-text alert alert-warning">
+                    Aucun étudiant ne peux être ajouté au groupe <?= $groupe->getLibelle() ?>
+                </div>
+            <?php else: ?>
+                <?php //Différents messages selon les dates
+                $today = new DateTime();
+                $annee = $groupe->getAnneeUniversitaire();
+                if ($annee->getDateDebut() <= $today): ?>
+                    <div class="card-text alert alert-warning">
+                        <strong>L'année universitaire <?= $annee->getLibelle() ?> est
+                            <?= ($annee->getDateFin() <= $today) ? "terminée" : "commencée" ?>
+                            depuis le <?= $annee->getDateFin()->format('d/m/Y') ?>
+                        </strong>
+                        <br/> Les modifications apportées ne doivent servir que dans le cadre d'une procédure
+                        corrective.
+                    </div>
+                <?php endif; ?>
+            <?php endif; ?>
+        </div>
+        <div class="card-footer">
+            <?= $this->backButton("Fiche du groupe")->backTo($this->url(GroupeController::ROUTE_AFFICHER, ['groupe' => $groupe->getId()], [], true)) ?>
+        </div>
+    </div>
+
+<?php
+//Ajout de messages spécifique
+$namespace = GroupeController::ACTION_AJOUTER_ETUDIANTS . Messenger::NAMESPACED_SEVERITY_SEPARATOR . "*";
+$msg = $this->messenger()->addCurrentMessagesFromFlashMessengerWithNamespace($namespace);
+?>
+<?php if ($msg && $msg->hasMessages()) : ?>
+    <div class="row">
+        <div class="col-md-12">
+            <?= $msg ?>
+        </div>
+    </div>
+<?php endif; ?>
+
+<?php if (!empty($etudiants)) : ?>
+    <div class="card my-3">
+        <div class="card-header">Selectionner les étudiants à ajouter</div>
+        <div class="card-footer">
+            <div class="row">
+                <div class="col-md-8">
+                    <button id="selectAll" class="btn btn-secondary">
+                        <span class="far fa-check-square"></span> Tout selectionner
+                    </button>
+
+                    <button id="deselectAll" class="btn btn-secondary disabled">
+                        <span class="far fa-square"></span> Tout déselectionner
+                    </button>
+
+                </div>
+                <div class="col-md-4 text-end">
+                    <form id="<?= $formId ?>" method="post" class="loadingForm"
+                          action="<?= $this->url(GroupeController::ROUTE_AJOUTER_ETUDIANTS, ["groupe" => $groupe->getId()], [], true) ?>"
+                    >
+                        <button id="add-btn" name=submit" id="submit" type="submit"
+                                class="btn btn-success disabled">
+                            <span class="icon icon-ajouter"></span> Ajouter
+                        </button>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <table id="<?= $tableId ?>" class="table table-hover table-condensed">
+                <thead>
+                <tr>
+                    <th class=""></th>
+                    <th class="col-md-2">n° d'étudiant</th>
+                    <th class="col-md-5">Nom</th>
+                    <th class="col-md-5">Prénom</th>
+                </thead>
+                <tbody>
+                <?php /** @var Etudiant $etudiant */
+                foreach ($etudiants as $etudiant) :
+                    ?>
+                    <tr class="" data-etudiant-id="<?= $etudiant->getId() ?>">
+                        <td></td>
+                        <td><?= $etudiant->getNumEtu() ?></td>
+                        <td> <?= $etudiant->getNom() ?></td>
+                        <td> <?= $etudiant->getPrenom() ?></td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $(function () {
+            $('[data-bs-toggle="popover"]').popover({html: true});
+            if ($.fn.DataTable.isDataTable("#<?= $tableId ?>")) {
+                $('#<?= $tableId ?>').DataTable().destroy();
+            }
+            let options = generateDataTableSetings({
+                stateSave: false,
+                retrieve: false,
+                deferRender: true,
+                "order": [[2, "asc"], [1, "asc"]],
+                "lengthMenu": [[10, 50, 100, 250, -1], [10, 50, 100, 250, "Tous"]],
+                columnDefs: [{
+                    className: 'select-checkbox',
+                    targets: 0,
+                    orderable: false,
+                    searchable: false,
+                },
+                    {targets: ['no-sort'], orderable: false},
+                    {targets: ['no-search'], searchable: false},
+                    {targets: ['hidden'], visible: false},
+                ],
+                "select": {
+                    "style": 'multiple',
+                    "selector": 'tr'
+                },
+                'dom': "<'row'<'col-sm-12 col-md-6 'l><'col-sm-12 col-md-6' f>> " +
+                    "<'row' <'col-sm-12'tr> >" +
+                    "<'row' <'col-sm-12 col-md-5'i> <'col-sm-12 col-md-7'p> >",
+            });
+
+            let tableInstance = $("#<?= $tableId ?>").on('draw.dt', function () {
+                $('[data-bs-toggle="popover"]').popover({html: true});
+            }).DataTable(options);
+
+            $("#selectAll").on('click', function () {
+                tableInstance.rows().select();
+            })
+
+            $("#deselectAll").on('click', function () {
+                tableInstance.rows().deselect();
+            })
+
+            tableInstance.on('select.dt deselect.dt', function (e) {
+                let selectedRows = tableInstance.rows(".selected").nodes().length;
+                if (selectedRows > 0) {
+                    $("#deselectAll").removeClass('disabled');
+                    $("#add-btn").removeClass('disabled');
+                } else {
+                    $("#deselectAll").addClass('disabled');
+                    $("#add-btn").addClass('disabled');
+                }
+            });
+
+            $("#<?=$formId?>").on('submit', function () {
+                that = $(this);
+                //Rajout des étudiants selectionnées dans le formulaires
+                // Recheche des lignes selectionnées qui ne sont pas filtré (possiblement paginé
+                var rows = tableInstance.rows({'selected': true, 'search': 'applied'}).nodes();
+                $(rows).each(function () {
+                    etudiantId = $(this).data('etudiant-id');
+                    that.append("<input type='hidden' name='etudiants[" + etudiantId + "]' value='" + etudiantId + "'>");
+                });
+            })
+        });
+    </script>
+<?php endif; ?>

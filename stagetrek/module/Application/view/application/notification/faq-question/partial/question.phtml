@@ -1,0 +1,74 @@
+<?php
+
+use Application\Entity\Db\Faq;
+use Application\Provider\Privilege\FaqPrivileges;
+use Application\View\Helper\Notification\FAQViewHelper;
+
+
+/**
+ * @var Faq $question
+ */
+
+/** @var FAQViewHelper $vh */
+$vh = $this->faq($question);
+$canEdit = $vh->hasPrivilege(FaqPrivileges::FAQ_QUESTION_MODIFIER);
+$canDelete = $vh->hasPrivilege(FaqPrivileges::FAQ_QUESTION_SUPPRIMER);
+
+$canSeeDetail = $canEdit||$canDelete;
+?>
+
+<div class="card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-9">
+                <strong><?= $question->getQuestion() ?></strong>
+            </div>
+            <div class="col text-end">
+                <?php if($canEdit) :?>
+                   <?= $vh->lienModifier() ?>
+                <?php endif; ?>
+                <?php if($canDelete) :?>
+                    <?= $vh->lienSupprimer() ?>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+                <?= $question->getReponse() ?>
+            </div>
+        </div>
+        <?php if($canSeeDetail) :?>
+            <hr />
+            <div class="row">
+                <div class="col-md-2">
+                    <strong>Ordre d'affichage</strong>
+                </div>
+                <div class="col-md-10">
+                    <?= $question->getOrdre()  ?>
+                </div>
+                <div class="col-md-2">
+                    <strong>Visible pour les rôles</strong>
+                </div>
+                <div class="col-md-10">
+                    <?php
+                    $roles = $question->getRoles()->toArray();
+                    $res = "";
+                    if(empty($roles)){
+                        $res = "Tous";
+                    }
+                    else{
+                        foreach ($question->getRoles() as $role){
+                            $res .=$role->getLibelle().", ";
+                        }
+                        $res = substr($res,0, -2);
+                    }
+                    echo $res;
+                    ?>
+
+                </div>
+            </div>
+        <?php endif; ?>
+    </div>
+</div>

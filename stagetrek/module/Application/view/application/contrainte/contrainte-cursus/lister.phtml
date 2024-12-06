@@ -1,0 +1,17 @@
+<?php
+
+use Application\Controller\Contrainte\ContrainteCursusController;
+use Application\Entity\Db\ContrainteCursus;
+use Application\View\Helper\ContrainteCursus\ContrainteCursusViewHelper;
+use Laminas\View\Renderer\PhpRenderer;
+
+/**
+ * @see ContrainteCursusController::listerAction()
+ *
+
+ * @var ContrainteCursus[] $contraintes
+ * @var ContrainteCursusViewHelper $vh
+ */
+
+$vh = $this->administrationContrainteCursus();
+echo $vh->renderListe($contraintes);

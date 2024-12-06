@@ -1,0 +1,78 @@
+<?php
+
+use Application\Form\Affectation\Fieldset\ProcedureAffectationFieldset;
+use Application\Form\Affectation\ProcedureAffectationForm;
+
+
+/**
+ * @see \Application\Controller\Affectation\ProcedureAffectationController::modifierAction();
+ * @var String $title
+ * @var ProcedureAffectationForm $form
+ */
+
+$fe = $this->formErrors();
+$fcg = $this->formControlGroup();
+$fr = $this->formrow();
+$fct = $this->formControlText();
+
+/** @var ProcedureAffectationFieldset $fieldset */
+$fieldset = $form->getEntityFieldset();
+?>
+
+<?= $this->form()->openTag($form->prepare()) ?>
+<?= $fe($form->prepare(), ProcedureAffectationForm::INVALIDE_ERROR_MESSAGE) ?>
+<?= $fr($fieldset->get(ProcedureAffectationFieldset::ID)); ?>
+<?= $fr($fieldset->get(ProcedureAffectationFieldset::CODE)); ?>
+
+    <div class="row">
+        <div class="col-md-6">
+            <?= $fct($fieldset->get(ProcedureAffectationFieldset::LIBELLE)); ?>
+        </div>
+        <div class="col-md-4">
+            <?= $fcg($fieldset->get(ProcedureAffectationFieldset::ORDRE)); ?>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-10">
+            <?= $fct($fieldset->get(ProcedureAffectationFieldset::DESCRIPTION)); ?>
+        </div>
+    </div>
+
+<hr/>
+    <div class="row">
+        <div class="col-md-10">
+            <?= $fcg($form->get(ProcedureAffectationForm::INPUT_SUBMIT)); ?>
+        </div>
+    </div>
+
+<?= $this->formHidden($form->get(ProcedureAffectationForm::CSRF)); ?>
+<?= $this->form()->closeTag(); ?>
+
+<script type="text/javascript">
+
+    $(function () {
+        $('.selectpicker').selectpicker('render');
+
+        $('input#<?= $fieldset::DESCRIPTION ?>').addClass('descriptionArea');
+
+        tinymce.remove();
+        tinymce.init({
+            selector: '.descriptionArea',
+            toolbar: 'newdocument undo redo | bold italic underline | bullist',
+            resize: true,
+            language: 'fr_FR',
+            entity_encoding: "raw",
+            plugins: 'lists',
+            statusbar: true,
+            browser_spellcheck: true,
+            branding: false,
+            menu: {},
+            body_id: '<?= $fieldset::DESCRIPTION ?>',
+            setup: function (editor) {
+                editor.on("initEditor", function () {
+                    $('#<?= $fieldset::DESCRIPTION ?>.descriptionArea').val(tinymce.get('<?= $fieldset::DESCRIPTION ?>.descriptionArea').getContent());
+                });
+            }
+        });
+    });
+</script>

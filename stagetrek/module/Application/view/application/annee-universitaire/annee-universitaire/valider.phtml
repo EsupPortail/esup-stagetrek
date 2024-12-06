@@ -1,0 +1,40 @@
+<?php
+
+use Application\Controller\AnneeUniversitaire\AnneeUniversitaireController;
+use Application\Entity\Db\AnneeUniversitaire;
+use Application\Form\Misc\ConfirmationForm;
+
+
+/**
+ * @see AnneeUniversitaireController::validerAction()
+ * @var string $title
+ * @var ConfirmationForm $form
+ * @var AnneeUniversitaire $annee
+
+/** @var ConfirmationFormViewHelper $vh */
+$vh = $this->confirmation($form)
+?>
+
+<div class="card card-success">
+    <h1 class="page-header card-header">
+        <span class="fas fa-check-circle"></span>
+        <?= $title ?>
+    </h1>
+    <div class="card-body">
+        <div class='alert alert-warning'>
+            <div>L'ensemble des stages liées à l'année seront <strong>visible par les étudiants</strong></div>
+        </div>
+        <?= $vh->render(); ?>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        let body = $("body");
+        body.one("<?= $form::CANCEL_EVENT ?>", function () {
+            window.location.href = "<?= $this->url(AnneeUniversitaireController::ROUTE_AFFICHER, ['anneeUniversitaire' => $annee->getId()], [], true)?>";
+        });
+        body.off("<?= AnneeUniversitaireController::EVENT_VALIDER?>", closeModal)
+            .one("<?= AnneeUniversitaireController::EVENT_VALIDER?>", closeModal);
+    });
+</script>

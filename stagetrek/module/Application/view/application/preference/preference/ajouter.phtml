@@ -1,0 +1,44 @@
+<?php
+
+use Application\Controller\Preference\PreferenceController;
+use Application\Entity\Db\Stage;
+use Application\Form\Preferences\PreferenceForm;
+use Application\View\Helper\Preferences\PreferenceViewHelper;
+
+
+/**
+ * @see PreferenceController::ajouterAction()
+
+ * @var string $title
+ * @var PreferenceForm $form
+ * @var Stage $stage
+ */
+
+/** @var PreferenceViewHelper $vh */
+$vh = $this->preference();
+?>
+<div class="card card-success">
+    <h1 class="page-header card-header">
+        <span class="icon icon-modifier"></span>
+        <?= $title ?>
+    </h1>
+    <div class="card-body">
+        <?= $vh()->renderForm($form); ?>
+    </div>
+
+    <div class="card-footer">
+        <div class="row">
+            <div class="col-md-12">
+                <?= $this->backButton("Liste des préférences")->backTo($this->url(PreferenceController::ROUTE_MODIFIER_PREFERENCES, ['stage' => $stage->getId()], [], true)) ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        let body = $("body");
+        body.off("<?= PreferenceController::EVENT_AJOUTER?>", closeModal)
+            .one("<?= PreferenceController::EVENT_AJOUTER?>", closeModal);
+    })
+</script>

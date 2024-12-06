@@ -1,0 +1,301 @@
+<?php
+
+use Application\Controller\Stage\SessionStageController;
+use Application\Form\Stages\Fieldset\SessionStageFieldset;
+use Application\Form\Stages\SessionStageForm;
+use Application\Provider\Parametre\ParametreProvider;
+use Application\View\Helper\Parametres\ParametreViewHelper;
+use Application\View\Helper\SessionsStages\SessionStageViewHelper;
+
+
+/**
+ * @see SessionStageController::ajouterAction()
+ * @see SessionStageController::modifierAction()
+ * @see SessionStageViewHelper::renderForm()
+ * @var SessionStageForm $form
+ * @var SessionStageFieldset $fieldset
+ */
+
+$fe = $this->formErrors();
+$fcg = $this->formControlGroup();
+$fr = $this->formrow();
+$fct = $this->formControlText();
+
+$title = $form->getTitle();
+$fieldset = $form->getEntityFieldset();
+
+/** @var ParametreViewHelper $parametreVh */
+$parametreVh = $this->parametre();
+$dateCalculOrdreAuto = $parametreVh->getParametreService()->getParametreValue(ParametreProvider::DATE_CALCUL_ORDRES_AFFECTATIONS);
+$dateChoix = $parametreVh->getParametreService()->getParametreValue(ParametreProvider::DATE_PHASE_CHOIX);
+$dateAffectation = $parametreVh->getParametreService()->getParametreValue(ParametreProvider::DATE_PHASE_AFFECTATION);
+$dateValidation = $parametreVh->getParametreService()->getParametreValue(ParametreProvider::DATE_PHASE_VALIDATION);
+$dateEvaluation = $parametreVh->getParametreService()->getParametreValue(ParametreProvider::DATES_PHASE_EVALUATION);
+$dureeChoix = $parametreVh->getParametreService()->getParametreValue(ParametreProvider::DUREE_PHASE_CHOIX);
+$dureeStage = $parametreVh->getParametreService()->getParametreValue(ParametreProvider::DUREE_STAGE);
+$dureeValidation = $parametreVh->getParametreService()->getParametreValue(ParametreProvider::DUREE_PHASE_VALIDATION);
+$dureeEvaluation = $parametreVh->getParametreService()->getParametreValue(ParametreProvider::DUREE_PHASE_EVALUATION);
+
+
+?>
+
+<div class="fieldset">
+    <?= $this->form()->openTag($form->prepare()) ?>
+    <nav>
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+            <button class="nav-link active" id="nav-infos"
+                    data-bs-toggle="tab" data-bs-target="#pan-infos"
+                    type="button"
+                    role="tab" aria-controls="infos"
+                    aria-selected="true">Informations générales
+            </button>
+            <button class="nav-link" id="nav-dates"
+                    data-bs-toggle="tab" data-bs-target="#pan-dates"
+                    type="button"
+                    role="tab" aria-controls="dates"
+                    aria-selected="true">Dates
+            </button>
+        </div>
+    </nav>
+    <?= $fe($form->prepare(), $form::INVALIDE_ERROR_MESSAGE) ?>
+    <?= $fr($fieldset->get($fieldset::ID)); ?>
+    <div class="card">
+        <div class="card-body">
+            <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane fade show active border-0" id="pan-infos"
+                     role="tabpanel" aria-labelledby="nav-infos">
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <?= $fct($fieldset->get($fieldset::LIBELLE)); ?>
+                        </div>
+                        <div class="col-md-6">
+                            <?= $fcg($fieldset->get($fieldset::GROUPE)); ?>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="d-flex">
+                                <?php
+                                $input = $fieldset->get($fieldset::INPUT_SESSION_RATTRAPAGE);
+                                echo $this->formlabel($input);
+                                $input->setLabel("");
+                                ?>
+                                <div class="form-check form-switch">
+                                    <?= $fcg($input) ?>
+                                </div>
+                            </div>
+                            <div class="text-small">
+                                L'inscription des étudiant.e.s pour les sessions de rattrapage doit être effectué
+                                manuellement.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade show  border-0" id="pan-dates"
+                     role="tabpanel" aria-labelledby="nav-dates">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="d-flex">
+                                <?php
+                                $input = $fieldset->get($fieldset::INPUT_CALCUL_AUTOMATIQUE_DATE);
+                                echo $this->formlabel($input);
+                                $input->setLabel("");
+                                ?>
+                                <div class="form-check form-switch">
+                                    <?= $fcg($input) ?>
+                                </div>
+                            </div>
+                            <div class="text-small">Activez le calcul automatique pour utiliser les valeurs a priori des
+                                dates basés sur la date de début des stages
+                            </div>
+                        </div>
+                    </div>
+                    <hr/>
+
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <?= $fcg($fieldset->get($fieldset::DATE_DEBUT_STAGE)); ?>
+                        </div>
+                        <div class="col-md-6">
+                            <?php
+                            $input = $fieldset->get($fieldset::DATE_FIN_STAGE);
+                            $input->setAttribute('class', 'dateAutoUpdate');
+                            $input->setAttribute('data-delta', ($dureeStage));
+                            echo   $fcg($input);
+                            ?>
+                            <div class="calcul-auto-info text-small text-muted">
+                                <strong>Durée a priori : </strong> <?= $dureeStage ?> jours
+                            </div>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <?php
+                            $input = $fieldset->get($fieldset::DATE_CALCUL_ORDRES_AFFECTACTIONS);
+                            $input->setAttribute('class', 'dateAutoUpdate');
+                            $input->setAttribute('data-delta', -$dateCalculOrdreAuto);
+                             echo   $fcg($input);
+                             ?>
+                            <div class="calcul-auto-info text-small text-muted">
+                                <strong>Date a priori : </strong> <?= $dateCalculOrdreAuto ?> jours avant le début du
+                                stage
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <?php
+                            $input = $fieldset->get($fieldset::DATE_DEBUT_CHOIX);
+                            $input->setAttribute('class', 'dateAutoUpdate');
+                            $input->setAttribute('data-delta', -$dateChoix);
+                            echo   $fcg($input);
+                            ?>
+                            <div class="calcul-auto-info text-small text-muted">
+                                <strong>Date a priori : </strong> <?= $dateChoix ?> jours avant le début du stage
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <?php
+                            $input = $fieldset->get($fieldset::DATE_FIN_CHOIX);
+                            $input->setAttribute('class', 'dateAutoUpdate');
+                            $input->setAttribute('data-delta', (-$dateChoix + $dureeChoix));
+                            echo   $fcg($input);
+                            ?>
+                            <div class="calcul-auto-info text-small text-muted">
+                                <strong>Durée a priori : </strong> <?= $dureeChoix ?> jours
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <?php
+                            $input = $fieldset->get($fieldset::DATE_COMMISSION);
+                            $input->setAttribute('class', 'dateAutoUpdate');
+                            $input->setAttribute('data-delta', (-$dateAffectation));
+                            echo   $fcg($input);
+                            ?>
+                            <div class="calcul-auto-info text-small text-muted">
+                                <strong>Date a priori : </strong> <?= $dateAffectation ?> jours avant le début du stage
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr/>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <?php
+                            $input = $fieldset->get($fieldset::DATE_DEBUT_VALIDATION);
+                            $input->setAttribute('class', 'dateAutoUpdate');
+                            $input->setAttribute('data-delta', ($dateValidation));
+                            echo   $fcg($input);
+                            ?>
+                            <div class="calcul-auto-info text-small text-muted">
+                                <strong>Date a priori : </strong> <?= $dateValidation ?> jours après le début du stage
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <?php
+                            $input = $fieldset->get($fieldset::DATE_FIN_VALIDATION);
+                            $input->setAttribute('class', 'dateAutoUpdate');
+                            $input->setAttribute('data-delta', ($dateValidation + $dureeValidation));
+                            echo   $fcg($input);
+                            ?>
+                            <div class="calcul-auto-info text-small text-muted">
+                                <strong>Durée a priori : </strong> <?= $dureeValidation ?> jours
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <?php
+                            $input = $fieldset->get($fieldset::DATE_DEBUT_EVALUATION);
+                            $input->setAttribute('class', 'dateAutoUpdate');
+                            $input->setAttribute('data-delta', ($dateEvaluation));
+                            echo   $fcg($input);
+                            ?>
+                            <div class="calcul-auto-info text-small text-muted">
+                                <strong>Date a priori : </strong> <?= $dateEvaluation ?> jours après le début du stage
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <?php
+                            $input = $fieldset->get($fieldset::DATE_FIN_EVALUATION);
+                            $input->setAttribute('class', 'dateAutoUpdate');
+                            $input->setAttribute('data-delta', ($dateEvaluation + $dureeEvaluation));
+                            echo   $fcg($input);
+                            ?>
+                            <div class="calcul-auto-info text-small text-muted">
+                                <strong>Durée a priori : </strong> <?= $dureeEvaluation ?> jours
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="row">
+                <div class="col-md-12">
+                    <?= $this->formControlGroup($form->get($form::INPUT_SUBMIT)); ?>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <?= $this->formHidden($form->get($form::CSRF)); ?>
+    <?= $this->form()->closeTag(); ?>
+</div>
+
+<script>
+    $(function () {
+        $('.selectpicker').selectpicker('render');
+
+        let majAuto = $('#<?=$fieldset::INPUT_CALCUL_AUTOMATIQUE_DATE ?>');
+
+        function updateDates(){
+            checked = majAuto.prop('checked');
+            if(!checked){return}
+            $('.dateAutoUpdate').each(
+                function(){
+                    inputRef = $('#<?= $fieldset::DATE_DEBUT_STAGE?>');
+                    dateRefString = inputRef.val();
+                    if(!dateRefString){return;}
+                    delta =  $(this).data('delta');
+                    dateRef = new Date(dateRefString);
+                    newDate = new Date(dateRef);
+                    newDate.setDate(dateRef.getDate()+delta);
+                    var yyyy = newDate.getFullYear().toString();
+                    var mm = (newDate.getMonth()+1).toString(); // getMonth() is zero-based
+                    var dd  = newDate.getDate().toString();
+                    newDateString = yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]);
+                    $(this).val(newDateString);
+                }
+            )
+        }
+
+
+        function toogleMajAuto(){
+            checked = majAuto.prop('checked');
+            if(checked){
+                $('.dateAutoUpdate').attr('readonly', 'readonly');
+                updateDates();
+            }
+            else{
+                $('.dateAutoUpdate').removeAttr('readonly');
+            }
+        }
+
+        majAuto.on('change', toogleMajAuto);
+        $('#<?=$fieldset::DATE_DEBUT_STAGE ?>').on('change', updateDates);
+        // Pour désactivée les dates auto si la checkbox est cochée
+        toogleMajAuto();
+
+    })
+</script>

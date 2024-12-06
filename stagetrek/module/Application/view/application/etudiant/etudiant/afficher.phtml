@@ -1,0 +1,184 @@
+<?php
+
+use Application\Controller\Contrainte\ContrainteCursusEtudiantController;
+use Application\Controller\Etudiant\DisponibiliteController;
+use Application\Controller\Etudiant\EtudiantController;
+use Application\Entity\Db\Etudiant;
+use Application\Provider\Privilege\EtudiantPrivileges;
+use Application\View\Helper\ContrainteCursus\ContrainteCursusEtudiantViewHelper;
+use Application\View\Helper\Disponibilite\DisponibiliteViewHelper;
+use Application\View\Helper\Etudiant\EtudiantViewHelper;
+use UnicaenPrivilege\Provider\Privilege\Privileges;
+
+/**
+ * @see EtudiantController::afficherAction()
+ * @var Etudiant $etudiant
+ */
+
+/** @var EtudiantViewHelper $vh */
+$vh = $this->etudiant($etudiant);
+/** @var DisponibiliteViewHelper $dispoVh */
+$dispoVh = $this->disponibilite();
+$dispoVh->setEtudiant($etudiant);
+
+/** @var ContrainteCursusEtudiantViewHelper $contraintesVh */
+$contraintesVh = $this->contrainteCursus();
+$contraintesVh->setEtudiant($etudiant);
+
+$canEdit = $vh->actionAllowed(EtudiantController::ACTION_MODIFIER);
+$canDelete = $vh->actionAllowed(EtudiantController::ACTION_SUPPRIMER);
+
+$canSeeDispo = $dispoVh->actionAllowed(DisponibiliteController::ACTION_LISTER);
+$canAddDispo = $dispoVh->actionAllowed(DisponibiliteController::ACTION_AJOUTER);
+
+$canSeeContraintes = $contraintesVh->actionAllowed(ContrainteCursusEtudiantController::ACTION_LISTER);
+?>
+
+<h1 class="page-header">
+    <span class="icon">
+        <i class="fas fa-user"></i>
+    </span>
+    Fiche de <?= $etudiant->getDisplayName() ?>
+</h1>
+
+<nav>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <button class="nav-link active" id="nav-infos" data-bs-toggle="tab" data-bs-target="#infos" type="button"
+                role="tab" aria-controls="infos" aria-selected="true">Informations
+        </button>
+        <?php if ($canSeeContraintes) : ?>
+            <button class="nav-link" id="nav-maquette" data-bs-toggle="tab" data-bs-target="#maquette" type="button"
+                    role="tab" aria-controls="maquette" aria-selected="false">Maquette
+            </button>
+        <?php endif; ?>
+        <button class="nav-link" id="nav-stages" data-bs-toggle="tab" data-bs-target="#stages" type="button"
+                role="tab" aria-controls="stages" aria-selected="false">Stages
+        </button>
+        <?php if ($canSeeDispo) : ?>
+            <button class="nav-link" id="nav-disponibilites" data-bs-toggle="tab" data-bs-target="#disponibilites"
+                    type="button"
+                    role="tab" aria-controls="disponibilites" aria-selected="false">Disponibilités
+            </button>
+        <?php endif; ?>
+    </div>
+</nav>
+
+<div class="card tab-content" id="nav-tabContent">
+    <div class="tab-pane fade show active" id="infos" role="tabpanel" aria-labelledby="nav-infos">
+        <?php if($canEdit || $canDelete) :?>
+        <div class="card-header card-sub-header text-end">
+            <?= $vh->lienModifier() ?>
+            <?= $vh->lienSupprimer() ?>
+        </div>
+        <?php endif;?>
+
+        <?php
+        /** @see EtudiantController::afficherInfosAction() */
+        $url = $this->url(EtudiantController::ROUTE_AFFICHER_INFOS, ['etudiant' => $etudiant->getId()], [], true);
+        ?>
+        <div id="infos-content" class="card-body" data-url="<?= $url ?>">
+            <?= $vh->renderInfos() ?>
+        </div>
+        <div class="card-footer">
+            <?= $this->backButton("Liste des étudiants")->backTo($this->url(EtudiantController::ROUTE_INDEX, [], [], true)) ?>
+        </div>
+    </div>
+
+    <?php if ($canSeeContraintes) : ?>
+        <div class="tab-pane fade" id="maquette" role="tabpanel" aria-labelledby="nav-maquette">
+
+            <div class="card-body">
+
+                <div class="card mb-3">
+                    <div class="card-header">Informations</div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                Le nombre de stage(s) en validation est basé sur le nombre de stage(s) validé(s) satisfaisant la contrainte + le nombre d'équivalence(s) accordée(s)</strong>
+                            </li>
+                            <li class="list-group-item">
+                                Un stage validé n'est comptabilisé qu'après la date de fin du stage.
+                            </li>
+                    </div>
+                </div>
+
+                <?php
+                /** @see ContrainteCursusEtudiantController::listerAction() */
+                $url = $this->url(ContrainteCursusEtudiantController::ROUTE_LISTER, ['etudiant' => $etudiant->getId()], [], true);
+                ?>
+                <div id="maquette-content" data-url="<?= $url ?>">
+                    <?= $contraintesVh->renderListe($etudiant->getContraintesCursusEtudiants()->toArray()); ?>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+
+
+    <div class="tab-pane fade" id="stages" role="tabpanel" aria-labelledby="nav-stages">
+        <div class="card-body">
+            <?php
+            /** @see EtudiantController::listerStagesAction() */
+            $url = $this->url(EtudiantController::ROUTE_LISTER_STAGES, ['etudiant' => $etudiant->getId()], [], true);
+            ?>
+            <div id="stages-content" data-url="<?= $url ?>">
+                <?= $vh->renderListeStages(); ?>
+            </div>
+        </div>
+    </div>
+
+    <?php if ($canSeeDispo) : ?>
+        <div class="tab-pane fade" id="disponibilites" role="tabpanel" aria-labelledby="nav-disponibilites">
+            <?php if ($canAddDispo) : ?>
+                <div class="card-header card-sub-header text-end">
+                    <?= $dispoVh->lienAjouter() ?>
+                </div>
+            <?php endif; ?>
+
+            <?php
+            /** @see DisponibiliteController::listerAction() */
+            $url = $this->url(DisponibiliteController::ROUTE_LISTER, ['etudiant' => $etudiant->getId()], [], true);
+            ?>
+            <div id="disponibilites-content" class="card-body" data-url="<?= $url ?>">
+                <?= $dispoVh->renderListe($etudiant->getDisponibilites()->toArray()); ?>
+            </div>
+        </div>
+    <?php endif; ?>
+</div>
+
+<script type="text/javascript">
+    //Rechargement de la page sur event
+    $(function () {
+        let body = $("body");
+        body.on("<?=EtudiantController::EVENT_MODIFIER?> "
+            , function () {
+                $("#infos-content").refresh();
+            });
+        body.on("<?=DisponibiliteController::EVENT_AJOUTER?> "
+            + "<?=DisponibiliteController::EVENT_MODIFIER?> "
+            + "<?=DisponibiliteController::EVENT_SUPPRIMER?> "
+            , function () {
+                $("#infos-content").refresh();
+                $("#maquette-content").refresh();
+                $("#stages-content").refresh();
+                $("#disponibilites-content").refresh();
+            })
+        ;
+        body.on("<?=ContrainteCursusEtudiantController::EVENT_MODIFIER?> "
+            , function () {
+                $("#infos-content").refresh();
+                $("#maquette-content").refresh();
+            });
+
+        body.on("<?=EtudiantController::EVENT_SUPPRIMER?> "
+            , function () {
+                $("#nav-tabContent > div").empty().append(
+                    "<div class='tab-pane show'><div class='m-3 alert alert-info'>" +
+                    "L'étudiant.e vient d'être supprimé.e, vous allez être rediriger dans quelques secondes." +
+                    "</div></div>"
+                );
+                setTimeout(function () {
+                    window.location.href = "<?= $this->url(EtudiantController::ROUTE_INDEX)?>";
+                }, 2000);
+            });
+    });
+</script>

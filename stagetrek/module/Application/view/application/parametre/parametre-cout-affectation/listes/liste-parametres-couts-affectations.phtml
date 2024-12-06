@@ -1,0 +1,56 @@
+<?php
+
+use Application\Entity\Db\ParametreCoutAffectation;
+use Application\Provider\Misc\Icone;
+use Application\Provider\Privilege\ParametrePrivileges;
+use Application\View\Helper\Parametres\ParametreCoutAffectationViewHelper;
+
+/**
+ * @see ParametreCoutAffectationViewHelper::renderListe()
+ *
+ * @var ParametreCoutAffectation[] $parametres
+ */
+/** @var ParametreCoutAffectationViewHelper $vh */
+$vh = $this->parametreCoutAffectation();
+$canEdit = $vh->hasPrivilege(ParametrePrivileges::PARAMETRE_MODIFIER);
+$canDelete =$vh->hasPrivilege(ParametrePrivileges::PARAMETRE_SUPPRIMER);
+$actionMenu = $canEdit||$canDelete;
+
+$parametres = ParametreCoutAffectation::sortParametresCoutsAffectations($parametres);
+
+?>
+
+<div class="row">
+    <div class="col-md-12">
+<?php $tableId = "liste-parametres-couts-affectationStage"; ?>
+<table id="<?= $tableId ?>" class="table table-hover table-condensed">
+    <thead>
+    <tr>
+        <th class="col-md-6 text-center" data-type="num" data-priority="0">Rang de la préférence satisfaite</th>
+        <th class="col-md-5 text-center" data-type="num" data-priority="0">Coût initial</th>
+        <?php if ($actionMenu) : ?>
+            <th class="no-sort no-search col-md-1 text-end" data-priority="0">Actions</th>
+        <?php endif; ?>
+    </tr>
+    </thead>
+    <tbody>
+    <?php
+    /** @var ParametreCoutAffectation $parametre */
+    foreach ($parametres as $parametre) :
+        $vh->setParametreCoutAffectation($parametre);
+        ?>
+        <tr>
+            <td class="text-center"><?= $parametre->getRang() ?></td>
+            <td class="text-center"><?= $parametre->getCout() ?></td>
+            <?php if ($actionMenu) : ?>
+                <td class="text-end">
+                    <?= $vh->lienModifier(Icone::MODIFIER, ['class' => 'text-primary ajax-modal']) ?>
+                    <?= $vh->lienSupprimer(Icone::SUPPRIMER, ['class' => 'text-danger ajax-modal']) ?>
+                </td>
+            <?php endif; ?>
+        </tr>
+    <?php endforeach; ?>
+    <tbody>
+</table>
+    </div>
+</div>

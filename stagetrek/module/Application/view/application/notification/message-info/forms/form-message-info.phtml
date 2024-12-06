@@ -1,0 +1,105 @@
+<?php
+
+use Application\Controller\Referentiel\ReferentielPromoController;
+use Application\Form\Notification\Fieldset\MessageInfoFieldset;
+use Application\Form\Notification\MessageInfoForm;
+
+/**
+ * @see ReferentielPromoController::ajouterAction()
+ * @see ReferentielPromoController::modifierAction()
+ *
+ * @var string $title
+ * @var MessageInfoForm $form
+ */
+
+$fcg = $this->formControlGroup();
+$fe = $this->formErrors();
+$fr = $this->formrow();
+$fct = $this->formControlText();
+
+/** @var MessageInfoFieldset $fieldset */
+$fieldset = $form->getEntityFieldset();
+?>
+
+<div class="fieldset">
+    <?= $this->form()->openTag($form->prepare()) ?>
+    <?= $fe($form->prepare(), $form::INVALIDE_ERROR_MESSAGE) ?>
+    <div class="row">
+        <div class="col-md-12">
+            <?= $fct($fieldset->get($fieldset::INPUT_TITLE)); ?>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <?= $fct($fieldset->get($fieldset::INPUT_MESSAGE)); ?>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <?= $fcg($fieldset->get($fieldset::INPUT_DATE)); ?>
+        </div>
+        <div class="col-md-6">
+            <?php
+            $input = $fieldset->get($fieldset::INPUT_ACTIF);
+            echo $this->formlabel($input);
+            $input->setLabel("");
+            ?>
+            <div class="form-check form-switch ms-1">
+                <?= $this->formelement($input) ?>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <?= $fcg($fieldset->get($fieldset::INPUT_PRIORITY)); ?>
+        </div>
+        <div class="col-md-6">
+            <?= $fcg($fieldset->get($fieldset::INPUT_ROLES)); ?>
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-10">
+            <?= $fcg($form->get($form::SUBMIT)); ?>
+        </div>
+    </div>
+
+    <?= $this->formHidden($form->get($form::CSRF));?>
+    <?= $this->form()->closeTag(); ?>
+</div>
+
+
+<script type="text/javascript">
+    $(function () {
+        //Affichage des selectpicker des le départ
+        $('.selectpicker').selectpicker('render');
+        $('input#<?= MessageInfoFieldset::INPUT_MESSAGE ?>').addClass('messageArea');
+
+        tinymce.remove();
+        tinymce.init({
+            selector: '.messageArea',
+            toolbar: 'newdocument undo redo | bold italic underline forecolor backcolor | bullist | alignleft  aligncenter alignright alignjustify | formatselect',
+            block_formats: 'Normal=p;Titre 1=h1;Titre 2=h2;Titre 3=h3',
+            resize: true,
+            height: "500",
+            language: 'fr_FR',
+            entity_encoding: "raw",
+            plugins: 'lists paste textcolor colorpicker',
+            color_picker_callback: function (callback) {
+                callback('#000000');
+            },
+            paste_as_text: true,
+            statusbar: true,
+            browser_spellcheck: true,
+            branding: false,
+            menu: {},
+            body_id: '<?= MessageInfoFieldset::INPUT_MESSAGE ?>',
+            setup: function (editor) {
+                editor.on("initEditor", function () {
+                    $('#<?= MessageInfoFieldset::INPUT_MESSAGE ?>.messageArea').val(tinymce.get('messageArea').getContent());
+                });
+            }
+        });
+    });
+</script>

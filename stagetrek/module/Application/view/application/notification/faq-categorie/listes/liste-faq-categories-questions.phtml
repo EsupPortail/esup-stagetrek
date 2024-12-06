@@ -1,0 +1,54 @@
+<?php
+
+use Application\Entity\Db\FaqCategorieQuestion;
+use Application\Provider\Misc\Icone;
+use Application\Provider\Privilege\FaqPrivileges;
+
+
+/**
+ * @var FaqCategorieQuestion[] $categories
+ */
+$vh = $this->categorieFaq();
+
+$canEdit = $vh->hasPrivilege(FaqPrivileges::FAQ_CATEGORIE_MODIFIER);
+$canDelete = $vh->hasPrivilege(FaqPrivileges::FAQ_CATEGORIE_SUPPRIMER);
+?>
+
+<?php $tableId = "liste-faq-categories" ?>
+
+<div class="row">
+    <div class="col-md-12">
+        <table id="<?= $tableId ?>" class="table table-hover table-condensed table-data">
+            <thead>
+            <tr>
+                <th class="col-md-1 no-search text-center" data-type="num">Ordre</th>
+                <th class="col-md-9 ">Libellé</th>
+                <th class="col-md-1 no-search text-center" data-type="num">#Questions</th>
+                <th class="col-md-1 no-sort no-search text-end" data-priority="0">Actions</th>
+            </thead>
+            <tbody>
+            <?php foreach ($categories as $categorie):
+                $vh->setFaqCategorieQuestion($categorie);
+                ?>
+                <tr>
+                    <td class='text-center' data-order="<?= $categorie->getOrdre() ?>">
+                        <?= $categorie->getOrdre() ?>
+                    </td>
+                    <td data-order="<?= $categorie->getLibelle() ?>">
+                        <?= $categorie->getLibelle() ?>
+                    </td>
+                    <td class='text-center' data-order="<?= $categorie->getQuestions()->count() ?> ">
+                        <?= $categorie->getQuestions()->count() ?>
+                    </td>
+                    <?php if ($canEdit || $canDelete) : ?>
+                        <td class="text-end">
+                            <?= $vh->lienModifier(Icone::MODIFIER, ['class' => 'text-primary ajax-modal']) ?>
+                            <?= $vh->lienSupprimer(Icone::SUPPRIMER, ['class' => 'text-danger ajax-modal']) ?>
+                        </td>
+                    <?php endif; ?>
+                </tr>
+            <?php endforeach; ?>
+            <tbody>
+        </table>
+    </div>
+</div>

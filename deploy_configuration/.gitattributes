@@ -1,0 +1,4 @@
+*.sh eol=lf
+*.conf eol=lf
+*.yml eol=lf
+*.ini eol=lf

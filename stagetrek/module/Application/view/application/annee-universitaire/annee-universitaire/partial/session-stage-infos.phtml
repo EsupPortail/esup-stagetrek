@@ -1,0 +1,58 @@
+<?php
+
+use Application\Controller\AnneeUniversitaire\AnneeUniversitaireController;
+use Application\Controller\Stage\SessionStageController;
+use Application\Entity\Db\SessionStage;
+use Application\Provider\Misc\Icone;
+use Application\Provider\Privilege\StagePrivileges;
+use Application\View\Helper\Groupe\GroupeViewHelper;
+use Application\View\Helper\SessionsStages\SessionStageViewHelper;
+
+use UnicaenPrivilege\Provider\Privilege\Privileges;
+
+/**
+ * @see AnneeUniversitaireController::afficherSessionInfosAction()
+ * @var SessionStage $session
+ */
+
+$annee = $session->getAnneeUniversitaire();
+/** @var SessionStageViewHelper $sessionVh */
+$sessionVh = $this->sessionStage();
+$sessionVh->setSessionStage($session);
+$canSeeSession = $sessionVh->actionAllowed(SessionStageController::ACTION_AFFICHER);
+$canEditSession = $sessionVh->actionAllowed(SessionStageController::ACTION_MODIFIER);
+$canDeleteSession = $sessionVh->actionAllowed(SessionStageController::ACTION_SUPPRIMER);
+/** @var GroupeViewHelper $groupeVh */
+$groupeVh = $this->groupe();
+$groupeVh->setGroupe($session->getGroupe());
+?>
+
+<div class="card h-100" id="infos-session-<?= $session->getId() ?>">
+    <div class="card-header">Session <?= $session->getLibelle() ?></div>
+    <?php if ($canSeeSession|| $canEditSession || $canDeleteSession) : ?>
+        <div class="card-header card-sub-header">
+            <?= ($canSeeSession) ? $sessionVh->lienAfficher(Icone::AFFICHER. " Afficher", ['class'=>'btn btn-secondary']) : ""?>
+            <?= ($canEditSession) ? $sessionVh->lienModifier()  : ""?>
+            <?= ($canDeleteSession) ? $sessionVh->lienSupprimer()  : "" ?>
+        </div>
+    <?php endif; ?>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-2"><strong>Groupe </strong></div>
+            <div class="col-md-10"><?= $groupeVh->lienAfficher() ?></div>
+        </div>
+        <div class="row">
+            <div class="col-md-2"><strong>Dates</strong></div>
+            <div class="col-md-10">
+                <div> Procédure de choix du <?= $session->getDateDebutChoix()->format('d/m/Y') ?>
+                    au <?= $session->getDateFinChoix()->format('d/m/Y') ?> </div>
+                <div> Commission d'affectation
+                    le <?= $session->getDateCommission()->format('d/m/Y') ?> </div>
+                <div> Stages du <?= $session->getDateDebutStage()->format('d/m/Y') ?>
+                    au <?= $session->getDateFinStage()->format('d/m/Y') ?> </div>
+                <div> Validation des stages <?= $session->getDateDebutValidation()->format('d/m/Y') ?>
+                    au <?= $session->getDateFinValidation()->format('d/m/Y') ?> </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,146 @@
+<?php
+
+use Application\Controller\Etudiant\EtudiantController;
+use Application\Entity\Db\ContrainteCursusEtudiant;
+use Application\Entity\Db\Etudiant;
+use Application\View\Helper\ContrainteCursus\ContrainteCursusEtudiantViewHelper;
+/**
+ * @see EtudiantController::monProfilAction()
+ * @var Etudiant $etudiant
+ */
+
+/** @var ContrainteCursusEtudiantViewHelper $vh */
+$vh = $this->contrainteCursus();
+$vh->setEtudiant($etudiant);
+?>
+
+<?php if (empty($etudiant->getStages()->toArray())) : ?>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-info">
+                Vos stages à effectuer n'ont pas encore été définis.
+            </div>
+        </div>
+    </div>
+<?php endif; ?>
+
+<?php //TODO : un message ici si le cursus est terminée et validé (ou invalidé) ?
+?>
+
+
+<?php
+/** @var ContrainteCursusEtudiant[] $contraintes */
+$contraintes = $etudiant->getContraintesCursusEtudiants()->toArray();
+$contraintes = array_filter($contraintes, function (ContrainteCursusEtudiant $contrainte) {
+    //on n'affiche pas pour l'étudiant les contraintes en erreur ou désactivé
+    if ($contrainte->hasEtatErreur()) return false;
+    if ($contrainte->hasEtatInactif()) return false;
+    return true;
+});
+
+$contraintes = ContrainteCursusEtudiant::sortContraintes($contraintes);
+?>
+
+<?php if (empty($contraintes)) :?>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-info">
+                Vous n'avez pas de contraintes de cursus a valider
+            </div>
+        </div>
+    </div>
+
+<?php return; endif; ?>
+<div class="row row-cols-1 row-cols-md-2 m-0">
+    <?php /** @var ContrainteCursusEtudiant $contrainte */
+    foreach ($contraintes as $contrainte) :
+        $vh->setContrainteCursusEtudiant($contrainte);
+        $etat = $contrainte->getEtatActif();
+        $bg = match(true) {
+            $contrainte->hasEtatNonSat() => "card-primary",
+            $contrainte->hasEtatErreur() => "card-danger",
+            $contrainte->hasEtatInsat() => "card-danger",
+            $contrainte->hasEtatValideeCommission() => "card-success",
+            $contrainte->hasEtatSat() => "card-success",
+            $contrainte->hasEtatInactif() => "card-muted",
+            $contrainte->hasEtatAlerte() => "card-warning",
+            default => "card-primary"
+        };
+        ?>
+        <div class="col mb-3">
+            <div class="card h-100 <?= $bg ?>">
+                <div class="card-header">
+                    <?= $contrainte->getLibelle() ?>
+                </div>
+                <div class="card-body">
+                    <?php if($contrainte->getTerrainStage()) :?>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <strong>Terrain de stage</strong>
+                            </div>
+                            <div class="col-md-8">
+                                <?= $contrainte->getTerrainStage()->getLibelle() ?>
+                                (<?= $contrainte->getTerrainStage()->getCategorieStage()->getLibelle()?>)
+                            </div>
+                        </div>
+                    <?php elseif ($contrainte->getCategorieStage()) :?>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <strong>Catégorie de stage</strong>
+                            </div>
+                            <div class="col-md-8">
+                                <?= $contrainte->getCategorieStage()->getLibelle() ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <strong>Etat</strong>
+                        </div>
+                        <div class="col-md-8">
+                            <?= $this->etatinstance($etat, ['display-categorie'=> false, 'display-libelle' => true, 'unknown-type-libelle' => "Indéterminé"]) ?>
+                        </div>
+                    </div>
+                    <?php if(isset($etat) && $etat->getInfos()!="" && $etat->getInfos() !== null):?>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <strong></strong>
+                            </div>
+                            <div class="col-md-8">
+                                <?= $etat->getInfos() ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <strong>Description</strong>
+                        </div>
+                        <div class="col-md-8">
+                            <?= $contrainte->getDescription() ?>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <strong>Nombre stages requis</strong>
+                        </div>
+                        <div class="col-md-4">
+                            Minimum : <?= ($contrainte->getMin()) ? $contrainte->getMin() : "<span class='text-muted'>Non</span>"?>
+                        </div>
+                        <div class="col-md-4">
+                            Maximum : <?= ($contrainte->getMax()) ? $contrainte->getMax() : "<span class='text-muted'>Non</span>"?>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <strong>Nombre de stage(s) validant</strong>
+                        </div>
+                        <div class="col-md-4">
+                           <?= $vh->renderValidationInfo() ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php endforeach; ?>
+</div>
+

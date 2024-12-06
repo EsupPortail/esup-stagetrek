@@ -1,0 +1,77 @@
+<?php
+
+use Application\Controller\Contact\ContactController;
+use Application\Form\Contacts\ContactForm;
+use Application\Form\Contacts\Fieldset\ContactFieldset;
+
+
+/**
+ * @see ContactController::ajouterAction()
+ * @see ContactController::modifierAction()
+ * @var ContactForm $form
+ * @var ContactFieldset $fieldset
+ */
+
+$fe = $this->formErrors();
+$fcg = $this->formControlGroup();
+$fr = $this->formrow();
+$fct = $this->formControlText();
+
+$fieldset = $form->getEntityFieldset();
+
+?>
+
+<div class="fieldset">
+    <?= $this->form()->openTag($form->prepare()) ?>
+    <?= $fe($form->prepare(), $form::INVALIDE_ERROR_MESSAGE) ?>
+    <?= $fr($fieldset->get($fieldset::ID)); ?>
+
+    <div class="row">
+        <div class="col-md-6">
+            <?= $fct($fieldset->get($fieldset::CODE)); ?>
+            <div class="text-small text-muted">
+                Laissez le champ vide pour utiliser la nomenclature par défaut des codes ("c-XXX")
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <?= $fct($fieldset->get($fieldset::LIBELLE)); ?>
+        </div>
+        <div class="col-md-6">
+            <?= $fct($fieldset->get($fieldset::DISPLAY_NAME)); ?>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <?= $fct($fieldset->get($fieldset::MAIL)); ?>
+        </div>
+        <div class="col-md-6">
+            <?= $fct($fieldset->get($fieldset::TELEPHONE)); ?>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="d-flex">
+                <?php
+                $input = $fieldset->get($fieldset::ACTIF);
+                echo $this->formlabel($input);
+                $input->setLabel("");
+                ?>
+                <div class="form-check form-switch ms-1">
+                    <?= $this->formelement($input) ?>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <?= $fcg($form->get($form::INPUT_SUBMIT)); ?>
+        </div>
+    </div>
+    <?= $this->formHidden($form->get($form::CSRF)); ?>
+    <?= $this->form()->closeTag(); ?>
+</div>

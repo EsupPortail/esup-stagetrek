@@ -1,0 +1,14 @@
+vendor/
+.idea
+.DS_Store
+bin/scripts
+documents/
+doc/SQL/data-demo/
+doc/SQL/data-unicaen/
+doc/SQL/data-update/
+notes.txt
+todo.txt
+*.env
+cache/
+data/
+deploy_configuration/shibconf/key/

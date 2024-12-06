@@ -1,0 +1,13 @@
+<?php
+
+use Application\Controller\Notification\FaqCategorieController;
+use Application\Entity\Db\FaqCategorieQuestion;
+
+
+/**
+ * @see FaqCategorieController::listerAction()
+ * @var FaqCategorieQuestion[] $categories
+ */
+?>
+
+<?= $this->categorieFaq()->renderListe($categories); ?>

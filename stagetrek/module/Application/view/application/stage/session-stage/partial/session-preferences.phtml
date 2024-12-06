@@ -1,0 +1,221 @@
+<?php
+
+use Application\Entity\Db\Etudiant;
+use Application\Entity\Db\Preference;
+use Application\Entity\Db\SessionStage;
+use Application\Provider\Misc\Icone;
+use Application\Provider\Privilege\StagePrivileges;
+use Application\View\Helper\Etudiant\EtudiantViewHelper;
+use Application\View\Helper\SessionsStages\SessionStageViewHelper;
+use Application\View\Helper\Stages\StageViewHelper;
+
+/**
+ * @see SessionStageViewHelper::renderPreferences()
+ * @var SessionStage $sessionStage
+ */
+
+$tableId = "session_". $sessionStage->getId() ."_preferences" ;
+/** @var EtudiantViewHelper $evh */
+$evh = $this->etudiant();
+
+$today = new DateTime();
+$etudiants = $sessionStage->getEtudiants();
+$cptPref = 0;
+$cptEtudiants = 0;
+/** @var Etudiant $etudiant */
+foreach ($etudiants as $etudiant) {
+    $cptEtudiants++;
+    $preferences = $etudiant->getPreferenceForSession($sessionStage);
+    if(sizeof($preferences)>0){$cptPref++;}
+}
+/** @var StageViewHelper $stageVh */
+$stageVh = $this->stage();
+$canSeeStage = $this->isAllowed(StagePrivileges::getResourceId(StagePrivileges::STAGE_AFFICHER));
+
+?>
+
+<div class="card">
+    <div class="card-header">Informations</div>
+    <div class="card-body">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                <div class="row">
+                    <div class="col-md-4">
+                        <strong>Nombre d'étudiants ayant des préférences</strong>
+                    </div>
+                    <div class="col-md-2">
+                        <?= $cptPref ?> / <?= $cptEtudiants ?>
+                        <span class="mx-1 fas fa-users"></span>
+                    </div>
+                </div>
+            </li>
+
+            <?php if($today  < $sessionStage->getDateDebutChoix()) :?>
+            <li class="list-group-item">
+                <div class="row">
+                    <div class="col-md-12">
+                        La phase de définition des préférences est <strong>planifiée</strong>
+                        du <strong><?= $sessionStage->getDateDebutChoix()->format('d/m/Y') ?></strong>
+                        au <strong><?= $sessionStage->getDateFinChoix()->format('d/m/Y') ?></strong>
+                    </div>
+                </div>
+            </li>
+            <?php elseif ($sessionStage->getDateDebutChoix() < $today && $today <= $sessionStage->getDateFinChoix()) : ?>
+            <li class="list-group-item">
+                <div class="row">
+                    <div class="col-md-12">
+                        La phase de définition des préférences est <strong>en cours</strong> jusqu'au
+                            <strong><?= $sessionStage->getDateFinChoix()->format('d/m/Y') ?></strong>.
+                    </div>
+                </div>
+            </li>
+            <?php else :?>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-md-12 text-muted">
+                            La phase de définition des préférences est <strong>terminée</strong>.
+                        </div>
+                    </div>
+                </li>
+            <?php endif; ?>
+        </ul>
+    </div>
+</div>
+
+
+<div class="card mt-3">
+    <div class="card-header">Préférences des étudiants</div>
+    <div class="card-body">
+        <table id="<?= $tableId ?>" class="table table-hover table-condensed table-data">
+            <thead>
+            <tr>
+                <th class="col-md-6">Etudiant</th>
+                <th class="none no-search no-sort">Préférences</th>
+                <th class="col-md-1 no-search text-center" data-type="num">Ordre</th>
+                <th class="col-md-2 no-search text-center" data-type="num">Nombre de choix</th>
+                <th class="col-md-2 no-search text-center" data-type="num">Rang satisfait</th>
+                <?php if ($canSeeStage) : ?>
+                    <th class="col-md-1 text-end no-search no-sort">Actions</th>
+                <?php endif; ?>
+            </tr>
+            </thead>
+
+        <tbody>
+        <?php /** @var Etudiant $etudiant */
+        foreach ($etudiants as $etudiant):
+            $evh->setEtudiant($etudiant);
+            $stage = $etudiant->getStageFor($sessionStage);
+            $stageVh->setStage($stage);
+            $preferences = $etudiant->getPreferenceForSession($sessionStage);
+            $preferences = Preference::sortPreferences($preferences);
+
+            $prefText = "";
+            $nbChoix = 0;
+            $icone = null;
+            $rangSat = -1;
+            $bg = "";
+            /** @var Preference $pref */
+            foreach ($preferences as $pref){
+                $bg="table-primary";
+                $terrain = $pref->getTerrainStage();
+                $terrain2 = $pref->getTerrainStageSecondaire();
+                $nbChoix++;
+                if($pref->isSat()){
+                    $rangSat = $pref->getRang();
+                    $icone = sprintf("<span class='badge badge-success'>%s</span>", $rangSat);
+                }
+                $tmpT2 = "";
+                if(isset($terrain2)){
+                     $tmpT2 .= sprintf("<span class='mx-3 text-small text-muted'>et %s (%s)</span>",
+                        $terrain2->getLibelle(), $terrain2->getCategorieStage()->getAcronyme()
+                     );
+                }
+                $prefText .= sprintf("<div class='mx-3'>%s. %s (%s) %s</div>",
+                    $pref->getRang(), $terrain->getLibelle(), $terrain->getCategorieStage()->getAcronyme(), $tmpT2
+                );
+            }
+            if($nbChoix==0){
+                $prefText = "<span class='mx-3 text-small text-muted'>Aucun choix effectué</span>";
+            }
+
+            switch (true){
+                case $stage->hasEtatNonEffectue() :
+                    $icone = "<span class='fas fa-ban text-muted' title='Stage non effectué'></span>";
+                    $bg = "table-muted";
+                    $rangSat = 3000;
+                break;
+                case $stage->hasEtatEnDisponibilite() :
+                    $icone = "<span class='fas fa-pause text-muted' title='Stage non effectué'></span>";
+                    $bg = "table-muted";
+                    $rangSat = 4000;
+                break;
+                case $nbChoix==0 :
+                    $icone = sprintf("<span class='icon icon-times-circle %s' title='Aucun choix effectué'></span>",
+                        ($sessionStage->getDateFinChoix() < $today && $today < $sessionStage->getDateFinCommission()) ?
+                            "text-warning": "text-muted"
+                    );
+                    $bg =  ($sessionStage->getDateFinChoix() < $today && $today < $sessionStage->getDateFinCommission()) ?
+                        "table-warning" : "table-muted";
+                    $rangSat = 1000;
+                break;
+                case $rangSat ==-1 && $today < $sessionStage->getDateDebutChoix() :
+                    $rangSat = 2000;
+                    $icone = '<span class="text-info icon icon-info"  title="Phase de choix non commencée"></span>';
+                    $bg= "table-muted";
+                break;
+                case $rangSat ==-1 && $today < $sessionStage->getDateFinChoix() :
+                    $rangSat = 2000;
+                    $icone = '<span class="text-info icon icon-info"  title="Phase de choix non terminée"></span>';
+                    $bg= "";
+                break;
+                case $rangSat ==-1 && $today < $sessionStage->getDateFinCommission() :
+                    $rangSat = 2000;
+                    $icone = '<span class="text-info icon icon-info"  title="Commission d\'affectation non terminée"></span>';
+                    $bg= "";
+                break;
+                case $rangSat ==-1 :
+                    $rangSat = 2000;
+                    $icone = "<span class='text-warning icon icon-warning'  title='Préférences non représentative'></span>";
+                    $bg= "table-warning";
+                break;
+            }
+            ?>
+            <tr class="<?= $bg ?>">
+                <td data-order="<?= $etudiant->getDisplayName() ?><?= $etudiant->getNumEtu() ?>"
+                        data-filter="<?= $etudiant->getDisplayName() ?><?= $etudiant->getNumEtu() ?>"
+                >
+                    <?= $etudiant->getDisplayName() ?> (<?= $evh->lienAfficher($etudiant->getNumEtu()) ?>)
+                </td>
+                <td class="none"> <?= $prefText ?></td>
+                <td class="text-center" data-order="<?= ($stage->getOrdreAffectation()) ?? PHP_INT_MAX ?>">
+                    <?= ($stage->getOrdreAffectation()) ?? "<span class='text-muted'>-</span>" ?>
+                </td>
+                <td class="text-center"> <?= $nbChoix ?></td>
+                <td class="text-center" data-order="<?= $rangSat ?>">
+                    <?= $icone ?>
+                </td>
+                <?php if ($canSeeStage) : ?>
+                    <td class="text-end">
+                        <?= $stageVh->lienAfficher(Icone::AFFICHER, ['class' => 'text-primary']) ?>
+                    </td>
+                <?php endif ?>
+            </tr>
+        <?php endforeach; ?>
+        </tbody>
+        </table>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $(function () {
+        let options = generateDataTableSetings({
+                order: [[2, 'asc']],
+                "lengthMenu": [[50, 100, 250, -1], [50, 100, 250, "Tous"]],
+            }
+        );
+        $("#<?= $tableId ?>").DataTable(options);
+    });
+</script>
+
+

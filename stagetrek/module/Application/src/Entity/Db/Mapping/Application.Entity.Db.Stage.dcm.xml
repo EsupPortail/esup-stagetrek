@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Application\Entity\Db\Stage" table="stage">
+    <indexes>
+      <index name="IDX_C27C9369A934B1FB" columns="session_stage_id"/>
+      <index name="IDX_C27C9369DDEAB1A3" columns="etudiant_id"/>
+    </indexes>
+    <unique-constraints>
+      <unique-constraint name="stage_unique" columns="id,session_stage_id,etudiant_id"/>
+    </unique-constraints>
+    <id name="id" type="bigint" column="id">
+      <generator strategy="SEQUENCE"/>
+      <sequence-generator sequence-name="stage_id_seq" allocation-size="1" initial-value="1"/>
+    </id>
+
+    <one-to-one field="sessionStage" target-entity="Application\Entity\Db\SessionStage">
+      <join-column name="session_stage_id" referenced-column-name="id" />
+    </one-to-one>
+
+    <field name="numero" type="float" column="numero_stage" nullable="false">
+      <options>
+        <option name="unsigned"/>
+        <option name="default">0</option>
+      </options>
+    </field>
+
+    <many-to-one field="etudiant" target-entity="Application\Entity\Db\Etudiant" inversed-by="stages">
+      <join-columns>
+        <join-column name="etudiant_id" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+
+<!--  Si le stage est secondaire ou non -->
+    <field name="isStageSecondaire" type="boolean" column="is_stage_secondaire" nullable="false">
+      <options>
+        <option name="default"/>
+      </options>
+    </field>
+
+    <one-to-one field="stagePrincipal" target-entity="Application\Entity\Db\Stage">
+      <join-column name="stage_principal_id" referenced-column-name="id" />
+    </one-to-one>
+    <one-to-one field="stageSecondaire" target-entity="Application\Entity\Db\Stage">
+      <join-column name="stage_secondaire_id" referenced-column-name="id" />
+    </one-to-one>
+
+    <!--    Liens vers les préférences -->
+    <one-to-many field="preferences" target-entity="Application\Entity\Db\Preference" mapped-by="stage" />
+
+<!--    Liens vers l'affectation  -->
+    <one-to-one field="affectationStage" target-entity="Application\Entity\Db\AffectationStage" mapped-by="stage">
+      <cascade>
+        <cascade-all/>
+      </cascade>
+    </one-to-one>
+
+    <field name="ordreAffectation" type="integer" column="ordre_affectation" nullable="true">
+      <options>
+        <option name="unsigned"/>
+      </options>
+    </field>
+
+    <field name="ordreAffectationManuel" type="integer" column="ordre_affectation_ow" nullable="true">
+      <options>
+        <option name="unsigned"/>
+      </options>
+    </field>
+    <field name="ordreAffectationAutomatique" type="integer" column="ordre_affectation_auto" nullable="true">
+      <options>
+        <option name="unsigned"/>
+      </options>
+    </field>
+
+    <field name="scorePreAffectation" type="float" column="score_pre_affectation" nullable="true">
+      <options>
+        <option name="unsigned"/>
+        <option name="default">0</option>
+      </options>
+    </field>
+    <field name="scorePostAffectation" type="float" column="score_post_affectation" nullable="true">
+      <options>
+        <option name="unsigned"/>
+        <option name="default">0</option>
+      </options>
+    </field>
+
+    <field name="stageNonEffectue" type="boolean" column="stage_non_effectue" nullable="false">
+      <options>
+        <option name="default"/>
+      </options>
+    </field>
+
+    <field name="informationsComplementaires" type="string" column="informations_complementaires" nullable="true">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+
+
+    <!--    Liens vers la convention  -->
+    <one-to-one field="conventionStage" target-entity="Application\Entity\Db\ConventionStage" mapped-by="stage">
+    </one-to-one>
+
+    <one-to-many field="conventionStageSignataires" target-entity="Application\Entity\Db\ConventionStageSignataire" mapped-by="stage" />
+
+    <many-to-many field="etats" target-entity="UnicaenEtat\Entity\Db\EtatInstance" fetch="LAZY">
+      <join-table name="stage_etat_linker">
+        <join-columns>
+          <join-column name="stage_id" referenced-column-name="id"/>
+        </join-columns>
+        <inverse-join-columns>
+          <join-column name="etat_instance_id" referenced-column-name="id"/>
+        </inverse-join-columns>
+      </join-table>
+    </many-to-many>
+
+
+
+    <one-to-one field="stagePrecedent" target-entity="Application\Entity\Db\Stage">
+      <join-column name="stage_precedent_id" referenced-column-name="id" />
+    </one-to-one>
+
+    <one-to-one field="stageSuivant" target-entity="Application\Entity\Db\Stage">
+      <join-column name="stage_suivant_id" referenced-column-name="id" />
+    </one-to-one>
+
+
+    <!--    Liste des coontacts -->
+    <one-to-many field="contactsStages" target-entity="Application\Entity\Db\ContactStage" mapped-by="stage" />
+
+    <!--    Validation du stage -->
+    <one-to-one field="validationStage" target-entity="Application\Entity\Db\ValidationStage" mapped-by="stage">
+    <cascade>
+      <cascade-all/>
+    </cascade>
+    </one-to-one>
+
+  </entity>
+</doctrine-mapping>

@@ -1,0 +1,83 @@
+{
+    "name": "unicaen/stage-trek",
+    "description": "StageTrek : Application de gestion des stages de médecine pour les étudiants en 2nd cycle",
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://gest.unicaen.fr/packagist"
+        }
+    ],
+    "require": {
+        "unicaen/app": "^6.0",
+        "unicaen/ldap": "^6.0",
+        "unicaen/authentification": "^6.0",
+        "unicaen/privilege": "^6.0",
+        "unicaen/bjy-authorize": "^6.1",
+        "unicaen/utilisateur": "^6.0",
+        "unicaen/utilisateur-ldap-adapter" : "^2.0",
+
+        "unicaen/console": "^6.0",
+
+        "unicaen/mail": "^6.0",
+        "unicaen/renderer": "^6.0",
+        "unicaen/pdf": "^6.0",
+        "unicaen/evenement": "^6.0",
+        "unicaen/etat": "^6.0",
+        "unicaen/bddadmin": "dev-modernisation-gestion-donnees",
+
+        "doctrine/doctrine-orm-module": "^5.0",
+        "doctrine/doctrine-laminas-hydrator": "^3.0",
+        "laminas/laminas-cli": "1.10.0",
+        "laminas/laminas-config-aggregator": "^1.7.0",
+        "laminas/laminas-feed":  "^2.17.0",
+        "ext-intl": "*",
+        "ext-json": "*",
+        "ext-mbstring": "*",
+        "ext-ldap": "*",
+        "vlucas/phpdotenv": "^5.6",
+        "ext-zip": "*",
+        "ext-fileinfo": "*",
+        "aws/aws-sdk-php" : " ^3.307"
+    },
+    "require-dev": {
+        "phpunit/phpunit": ">=3.7",
+        "laminas/laminas-developer-tools": ">=1.0"
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "cp -r vendor/unicaen/app/public/unicaen public/",
+            "mkdir -p vendor/mpdf/mpdf/ttfontdata && chmod -R 777 vendor/mpdf/mpdf/ttfontdata"
+        ],
+        "post-update-cmd": [
+            "cp -r vendor/unicaen/mail/public/unicaen-mail.css public/css/unicaen-mail.css",
+            "cp -r vendor/unicaen/etat/public/css public/"
+        ]
+    },
+    "autoload": {
+        "psr-4": {
+            "Application\\": "module/Application/src",
+            "Console\\": "module/Console/src",
+            "Evenement\\": "module/Evenement/src",
+            "API\\": "module/API/src",
+            "Fichier\\": "module/Fichier/src",
+            "UnicaenStorage\\": "module/UnicaenStorage/src/UnicaenStorage"
+        },
+        "files": [
+            "module/Application/Module.php",
+            "module/Console/Module.php",
+            "module/Evenement/Module.php",
+            "module/API/Module.php",
+            "module/Fichier/Module.php",
+            "module/UnicaenStorage/Module.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "laminas/laminas-dependency-plugin": true
+        }
+    }
+}

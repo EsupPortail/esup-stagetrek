@@ -1,0 +1,17 @@
+<?php
+
+/** @see ParametreController::listerAction() */
+use Application\Controller\Parametre\ParametreController;
+use Application\Entity\Db\Parametre;
+use Application\View\Helper\Parametres\ParametreViewHelper;
+
+/**
+ * @see ParametreController::listerAction()
+ *
+
+ * @var Parametre[] $parametres
+ * @var ParametreViewHelper $vh
+ */
+
+$vh = $this->parametre();
+echo $vh->renderListe($parametres);

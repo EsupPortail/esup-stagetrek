@@ -1,0 +1,66 @@
+<?php
+
+use Application\Controller\Etudiant\DisponibiliteController;
+use Application\Form\Etudiant\DisponibiliteForm;
+use Application\Form\Etudiant\Fieldset\DisponibiliteFieldset;
+
+
+/**
+ * @see DisponibiliteController::ajouterAction()
+ * @see DisponibiliteController::modifierAction()
+ * @var DisponibiliteForm $form
+ * @var DisponibiliteFieldset $fieldset
+ */
+
+$fe = $this->formErrors();
+$fcg = $this->formControlGroup();
+$fr = $this->formrow();
+$fct = $this->formControlText();
+$fieldset = $form->getEntityFieldset();
+?>
+
+<div class="fieldset">
+    <?= $this->form()->openTag($form->prepare()) ?>
+        <?= $fe($form->prepare(), DisponibiliteForm::INVALIDE_ERROR_MESSAGE) ?>
+        <?= $fr($fieldset->get(DisponibiliteFieldset::ID)); ?>
+        <?= $this->formelement($fieldset->get(DisponibiliteFieldset::ETUDIANT)); ?>
+
+    <div class="row">
+        <div class="col-md-6">
+            <?= $fcg($fieldset->get(DisponibiliteFieldset::DATE_DEBUT)); ?>
+        </div>
+        <div class="col-md-6">
+            <?= $fcg($fieldset->get(DisponibiliteFieldset::DATE_FIN)); ?>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <?= $fct($fieldset->get(DisponibiliteFieldset::INFO)); ?>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+
+            <div class="h-100 d-flex">
+            <div class="form-switch mt-auto mb-auto">
+                <?= $fcg($fieldset->get(DisponibiliteFieldset::FORCER_DISPONIBILITE)); ?>
+            </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="alert alert-warning">
+                Attention, forcer la disponibilité désactivera les stages de l'étudiant.e sur l'ensemble de la période.
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <?= $fcg($form->get(DisponibiliteForm::INPUT_SUBMIT)); ?>
+        </div>
+    </div>
+    <?= $this->formHidden($form->get(DisponibiliteForm::CSRF)); ?>
+    <?= $this->form()->closeTag(); ?>
+</div>
+
+

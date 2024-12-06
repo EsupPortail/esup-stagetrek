@@ -1,0 +1,72 @@
+<?php
+
+use Application\Controller\Convention\ModeleConventionController;
+use Application\Entity\Db\ModeleConventionStage;
+use Application\Provider\Misc\Icone;
+
+/**
+ * @see ModeleConventionController::listerAction()
+
+ *
+ * @var ModeleConventionStage $modelesConventionsStages ;
+ */
+
+$tableId = "liste-modeles-conventions";
+$vh = $this->modeleConvention();
+
+$canAdd = $vh->actionAllowed(ModeleConventionController::ACTION_AJOUTER);
+?>
+
+<div class="card">
+    <div class="card-header">Liste des modéles de conventions de stages</div>
+    <?php if ($canAdd) : ?>
+        <div class="card-header card-sub-header text-end">
+            <?= $vh->lienAjouter() ?>
+        </div>
+    <?php endif; ?>
+    <div class="card-body">
+<table id="<?= $tableId ?>" class="table table-hover table-condensed">
+    <thead>
+    <tr>
+        <th class="col-md" data-type="num">Modéle</th>
+        <th class="col-md-1 no-sort text-center" data-type="num">Terrains</th>
+        <th class="col-md-1 no-sort no-search text-end">Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php /** @var ModeleConventionStage $modele */
+    foreach ($modelesConventionsStages as $modele):
+        $vh->setModeleConventionStage($modele);
+        ?>
+        <tr>
+            <td>
+                <?= $modele->getLibelle() ?>
+            </td>
+            <td class="text-center">
+               <?= $modele->getTerrainsStages()->count() ?> <span class="icon icon-batiment"></span>
+            </td>
+            <td class="text-end">
+                <?= $vh->lienAfficher(Icone::AFFICHER, ['class'=>"text-primary"]) ?>
+            </td>
+        </tr>
+    <?php endforeach; ?>
+    </tbody>
+</table>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $(function () {
+        let options = generateDataTableSetings(
+            {
+                stateSave: false,
+                retrieve: true,
+                "order": [[0, "desc"], [1, "desc"]],
+            }
+        );
+        let tableInstance = $("#<?= $tableId ?>").DataTable(options);
+    });
+</script>
+
+

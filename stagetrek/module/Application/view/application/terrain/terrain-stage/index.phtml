@@ -1,0 +1,112 @@
+<?php
+
+use Application\Controller\Terrain\CategorieStageController;
+use Application\Controller\Terrain\TerrainStageController;
+use Application\Entity\Db\TerrainStage;
+use Application\View\Helper\Terrains\CategorieStageViewHelper;
+use Application\View\Helper\Terrains\TerrainStageViewHelper;
+
+/**
+ * @see TerrainStageController::indexAction()
+ *
+ * @var TerrainStage[] $terrains
+ */
+$this->headTitle("Les terrains");
+/** @var TerrainStageViewHelper $vh */
+$vh = $this->terrainStage();
+/** @var CategorieStageViewHelper $categorieVh */
+$categorieVh = $this->categorieStage();
+$canSeeCategories = $vh->actionAllowed(CategorieStageController::ACTION_LISTER);
+$canAddTerrain = $vh->actionAllowed(TerrainStageController::ACTION_AJOUTER);
+$canImportTerrain = $vh->actionAllowed(TerrainStageController::ACTION_IMPORTER);
+?>
+
+<h1 class="page-header">
+    <span class="icon">
+        <i class="fas fa-house-medical"></i>
+    </span>
+    Les terrains de stages
+</h1>
+
+
+<div class="my-3">
+    <div class="card card-primary">
+        <div class="card-header">Options d'affichage</div>
+        <div class="card-body">
+            <form>
+                <div class="row px-3">
+                    <div class="col-md-4 form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="row-principale-switch"
+                               checked>
+                        <label class="mx-3 form-check-label" for="row-principal-switch">Afficher les terrains
+                            principaux</label>
+                    </div>
+                    <div class="col-md-4 form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="row-secondaire-switch"
+                               checked>
+                        <label class="mx-3 form-check-label" for="row-secondaire-switch">Afficher les terrains
+                            secondaires</label>
+                    </div>
+                    <div class="col-md-4 form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="col-code-switch" data-col="col-code">
+                        <label class="mx-3 form-check-label" for="col-code-switch">Afficher le code des terrains</label>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="my-3">
+    <div class="card card-primary">
+        <div class="card-header">Liste des catégories</div>
+            <?php if ($canSeeCategories || $canAddTerrain || $canImportTerrain) : ?>
+                <div class="card-header card-sub-header">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <?= $categorieVh->lienLister() ?>
+                        </div>
+                        <div class="col-md-8 text-end">
+                            <?= $vh->lienAjouter() ?>
+                            <?= $vh->lienImporter(); ?>
+                        </div>
+                    </div>
+                </div>
+            <?php endif; ?>
+            <div class="card-body">
+                <div  id="liste-terrains-content"
+                 data-url="<?= $this->url(TerrainStageController::ROUTE_LISTER, [], [], true) ?>">
+                <?= $vh->renderListe($terrains); ?>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    //Rechargement de la page sur event
+    $(function () {
+        let body = $("body");
+        let liste = $("#liste-terrains-content");
+
+        $("#col-code-switch").on('change', function(){
+            body.trigger("toggle-code");
+        })
+
+        $("#row-principale-switch").on('change', function(){
+            body.trigger("toggle-cat-principale");
+        })
+
+        $("#row-secondaire-switch").on('change', function(){
+            body.trigger("toggle-cat-secondaire");
+        })
+
+        body.on("<?=TerrainStageController::EVENT_AJOUTER?> "
+            + "<?=TerrainStageController::EVENT_MODIFIER?> "
+            + "<?=TerrainStageController::EVENT_SUPPRIMER?> "
+            + "<?=TerrainStageController::EVENT_IMPORTER?> "
+            , function (event) {
+                liste.refresh();
+            });
+    })
+</script>

@@ -1,0 +1,52 @@
+<?php
+
+use Application\Controller\Parametre\NiveauEtudeController;
+use Application\Entity\Db\NiveauEtude;
+use Application\Provider\Privilege\ParametrePrivileges;
+use Application\View\Helper\Parametres\NiveauEtudeViewHelper;
+
+
+/**
+ * @see NiveauEtudeController::indexAction()
+
+ * @var NiveauEtude[] $niveaux
+ */
+
+
+$title = "Gestion des niveaux d'études";
+$this->headTitle($this->translate($title));
+
+/** @var NiveauEtudeViewHelper $vh */
+$vh = $this->niveauEtude();
+$canAdd = $vh->hasPrivilege(ParametrePrivileges::NIVEAU_ETUDE_AJOUTER);
+?>
+<h1 class="page-header">
+    <span class="icon">
+        <i class="fas fa-address-book"></i>
+    </span>
+    <?= $title ?>
+</h1>
+
+<div class="card mt-3">
+    <?php if ($canAdd) : ?>
+        <div class="card-header card-sub-header text-end">
+            <?= $vh->lienAjouter() ?>
+        </div>
+    <?php endif; ?>
+<div class="card-body" id="niveaux-etudes" data-url="<?= $this->url(NiveauEtudeController::ROUTE_LISTER, [], [], true) ?>">
+    <?= $vh->renderListe($niveaux) ?>
+</div>
+</div>
+
+<script type="text/javascript">
+    //Rechargement de la page sur event
+    $(function () {
+        let body = $("body");
+        body.on("<?=NiveauEtudeController::EVENT_AJOUTER?> "
+            + "<?=NiveauEtudeController::EVENT_MODIFIER?> "
+            + "<?=NiveauEtudeController::EVENT_SUPPRIMER?> "
+            , function () {
+                $("#niveaux-etudes").refresh();
+            });
+    });
+</script>

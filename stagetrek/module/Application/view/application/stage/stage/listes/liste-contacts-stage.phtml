@@ -1,0 +1,224 @@
+<?php
+
+use Application\Controller\Stage\StageController;
+use Application\Entity\Db\ContactStage;
+use Application\Entity\Db\Stage;
+use Application\Provider\Misc\Icone;
+use Application\View\Helper\Contacts\ContactStageViewHelper;
+use Application\View\Helper\Misc\ApplicationViewHelper;
+use Application\View\Helper\Stages\StageViewHelper;
+
+
+/**
+ * @see StageController::afficherContactsAction()
+ * @see StageViewHelper::renderListeContacts()
+ * @var Stage $stage
+ * @var bool $vueEtudiante
+ */
+
+if (!isset($vueEtudiante)) {
+    $vueEtudiante = false;
+}
+
+/** @var ContactStageViewHelper $vh */
+$vh = $this->contactStage();
+$vh->setStage($stage);
+$tableId = "liste-contacts-stage-" . $stage->getId();
+$contactsStages = $stage->getContactsStages()->toArray();
+
+
+/** @var ApplicationViewHelper $appVh */
+$appVh = $this->app();
+?>
+
+
+<?php if (!$vueEtudiante) : ?>
+<div class="row">
+    <div class="col-md-12">
+<!--    <div class="card">-->
+<!--        <div class="card-header">Liste des contacts du stage</div>-->
+<!--        <div class="card-body">-->
+            <table id="<?= $tableId ?>" class="table table-hover table-condensed table-data">
+                <thead>
+                <tr>
+                    <th class="col-md-3 all">Libelle</th>
+                    <th class="col-md-3" data-priority="1">Nom / Prénom</th>
+                    <th class="col-md-3" data-priority="2">Mail</th>
+                    <th class="col-md-2" data-priority="2">Téléphone</th>
+                    <th class="none">Visible par les étudiants ?</th>
+                    <th class="none">Responsable de stage ?</th>
+                    <th class="none">Peut valider le stage ?</th>
+                    <th class="none">Signataire de la convention de stage ?</th>
+                    <th class="none">Mails automatiques</th>
+                    <th class="no-sort no-search col-md-1 text-end all">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php /** @var ContactStage $contact */
+                foreach ($contactsStages as $contact):
+                    $vh->setContactStage($contact);
+                    $vh->setContact($contact->getContact());
+                    $affectation = $stage->getAffectationStage();
+                    $terrain = $stage->getTerrainStage();
+                    $convention = $stage->getConventionStage();
+                    $modelConvention = ($convention) ? $convention->getModeleConventionStage() : null;
+                    if (!$modelConvention) {
+                        $modelConvention = ($terrain) ? $terrain->getModeleConventionStage() : null;
+                    }
+
+                    ?>
+                    <tr class=" <?= (!$contact->isActif()) ? "bg-muted" : "" ?>">
+                        <td>
+                            <?= $contact->getLibelle() ?>
+                            <?= (!$contact->isActif()) ? "<span class='text-small text-muted'>(Inactif)</span>" : "" ?>
+                        </td>
+                        <td><?= $contact->getDisplayName() ?></td>
+                        <td data-filter="<?= $contact->getEmail() ?>" data-order="<?= ($contact->getEmail()) ?? -1 ?>">
+                            <?= ($contact->getEmail() && $contact->getEmail() != "") ? $contact->getEmail() : '<span class="text-muted">Non renseigné</span>' ?>
+                        </td>
+                        <td data-filter="<?= $contact->getTelephone() ?>"
+                            data-order="<?= ($contact->getTelephone()) ?? -1 ?>">
+                            <?= ($contact->getTelephone() && $contact->getTelephone() != "") ? $contact->getTelephone() : '<span class="text-muted">Non renseigné</span>' ?>
+                        </td>
+                        <td class=""><span class="mx-1"></span><?= ($contact->isVisibleParEtudiant()) ? "Oui" : "Non" ?>
+                        </td>
+                        <td class=""><span class="mx-1"></span><?= ($contact->isResponsableStage()) ? "Oui" : "Non" ?>
+                        </td>
+                        <td class="">
+                            <span class="mx-1"></span><?= ($contact->canValiderStage()) ? "Oui" : "Non" ?>
+                            <?php if ($contact->canValiderStage()) :
+                                $validationStage = $contact->getStage()->getValidationStage()
+                                ?>
+                                <div class="mx-3 text-small"> État de la validation :
+                                    <?= ($validationStage && $validationStage->isValide()) ? "Validé" : "" ?>
+                                    <?= ($validationStage && $validationStage->isInvalide()) ? "Invalidé" : "" ?>
+                                    <?= (!$validationStage || !$validationStage->validationEffectue()) ? "Validation non définie" : "" ?>
+                                </div>
+                                <?php if ((!$validationStage || !$validationStage->validationEffectue())) : ?>
+                                <div class="mx-3 text-small"> Liens de validation :
+                                    <?= ($contact->tokenValide()) ? "Lien valide <span class='mx-3 text-small text-muted'>(expire le " . $contact->getTokenExpirationDate()->format('d/m/Y à H:i') . ")</span>" : ""; ?>
+                                    <?= (!$contact->tokenValide() && $contact->getTokenValidation()) ? "Le liens n'est plus valide" : "" ?>
+                                    <?= (!$contact->tokenValide() && !$contact->getTokenValidation()) ? "Le liens n'est pas définie" : "" ?>
+                                </div>
+                                <div class="mx-3 mt-1"><?= $vh->lienMailValidation() ?></div>
+                            <?php endif; ?>
+                            <?php endif; ?>
+                        </td>
+                        <td class="">
+                            <span class="mx-1"></span> <?= ($contact->isSignataireConvention()) ? "Oui" : "Non" ?>
+                            <?php if ($contact->isSignataireConvention()) : ?>
+                                <div class="mx-3 text-small">
+                                    Priorité dans l'ordre d'affichage des signataires :
+                                    <?= ($contact->getPrioriteOrdreSignature()) ?? 0 ?>
+                                </div>
+                            <?php endif; ?>
+                            <?php if ($contact->isSignataireConvention() && $modelConvention) : ?>
+                                <div class="mx-3 text-small">
+                                    Modéle de convention :
+                                    <?= $modelConvention->getLibelle() ?>
+                                </div>
+                            <?php elseif ($contact->isSignataireConvention() && !$convention && !$modelConvention): ?>
+                                <div class="mx-3 mt-1 alert alert-info">
+                                    Le stage n'as a priori pas de convention.
+                                </div>
+                            <?php endif; ?>
+                        </td>
+                        <td class="">
+                            <?php if ($contact->sendMailAuto()) : ?>
+                                <?php if ($contact->getEmail() == ""): ?>
+                                    <div class="mx-3">
+                                        Le contact n'as pas d'adresse mails valide
+                                    </div>
+                                <?php endif; ?>
+                                <?php if ($contact->sendMailAutoListeEtudiantsStage()) : ?>
+                                    <div class="mx-3 text-small">Liste des étudiants inscrits à une session de stage
+                                    </div>
+                                <?php endif; ?>
+                                <?php if ($contact->sendMailAutoValidationStage()) : ?>
+                                    <div class="mx-3 text-small">Demande de validation du stage</div>
+                                <?php endif; ?>
+                                <?php if ($contact->sendMailAutoRappelValidationStage()) : ?>
+                                    <div class="mx-3 text-small">Rappel de validation du stage</div>
+                                <?php endif; ?>
+                            <?php else: ?>
+                                <span class="mx-1"></span> Aucun
+                            <?php endif; ?>
+                        </td>
+                        <td class="text-end">
+                            <?= $vh->lienModifier(Icone::MODIFIER, ['class'=>'text-primary ajax-modal'])?>
+                            <?= $vh->lienSupprimer(Icone::SUPPRIMER, ['class'=>'text-danger ajax-modal'])?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                <tbody>
+            </table>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $(function () {
+            let options = generateDataTableSetings({
+                stateSave: true,
+                retrieve: true,
+                paging: false,
+                searching: false,
+                info: false,
+                "lengthMenu": [[50, 100, 250, -1], [50, 100, 250, "Tous"]],
+                "order": [[0, "desc"], [1, "desc"]],
+            })
+
+            let $("#<?= $tableId ?>").on('draw.dt', function () {
+                $('[data-bs-toggle="popover"]').popover({html: true});
+            }).DataTable(options);
+
+        });
+    </script>
+
+<?php else:
+    $contactsStages = array_filter($contactsStages, function (ContactStage $contact) {
+        return $contact->isVisibleParEtudiant();
+    });
+    ?>
+    <div class="card">
+        <div class="card-header">
+            Personne(s) à contacter dans le cadre de votre stage
+        </div>
+        <div class="card-body">
+            <ul class="list-group list-group-flush">
+                <?php if (empty($contactsStages)):
+                    $u = $appVh->getAppUser();
+                    if(isset($u)) : ?>
+                    <li class="list-group-item">
+                    <div><strong><?= $u->getUsername() ?>></strong></div>
+                    <div class="px-3">Mail : <?= $u->getEmail() ?></div>
+                    <?php else : ?>
+                        <div class="text-muted">Information non disponible</div>
+                    <?php endif ?>
+                <?php else : ?>
+                    <?php /** @var ContactStage $contact */
+                    foreach ($contactsStages as $contact) :
+                        $libelle = $contact->getLibelle();
+                        $name = $contact->getDisplayName();
+                        $lib = $libelle;
+                        if (isset($libelle) && $libelle != "" && isset($name) && $name != "") {
+                            $lib .= " - ";
+                        }
+                        $lib .= $name;
+                        $mail = $contact->getEmail();
+                        $tel = $contact->getTelephone();
+                        ?>
+                        <li class="list-group-item">
+                            <div><strong><?= $lib ?></strong></div>
+                            <?php if ($mail) : ?>
+                                <div class="px-3">Mail : <?= $mail ?></div>
+                            <?php endif; ?>
+                            <?php if ($tel) : ?>
+                                <div class="px-3">Téléphone : <?= $tel ?></div>
+                            <?php endif; ?>
+                        </li>
+                    <?php endforeach ?>
+                <?php endif; ?>
+            </ul>
+        </div>
+    </div>
+<?php endif; ?>

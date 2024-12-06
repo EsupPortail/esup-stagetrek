@@ -1,0 +1,80 @@
+<?php
+
+use Application\Controller\Convention\ConventionStageController;
+use Application\Entity\Db\ConventionStage;
+use Application\Entity\Db\ModeleConventionStage;
+use Application\Entity\Db\Stage;
+use Application\Form\Misc\ConfirmationForm;
+use Application\View\Helper\Misc\ConfirmationFormViewHelper;
+
+/**
+ * @see ConventionStageController::genererAction()
+ *
+
+ * @var string $title
+ * @var ConfirmationForm $form
+ * @var Stage $stage
+ * @var ModeleConventionStage $modele
+ * @var ConventionStage $convention
+ * @var bool $hasMacro
+ */
+
+
+/** @var ConfirmationFormViewHelper $vh */
+$vh = $this->confirmation($form)
+?>
+
+<div class="card card-primary">
+    <h1 class="page-header card-header">
+        <span class="icon icon-execute"></span>
+        <?= $title ?>
+    </h1>
+    <div class="card-body">
+        <?php if ($this->hasMacro) : ?>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-danger">
+                    Le contenue de la convention contient des macros qui n'ont pas pu être remplacées.
+                    <br> <strong>La convention ne de stage ne peux pas être générée.</strong>
+                </div>
+            </div>
+        <?php
+        else : echo $vh->render(); ?>
+        <?php endif; ?>
+        <hr/>
+        <div class="row">
+            <div class="col-md-2">
+                <strong>Modéle de référence</strong>
+            </div>
+            <div class="col-md-4">
+                <?= $modele->getLibelle() ?>
+            </div>
+            <div class="col-md-2">
+                <strong>Terrain de stage</strong>
+            </div>
+            <div class="col-md-4">
+                <?= $stage->getTerrainStage()->getLibelle() ?>
+            </div>
+        </div>
+        <hr/>
+            <div class="row">
+                <div class="col-md-12">
+                    <strong>Prévisualtion du rendu de la convention</strong>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <?= $convention->getCorps()?>
+                </div>
+            </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $('.selectpicker').selectpicker('render');
+        let body = $("body");
+        body.off("<?= ConventionStageController::EVENT_GENERER?>", closeModal)
+            .one("<?= ConventionStageController::EVENT_GENERER?>", closeModal);
+    });
+</script>

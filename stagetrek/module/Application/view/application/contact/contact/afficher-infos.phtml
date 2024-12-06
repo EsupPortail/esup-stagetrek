@@ -1,0 +1,15 @@
+<?php
+
+use Application\Controller\Contact\ContactController;
+use Application\Entity\Db\Contact;
+use Application\View\Helper\Contacts\ContactViewHelper;
+use Laminas\View\Renderer\PhpRenderer;
+
+/**
+ * @see ContactController::afficherInfosAction()
+ * @var Contact $contact
+ */
+
+/** @var ContactViewHelper $vh */
+$vh = $this->contact($contact);
+echo $vh->renderInfos();

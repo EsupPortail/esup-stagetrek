@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Application\Entity\Db\Parametre" table="parametre">
+    <unique-constraints>
+      <unique-constraint name="parametre_id_unique" columns="id"/>
+    </unique-constraints>
+    <id name="id" type="bigint" column="id">
+      <generator strategy="SEQUENCE"/>
+      <sequence-generator sequence-name="parametre_id_seq" allocation-size="1" initial-value="1"/>
+    </id>
+    <many-to-one field="parametreCategorie" target-entity="Application\Entity\Db\ParametreCategorie" fetch="LAZY">
+      <join-columns>
+        <join-column name="categorie_id" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+    <field name="code" type="string" column="code" length="64" nullable="false">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="libelle" type="string" column="libelle" length="255" nullable="false">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="description" type="string" column="description" length="255" nullable="false">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="value" type="string" column="value" length="255" nullable="false">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="ordre" type="integer" column="ordre" nullable="true">
+      <options>
+        <option name="unsigned"/>
+        <option name="default">1</option>
+      </options>
+    </field>
+
+    <many-to-one field="parametreType" target-entity="Application\Entity\Db\ParametreType" fetch="LAZY">
+      <join-columns>
+        <join-column name="parametre_type_id" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

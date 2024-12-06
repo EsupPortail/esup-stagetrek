@@ -1,0 +1,222 @@
+<?php
+
+use Application\Controller\Affectation\AffectationController;
+use Application\Entity\Db\AffectationStage;
+
+/**
+ * @see AffectationController::modifierAction()
+ * @var string $title
+ * @var AffectationStage $affectationStage
+ */
+
+$session = $affectationStage->getSessionStage();
+$etudiant = $affectationStage->getEtudiant();
+$stage = $affectationStage->getStage();
+$uid = uniqid('modifier-affectationStage-');
+$today = new DateTime();
+
+$preferences = $etudiant->getPreferenceForSession($session);
+
+$etat = $affectationStage->getEtatActif();
+
+$terrain = $affectationStage->getTerrainStage();
+$terrainSecondaire = $affectationStage->getTerrainStageSecondaire();
+$categorie = ($terrain) ? $terrain->getCategorieStage() : null;
+$categorieSecondaire = ($terrainSecondaire) ? $terrainSecondaire->getCategorieStage() : null;
+?>
+
+<nav>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <button class="nav-link active" id="nav-<?= $uid ?>-infos" data-bs-toggle="tab"
+                data-bs-target="#<?= $uid ?>-infos" type="button"
+                role="tab" aria-controls="<?= $uid ?>-infos" aria-selected="true">Informations
+        </button>
+        <button class="nav-link" id="nav-<?= $uid ?>-affectation" data-bs-toggle="tab"
+                data-bs-target="#<?= $uid ?>-affectation" type="button"
+                role="tab" aria-controls="<?= $uid ?>-affectation" aria-selected="true">Affectation actuel
+        </button>
+        <button class="nav-link" id="nav-<?= $uid ?>-preferences" data-bs-toggle="tab"
+                data-bs-target="#<?= $uid ?>-preferences" type="button"
+                role="tab" aria-controls="<?= $uid ?>-preferences" aria-selected="false">Préférences
+        </button>
+    </div>
+</nav>
+
+<div class="card tab-content" id="nav-tabContent">
+    <div class="tab-pane fade show active" id="<?= $uid ?>-infos" role="tabpanel"
+         aria-labelledby="nav-<?= $uid ?>-infos">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-2">
+                    <strong>Etudiant</strong>
+                </div>
+                <div class="col-md-4">
+                    <?= $etudiant->getDisplayName(); ?>
+                </div>
+                <div class="col-md-2">
+                    <strong>Année</strong>
+                </div>
+                <div class="col-md-4">
+                    <?= $session->getAnneeUniversitaire()->getLibelle(); ?>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <strong>Session</strong>
+                </div>
+                <div class="col-md-4">
+                    <?= $session->getLibelle(); ?>
+                </div>
+                <div class="col-md-2">
+                    <strong>Groupe</strong>
+                </div>
+                <div class="col-md-4">
+                    <?= $session->getGroupe()->getLibelle(); ?>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <strong>Ordre d'affectation</strong>
+                </div>
+                <div class="col-md-4">
+                    <?= ($stage->getOrdreAffectation()) ?? "<span class='text-muted'>Non définie</span>"; ?>
+                </div>
+                <div class="col-md-2">
+                    <strong>Score pré-affectation</strong><br/>
+                    <strong>Score post-affectation</strong><br/>
+
+                </div>
+                <div class="col-md-4">
+                    <?=($stage->getScorePreAffectation())  ?? "<span class='text-muted'>Non calculé</span>" ?> <br/>
+                    <?=($stage->getScorePostAffectation()) ?? "<span class='text-muted'>Non calculé</span>" ?>
+                </div>
+            </div>
+
+            <?php
+            $today = new DateTime();
+            if ($today < $session->getDateFinChoix()) :
+                ?>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-info">
+                            La phase d'affectation est prévue entre le
+                            <strong><?=  $session->getDateFinChoix()->format("d/m/y") ?></strong> et le
+                            <strong><?=  $session->getDateFinCommission()->format("d/m/y") ?></strong>
+                        </div>
+                    </div>
+                </div>
+            <?php elseif ($session->getDateFinCommission() < $today) :?>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-warning">
+                            La phase d'affectation est <strong>terminée</strong> depuis le
+                            <strong><?=  $session->getDateFinCommission()->format("d/m/y") ?></strong>.
+                        </div>
+                    </div>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <div class="tab-pane fade show" id="<?= $uid ?>-affectation" role="tabpanel"
+         aria-labelledby="nav-<?= $uid ?>-affectation">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-2">
+                    <strong>Terrain de stage</strong>
+                </div>
+                <div class="col-md-4">
+                    <?php if (!$terrain) : ?>
+                        <span class="text-muted">Non définie</span>
+                    <?php else : ?>
+                        <?= $terrain->getLibelle() ?>
+                        (<?= $categorie->getAcronyme() ?>)
+                    <?php endif; ?>
+                </div>
+                <div class="col-md-2">
+                    <strong>Terrain de stage secondaire</strong>
+                </div>
+                <div class="col-md-4">
+                    <?php if (!$terrainSecondaire) : ?>
+                        <span class="text-muted">Non</span>
+                    <?php else : ?>
+                        <?= $terrainSecondaire->getLibelle() ?>
+                        (<?= $categorieSecondaire->getAcronyme() ?>)
+                    <?php endif; ?>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <strong>État</strong>
+                </div>
+                <div class="col-md-10">
+                    <div>
+                        <?= $this->etatinstance($etat, ['display-categorie' => false, 'display-libelle'=> true, 'unknown-type-libelle' => "Indéterminée"], ); ?>
+                    </div>
+                    <?php if(isset($etat) && $etat->getInfos() !== null && $etat->getInfos() != "") :?>
+                    <div class="text-muted text-small">
+                    <?= $etat->getInfos() ?>
+                    </div>
+                    <?php endif;?>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <strong>Coût total</strong>
+                </div>
+                <div class="col-md-4">
+                    <?= ($affectationStage->getCout()) ?? "<span class='text-muted'>Non défini</span>" ?>
+                </div>
+                <div class="col-md-2">
+                    <strong>Coût du terrain</strong> <br/>
+                    <strong>Bonus / Malus</strong>
+                </div>
+                <div class="col-md-4">
+                    <?= ($affectationStage->getCoutTerrain()) ?? "<span class='text-muted'>Non défini</span>" ?> <br/>
+                    <?= ($affectationStage->getBonusMalus()) ?? "<span class='text-muted'>Non défini</span>" ?>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane fade show" id="<?= $uid ?>-preferences" role="tabpanel"
+         aria-labelledby="nav-<?= $uid ?>-preferences">
+        <div class="card-body">
+            <?php if (empty($preferences) && $today < $session->getDateFinChoix()) : ?>
+                <div class="alert alert-info">
+                    Aucune préférence n'as encore été définie.
+                </div>
+            <?php elseif (empty($preferences)) : ?>
+                <div class="alert alert-warning">
+                    <strong><?= $etudiant->getDisplayName() ?> n'as pas définie de préférence.</strong>
+                </div>
+            <?php else : ?>
+                <div class="row">
+                    <?php foreach ($preferences as $pref): ?>
+                        <div class="col-md-7">
+                            <span class="mx-3 badge <?= ($pref->isSat()) ? "badge-success" : "badge-muted" ?>">
+                                    <?= $pref->getRang() ?>
+                            </span>
+                            <?= $pref->getTerrainStage()->getLibelle() ?>
+                            (<?= $pref->getTerrainStage()->getCategorieStage()->getLibelle() ?>)
+
+                        </div>
+                        <div class="col-md-5">
+                            <?php if ($pref->getTerrainStageSecondaire()) : ?>
+
+                            <?php if ($pref->isSat() && isset($terrainSecondaire) && $terrainSecondaire->getId() == $pref->getTerrainStageSecondaire()->getId()) : ?>
+                                    <span class="mx-3 badge badge-success"> <?= $pref->getRang() ?> </span>
+                                <?php else:?>
+                                    <span class="mx-3 badge badge-muted"> <?= $pref->getRang() ?> </span>
+                            <?php endif; ?>
+
+                                <?= $pref->getTerrainStageSecondaire()->getLibelle() ?>
+                                (<?= $pref->getTerrainStageSecondaire()->getCategorieStage()->getLibelle() ?>)
+                            <?php endif; ?>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>

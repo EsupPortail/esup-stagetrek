@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Application\Entity\Db\TerrainStage" table="terrain_stage">
+    <indexes>
+      <index name="IDX_C9FED06F1A1F90F9" columns="categorie_stage_id"/>
+    </indexes>
+    <unique-constraints>
+      <unique-constraint name="terrain_stage_id_unique" columns="id"/>
+    </unique-constraints>
+    <id name="id" type="bigint" column="id">
+      <generator strategy="SEQUENCE"/>
+      <sequence-generator sequence-name="terrain_stage_id_seq" allocation-size="1" initial-value="1"/>
+    </id>
+    <field name="code" type="string" column="code" length="25" nullable="false">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="libelle" type="string" column="libelle" length="255" nullable="false">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="service" type="string" column="service" length="255" nullable="true">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+
+    <one-to-one field="adresse" target-entity="Application\Entity\Db\Adresse">
+      <cascade>
+        <cascade-all/>
+      </cascade>
+      <join-column name="adresse_id" referenced-column-name="id" />
+    </one-to-one>
+
+    <field name="infos" type="text" column="infos" nullable="true">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="lien" type="string" column="lien" length="255" nullable="true">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+
+    <field name="minPlace" type="integer" column="min_place" nullable="false">
+      <options>
+        <option name="unsigned"/>
+        <option name="default">0</option>
+      </options>
+    </field>
+    <field name="idealPlace" type="integer" column="ideal_place" nullable="false">
+      <options>
+        <option name="unsigned"/>
+        <option name="default">0</option>
+      </options>
+    </field>
+    <field name="maxPlace" type="integer" column="max_place" nullable="false">
+      <options>
+        <option name="unsigned"/>
+        <option name="default">0</option>
+      </options>
+    </field>
+
+    <field name="isTerrainPrincipal" type="boolean" column="terrain_principal" nullable="false">
+      <options>
+        <option name="default">1</option>
+      </options>
+    </field>
+
+    <field name="horsSubdivision" type="boolean" column="hors_subdivision" nullable="true">
+      <options>
+        <option name="default"/>
+      </options>
+    </field>
+
+    <field name="preferencesAutorisees" type="boolean" column="preferences_autorisees" nullable="true">
+      <options>
+        <option name="default"/>
+      </options>
+    </field>
+
+    <field name="actif" type="boolean" column="actif" nullable="true">
+      <options>
+        <option name="default">1</option>
+      </options>
+    </field>
+
+    <many-to-one field="categorieStage" target-entity="Application\Entity\Db\CategorieStage" fetch="LAZY">
+      <join-columns>
+        <join-column name="categorie_stage_id" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+
+<!--    Cas d'un terrain secondaire : liste des terrains principaux liées-->
+    <many-to-many field="terrainsPrincipaux" target-entity="Application\Entity\Db\TerrainStage" inversed-by="terrainsSecondaires" fetch="LAZY">
+      <join-table name="terrain_stage_linker">
+        <join-columns>
+          <join-column name="terrain_secondaire_id" referenced-column-name="id"/>
+        </join-columns>
+        <inverse-join-columns>
+          <join-column name="terrain_principal_id" referenced-column-name="id"/>
+        </inverse-join-columns>
+      </join-table>
+    </many-to-many>
+
+  <!--    Cas d'un terrain principales : liste des terrains secondaire liées-->
+    <many-to-many field="terrainsSecondaires" target-entity="Application\Entity\Db\TerrainStage" inversed-by="terrainsPrincipaux" fetch="LAZY">
+      <join-table name="terrain_stage_linker">
+        <join-columns>
+          <join-column name="terrain_principal_id" referenced-column-name="id"/>
+        </join-columns>
+        <inverse-join-columns>
+          <join-column name="terrain_secondaire_id" referenced-column-name="id"/>
+        </inverse-join-columns>
+      </join-table>
+    </many-to-many>
+
+    <many-to-many field="niveauxEtudesContraints" target-entity="Application\Entity\Db\NiveauEtude" fetch="LAZY">
+      <join-table name="contrainte_terrain_stage_niveau_etude_linker">
+        <join-columns>
+          <join-column name="terrain_stage_id" referenced-column-name="id"/>
+        </join-columns>
+        <inverse-join-columns>
+          <join-column name="niveau_etude_id" referenced-column-name="id"/>
+        </inverse-join-columns>
+      </join-table>
+    </many-to-many>
+
+    <one-to-many field="contactsTerrains" target-entity="Application\Entity\Db\ContactTerrain" mapped-by="terrainStage" />
+
+    <many-to-one field="modeleConventionStage" target-entity="Application\Entity\Db\ModeleConventionStage" fetch="LAZY">
+      <join-columns>
+        <join-column name="modele_convention_stage_id" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

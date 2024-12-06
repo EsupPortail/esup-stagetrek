@@ -1,0 +1,50 @@
+FROM postgres:13.14
+
+RUN if [ -f ./deploy_configuration/proxy/.env_proxy ]; then \
+    COPY ./deploy_configuration/proxy/.env_proxy /; \
+fi
+COPY ./deploy_configuration/proxy/proxy.sh /
+RUN chmod +x /proxy.sh
+
+RUN sh /proxy.sh
+
+ARG HTTP_PROXY
+ENV http_proxy=$HTTP_PROXY
+ENV https_proxy=$HTTP_PROXY
+ENV HTTP_PROXY=$HTTP_PROXY
+ENV HTTPS_PROXY=$HTTP_PROXY
+
+
+# Vérifiez si la variable d'environnement http_proxy est définie
+RUN if [ -n "$http_proxy" ]; then \
+    # Si elle est définie, exécutez les commandes pour configurer le proxy
+    touch /etc/apt/apt.conf.d/05proxy; \
+    echo 'Acquire::HTTP::Proxy "'$http_proxy'";' >> /etc/apt/apt.conf.d/05proxy; \
+    echo 'Acquire::HTTPS::Prox "'$http_proxy'";' >> /etc/apt/apt.conf.d/05proxy; \
+    echo 'Acquire::ftp::Proxy "'$http_proxy'";' >> /etc/apt/apt.conf.d/05proxy; \
+    echo "Proxy configuré dans le système de packages avec la valeur $http_proxy" && true; \
+fi
+
+COPY ./deploy_configuration/download-dump-instance-s3.py /
+RUN chmod u+x /download-dump-instance-s3.py
+
+
+RUN mkdir /scripts_to_init
+COPY ./deploy_configuration/db/init-db/ /scripts_to_init
+RUN chmod -R 777 /scripts_to_init
+RUN mkdir /stagetrek-db
+RUN chmod -R 700 /stagetrek-db
+#COPY ./deploy_configuration/db/autoload.sh /docker-entrypoint-initdb.d/
+#RUN chmod u+x /docker-entrypoint-initdb.d/autoload.sh
+
+RUN apt-get update && apt-get install -y unzip
+
+#Clean the Proxy env
+ENV HTTP_PROXY ""
+ENV HTTPS_PROXY ""
+ENV http_proxy ""
+ENV https_proxy ""
+RUN rm -f /etc/apt/apt.conf.d/05proxy
+
+EXPOSE 8432
+EXPOSE 5432

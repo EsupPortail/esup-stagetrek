@@ -1,0 +1,89 @@
+<?php
+
+use Application\Controller\Stage\StageController;
+use Application\Controller\Stage\ValidationStageController;
+use Application\Entity\Db\Stage;
+use Application\Form\Stages\ValidationStageForm;
+
+
+/**
+ * @see StageController::modifierValidationAction()
+ * @var string $title
+ * @var Stage $stage
+ * @var ValidationStageForm $form
+ */
+
+
+/** @var \Application\View\Helper\Stages\ValidationStageViewHelper $vh */
+$vh = $this->validation();
+$vh->setStage($stage);
+$validationStage = $stage->getValidationStage();
+$etudiant = $stage->getEtudiant();
+
+$terrain = $stage->getTerrainStage();
+?>
+
+
+<div class="card card-primary">
+    <h1 class="page-header card-header">
+        <span class="icon icon-modifier"></span>
+        <?= $title ?>
+    </h1>
+    <div class="card-body">
+
+        <div class="card">
+            <div class="card-header">Informations</div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div><b>Etudiant : </b> <?= $etudiant->getDisplayName() ?></div>
+                        <div>
+                            <b>Terrain : </b>
+                            <?= ($terrain) ? sprintf("%s (%s)", $terrain->getLibelle(), $terrain->getCategorieStage()->getLibelle())
+                                :"<strong><span class='text-danger'><span class='icon icon-warning'></span>Indéterminé</span></strong>" ?>
+                        </div>
+                        <div>
+                            <b>Dates du stage : </b>
+                            du <?= $stage->getDateDebutStage()->format('d/m/Y') ?>
+                            au <?= $stage->getDateFinStage()->format('d/m/Y') ?>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div><b>Etat actuel : </b>
+                            <?php
+                            if ($validationStage->isValide()) {
+                                echo "Validé";
+                            } elseif ($validationStage->isInvalide()) {
+                                echo "Non validé";
+                            } else {
+                                echo "Non définie";
+                            }
+                            ?>
+                        </div>
+                        <?php if ($validationStage->getValidateBy()): ?>
+                            <div><b>Par </b> <?= $validationStage->getValidateBy() ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card my-3">
+            <div class="card-header">Validation du stage</div>
+            <div class="card-body">
+                <?= $vh->renderForm($form) ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        let body = $("body");
+        body.off("<?= ValidationStageController::EVENT_MODIFIER ?>", closeModal)
+            .one("<?= ValidationStageController::EVENT_MODIFIER ?>", closeModal);
+    })
+</script>
+

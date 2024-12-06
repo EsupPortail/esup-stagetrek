@@ -1,0 +1,14 @@
+<?php
+
+use Application\Controller\Affectation\AffectationController;
+use Application\Entity\Db\AffectationStage;
+use Application\View\Helper\Affectation\AffectationViewHelper;
+
+/**
+ * @see AffectationController::listerAction()
+ * @var AffectationStage[] $affectationsStages
+ */
+
+/** @var AffectationViewHelper $vh */
+$vh = $this->affectation();
+echo $vh->renderListe($affectationsStages);

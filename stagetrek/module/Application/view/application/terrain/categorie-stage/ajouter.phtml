@@ -1,0 +1,37 @@
+<?php
+
+use Application\Controller\Terrain\CategorieStageController;
+use Application\Form\TerrainStage\CategorieStageForm;
+use Application\View\Helper\Terrains\CategorieStageViewHelper;
+
+
+/**
+ * @see CategorieStageController::ajouterAction()
+ *
+
+ * @var String $title
+ * @var CategorieStageForm $form
+ */
+
+
+/** @var CategorieStageViewHelper $vh */
+$vh = $this->categorieStage();
+?>
+
+<div class="card card-success">
+    <h1 class="page-header card-header">
+        <span class="icon icon-ajouter"></span>
+        <?= $title ?>
+    </h1>
+    <div class="card-body">
+        <?= $vh->renderForm($form); ?>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        let body = $("body");
+        body.off("<?= CategorieStageController::EVENT_AJOUTER?>", closeModal)
+            .one("<?= CategorieStageController::EVENT_AJOUTER?>", closeModal);
+    })
+</script>

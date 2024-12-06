@@ -1,0 +1,109 @@
+<?php
+
+use Application\Controller\Convention\ConventionStageController;
+use Application\Controller\Convention\ModeleConventionController;
+use Application\Entity\Db\ConventionStage;
+use Application\Entity\Db\Stage;
+use Application\View\Helper\Convention\ConventionViewHelper;
+
+/**
+ * @see ConventionStageController::afficherAction()
+ * @var Stage $stage
+ */
+
+
+/** @var ConventionStage $convention */
+$convention = $stage->getConventionStage();
+/** @var ConventionViewHelper $vh */
+$vh = $this->convention($convention);
+$canEdit = $vh->actionAllowed(ModeleConventionController::ACTION_MODIFIER);
+$canDelete = $vh->actionAllowed(ModeleConventionController::ACTION_SUPPRIMER);
+
+$modele = ($convention) ? $convention->getModeleConventionStage() : null;
+
+$affectation = $stage->getAffectationStage();
+$terrain = $stage->getTerrainStage();
+$modeleTerrain = ($terrain) ? $terrain->getModeleConventionStage() : null;
+
+$today = new DateTime();
+?>
+
+<div class="card">
+    <div class="card-header">
+        Convention
+    </div>
+    <div class="card-body">
+        <?php if (!isset($convention)) : ?>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="alert alert-info">
+                        Aucune convention de stage n'a été déposée.
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
+
+        <?php if (!$convention && $modeleTerrain && $today < $stage->getDateFinStage()): ?>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="alert alert-warning">
+                        Le terrain de stage <strong><?= $terrain->getLibelle() ?></strong> attend une convention de stage de type
+                        <strong><?= $modeleTerrain->getLibelle() ?></strong>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
+
+        <?php if ($convention) : ?>
+            <div class="row">
+                <div class="col-md-2"><strong>Modéle de référence</strong></div>
+                <div class="col-md-10">
+                    <?php if ($modele) : ?>
+                        <?= $modele->getLibelle() ?>
+                    <?php else : ?>
+                        <span class="text-muted">Convention définie sans modéle de référence.</span>
+                    <?php endif; ?>
+                </div>
+            </div>
+
+            <?php if ($modele && $modeleTerrain && $modele !== $modeleTerrain && $today > $stage->getDateFinStage()) : ?>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-warning">
+                            Le terrain de stage <strong><?= $terrain->getLibelle() ?></strong> attend une convention de stage de type
+                            <strong><?= $modeleTerrain->getLibelle() ?></strong>
+                        </div>
+                    </div>
+                </div>
+            <?php endif; ?>
+
+            <?php $fichier = ($convention) ? $convention->getFichier() : null;
+            if(isset($convention) && !isset($fichier)) :?>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-warning">
+                            Le fichier contenant la convention de stage n'est pas correctement défini ou a été supprimé
+                        </div>
+                    </div>
+                </div>
+            <?php endif; ?>
+
+            <div class="row">
+                <div class="col-md-2"><strong>Derniére modification</strong></div>
+                <div class="col-md-10">
+                    le <?= $convention->getDateUpdate()->format('d/m/Y') ?>
+                    à <?= $convention->getDateUpdate()->format('H:i') ?>
+                </div>
+            </div>
+        <?php endif; ?>
+    </div>
+    <?php if ($vh->actionAllowed(ConventionStageController::ACTION_TELECHARGER)) : ?>
+        <div class="card-footer">
+            <div class="row">
+                <div class="col-md-12">
+                    <?= $vh->lienTelecharger() ?>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+</div>

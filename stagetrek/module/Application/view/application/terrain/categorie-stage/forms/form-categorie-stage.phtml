@@ -1,0 +1,61 @@
+<?php
+
+use Application\Controller\Terrain\CategorieStageController;
+use Application\Form\TerrainStage\CategorieStageForm;
+use Application\Form\TerrainStage\Fieldset\CategorieStageFieldset;
+
+
+/**
+ * @see CategorieStageController::ajouterCategorieStageAction()
+ * @see CategorieStageController::modifierCategorieStageAction()
+ * @var CategorieStageForm      $form
+ * @var CategorieStageFieldset  $fieldset
+ */
+
+$fe = $this->formErrors();
+$fcg = $this->formControlGroup();
+$fr = $this->formrow();
+$fct = $this->formControlText();
+
+$fieldset = $form->getEntityFieldset();
+?>
+
+<div class="fieldset">
+    <?= $this->form()->openTag($form->prepare()) ?>
+    <?= $fe($form->prepare(), $form::INVALIDE_ERROR_MESSAGE) ?>
+    <?= $fr($fieldset->get($form::INPUT_ID)); ?>
+    <?= $fr($fieldset->get($fieldset::CODE)); ?>
+
+    <div class="row">
+        <div class="col-md-6">
+            <?= $fct($fieldset->get($fieldset::LIBELLE)); ?>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <?= $fcg($fieldset->get($fieldset::ACRONYME)); ?>
+        </div>
+        <div class="col-md-6">
+            <?= $fcg($fieldset->get($fieldset::ORDRE)); ?>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-xs-12">
+            <div class="form-check form-switch">
+            <?= $fcg($fieldset->get($fieldset::CATEGORIE_PRINCIPALE)) ?>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-10">
+            <?= $fcg($form->get($form::INPUT_SUBMIT)); ?>
+        </div>
+    </div>
+
+    <?= $this->formHidden($form->get($form::CSRF));?>
+    <?= $this->form()->closeTag(); ?>
+</div>

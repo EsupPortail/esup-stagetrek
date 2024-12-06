@@ -1,0 +1,51 @@
+<?php
+
+use Application\Controller\Contact\ContactStageController;
+use Application\Entity\Db\ContactStage;
+use Application\Form\Misc\ConfirmationForm;
+use Application\View\Helper\Misc\ConfirmationFormViewHelper;
+
+
+/**
+ * @see ContactStageController::supprimerAction()
+ * @var string $title
+ * @var ConfirmationForm $form
+ * @var ContactStage $contactStage
+ */
+
+/** @var ConfirmationFormViewHelper $vh */
+$vh = $this->confirmation($form);
+$token = $contactStage->getTokenValidation();
+
+?>
+
+<div class="card card-danger">
+    <h1 class="page-header card-header">
+        <span class="icon icon-supprimer"></span>
+        <?= $title ?>
+    </h1>
+    <div class="card-body">
+        <?php if(!$form->hasBeenConfirmed()): ?>
+            <div class='alert alert-warning'>
+                Cette action est réservée à la correction d'erreurs.
+                <?php if($contactStage->canValiderStage() &&
+                isset($token) && $token != "" &&
+                new DateTime() < $contactStage->getTokenExpirationDate()){
+                    echo "<br/>Le contact dispose d'un lien de validation du stage.";
+                 }
+                 ?>
+            </div>
+        <?php endif;?>
+
+
+        <?= $vh->render(); ?>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        let body = $("body");
+        body.off("<?= ContactStageController::EVENT_SUPPRIMER?>", closeModal)
+            .one("<?= ContactStageController::EVENT_SUPPRIMER?>", closeModal);
+    });
+</script>

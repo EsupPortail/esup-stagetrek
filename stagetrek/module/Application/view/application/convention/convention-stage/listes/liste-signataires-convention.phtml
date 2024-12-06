@@ -1,0 +1,64 @@
+<?php
+
+use Application\Controller\Convention\ConventionStageController;
+use Application\Entity\Db\ConventionStageSignataire;
+use Application\Entity\Db\Stage;
+
+/**
+ * @see ConventionStageController::afficherAction()
+ * @var Stage $stage
+ */
+
+$tableId = "signataires-convention-" . $stage->getId();
+?>
+
+<div class="card">
+    <div class="card-header">
+        Signatiares de la convention
+    </div>
+    <div class="card-body">
+        <table id="<?= $tableId ?>" class="table table-hover table-condensed">
+            <thead>
+            <tr>
+                <th class="col-md-1">n°</th>
+                <th class="col-md-4">Libelle</th>
+                <th class="col-md-3">Nom</th>
+                <th class="col-md-4">Mail</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php /** @var ConventionStageSignataire $signataire */
+            foreach ($stage->getConventionStageSignataires() as $signataire):
+                $etudiant = $stage->getEtudiant();
+                ?>
+                <tr>
+                    <td> <?= $signataire->getOrdre() ?> </td>
+                    <td> <?= $signataire->getLibelle() ?> </td>
+                    <td> <?= $signataire->getDisplayName() ?> </td>
+                    <td> <?= $signataire->getMail() ?> </td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $('[data-bs-toggle="popover"]').popover({html: true});
+        let options = generateDataTableSetings(
+            {
+                stateSave: true,
+                retrieve: true,
+                paging: false,
+                'dom': "<'row' <'col-sm-12 col-md-12'f>>" +
+                    "<'row' <'col-sm-12'tr> >" +
+                    "<'row' <'col-sm-12 col-md-12'i>>",
+            }
+        );
+        //options = {};
+        let tableInstance = $("#<?= $tableId ?>").on('draw.dt', function () {
+            $('[data-bs-toggle="popover"]').popover({html: true});
+        }).DataTable(options);
+    });
+</script>

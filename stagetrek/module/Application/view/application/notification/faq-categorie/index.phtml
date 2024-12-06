@@ -1,0 +1,47 @@
+<?php
+
+use Application\Controller\Notification\FaqCategorieController as Controller;
+use Application\Entity\Db\FaqCategorieQuestion;
+use Application\Provider\Privilege\FaqPrivileges;
+
+/**
+ * @see FaqCategorieController::indexAction()
+ * @var FaqCategorieQuestion[] $categories
+ */
+
+
+$vh = $this->categorieFaq();
+$uid = uniqid("liste");
+$canAdd = $vh->hasPrivilege(FaqPrivileges::FAQ_CATEGORIE_AJOUTER);
+?>
+
+<h1 class="page-header">
+    <span class="icon">
+        <i class="fas fa-question-circle text-primary"></i>
+    </span>
+    Catégories des questions de la FAQ
+</h1>
+
+<div class="card mt-3">
+    <?php if ($canAdd) : ?>
+        <div class="card-header card-sub-header text-end">
+            <?= $vh->lienAjouter(); ?>
+        </div>
+    <?php endif; ?>
+
+    <div class="card-body" id="<?=$uid?>" data-url="<?= $this->url(Controller::ROUTE_LISTER, [], [], true) ?>">
+        <?= $vh->renderListe($categories) ?>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        let body = $("body");
+        body.on("<?=Controller::EVENT_AJOUTER?> "
+            + "<?=Controller::EVENT_MODIFIER?> "
+            + "<?=Controller::EVENT_SUPPRIMER?> "
+            , function () {
+                $("#<?=$uid?>").refresh();
+            });
+    });
+</script>

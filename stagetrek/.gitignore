@@ -1,0 +1,11 @@
+*.env
+
+data/conventions/
+data/cache/
+data/cache-apache/
+data/DoctrineModule/
+data/DoctrineORMModule/
+data/stagetrek-db/
+vendor/
+public/supervisord.log
+public/supervisord.pid

@@ -1,0 +1,116 @@
+<?php
+
+use Application\Controller\Contrainte\ContrainteCursusEtudiantController;
+use Application\Entity\Db\ContrainteCursusEtudiant;
+use Application\View\Helper\ContrainteCursus\ContrainteCursusEtudiantViewHelper;
+
+/**
+ * @see ContrainteCursusEtudiantController::afficherAction()
+ *
+ * @var string $title
+ * @var ContrainteCursusEtudiant $contrainte
+ */
+/** @var ContrainteCursusEtudiantViewHelper $vh */
+$vh = $this->contrainteCursus($contrainte);
+$etat = $contrainte->getEtatActif();
+?>
+
+<div class="card card-primary">
+    <h1 class="page-header card-header">
+        <?= $title ?>
+    </h1>
+    <div class="card-body">
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-4"><strong>Étudiant</strong></div>
+                    <div class="col-md-8"><?= $contrainte->getEtudiant()->getDisplayName(); ?></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4"><strong>Contrainte</strong></div>
+                    <div class="col-md-8"><?= $contrainte->getLibelle(); ?></div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-4"><strong>Portée</strong></div>
+                    <div class="col-md-8"><?= $contrainte->getPortee()->getLibelle(); ?></div>
+                </div>
+                <?php if ($contrainte->hasPorteeCategorie() || $contrainte->hasPorteeTerrain()) : ?>
+                    <div class="row">
+                        <div class="col-md-4"><strong>Catégorie</strong></div>
+                        <div class="col-md-8"><?= $contrainte->getCategorieStage()->getLibelle(); ?></div>
+                   </div>
+                <?php endif; ?>
+                <?php if ($contrainte->hasPorteeTerrain()) : ?>
+                    <div class="row">
+                        <div class="col-md-4"><strong>Terrain</strong></div>
+                        <div class="col-md-8"><?= $contrainte->getTerrainStage()->getLibelle(); ?></div>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <hr/>
+        <div class="row">
+            <div class="col-md-2">
+                <strong>Description</strong>
+            </div>
+            <div class="col-md-10">
+                <?= $contrainte->getDescription(); ?>
+            </div>
+        </div>
+
+        <hr/>
+        <div class="row">
+            <div class="col-md-2">
+                <strong>État</strong>
+            </div>
+            <div class="col-md-4">
+                <?= $this->etatinstance($etat, ['display-categorie'=> false, 'display-libelle' => true, 'unknown-type-libelle' => "Indéterminé"]) ?>
+            </div>
+        </div>
+        <?php if(isset($etat) && $etat->getInfos() !== null && $etat->getInfos() !== ""): ?>
+            <div class="row">
+                <div class="col-md-2">
+                    <strong>Information</strong>
+                </div>
+                <div class="col-md-10">
+                    <?= $etat->getInfos() ?>
+                </div>
+            </div>
+        <?php endif; ?>
+        <hr/>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-7"><strong>Nombre de stage(s) validant la contrainte</strong></div>
+                    <div class="col-md-5"><?= $contrainte->getNbStagesValidant(); ?></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-7"><strong>Nombre d'équivalence(s) accordée(s)</strong></div>
+                    <div class="col-md-5"><?= $contrainte->getNbEquivalences(); ?></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-7"><strong>Reste à satisfaire</strong></div>
+                    <div class="col-md-5"><?= $contrainte->getResteASatisfaire(); ?></div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <?php
+                $min = ($contrainte->getMin() && $contrainte->getMin() > 0) ? $contrainte->getMin() : null;
+                $max = ($contrainte->getMax() && $contrainte->getMax() > 0) ? $contrainte->getMax() : null;
+                ?>
+                <div class="row">
+                    <div class="col-md-4"><strong>Borne minimale</strong></div>
+                    <div class="col-md-8 <?= ($min) ? "" : "text-muted" ?>"><?= ($min) ?? "Non" ?></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4"><strong>Borne maximale</strong></div>
+                    <div class="col-md-8 <?= ($max) ? "" : "text-muted" ?>"><?= ($max) ?? "Non" ?></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

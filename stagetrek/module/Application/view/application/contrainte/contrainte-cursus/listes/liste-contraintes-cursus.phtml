@@ -1,0 +1,137 @@
+<?php
+
+use Application\Entity\Db\ContrainteCursus;
+use Application\Provider\Misc\Icone;
+use Application\Provider\Privilege\ParametrePrivileges;
+use Application\View\Helper\ContrainteCursus\ContrainteCursusViewHelper;
+
+
+/**
+ * @see ContrainteCursusViewHelper::renderListe()
+ *
+
+ * @var ContrainteCursus[] $contraintesCursus
+ */
+
+/** @var ContrainteCursusViewHelper $vh */
+$vh = $this->administrationContrainteCursus();
+$today = new DateTime();
+$canEdit = $vh->hasPrivilege(ParametrePrivileges::PARAMETRE_CONTRAINTE_CURSUS_MODIFIER);
+$canDelete = $vh->hasPrivilege(ParametrePrivileges::PARAMETRE_CONTRAINTE_CURSUS_SUPPRIMER);
+
+?>
+<div class="row">
+    <div class="col-md-12">
+        <?php $tableId = "liste-containtes-cursus"; ?>
+        <table id="<?= $tableId ?>" class="table table-hover table-condensed table-data">
+            <thead>
+            <tr>
+                <th class="col-md-2" data-type="num" data-priority="1">Portée</th>
+                <th class="col-md">Libellé</th>
+                <th class="col-md-2">Catégorie</th>
+                <th class="col-md-2">Terrain</th>
+                <th class="none no-sort">Description</th>
+                <th class="col-md-1 no-search text-center" data-type="num" data-priority="2">Min</th>
+                <th class="col-md-1 no-search text-center" data-type="num" data-priority="Max">Max</th>
+                <th class="none no-sort no-search " data-type="num" data-priority="3">Début d'applications</th>
+                <th class="none no-sort no-search" data-type="num" data-priority="3">Fin d'applications</th>
+                <?php if($canEdit || $canDelete) : ?>
+                <th class="no-sort no-search col-md-1 text-end">Actions</th>
+                <?php endif; ?>
+            </tr>
+            </thead>
+            <tbody>
+            <?php
+            /** @var ContrainteCursus $contrainte */
+            foreach ($contraintesCursus as $contrainte) :
+                $vh->setContrainteCursus($contrainte);
+                $nbMin = ($contrainte->getNombreDeStageMin()) ? $contrainte->getNombreDeStageMin() : PHP_INT_MIN;
+                $nbMax = ($contrainte->getNombreDeStageMax()) ? $contrainte->getNombreDeStageMax() : PHP_INT_MIN;
+                $rowBg = ($contrainte->getDateFin() < $today) ? "table-muted" : "";
+                $rowBg = ($contrainte->isContradictoire()) ? "table-warning" : "";
+                $porteeOrder = $contrainte->getContrainteCursusPortee()->getOrdre();
+                if ($today < $contrainte->getDateDebut()) {
+                    $porteeOrder -= 100;
+                }
+                if ($contrainte->getDateFin() < $today) {
+                    $porteeOrder += 100;
+                }
+                ?>
+                <tr class="<?= $rowBg ?>">
+                    <td data-filter="<?= $contrainte->getContrainteCursusPortee()->getLibelle() ?>"
+                        data-order="<?= $porteeOrder ?>">
+                        <?= $contrainte->getContrainteCursusPortee()->getLibelle() ?>
+                        <?= ($today < $contrainte->getDateDebut()) ? "<span class='text-small text-muted'>(Future)</span>" : "" ?>
+                        <?= ($contrainte->getDateFin() < $today) ? "<span class='text-small text-muted'>(Terminée)</span>" : "" ?>
+                    </td>
+                    <td> <?= $contrainte->getLibelle() ?>
+                        <span class="text-small">(<?= $contrainte->getAcronyme() ?>)</span>
+                        <?php if ($contrainte->isContradictoire()): ?>
+                            <span class="mx-1 text-warning icon icon-warning"
+                                  title="La contrainte est en contradiction avec une autre"></span>
+                        <?php endif; ?>
+                    </td>
+                    <?php
+                    $categorieLibelle = null;
+                    $categorieOrder = 0;
+                    $terrainLibelle = null;
+                    $terrainOrder = 0;
+                    if ($contrainte->getCategorieStage()) {
+                        $categorieLibelle = $contrainte->getCategorieStage()->getLibelle();
+                        $categorieOrder = $contrainte->getOrdre();
+                    } else {
+                        $categorieOrder = PHP_INT_MAX;
+                    }
+                    if ($contrainte->getTerrainStage()) {
+                        $terrainLibelle = $contrainte->getTerrainStage()->getLibelle();
+                        $terrainOrder = $contrainte->getOrdre();
+                    } else {
+                        $terrainOrder = PHP_INT_MAX;
+                    }
+                    ?>
+                    <td data-order="<?= $categorieOrder ?>">
+                        <?= $categorieLibelle ?>
+                    </td>
+                    <td data-order="<?= $terrainOrder ?>">
+                        <?= $terrainLibelle ?>
+                    </td>
+                    <td>
+                        <?= $contrainte->getDescription() ?>
+                    </td>
+                    <td class="text-center" data-order="<?= $nbMin ?>">
+                        <?= ($contrainte->getNombreDeStageMin()) ? $nbMin : "-" ?>
+                    </td>
+                    <td class="text-center" data-order="<?= $nbMax ?>">
+                        <?= ($contrainte->getNombreDeStageMax()) ? $nbMax : "-" ?>
+                    </td>
+                    <td class="text-center" data-order="<?= $contrainte->getDateDebut()->getTimestamp() ?>">
+                        <?= $contrainte->getDateDebut()->format('d/m/Y') ?>
+                    </td>
+                    <td class="text-center" data-order="<?= $contrainte->getDateFin()->getTimestamp() ?>">
+                        <?= $contrainte->getDateFin()->format('d/m/Y') ?>
+                    </td>
+                    <?php if ($canEdit || $canDelete) : ?>
+                    <td class="text-end">
+                            <?= $vh->lienModifier(Icone::MODIFIER, ['class' => 'text-primary ajax-modal']) ?>
+                            <?= $vh->lienSupprimer(Icone::SUPPRIMER, ['class' => 'text-danger ajax-modal']) ?>
+                    </td>
+                    <?php endif; ?>
+                </tr>
+            <?php endforeach; ?>
+            <tbody>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        let options = generateDataTableSetings(
+            {
+                paging: false,
+                info: false,
+                searching: false,
+            }
+        );
+        $("#<?= $tableId ?>").DataTable(options);
+    });
+</script>

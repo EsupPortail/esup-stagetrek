@@ -1,0 +1,411 @@
+<?php
+
+use Application\Controller\Affectation\AffectationController;
+use Application\Controller\Stage\SessionStageController;
+use Application\Entity\Db\AffectationStage;
+use Application\Entity\Db\SessionStage;
+use Application\Form\Affectation\AffectationStageForm;
+use Application\Provider\Misc\Icone;
+use Application\View\Helper\Affectation\AffectationViewHelper;
+use Application\View\Helper\Etudiant\EtudiantViewHelper;
+
+/**
+ * @see AffectationController::modifierAffectationsAction()
+ *
+ * @var String $title
+ * @var SessionStage $sessionStage
+ * @var AffectationStageForm $form
+ */
+
+/** @var AffectationViewHelper $vh */
+$vh = $this->affectation();
+$vh->setSessionStage($sessionStage);
+$canRunProcedure = $vh->actionAllowed(AffectationController::ACTION_CALCULER_AFFECTATIONS);
+
+/** @var EtudiantViewHelper $evh */
+$evh = $this->etudiant();
+
+$affectations = $sessionStage->getAffectations()->toArray();
+$tableId = "modifier-affectations-" . $sessionStage->getId() . "-liste";
+$formId = "modifier-affectations-" . $sessionStage->getId() . "-form";
+
+?>
+
+<h1 class="page-header">
+    <span class="icon icon-modifier"> </span>
+    Modifier les affectations
+    <br/>
+    <small class="text-muted">
+        <?= $sessionStage->getAnneeUniversitaire()->getLibelle() ?> -
+        <?= $sessionStage->getGroupe()->getLibelle() ?> -
+        <?= $sessionStage->getLibelle() ?>
+    </small>
+</h1>
+
+
+<div class="card">
+    <div class="card-header">Informations</div>
+    <div class="card-body ">
+        <?php //Différent messages selon la dates
+        $today = new DateTime();
+        if ($sessionStage->getDateDebutStage() <= $today) : ?>
+            <div class="card-text alert alert-warning">
+                Le stage est <strong><?= ($sessionStage->getDateFinStage() <= $today) ? "terminée" : "en cours" ?></strong>.
+                <br/>Une affectation non validée sera automatiquement <strong>mise en erreur</strong>.
+            </div>
+        <?php endif; ?>
+        <?php if ($sessionStage->getDateCommission() <= $today) : ?>
+            <div class="card-text alert alert-info">
+                La commission d'affectation est
+                <strong><?= ($sessionStage->getDateFinCommission() <= $today) ? "terminée" : "en cours" ?></strong>.
+                <br/> Toute affectation validée sera <strong>visible</strong>.
+            </div>
+        <?php else : ?>
+            <div class="card-text alert alert-info">
+                La commission d'affectation est fixée au
+                <strong><?= $sessionStage->getDateCommission()->format('d/m/Y') ?></strong>.
+                <br/> Les affectations validées seront <strong>visible</strong> à partir de cette date
+            </div>
+        <?php endif; ?>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                Les affectations pré-validées et validés ne sont pas modifier par la procédure d'affectation
+            </li>
+            <li class="list-group-item">
+                Une affectation validée sans terrain de stage passeras automatiquement ce dernier dans l'état <strong>Stage
+                    non effectué</strong>.
+            </li>
+            <li class="list-group-item">
+                Les modifications d'état ne seront effectives qu'à validation de la page.
+                <div class="text-muted text-small">Pensez à les valider avant d'exectuer la procédure d'affectation ou d'effectuer des modifications manuelle de terrain.</div>
+            </li>
+        </ul>
+    </div>
+    <div class="card-footer">
+        <div class="row">
+            <div class="col-md-12">
+                <?= $this->backButton("Fiche de la session")->backTo($this->url(SessionStageController::ROUTE_AFFICHER, ['sessionStage' => $sessionStage->getId()], [], true)) ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card my-3">
+    <div class="card-header">Modifier les affectations</div>
+    <div class="card-footer">
+        <div class="row">
+            <div class="col-md-6">
+                <button id="selectAll" class="btn btn-secondary">
+                    <span class="far fa-check-square"></span> Tout selectionner
+                </button>
+
+                <button id="deselectAll" class="btn btn-secondary disabled">
+                    <span class="far fa-square"></span> Tout déselectionner
+                </button>
+            </div>
+            <div class="col-md-6 text-end">
+                <form id="<?= $formId ?>" method="post" class="loadingForm"
+                      action="<?= $this->url(AffectationController::ROUTE_MODIFIER_AFFECTATIONS, ["sessionStage" => $sessionStage->getId()], [], true) ?>"
+                >
+                    <button type="button" class="btn btn-primary mx-1" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                       <span class="fas fa-cogs"></span> Actions
+                    </button>
+                    <div class="dropdown-menu">
+                        <?php if($canRunProcedure) : ?>
+                            <a class="dropdown-item ajax-modal"
+                               data-event="<?=  AffectationController::EVENT_MODIFIER?>"
+                               title="Calculer les affectations"  href="<?=  $this->url(AffectationController::ROUTE_CALCULER_AFFECTATIONS, ['sessionStage' => $sessionStage->getId()], [], true)?>">
+                                <span class="fas fa-cogs"></span> Calculer les affectations
+                            </a>
+                            <hr class="dropdown-divider">
+                        <?php endif; ?>
+                        <a class="dropdown-item btn btn-sm" id="prevalider-all">
+                            <span class="text-primary fas fa-check"></span> Pré-valider les affectations selectionnées
+                        </a>
+                        <a class="dropdown-item btn btn-sm" id="valider-all">
+                            <span class="text-success fas fa-check"></span> Valider les affectations selectionnées
+                        </a>
+                        <hr class="dropdown-divider">
+                        <a class="dropdown-item btn btn-sm" id="inprevalider-all">
+                          <span class="text-danger fas fa-times"></span>  Annuler la pré-validation des affectations selectionnées
+                        </a>
+                        <a class="dropdown-item btn btn-sm" id="invalider-all">
+                          <span class="text-danger fas fa-times"></span> Annuler la validation des affectations selectionnées
+                        </a>
+                    </div>
+
+                    <button name=submit" id="submit" type="submit" class="btn btn-success">
+                        <i class="fas fa-save"></i> Valider les modifications
+                </form>
+            </div>
+        </div>
+
+    </div>
+    <div class="card-body pb-3">
+        <table id="<?= $tableId ?>" class="table table-hover table-condensed">
+            <thead>
+            <tr>
+                <th></th>
+                <th class="" data-type="num">Ordre</th>
+                <th class="col-md">Etudiant</th>
+                <th class="col-md">Affectation</th>
+                <th class="col-md-1 no-search">Préférences</th>
+                <th class="col-md-1 no-search">Coût</th>
+                <th class="col-md-2">État</th>
+                <th class="col-md-2 no-search">Validation</th>
+                <th class="col-md-1 text-end no-search no-sort">Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php /** @var AffectationStage $affectation */
+            foreach ($affectations as $affectation):
+                $vh->setAffectationStage($affectation);
+                $stage = $affectation->getStage();
+                $etudiant = $affectation->getEtudiant();
+                $evh->setEtudiant($etudiant);
+                $terrain = ($affectation) ? $affectation->getTerrainStage() : null;
+                $terrainSecondaire = ($affectation) ? $affectation->getTerrainStageSecondaire() : null;
+                $categorie = ($terrain) ? $terrain->getCategorieStage() : null;
+                $categorieSecondaire = ($terrainSecondaire) ? $terrainSecondaire->getCategorieStage() : null;
+
+                $etat = $affectation->getEtatActif();
+                $bg = match (true) {
+                    $affectation->hasEtatFutur(),
+                    $affectation->hasEtatEnDisponibilite(),
+                    $affectation->hasEtatStageNonEffectue()
+                    => "table-muted",
+                    $affectation->hasEtatNonAffecte()
+                    => "",
+                    $affectation->hasEtatEnCours()
+                    => "",
+                    $affectation->hasEtatProposition()
+                    => "table-info",
+                    $affectation->hasEtatPreValidee()
+                    => "table-primary",
+                    $affectation->hasEtatValidee()
+                    => "table-success",
+                    $affectation->hasEtatEnRetard(),
+                    $affectation->hasEtatEnAlerte()
+                    => "table-warning",
+                    $affectation->hasEtatEnErreur()
+                    => "table-danger",
+                   default => "table-danger"
+                };
+                ?>
+
+                <tr class="<?= $bg ?>" data-affectation_id="<?= $affectation->getId() ?>">
+                    <td></td>
+                    <td class="" data-order="<?= ($stage->getOrdreAffectation()) ?? PHP_INT_MAX ?>">
+                        <?= ($stage->getOrdreAffectation()) ?? "<span class='text-muted'>-</span>" ?>
+                    </td>
+                    <td data-order="<?= $etudiant->getDisplayName() ?><?= $etudiant->getNumEtu() ?>"
+                        data-filter="<?= $etudiant->getDisplayName() ?><?= $etudiant->getNumEtu() ?>"
+                    >
+                        <?= $etudiant->getDisplayName() ?> (<?= $evh->lienAfficher() ?>)
+                    </td>
+                    <td data-order="<?= ($terrain) ? $categorie->getLibelle() . " " . $terrain->getLibelle() :
+                        (($terrainSecondaire) ? $categorieSecondaire->getLibelle() . " " . $terrainSecondaire->getLibelle() : 'ZZZZ')
+                    ?>"
+                        data-filter="
+                        <?= isset($terrain) ? $terrain->getLibelle() : "" ?>
+                        <?= isset($terrainSecondaire) ? $terrainSecondaire->getLibelle() : "" ?>
+                        <?= isset($categorie) ? $categorie->getAcronyme() : "" ?>
+                        <?= isset($categorieSecondaire) ? $categorieSecondaire->getAcronyme() : "" ?>
+                    ">
+                        <?php if (!isset($terrain)) : ?>
+                            <span class="text-muted">Non définie</span>
+                        <?php else : ?>
+                            <div>
+                                <?= $terrain->getLibelle() ?> (<?= $categorie->getAcronyme() ?>)
+                            </div>
+                        <?php endif; ?>
+                        <?php if ($terrainSecondaire) : ?>
+                            <div class="px-3 text-small"> et <?= $terrainSecondaire->getLibelle() ?>
+                                (<?= $categorieSecondaire->getAcronyme() ?>)
+                            </div>
+                        <?php endif ?>
+                    </td>
+                    <td class="" data-order="<?= ($affectation->getRangPreference() > 0) ?  $affectation->getRangPreference() : PHP_INT_MAX ?>">
+                        <?php if($affectation->getRangPreference() > 0) :?>
+                            <span class="badge badge-success"> <?= $affectation->getRangPreference() ?> </span>
+                       <?php elseif($today < $stage->getDateFinChoix()) : ?>
+                            <div class="text-muted">Phase de choix non terminée</div>
+                       <?php else : ?>
+                            <div class="text-small">Non-représentatives</div>
+                            <?php if ($affectation->hasNoPreferences()) : ?>
+                                <div class="text-small text-danger">Aucune préférence</div>
+                        <?php endif; ?>
+                        <?php endif; ?>
+                    </td>
+                    <td data-order="<?= $affectation->getCout() ?>">
+                        <?= $affectation->getCout() ?>
+                        <span class="mx-1 text-small text-muted">
+                           (<?= $affectation->getCoutTerrain() ?>
+                            <?= ($affectation->getBonusMalus() >= 0) ? "+" : "-" ?>
+                            <?= abs($affectation->getBonusMalus()) ?>)
+                        </span>
+                    </td>
+
+                    <td class="" data-order="<?= ($etat) ? ($etat->getType()->getOrdre()) : PHP_INT_MIN ?>"
+                        style="color:<?=  (isset($etat)) ? $etat->getType()->getCouleur() : "" ?>"
+                    >
+                        <span class="<?= (isset($etat)) ? $etat->getType()->getIcone() : "fa fa-question" ?>"></span>
+                        <?= (isset($etat)) ? $etat->getTypeLibelle() : "Indéterminé" ?>
+                    </td>
+                    <td data-order="<?= ($affectation->isValidee()) ? 2 : (($affectation->isPreValidee()) ? 1 : 0) ?>">
+                        <form>
+                            <div class="form-check form-switch">
+                                <input class="pre-valider form-check-input" type="checkbox"
+                                    <?= $affectation->isPreValidee() ? "checked " : "" ?>
+                                       data-affectation-id="<?= $affectation->getId() ?>"
+                                      id="pre-valider-<?= $affectation->getId() ?>"
+                                >
+                                <label for="pre-valider-<?= $affectation->getId() ?>" class="form-check-label">Pré-validé</label>
+                            </div>
+                            <div class="form-check form-switch">
+                                <input class="valider form-check-input" type="checkbox"
+                                       data-affectation-id="<?= $affectation->getId() ?>"
+                                    <?= $affectation->isValidee() ? "checked " : "" ?>
+                                       id="valider-<?= $affectation->getId() ?>"
+                                >
+                                <label for="valider-<?= $affectation->getId() ?>" class="form-check-label">Validé</label>
+                            </div>
+                        </form>
+                    </td>
+                    <td class="text-end">
+                        <?= $vh->lienAfficher(Icone::AFFICHER, ['class' => 'text-primary ajax-modal']); ?>
+                        <?= $vh->lienModifier(Icone::MODIFIER, ['class' => 'text-primary ajax-modal']); ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $(function () {
+        $('[data-bs-toggle="popover"]').popover({html: true});
+
+        let form = $("#<?=$formId?>");
+        $(".pre-valider").on("change", function () {
+            let affectationId = $(this).data('affectation-id');
+            let input = form.find("#pre-validation-" + affectationId);
+            if (input.length === 0) {
+                form.append("<input id='pre-validation-" + affectationId + "' type='hidden' name='preValidations[" + affectationId + "]'>");
+                input = form.find("#pre-validation-" + affectationId);
+            }
+            let checked = ($(this).is(':checked'));
+            input.val((checked) ? '1' : '0');
+            let validateSwitch = $('#valider-'+affectationId)
+            if(!checked && validateSwitch.is(':checked')){ //Annuler la prévalidation annule également la validation
+                validateSwitch.trigger('click')
+            }
+        });
+        $(".valider").on("change", function () {
+            let affectationId = $(this).data('affectation-id');
+            let input = form.find("#validation-" + affectationId);
+            if (input.length === 0) {
+                form.append("<input id='validation-" + affectationId + "' type='hidden' name='validations[" + affectationId + "]'>");
+                input = form.find("#validation-" + affectationId);
+            }
+            let checked = ($(this).is(':checked'));
+            input.val((checked) ? '1' : '0');
+            let prevalidateSwitch = $('#pre-valider-'+affectationId)
+            if(checked && !prevalidateSwitch.is(':checked')){ //active la prévalidation automatiquement
+                prevalidateSwitch.trigger('click')
+            }
+        });
+
+        if ($.fn.DataTable.isDataTable("#<?= $tableId ?>")) {
+            $('#<?= $tableId ?>').DataTable().destroy();
+        }
+        let options = generateDataTableSetings({
+            retrieve: false,
+            saveStage: false,
+            deferRender: true,
+            "order": [[1, "asc"]],
+            "lengthMenu": [[50, 100, 250, -1], [50, 100, 250, "Tous"]],
+            columnDefs: [{
+                className: 'select-checkbox',
+                targets: 0,
+                orderable: false,
+                searchable: false,
+            },
+                {targets: ['no-sort'], orderable: false},
+                {targets: ['no-search'], searchable: false},
+                {targets: ['hidden'], visible: false},
+            ],
+            "select": {
+                "style": 'multiple',
+                "selector": 'td:first-child'
+            },
+            'dom': "<'row'<'col-sm-12 col-md-6 'l><'col-sm-12 col-md-6' f>> " +
+                "<'row' <'col-sm-12'tr> >" +
+                "<'row' <'col-sm-12 col-md-5'i> <'col-sm-12 col-md-7'p> >",
+        })
+        let tableInstance = $("#<?= $tableId ?>").on('draw.dt', function () {
+            $('[data-bs-toggle="popover"]').popover({html: true});
+        }).DataTable(options);
+
+        $("#selectAll").on('click', function () {
+            tableInstance.rows().select();
+        })
+
+        $("#deselectAll").on('click', function () {
+            tableInstance.rows().deselect()
+        })
+        tableInstance.on('select.dt deselect.dt', function () {
+            let selectedRows = tableInstance.rows(".selected").nodes().length;
+            if (selectedRows > 0){
+                $("#deselectAll").removeClass('disabled');
+                $("#add-btn").removeClass('disabled');
+            }
+            else{
+                $("#deselectAll").addClass('disabled');
+                $("#add-btn").addClass('disabled');
+            }
+        });
+
+        $('#prevalider-all').on('click', function(){
+            let rows = tableInstance.rows({'selected': true, 'search': 'applied'}).nodes();
+            $(rows).each(function () {
+                let input = $(this).find('.pre-valider');
+                if(!input.is(':checked')){input.trigger('click')}
+            });
+        })
+        $('#valider-all').on('click', function(){
+            let rows = tableInstance.rows({'selected': true, 'search': 'applied'}).nodes();
+            $(rows).each(function () {
+                let inputPrevalider = $(this).find('.pre-valider');
+                if(!inputPrevalider.is(':checked')){inputPrevalider.trigger('click')}
+                let input = $(this).find('.valider');
+                if(!input.is(':checked')){input.trigger('click')}
+            });
+        })
+
+
+        $('#inprevalider-all').on('click', function(){
+            let rows = tableInstance.rows({'selected': true, 'search': 'applied'}).nodes();
+            $(rows).each(function () {
+                let input = $(this).find('.pre-valider');
+                if(input.is(':checked')){input.trigger('click')}
+                let inputValider = $(this).find('.valider');
+                if(inputValider.is(':checked')){inputValider.trigger('click')}
+            });
+        })
+        $('#invalider-all').on('click', function(){
+            let rows = tableInstance.rows({'selected': true, 'search': 'applied'}).nodes();
+            $(rows).each(function () {
+                let input = $(this).find('.valider');
+                if(input.is(':checked')){input.trigger('click')}
+            });
+        })
+
+        $("body").on("<?= AffectationController::EVENT_MODIFIER?>", function () {
+            window.location.href = window.location.href; //equivalent à reload mais sans la ressoumission du formlaire
+        });
+    });
+</script>

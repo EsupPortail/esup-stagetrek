@@ -1,0 +1,117 @@
+<?php
+
+use Application\Entity\Db\Stage;
+use Application\Provider\Misc\Icone;
+use Application\Provider\Privilege\StagePrivileges;
+use Application\View\Helper\Stages\StageViewHelper;
+
+// Date de la session Juin - 2023 : 05/06 au 02/07
+// => Juillet : 03/07 au 04/08
+/**
+ * @see StageViewHelper::renderListe()
+ * @var Stage $stages
+ */
+$tableId = "liste-stages";
+/** @var StageViewHelper $vh */
+$vh = $this->stage();
+$evh = $this->etudiant();
+$canSeeStage = $this->isAllowed(StagePrivileges::getResourceId(StagePrivileges::STAGE_AFFICHER));
+?>
+
+<div class="row">
+    <div class="col-md-12">
+        <table id="<?= $tableId ?>" class="table table-hover table-condensed table-data">
+            <thead>
+            <tr>
+                <th class="hidden"></th>
+                <th class="col-md-4">Etudiant</th>
+                <th class="col-md-1 no-search text-center" data-type="num">Ordre</th>
+                <th class="col-md" data-type="num">État</th>
+                <?php if ($canSeeStage) : ?>
+                    <th class="col-md-1 text-end no-search no-sort">Actions</th>
+                <?php endif; ?>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($stages as $stage):
+                $etudiant = $stage->getEtudiant();
+                $etat = $stage->getEtatActif();
+
+                $vh->setStage($stage);
+                $evh->setEtudiant($etudiant);
+                $bg = match (true) {
+                    $stage->hasEtatDesactive(),
+                    $stage->hasEtatNonEffectue(),
+                    $stage->hasEtatEnDisponibilite(),
+                    $stage->hasEtatFutur() => "table-muted",
+                    $stage->hasEtatPhasePreferences(),
+                    $stage->hasEtatPhaseAffectation(),
+                    $stage->hasEtatAVenir(),
+                    $stage->hasEtatEnCours(),
+                    $stage->hasEtatPhaseValidation(),
+                    $stage->hasEtatPhaseEvaluation() => "table-primary",
+                    $stage->hasEtatValide() => "table-success",
+                    $stage->hasEtatNonValide() => "table-danger",
+                    $stage->hasEtatValidationEnRetard(),
+                    $stage->hasEtatEvaluationEnRetard(),
+                    $stage->hasEtatEnAlerte() => "table-warning",
+                    $stage->hasEtatEnErreur() => "table-danger",
+                    default => "table-danger",
+                };
+                //TODO : a revoir pour les différenes icones / ordre d'affectations
+                // Idée : séparer cette pages en de multiples pages
+                ?>
+                <tr class="<?= $bg ?>">
+                    <td class="hidden">Stage <?= ($stage->isStagePrincipal()) ? "Principaux" : "Secondaires" ?></td>
+                    <td data-order="<?= $etudiant->getDisplayName() ?><?= $etudiant->getNumEtu() ?>"
+                        data-filter="<?= $etudiant->getDisplayName() ?><?= $etudiant->getNumEtu() ?>"
+                    >
+                        <?= $etudiant->getDisplayName() ?> (<?= $evh->lienAfficher($etudiant->getNumEtu()) ?>)
+                    </td>
+                    <td class="text-center" data-order="<?= ($stage->getOrdreAffectation()) ?? PHP_INT_MAX ?>">
+                        <?= ($stage->getOrdreAffectation()) ?? "<span class='text-muted'>-</span>" ?>
+                    </td>
+
+                    <td class="" data-order="<?= ($etat) ? ($etat->getType()->getOrdre()) : PHP_INT_MIN ?>"
+                        style="color:<?=  (isset($etat)) ? $etat->getType()->getCouleur() : "" ?>"
+                    >
+                        <span class="<?= (isset($etat)) ? $etat->getType()->getIcone() : "fa fa-question" ?>"></span>
+                        <?= (isset($etat)) ? $etat->getTypeLibelle() : "Indéterminé" ?>
+                    </td>
+
+                    <?php if ($canSeeStage) : ?>
+                        <td class="text-end">
+                            <?= $vh->lienAfficher(Icone::AFFICHER, ['class' => 'text-primary']) ?>
+                        </td>
+                    <?php endif ?>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $('[data-bs-toggle="popover"]').popover({html: true});
+        let options = generateDataTableSetings(
+            {
+                stateSave: true,
+                retrieve: true,
+                "order": [[2, "asc"], [1, "asc"]],
+                "lengthMenu": [[50, 100, 250, -1], [50, 100, 250, "Tous"]],
+                "orderFixed": {
+                    "pre": [0, 'asc'],
+                },
+                rowGroup: {
+                    dataSrc: 0
+                },
+            }
+        );
+        //options = {};
+        $("#<?= $tableId ?>").on('draw.dt', function () {
+            $('[data-bs-toggle="popover"]').popover({html: true});
+        }).DataTable(options);
+        $("#<?= $tableId ?>").removeClass('hidden');
+    });
+</script>

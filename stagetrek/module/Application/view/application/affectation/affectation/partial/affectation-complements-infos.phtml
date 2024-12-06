@@ -1,0 +1,31 @@
+<?php
+
+use Application\Controller\Affectation\AffectationController;
+use Application\Entity\Db\AffectationStage;
+
+/**
+ * @see AffectationController::afficherAction()
+ * @var AffectationStage $affectationStage
+ * @var bool $vueEtudiante
+ */
+if (!isset($vueEtudiante)) {
+    $vueEtudiante = false;
+}
+?>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                Informations complémentaires
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <?= ($affectationStage->getInformationsComplementaires()) ?? "<span class='text-muted'>Aucune informations complémentaires</span>" ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

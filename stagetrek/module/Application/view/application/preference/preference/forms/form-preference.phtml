@@ -1,0 +1,175 @@
+<?php
+
+use Application\Controller\Preference\PreferenceController;
+use Application\Entity\Db\TerrainStage;
+use Application\Form\Preferences\Fieldset\PreferenceFieldset;
+use Application\Form\Preferences\PreferenceForm;
+use Application\View\Helper\Preferences\PreferenceViewHelper;
+
+
+/**
+ * @see PreferenceController::ajouterAction()
+ * @see PreferenceController::modifierAction();
+ *
+
+ * @var PreferenceForm $form
+ * @var PreferenceFieldset $fieldset
+ */
+
+$fe = $this->formErrors();
+$fcg = $this->formControlGroup();
+$fr = $this->formrow();
+$fct = $this->formControlText();
+
+$title = $form->getTitle();
+/** @var PreferenceFieldset $fieldset */
+$fieldset = $form->getEntityFieldset();
+$preference = $form->getPreference();
+$stage = $preference->getStage();
+$session = $stage->getSessionStage();
+
+$modeAdmin = $fieldset->getModeAdmin();
+
+/** @var PreferenceViewHelper $vh */
+$vh = $this->preference($preference);
+?>
+
+<div class="fieldset">
+    <?= $this->form()->openTag($form->prepare()) ?>
+
+    <?php if ($modeAdmin): ?>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-warning">
+                    Contrairement aux étudiants, vous pouvez selectionner un terrain de stage normalement
+                    fermé.
+                    <br/> De même vous pouvez selectionner tout terrain de stage secondaire, même si celui-ci n'est
+                    pas lié au terrain principal pré-selectionné.
+                    <br/><strong>De tel choix seront par contre visible par l'étudiant et la préférence considéré comme
+                        valide.</strong>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <?= $fe($form->prepare(), PreferenceForm::INVALIDE_ERROR_MESSAGE) ?>
+    <?= $fr($fieldset->get(PreferenceFieldset::ID)); ?>
+    <?= $fr($fieldset->get(PreferenceFieldset::STAGE)); ?>
+
+    <div class="row">
+        <div class="col-md-6">
+            <?= $fcg($fieldset->get(PreferenceFieldset::RANG)); ?>
+            <?= $fcg($fieldset->get(PreferenceFieldset::TERRAIN_STAGE)); ?>
+            <?= $fcg($fieldset->get(PreferenceFieldset::TERRAIN_STAGE_SECONDAIRE)); ?>
+        </div>
+        <div class="col-md-6">
+            <label>Légendes</label>
+            <ul class="list-unstyled">
+                <?php if ($stage->getAffectationStage() && $stage->getAffectationStage()->hasEtatValidee()) : ?>
+                    <li class="my-3"> <?= $fieldset->getBadgeAffectation() ?> Terrain affecté au stage</li>
+                <?php endif; ?>
+                <?php if ($preference->getTerrainStage()) : ?>
+                    <li class="my-3">
+                        <?= $fieldset->getBadgePreferenceActuelle($preference->getRang()) ?>
+                        Terrain actuel de la préférence de rang <?= $preference->getRang() ?>
+                    </li>
+                <?php endif; ?>
+                <li class="my-3"> <?= $fieldset->getBadgePreferenceRang("x") ?> Classement du terrain de stage dans les
+                    préférences
+                </li>
+                <?php if ($modeAdmin) : ?>
+                    <li class="my-3"> <?= $fieldset->getBadgeDesactive() ?> Terrain de stage fermé aux préférences pour
+                        l'étudiant
+                        <br/><span class="text-small">(Ancien terrain de stage, Terrain fermé à la définition de stage,
+                            Nombre maximum de stage effectué)</span></li>
+                <?php endif; ?>
+            </ul>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <?= $fcg($form->get(PreferenceForm::INPUT_SUBMIT)); ?>
+        </div>
+    </div>
+    <?= $this->formHidden($form->get(PreferenceForm::CSRF)); ?>
+    <?= $this->form()->closeTag(); ?>
+</div>
+
+
+<script type="text/javascript">
+    $(function () {
+        //Affichage du selectpicker
+        let selectPicker = $('.selectpicker').selectpicker('render');
+
+        //Rajout du popover
+        $('[data-toggle="popover"]').popover();
+
+        <?php if(!$modeAdmin):?>
+        let terrainSelector = $("#<?=PreferenceFieldset::TERRAIN_STAGE?>");
+        //let terrainsOptions = $("#<?php //=PreferenceFieldset::TERRAIN_STAGE?>// option");
+        let terrainSecondaireSelector = $("#<?=PreferenceFieldset::TERRAIN_STAGE_SECONDAIRE?>");
+        let terrainsSecondairesOptions = $("#<?=PreferenceFieldset::TERRAIN_STAGE_SECONDAIRE?> option");
+
+        let terrainsStagesSecondaires = [];
+        //Initialisation
+        initTerrainsSecondairesAllowed();
+        // updateOptionsVisibility();
+
+        terrainSelector.change(updateTerrainsSecondairesVisibility);
+
+        function initTerrainsSecondairesAllowed() {
+            <?php /** @var TerrainStage $terrain */
+            foreach ($session->getTerrainsStages() as $terrain) : ?>
+            terrainsStagesSecondaires[<?= $terrain->getId() ?>] = [];
+            <?php /** @var TerrainStage $terrainSecondaire */
+            foreach ($terrain->getTerrainsSecondaires() as $terrainSecondaire) :
+                if($session->getNbPlacesOuvertes($terrainSecondaire)==0){continue;}
+            ?>
+            terrainsStagesSecondaires[<?= $terrain->getId() ?>][<?= $terrainSecondaire->getId()?>] = <?= $terrainSecondaire->getId()?>;
+            <?php endforeach; ?>
+            <?php endforeach; ?>
+            let terrainId = parseInt(<?= ($preference->getTerrainStage()) ? $preference->getTerrainStage()->getId() : "0" ?>);
+
+            // terrainsOptions.each(updateTerrainOptionVisibility);
+            terrainsSecondairesOptions.each(function () {
+                let terrainSecondaireId = $(this).val();
+                if (!terrainSecondaireId) {
+                    return;
+                } //On garde l'empty
+                //par défaut, pour qu'en cas de problème tout soit disponible
+                let disabled = true;
+                if (terrainsStagesSecondaires[terrainId]) {
+                    //Triples négation pour gérer le cas du undefind sachant que la liste contient les liens existant et que l'un veux ceux n'existant pas
+                    disabled = !!!(terrainsStagesSecondaires[terrainId][terrainSecondaireId]);
+                }
+                $(this).attr('disabled', disabled);
+            });
+            //ON doit détruire le selectpicker avant le refresh a cause du bug sur render de selectPicker - BS5
+            //Sachant qu'ici on a pas encore chargé app.js
+            terrainSecondaireSelector.selectpicker('destroy').selectpicker('render').addClass('selectpicker');
+            // $('.selectpicker').selectpicker('refresh');
+        }
+
+        //Met en disabled les terrains associé non selectionnables
+        function updateTerrainsSecondairesVisibility() {
+            terrainSecondaireSelector.val("");
+            let terrainId = $(this).val();
+            // terrainsOptions.each(updateTerrainOptionVisibility);
+            terrainsSecondairesOptions.each(function () {
+                let terrainSecondaireId = $(this).val();
+                if (!terrainSecondaireId) {
+                    return;
+                } //On garde l'empty
+                //par défaut, pour qu'en cas de problème tout soit disponible
+                let disabled = true;
+                if (terrainsStagesSecondaires[terrainId]) {
+                    disabled = !!!(terrainsStagesSecondaires[terrainId][terrainSecondaireId]);
+                }
+                $(this).attr('disabled', disabled);
+            });
+            selectPicker.selectpicker('refresh');
+        }
+        <?php endif;?>
+    });
+</script>

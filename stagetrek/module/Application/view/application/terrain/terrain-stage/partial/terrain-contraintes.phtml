@@ -1,0 +1,122 @@
+<?php
+
+use Application\Controller\Terrain\TerrainStageController;
+use Application\Entity\Db\ContrainteCursus;
+use Application\Entity\Db\NiveauEtude;
+use Application\Entity\Db\TerrainStage;
+
+
+/**
+ * @see TerrainStageController::afficherAction()
+ *
+
+ * @var TerrainStage $terrain
+ * @var ContrainteCursus[] $contraintes
+ */
+?>
+
+<div class="row row-cols-1 row-cols-md-2">
+    <div class="col">
+        <div class="card h-100 <?= ($terrain->getPreferencesAutorisees()) ? "alert-success" : "alert-warning"?>">
+            <div class="card-header">Restriction sur les préférences</div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                       Les terrains <strong><?= ($terrain->getPreferencesAutorisees()) ?
+                        "est ouvert" : "fermé"
+                            ?></strong>
+                       à la définition des préférences.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="card h-100 <?= ($terrain->getNiveauxEtudesContraints()->isEmpty()) ? "alert-success" : "alert-warning"?>">
+            <div class="card-header">Restriction en fonction du niveau d'étude</div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <?php if($terrain->getNiveauxEtudesContraints()->isEmpty()) :?>
+                            Aucune restriction sur le terrain de stage en fonction du niveau d'étude
+                        <?php else :
+                            $niveaux = $terrain->getNiveauxEtudesContraints()->toArray();
+                            usort($niveaux, function (NiveauEtude $n1, NiveauEtude $n2) {
+                            if ($n1->getOrdre() != $n2->getOrdre()) {
+                            return $n1->getOrdre() - $n2->getOrdre();
+                            }
+                            return strcmp($n1->getLibelle(), $n2->getLibelle());
+                            });
+                        ?>
+                            Le terrain de stage est <strong>fermé</strong> aux étudiants de :
+                        <ul>
+                            <?php foreach ($niveaux as $niveau) {
+                            echo sprintf("<li>%s</li>", $niveau->getLibelle());
+                            } ?>
+                        </ul>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">Contraintes de cursus</div>
+            <div class="card-body">
+                <?php $tableId = "liste-" . $terrain->getId() . "-contraintes"; ?>
+                <table id="<?= $tableId ?>" class="table table-hover table-condensed data-table">
+                    <thead>
+                    <tr>
+                        <th class="col-md-1">Portée</th>
+                        <th class="col-md-2">Libellé</th>
+                        <th class="col-md-4" data-priority="3">Description</th>
+                        <th class="col-md-1 text-center" data-type="num">
+                            Min
+                        </th>
+                        <th class="col-md-1 text-center" data-type="num">
+                            Max
+                        </th>
+                        <th class="col-md-2 text-center no-search" data-priority="4" data-type="num">
+                            Début d'application
+                        </th>
+                        <th class="col-md-2 text-center no-search" data-priority="4" data-type="num">
+                            Fin d'application
+                        </th>
+                    </tr>
+                    </thead>
+                    <?php foreach ($contraintes as $contrainte): ?>
+                        <tr>
+                            <td data-order="<?= $contrainte->getContrainteCursusPortee()->getOrdre()?>"><?= $contrainte->getContrainteCursusPortee()->getLibelle() ?></td>
+                            <td><?= $contrainte->getLibelle() ?> (<?= $contrainte->getAcronyme() ?>)</td>
+                            <td><?= $contrainte->getDescription() ?></td>
+                            <td data-order="<?= ($contrainte->getNombreDeStageMin()) ?? PHP_INT_MAX ?>"
+                                class="text-center"><?= ($contrainte->getNombreDeStageMin()) ? $contrainte->getNombreDeStageMin() : "-" ?></td>
+                            <td data-order="<?= ($contrainte->getNombreDeStageMax()) ?? PHP_INT_MIN ?>"
+                                class="text-center">
+                                <?= ($contrainte->getNombreDeStageMax()) ? $contrainte->getNombreDeStageMax() : "-" ?></td>
+                            <td data-order="<?= $contrainte->getDateDebut()->getTimestamp() ?>" class="text-center">
+                                <?= ($contrainte->getDateDebut()->format('d/m/Y')) ?>
+                            </td>
+                            <td data-order="<?= $contrainte->getDateFin()->getTimestamp() ?>" class="text-center">
+                                <?= ($contrainte->getDateFin()->format('d/m/Y')) ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        let options = generateDataTableSetings({});
+        let tableInstance = $("#<?= $tableId ?>").DataTable(options);
+    })
+</script>

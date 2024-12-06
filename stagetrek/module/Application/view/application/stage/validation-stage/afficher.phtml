@@ -1,0 +1,16 @@
+<?php
+
+use Application\Entity\Db\Stage;
+use Application\View\Helper\Stages\ValidationStageViewHelper;
+
+/**
+ * @see ValidationStageController::afficherAction()
+ * @var Stage $stage
+ * @var bool $vueEtudiante
+ */
+
+/** @var ValidationStageViewHelper $vh */
+$vh = $this->validation();
+$vh->setStage($stage);
+$vh->setVueEtudiante($vueEtudiante);
+echo $vh->render();

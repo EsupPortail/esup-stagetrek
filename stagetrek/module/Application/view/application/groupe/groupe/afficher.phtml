@@ -1,0 +1,129 @@
+<?php
+
+use Application\Controller\Groupe\GroupeController;
+use Application\Entity\Db\Groupe;
+use Application\Provider\Privilege\EtudiantPrivileges;
+use Application\Provider\Privilege\SessionPrivileges;
+use Application\Provider\Privilege\StagePrivileges;
+use Application\View\Helper\Etudiant\EtudiantViewHelper;
+use Application\View\Helper\Groupe\GroupeViewHelper;
+use Laminas\View\Renderer\PhpRenderer;
+
+/**
+ * @see GroupeController::afficherAction()
+ *
+
+ * @var Groupe $groupe
+ */
+
+/** @var GroupeViewHelper $vh */
+$vh = $this->groupe($groupe);
+$canSeeStudents = $this->isAllowed(EtudiantPrivileges::getResourceId(EtudiantPrivileges::ETUDIANT_AFFICHER));
+$canModifierStudents = $this->isAllowed(EtudiantPrivileges::getResourceId(EtudiantPrivileges::GROUPE_ADMINISTRER_ETUDIANTS));
+
+$canSeeStages = $this->isAllowed(SessionPrivileges::getResourceId(SessionPrivileges::SESSION_STAGE_AFFICHER));
+/** @var EtudiantViewHelper $evh */
+$evh = $this->etudiant();
+?>
+
+<h1 class="page-header">
+    <span class="icon">
+        <i class="fas fa-users"></i>
+    </span>
+    <?= $vh->lienGroupePrecedent() ?>
+    Fiche du groupe <?= $groupe->getLibelle() ?>
+    <?= $vh->lienGroupeSuivant() ?>
+    <br/>
+    <small class="text-muted"> <?= $groupe->getAnneeUniversitaire()->getLibelle() ?> </small>
+</h1>
+
+<nav>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <button class="nav-link active" id="nav-infos" data-bs-toggle="tab" data-bs-target="#infos" type="button"
+                role="tab" aria-controls="infos" aria-selected="true">Informations
+        </button>
+
+        <?php if ($canSeeStudents) : ?>
+            <button class="nav-link" id="nav-etudiants" data-bs-toggle="tab" data-bs-target="#etudiants" type="button"
+                    role="tab" aria-controls="etudiants" aria-selected="false">Etudiants
+            </button>
+        <?php endif; ?>
+
+        <?php if ($canSeeStages) : ?>
+            <button class="nav-link" id="nav-sessions" data-bs-toggle="tab" data-bs-target="#sessions" type="button"
+                    role="tab" aria-controls="sessions" aria-selected="false">Sessions de stages
+            </button>
+        <?php endif; ?>
+    </div>
+</nav>
+
+<div class="card tab-content" id="nav-tabContent">
+    <div class="tab-pane fade show active" id="infos" role="tabpanel" aria-labelledby="nav-infos">
+        <div class="card-header card-sub-header text-end">
+            <?= $vh->lienModifier() ?>
+            <?= $vh->lienSupprimer() ?>
+        </div>
+        <?php
+        /** @see GroupeController::afficherInfosAction() */
+        $url = $this->url(GroupeController::ROUTE_AFFICHER_INFOS, ['groupe' => $groupe->getId()], [], true);
+        ?>
+        <div id="infos-content" class="card-body" data-url="<?= $url ?>">
+            <?= $vh->renderInfos() ?>
+        </div>
+        <div class="card-footer">
+            <?= $this->backButton("Liste des groupes")->backTo($this->url(GroupeController::ROUTE_INDEX, [], [], true)) ?>
+        </div>
+    </div>
+
+
+    <div class="tab-pane fade" id="etudiants" role="tabpanel" aria-labelledby="nav-etudiants">
+        <?php if ($canModifierStudents) : ?>
+        <div class="card-header card-sub-header text-end">
+            <?= $vh->lienAjouterEtudiants() ?>
+            <?= $vh->lienRetirerEtudiants() ?>
+        </div>
+        <?php endif; ?>
+        <?php
+        /** @see GroupeController::listerEtudiantsAction() */
+        $url = $this->url(GroupeController::ROUTE_LISTER_ETUDIANTS, ['groupe' => $groupe->getId()], [], true);
+        ?>
+        <div class="card-body" id="etudiants-content" data-url="<?= $url ?>">
+            <?= $vh->renderListeEtudiants(); ?>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="sessions" role="tabpanel" aria-labelledby="nav-sessions">
+        <?php
+        /** @see GroupeController::listerSessionsAction() */
+        $url = $this->url(GroupeController::ROUTE_LISTER_SESSIONS, ['groupe' => $groupe->getId()], [], true);
+        ?>
+        <div id="sessions-content" class="card-body" data-url="<?= $url ?>">
+            <?= $vh->renderListeSessionsStages(); ?>
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    //Rechargement de la page sur event
+    $(function () {
+        let body = $("body");
+        body.on("<?=GroupeController::EVENT_MODIFIER?> "
+            , function (event) {//Possiblement le libellé change aussi
+                window.location.href = "<?= $this->url(GroupeController::ROUTE_AFFICHER, ["groupe" => $groupe->getId()], [], true) ?>";
+            });
+
+        body.on("<?=GroupeController::EVENT_SUPPRIMER?> "
+            , function (event) {
+                $("#nav-tabContent > div").empty().append(
+                    "<div class='tab-pane show'><div class='m-3 alert alert-info'>" +
+                    "Le groupe vient d'être supprimé, vous allez être rediriger dans quelques secondes." +
+                    "</div></div>"
+                );
+                setTimeout(function () {
+                    window.location.href = "<?= $this->url(GroupeController::ROUTE_INDEX)?>";
+                }, 2000);
+            });
+    });
+</script>
+

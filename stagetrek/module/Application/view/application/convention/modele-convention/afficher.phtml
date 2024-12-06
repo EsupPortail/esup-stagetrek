@@ -1,0 +1,135 @@
+<?php
+
+use Application\Controller\Convention\ModeleConventionController;
+use Application\View\Helper\Convention\ModeleConventionViewHelper;
+
+/**
+ * @see ModeleConventionController::afficherAction()
+ * @var \Application\Entity\Db\ModeleConventionStage $modele
+ */
+
+
+/** @var ModeleConventionViewHelper $vh */
+$vh = $this->modeleConvention($modele);
+$canEdit = $vh->actionAllowed(ModeleConventionController::ACTION_MODIFIER);
+$canDelete = $vh->actionAllowed(ModeleConventionController::ACTION_SUPPRIMER);
+
+?>
+
+<h1 class="page-header">
+    <span class="icon">
+        <i class="fas fa-file"></i>
+    </span>
+    Modéle de convention de stage
+    <br/>
+    <small class="text-muted"> <?= $modele->getLibelle() ?>
+    </small>
+</h1>
+
+
+<nav>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <button class="nav-link active" id="nav-infos" data-bs-toggle="tab" data-bs-target="#infos" type="button"
+                role="tab" aria-controls="infos" aria-selected="true">Informations
+        </button>
+        <button class="nav-link" id="nav-rendu" data-bs-toggle="tab" data-bs-target="#rendu" type="button"
+                role="tab" aria-controls="rendu" aria-selected="false">Rendu
+        </button>
+        <button class="nav-link" id="nav-css" data-bs-toggle="tab" data-bs-target="#css" type="button"
+                role="tab" aria-controls="css" aria-selected="false">Mise en page
+        </button>
+        <button class="nav-link" id="nav-terrains" data-bs-toggle="tab" data-bs-target="#terrains" type="button"
+                role="tab" aria-controls="terrains" aria-selected="false">Terrains
+        </button>
+    </div>
+</nav>
+
+<div class="card tab-content" id="nav-tabContent">
+    <?php if ($canEdit || $canDelete) : ?>
+        <div class="card-header card-sub-header text-end">
+            <?= $vh->lienModifier() ?>
+            <?= $vh->lienSupprimer() ?>
+        </div>
+    <?php endif; ?>
+    <div class="tab-pane fade show active" id="infos" role="tabpanel" aria-labelledby="nav-infos">
+
+        <div id="infos-content" class="card-body">
+            <?= $vh->renderInfos() ?>
+        </div>
+        <div class="card-footer">
+            <?= $this->backButton("Liste des modéles")->backTo($this->url(ModeleConventionController::ROUTE_INDEX, [], [], true)) ?>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="rendu" role="tabpanel" aria-labelledby="nav-rendu">
+        <div class="card-body">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">Corps du modéle</div>
+                        <div class="card-body">
+                            <style> <?php echo $modele->getCss(); ?> </style>
+                            <?php echo html_entity_decode($modele->getCorps()); ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="css" role="tabpanel" aria-labelledby="nav-css">
+        <div class="card-body">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">Régles CSS de mise en pages</div>
+                        <div class="card-body">
+                            <?php $css = $modele->getCss();
+                            if ($css && $css != ""):
+                                ?>
+                                <?= $css ?>
+                            <?php else : ?>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="alert alert-info">
+                                            Aucune régle de mise en page définie.
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="terrains" role="tabpanel" aria-labelledby="nav-terrains">
+        <div class="card-body">
+            <?= $vh->renderListeTerrains() ?>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    let body = $("body");
+    body.on("<?= ModeleConventionController::EVENT_MODIFIER ?> ",function (event) {
+            window.location.reload();
+        }
+    );
+
+    body.on("<?=ModeleConventionController::EVENT_SUPPRIMER?> "
+        , function (event) {
+            $("#nav-tabContent > div").empty().append(
+                "<div class='tab-pane show'><div class='m-3 card card-info'><div class='card-body'><div class='alert alert-info'>" +
+                "Le modéle de convention vient d'être supprimé, vous allez être rediriger dans quelques secondes." +
+                "</div></div>"
+            );
+            setTimeout(function () {
+                window.location.href = "<?= $this->url(ModeleConventionController::ROUTE_INDEX)?>";
+            }, 2000);
+        });
+</script>

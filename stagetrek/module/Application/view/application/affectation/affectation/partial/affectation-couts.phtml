@@ -1,0 +1,84 @@
+<?php
+
+use Application\Controller\Affectation\AffectationController;
+use Application\Entity\Db\AffectationStage;
+
+/**
+ * @see AffectationController::affectationStage()
+ * @var AffectationStage $affectationStage
+ * @var bool $vueEtudiante
+ */
+if (!isset($vueEtudiante)) {
+    $vueEtudiante = false;
+}
+
+$stage = $affectationStage->getStage();
+?>
+
+<div class="row row-cols-1 row-cols-md-2">
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-header">
+                Coût de l'affectation
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <strong>Coût du terrain</strong>
+                    </div>
+                    <div class="col-md-4">
+                        <?= $affectationStage->getCoutTerrain() ?>
+                    </div>
+                    <div class="col-md-8">
+                        <strong> <?= ($affectationStage->getBonusMalus() >= 0) ? "+ Malus" : "- Bonus" ?></strong>
+                    </div>
+                    <div class="col-md-4">
+                        <?= abs($affectationStage->getBonusMalus()) ?>
+                    </div>
+                </div>
+                <hr/>
+                <div class="row">
+                    <div class="col-md-8">
+                        <strong>Coût total</strong>
+                    </div>
+                    <div class="col-md-4">
+                        <?= $affectationStage->getCout() ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-header">
+                Score de l'étudiant
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <strong>Ordre d'affectation</strong>
+                    </div>
+                    <div class="col-md-4">
+                        <?= ($stage->getOrdreAffectation()) ?? "<span class='text-muted'>Non définie</span>" ?>
+                    </div>
+                </div>
+                <hr/>
+                <div class="row">
+                    <div class="col-md-8">
+                        <strong>Score avant l'affectation</strong>
+                    </div>
+                    <div class="col-md-4">
+                        <?= ($stage->getScorePreAffectation()) ?? "<span class='text-muted'>Non calculé</span>" ?>
+                    </div>
+                    <div class="col-md-8">
+                        <strong>Score après l'affectation</strong>
+                    </div>
+                    <div class="col-md-4">
+                        <?= ($stage->getScorePostAffectation()) ?? "<span class='text-muted'>Non calculé</span>" ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,14 @@
+<?php
+
+use Application\Entity\Db\Etudiant;
+use Application\View\Helper\Etudiant\EtudiantViewHelper;
+use Laminas\View\Renderer\PhpRenderer;
+
+/**
+ * @see \Application\Controller\AnneeUniversitaire\AnneeUniversitaireController::afficherInfosAction()
+ * @var Etudiant $etudiant
+ */
+
+/** @var EtudiantViewHelper $vh */
+$vh = $this->etudiant($etudiant);
+echo $vh->renderInfos();

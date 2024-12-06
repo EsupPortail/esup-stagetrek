@@ -1,0 +1,89 @@
+<?php
+
+use Application\Controller\Notification\MessageInfoController;
+use Application\Entity\Db\MessageInfo;
+use Application\Provider\Misc\Icone;
+use Application\Provider\Privilege\MessagePrivilege;
+use UnicaenUtilisateur\Entity\Db\Role;
+
+/**
+ * @see MessageInfoController::listerAction()
+ * @var MessageInfo[] $messages
+ */
+$vh = $this->messageInfo();
+$canEdit = $vh->hasPrivilege(MessagePrivilege::MESSAGE_INFO_MODIFIER);
+$canDelete = $vh->hasPrivilege(MessagePrivilege::MESSAGE_INFO_SUPPRIMER);
+?>
+<?php $tableId = "liste-messages-infos" ?>
+
+<div class="row">
+    <div class="col-md-12">
+        <table id="<?= $tableId ?>" class="table table-hover table-condensed table-data"
+               data-table-order="5,desc,0,desc,3,desc"
+        >
+            <thead>
+            <tr>
+                <th class="no-search" data-type="num">Priorité</th>
+                <th class="col-md-8">Titre</th>
+                <th class="none no-sort">Message</th>
+                <th class="col-md-1" data-type="num">Date</th>
+                <th class="col-md-1">Visibilité</th>
+                <th class="col-md-1" data-type="num">Actif</th>
+                <?php if ($canEdit || $canDelete) : ?>
+                    <th class="no-sort no-search col-md-1">Actions</th>
+                <?php endif; ?>
+            </tr>
+            </thead>
+            <tbody>
+            <?php
+            /** @var MessageInfo $message */
+            foreach ($messages as $message) :
+                $vh->setMessageInfo($message);
+                ?>
+                <tr>
+                    <td class="text-center" data-order="<?= $message->getPriorityOrder() ?>">
+                        <?= $vh->renderPriorityIcone() ?></td>
+                    <td><?= $message->getTitle() ?> </td>
+                    <td>
+                        <?= $message->getMessage() ?>
+                    </td>
+                    <td data-order="<?= $message->getDateMessage()->getTimestamp() ?>">
+                        <?= $message->getDateMessage()->format('d/m/Y') ?>
+                    </td>
+                    <td>
+                        <?php if ($message->getRoles()->count() > 0) :
+                            $roles = $message->getRoles()->toArray();
+                            usort($roles, function (Role $r1, Role $r2) {
+                                return strcmp($r1->getLibelle(), $r2->getLibelle());
+                            });
+                            ?>
+                            <ul>
+                                <?php
+                                /** @var Role $role */
+                                foreach ($roles as $role) {
+                                    echo sprintf("<li>%s</li>", $role->getLibelle());
+                                }
+                                ?>
+                            </ul>
+                        <?php else: ?>
+                            <ul>
+                                <li>Publique</li>
+                            </ul>
+                        <?php endif; ?>
+                    </td>
+                    <td class="text-center" data-order="<?= ($message->isActif() ? 1 : 0) ?>">
+                        <i class='fas <?= ($message->isActif()) ? "fas fa-circle text-success" : "fas fa-circle text-danger" ?>'></i>
+                    </td>
+                    <?php if ($canEdit || $canDelete) : ?>
+                        <td class="text-end">
+                            <?= $vh->lienModifier(Icone::MODIFIER, ['class' => 'text-primary ajax-modal']) ?>
+                            <?= $vh->lienSupprimer(Icone::SUPPRIMER, ['class' => 'text-danger ajax-modal']) ?>
+                        </td>
+                    <?php endif; ?>
+                </tr>
+            <?php endforeach ?>
+            <tbody>
+        </table>
+    </div>
+</div>
+

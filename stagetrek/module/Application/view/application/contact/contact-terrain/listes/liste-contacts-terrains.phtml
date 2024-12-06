@@ -1,0 +1,104 @@
+<?php
+
+use Application\Controller\Contact\ContactTerrainController;
+use Application\Entity\Db\Contact;
+use Application\Entity\Db\ContactTerrain;
+use Application\Provider\Misc\Icone;
+use Application\View\Helper\Contacts\ContactTerrainViewHelper;
+
+/**
+ * @see ContactTerrainController::listerAction()
+ * @var Contact $contact
+ * @var ContactTerrain[] $contactsTerrains
+ */
+
+
+$tableId = "liste-contacts-terrains";
+/** @var ContactTerrainViewHelper $vh */
+$vh = $this->contactTerrain();
+$vh->setContact($contact);
+
+$canAdd = $vh->actionAllowed(ContactTerrainController::ACTION_AJOUTER);
+?>
+
+<div class="row">
+    <div class="col-md-12">
+
+        <table id="<?= $tableId ?>" class="table table-hover table-condensed table-data<table table-header-rotated">
+        <thead>
+        <tr>
+            <th></th>
+            <th class="no-search no-sort rotate-45"><div class="first"><span> Visbile par l'étudiant</span></div></th>
+            <th class="no-search no-sort rotate-45"><div><span> Responsable du stage </span></div></th>
+            <th class="no-search no-sort rotate-45"><div><span>Peut valider le stage</span></div></th>
+            <th class="no-search no-sort rotate-45"><div><span>Signataire de la convention</span></div></th>
+            <th class="no-search no-sort rotate-45"><div><span>Mail de validation</span></div></th>
+            <th class="no-search no-sort rotate-45"><div><span>Mail de rappel de validation</span></div></th>
+            <th class="no-search no-sort"></th>
+            <th class="no-search no-sort"></th>
+            </tr>
+            <tr>
+                <th class="col-md-6">Terrain</th>
+                <th class="no-search"></th>
+                <th class="no-search"></th>
+                <th class="no-search"></th>
+                <th class="no-search"></th>
+                <th class="no-search"></th>
+                <th class="no-search"></th>
+                <th class="col-md no-search no-sort"></th>
+                <th class="no-sort no-search text-end" data-priority="0">Actions</th>
+            </thead>
+            <tbody>
+            <?php /** @var ContactTerrain $ct */
+            foreach ($this->contactsTerrains as $ct):
+                $vh->setContactTerrain($ct);
+                $terrain = $ct->getTerrainStage();
+                ?>
+                <tr class="">
+                    <td>
+                        <?= $terrain->getLibelle()?>
+                        (<?= $terrain->getCategorieStage()->getAcronyme()?>)
+                    </td>
+                    <td class="text-center"><span class="icon
+                        <?= ($ct->isVisibleParEtudiant()) ? "icon-checked text-success" : "icon-unchecked text-danger" ?>
+                   "></span></td>
+                    <td class="text-center"><span class="icon
+                        <?= ($ct->isResponsableStage()) ? "icon-checked text-success" : "icon-unchecked text-danger" ?>
+                   "></span></td>
+                    <td class="text-center"><span class="icon
+                        <?= ($ct->canValiderStage()) ? "icon-checked text-success" : "icon-unchecked text-danger" ?>
+                   "></span></td>
+                    <td class="text-center"><span class="icon
+                        <?= ($ct->isSignataireConvention()) ? "icon-checked text-success" : "icon-unchecked text-danger" ?>
+                   "></span></td>
+                    <td class="text-center"><span class="icon
+                        <?= ($ct->sendMailAutoValidationStage()) ? "icon-checked text-success" : "icon-unchecked text-danger" ?>
+                   "></span></td>
+                    <td class="text-center"><span class="icon
+                        <?= ($ct->sendMailAutoRappelValidationStage()) ? "icon-checked text-success" : "icon-unchecked text-danger" ?>
+                   "></span></td>
+                    <td></td>
+                    <td class="text-end">
+                        <?php $terrainVh = $this->terrainStage();
+                            $terrainVh->setTerrainStage($terrain);
+                            echo $terrainVh->lienAfficher(Icone::AFFICHER, ['class' => "text-primary"]);
+                         ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+            <tbody>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        let options = generateDataTableSetings({
+            stateSave: true,
+            retrieve: true,
+            "lengthMenu": [[50, 100, 250, -1], [50, 100, 250, "Tous"]],
+            "order": [[0, "asc"]],
+        })
+        let tableInstance = $("#<?= $tableId ?>").DataTable(options);
+    });
+</script>

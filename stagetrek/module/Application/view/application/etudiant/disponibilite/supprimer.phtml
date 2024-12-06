@@ -1,0 +1,29 @@
+<?php
+
+use Application\Controller\Etudiant\DisponibiliteController;
+use Application\Form\Misc\ConfirmationForm;
+
+
+/**
+ * @see DisponibiliteController::supprimerAction()
+ * @var string              $title
+ * @var ConfirmationForm    $form
+ */
+?>
+
+<div class="card card-danger">
+    <h1 class="page-header card-header">
+        <span class="icon icon-supprimer"></span>
+        <?= $title ?>
+    </h1>
+    <div class="card-body">
+        <?= $this->confirmation($form); ?>
+    </div>
+</div>
+<script>
+    $(function () {
+        let body = $("body");
+        body.off("<?= DisponibiliteController::EVENT_SUPPRIMER?>", closeModal)
+            .one("<?= DisponibiliteController::EVENT_SUPPRIMER?>", closeModal);
+    });
+</script>

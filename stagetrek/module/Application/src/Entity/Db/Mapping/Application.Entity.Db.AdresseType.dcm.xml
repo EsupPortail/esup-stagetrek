@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Application\Entity\Db\AdresseType" table="adresse_type">
+    <unique-constraints>
+      <unique-constraint name="adresse_type_id_unique" columns="id"/>
+      <unique-constraint name="adresse_type_code_unique" columns="code"/>
+
+    </unique-constraints>
+    <id name="id" type="bigint" column="id">
+      <generator strategy="SEQUENCE"/>
+      <sequence-generator sequence-name="adresse_type_id_seq" allocation-size="1" initial-value="1"/>
+    </id>
+
+    <field name="code" type="string" column="code" length="20" nullable="false">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+
+    <field name="libelle" type="string" column="libelle" length="255" nullable="false">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+  </entity>
+</doctrine-mapping>

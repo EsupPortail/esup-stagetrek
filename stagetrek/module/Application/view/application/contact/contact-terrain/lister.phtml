@@ -1,0 +1,18 @@
+<?php
+
+use Application\Controller\Contact\ContactTerrainController;
+use Application\Entity\Db\Contact;
+use Application\Entity\Db\ContactTerrain;
+use Application\View\Helper\Contacts\ContactTerrainViewHelper;
+use Laminas\View\Renderer\PhpRenderer;
+
+/**
+ * @see ContactTerrainController::listerAction()
+ * @var Contact $contact
+ * @var ContactTerrain[] $contactsTerrains
+ */
+
+/** @var ContactTerrainViewHelper $vh */
+$vh = $this->contactTerrain();
+$vh->setContact($contact);
+echo $vh->renderListe($contactsTerrains);

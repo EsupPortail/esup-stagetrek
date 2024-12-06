@@ -1,0 +1,15 @@
+<?php
+
+use Application\Controller\Stage\StageController;
+use Application\Entity\Db\Stage;
+use Application\View\Helper\Stages\StageViewHelper;
+use Laminas\View\Renderer\PhpRenderer;
+
+/**
+ * @see StageController::listerStagesAction()
+ * @var Stage[] $stages
+ * @var StageViewHelper $vh
+ */
+
+$vh = $this->stage();
+echo $vh->renderListe($stages);

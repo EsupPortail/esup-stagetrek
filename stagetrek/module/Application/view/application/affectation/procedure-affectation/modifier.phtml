@@ -1,0 +1,35 @@
+<?php
+
+use Application\Controller\Affectation\ProcedureAffectationController;
+use Application\Form\Affectation\ProcedureAffectationForm;
+use Application\View\Helper\Affectation\ProcedureAffectationViewHelper;
+
+
+/**
+ *
+ * @see ProcedureAffectationController::modifierAction()
+ * @var string $title
+ * @var ProcedureAffectationForm $form
+ */
+
+/** @var ProcedureAffectationViewHelper $vh */
+$vh = $this->procedureAffectation();
+?>
+
+<div class="card card-primary">
+    <h1 class="page-header card-header">
+        <span class="icon icon-modifier"></span>
+        <?= $title ?>
+    </h1>
+    <div class="card-body">
+        <?= $vh->renderForm($form); ?>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        let body = $("body");
+        body.off("<?= ProcedureAffectationController::EVENT_MODIFIER?>", closeModal)
+            .one("<?= ProcedureAffectationController::EVENT_MODIFIER?>", closeModal);
+    })
+</script>

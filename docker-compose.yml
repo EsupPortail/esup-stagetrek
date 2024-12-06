@@ -1,0 +1,142 @@
+version: '2.1'
+services:
+  stagetrek-core:
+    image: stagetrek-core
+    container_name: stagetrek-core
+    build:
+      context: .
+      dockerfile: ./deploy_configuration/docker/DockerfileCore
+      args:
+        PHP_VERSION: 8.2
+        HTTP_PROXY: ${PROXY_URL}
+        APPLICATION_ENV: ${APPLICATION_ENV:-test}
+    env_file: .env
+    volumes:
+      - ./stagetrek:/var/www/html/stagetrek
+      - ./stagetrek/vendor:/var/www/html/stagetrek/vendor
+      - ./.env:/var/www/html/stagetrek/.env
+      - ./deploy_configuration/php/error_reporting.ini:/usr/local/etc/php/conf.d/error_reporting.ini
+      - ./deploy_configuration/php/90-dev.ini:/usr/local/etc/php/php.ini
+      - ./deploy_configuration/php/php-fpm.conf:/usr/local/etc/php-fpm.conf
+      - ./deploy_configuration/php/www.conf:/usr/local/etc/php-fpm.d/www.conf
+      - ./stagetrek/data:/var/www/html/stagetrek/data
+      - ./bin/logs:/var/log/stagetrek
+#     TimeZone pour l'image basé sur celle du host
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - stagetrek-network
+    user: root
+    ports:
+      - 9000:9000
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    working_dir: /var/www/html/stagetrek
+    entrypoint: ["/run/docker-entrypoint-init.d/entrypoint.sh"]
+#    entrypoint: ["/bin/sh", "-c"]
+#    command:
+#    - |
+#        composer install &&
+#        php-fpm
+
+#  Conf apache
+  stagetrek-service:
+    container_name: stagetrek-service
+    build:
+      context: .
+      dockerfile: ./deploy_configuration/docker/DockerfileApacheService
+      args:
+        HTTP_PROXY: ${PROXY_URL}
+    working_dir: /var/www/html/stagetrek/public
+#    Note : pour ativer shibb : décomenté l'entry point si dessous et commanté l'autre (+ la cmd)
+#    entrypoint: ["/run/docker-entrypoint-init.d/shib_entry.sh"]
+    entrypoint: ["/bin/bash", "-c"]
+    command:
+      - |        
+        a2dismod shib &&
+        a2disconf shib
+        apachectl configtest &&
+        /usr/bin/supervisord -n -c /supervisord.conf
+    environment:
+      STAGETREK_INSTANCE_URL: ${STAGETREK_INSTANCE_URL:-localhost}
+      STAGETREK_CORE_POD_NAME: stagetrek-core
+      APPLICATION_ENV: ${APPLICATION_ENV:-test}
+      APACHE_LOG_DIR: '/var/log/apache2'
+    networks:
+      - stagetrek-network
+    volumes:
+      - ./data/cache-apache/:/var/www/html/stagetrek/cache
+      - ./stagetrek:/var/www/html/stagetrek
+      - ./deploy_configuration/apache/supervisor-localhost.conf:/supervisord.conf
+      - ./deploy_configuration/apache/stagetrek-localhost.conf:/etc/apache2/sites-available/000-default.conf
+      - ./deploy_configuration/apache/stagetrek-ssl.conf:/etc/apache2/sites-available/default-ssl.conf
+      #     TimeZone pour l'image basé sur celle du host
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - 8080:80
+      - 8443:443
+
+  stagetrek-db:
+    container_name: stagetrek-db
+    build:
+      context: .
+      dockerfile: ./deploy_configuration/docker/DockerfileDatabase
+      args:
+        HTTP_PROXY: ${PROXY_URL}
+    restart: always
+    environment:
+      #On ne fournis ici que les données utiles à la BDD et non toutes celle présente dans .env
+      POSTGRES_USER: ${DATABASE_USER:-admin}
+      POSTGRES_PASSWORD: ${DATABASE_PSWD:-admin}
+      POSTGRES_DB: ${DATABASE_NAME:-demo}
+      PGDATA: /stagetrek-db
+    networks:
+      - stagetrek-network
+    ports:
+      - 8432:5432
+    volumes:
+      - ./data/stagetrek-db:/stagetrek-db:rw
+      - ./deploy_configuration/db/:/scripts_to_init/
+      - ./deploy_configuration/db/autoload.sh:/docker-entrypoint-initdb.d/autoload.sh
+      #     TimeZone pour l'image basé sur celle du host
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
+  stagetrek-timemachine:
+    build:
+      context: .
+      dockerfile: ./deploy_configuration/docker/DockerfileDatabaseTimeMachine
+      args:
+        HTTP_PROXY: ${PROXY_URL}
+    container_name: stagetrek-timemachine
+    networks:
+      - stagetrek-network
+    env_file: .env
+    environment:
+      # variables de la bdd
+      DATABASE_USER: ${DATABASE_USER:-admin}
+      DATABASE_PSWD: ${DATABASE_PSWD:-admin}
+      DATABASE_HOST: ${DATABASE_HOST:-stagetrek-db}
+      DATABASE_PORT: ${DATABASE_PORT:-8432}
+      DATABASE_NAME: ${DATABASE_NAME:-demo}
+      # variables du stockage S3
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-admin}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-admin}
+      BUCKET_INSTANCE_NAME: ${BUCKET_INSTANCE_NAME:-admin}
+      ENDPOINT_URL: ${ENDPOINT_URL:-admin}
+    volumes:
+      #     TimeZone pour l'image basé sur celle du host
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
+networks:
+  stagetrek-network:
+    driver: bridge
+
+volumes:
+  stagetrek-db:
+  deploy_configuration:
+  cache-apache:
+  stagetrek:
+  data:

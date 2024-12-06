@@ -1,0 +1,14 @@
+<?php
+
+use Application\Controller\AnneeUniversitaire\AnneeUniversitaireController;
+use Application\Entity\Db\AnneeUniversitaire;
+
+
+/**
+ * @see AnneeUniversitaireController::listerAction()
+ * @var AnneeUniversitaire[] $annees
+ */
+
+    $vh = $this->anneeUniversitaire();
+    echo $vh->renderListe($annees);
+?>

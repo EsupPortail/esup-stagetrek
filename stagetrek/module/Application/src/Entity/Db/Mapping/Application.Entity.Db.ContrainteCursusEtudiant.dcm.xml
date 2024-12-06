@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Application\Entity\Db\ContrainteCursusEtudiant" table="contrainte_cursus_etudiant">
+    <indexes>
+      <index name="IDX_94C043440AEF4B9" columns="etudiant_id"/>
+      <index name="IDX_94C04346CE5EAC1" columns="contrainte_id"/>
+    </indexes>
+
+    <unique-constraints>
+      <unique-constraint name="contrainte_cursus_etudiant_unique" columns="etudiant_id,contrainte_id"/>
+    </unique-constraints>
+    <id name="id" type="bigint" column="id">
+      <generator strategy="SEQUENCE"/>
+      <sequence-generator sequence-name="contrainte_cursus_etudiant_id_seq" allocation-size="1" initial-value="1"/>
+    </id>
+
+    <many-to-one field="etudiant" target-entity="Application\Entity\Db\Etudiant" fetch="LAZY">
+      <join-columns>
+        <join-column name="etudiant_id" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+
+    <many-to-one field="contrainteCursus" target-entity="Application\Entity\Db\ContrainteCursus" fetch="LAZY">
+      <join-columns>
+        <join-column name="contrainte_id" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+
+<!--    Valeurs pour la satisfaction -->
+    <field name="nbEquivalences" type="integer" column="nb_equivalences" nullable="true">
+      <options>
+        <option name="unsigned"/>
+        <option name="default">0</option>
+      </options>
+    </field>
+
+    <field name="nbStagesValidant" type="integer" column="nb_stages_validant" nullable="true">
+      <options>
+        <option name="unsigned"/>
+        <option name="default">0</option>
+      </options>
+    </field>
+    <field name="resteASatisfaire" type="integer" column="reste_a_satisfaire" nullable="true">
+      <options>
+        <option name="unsigned"/>
+        <option name="default">0</option>
+      </options>
+    </field>
+<!--    État -->
+    <field name="active" type="boolean" column="active" nullable="true">
+      <options>
+        <option name="default">1</option>
+      </options>
+    </field>
+    <field name="valideeCommission" type="boolean" column="validee_commission" nullable="true">
+      <options>
+        <option name="default"/>
+      </options>
+    </field>
+    <field name="isSat" type="boolean" column="is_sat" nullable="true">
+      <options>
+        <option name="default"/>
+      </options>
+    </field>
+
+
+    <!--    État de l'année-->
+    <many-to-many field="etats" target-entity="UnicaenEtat\Entity\Db\EtatInstance" fetch="LAZY">
+      <join-table name="contrainte_cursus_etudiant_etat_linker">
+        <join-columns>
+          <join-column name="contrainte_cursus_etudiant_id" referenced-column-name="id"/>
+        </join-columns>
+        <inverse-join-columns>
+          <join-column name="etat_instance_id" referenced-column-name="id"/>
+        </inverse-join-columns>
+      </join-table>
+    </many-to-many>
+
+  </entity>
+
+</doctrine-mapping>

@@ -1,0 +1,15 @@
+<?php
+
+use Application\Controller\Etudiant\EtudiantController;
+use Application\Entity\Db\Etudiant;
+use Application\View\Helper\Etudiant\EtudiantViewHelper;
+use Laminas\View\Renderer\PhpRenderer;
+
+/**
+ * @see EtudiantController::listerStagesAction()
+ * @var Etudiant $etudiant
+ * @var EtudiantViewHelper $vh
+ */
+
+$vh = $this->etudiant($etudiant);
+echo $vh->renderListeStages();

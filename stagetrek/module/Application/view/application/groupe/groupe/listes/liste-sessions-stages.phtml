@@ -1,0 +1,85 @@
+<?php
+
+use Application\Entity\Db\Groupe;
+use Application\Entity\Db\SessionStage;
+use Application\View\Helper\SessionsStages\SessionStageViewHelper;
+
+
+/**
+
+ * @var Groupe $groupe
+ */
+
+/** @var SessionStageViewHelper $vh */
+$vh = $this->sessionStage();
+
+$tableId = "liste-sessions-stage-".$groupe->getId();
+?>
+
+
+<div class="row">
+    <div class="col-md-12">
+
+        <?php // Liste des étudiants que l'on peut ajouter ?>
+        <table id="<?= $tableId ?>" class="table table-hover table-condensed">
+            <thead>
+            <tr>
+                <th class="col-md-7">Libellé</th>
+                <th class="col-md-1" data-type="num">Début</th>
+                <th class="col-md-1" data-type="num">Fin</th>
+                <th class="col-md-3 text-end" data-type="num">Etat</th>
+            </thead>
+            <tbody>
+            <?php
+            /** @var SessionStage $session */
+            foreach ($groupe->getSessionsStages() as $session):
+                $vh->setSessionStage($session);
+                $etat = $session->getEtatActif();
+                $bg = match (true) {
+                    $session->hasEtatError() => "table-danger",
+                    $session->hasEtatAlerte() => "table-danger",
+                    $session->hasEtatDesactive(), $session->hasEtatFutur() => "table-muted",
+                    $session->hasEtatPhaseChoix(), $session->hasEtatPhaseAffectation(), $session->hasEtatAVenir(), $session->hasEtatEnCours(), $session->hasEtatPhaseValidation(), $session->hasEtatPhaseEvaluation() => "table-primary",
+                    $session->hasEtatTerminee() => "table-success",
+                    default => "table-danger",
+                };
+                ?>
+                <tr class="<?= $bg ?>">
+                    <td data-filter="<?=  $session->getLibelle() ?>"
+                        data-order="<?=  $session->getLibelle() ?>"
+                    >
+                        <?= $vh->lienAfficher() ?>
+                    </td>
+                    <td data-order="<?= $session->getDateDebutStage()->getTimestamp() ?>">
+                        <?= $session->getDateDebutStage()->format('d/m/Y') ?>
+                    </td>
+                    <td data-order="<?= $session->getDateFinStage()->getTimestamp() ?>">
+                        <?= $session->getDateFinStage()->format('d/m/Y') ?>
+                    </td>
+                    <td class="text-end" data-order="<?= ($etat) ? ($etat->getType()->getOrdre()) : PHP_INT_MIN ?>"
+                        style="color:<?=  (isset($etat)) ? $etat->getType()->getCouleur() : "" ?>"
+                    >
+                        <span class="<?= (isset($etat)) ? $etat->getType()->getIcone() : "fa fa-question" ?>"></span>
+                        <?= (isset($etat)) ? $etat->getTypeLibelle() : "Indéterminé" ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+            <tbody>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        let options = generateDataTableSetings({
+            stateSave: false,
+            retrieve: true,
+            searching : false,
+            paging : false,
+            info:false,
+            "order": [[1, "desc"],[2, "desc"],[3, "desc"],[0, "asc"]],
+            "lengthMenu": [[50, 100, 250, -1], [50, 100, 250, "Tous"]],
+        })
+        let tableInstance = $("#<?= $tableId ?>").DataTable(options);
+    });
+</script>

@@ -1,0 +1,333 @@
+<?php
+
+use API\Controller\LocalisationController;
+use Application\Controller\Terrain\TerrainStageController;
+use Application\Form\Adresse\Fieldset\AdresseFieldset;
+use Application\Form\TerrainStage\Fieldset\TerrainStageFieldset;
+use Application\Form\TerrainStage\TerrainStageForm;
+use Application\Provider\TypeStage\TypeCategorieStageProvider;
+use Application\View\Helper\Terrains\TerrainStageViewHelper;
+
+/**
+ * @see TerrainStageController::ajouterAction()
+ * @see TerrainStageController::modifierAction()
+ * @see TerrainStageViewHelper::renderForm()
+ *
+
+ * @var TerrainStageForm $form
+ * @var TerrainStageFieldset $fieldset
+ */
+
+$fe = $this->formErrors();
+$fcg = $this->formControlGroup();
+$fr = $this->formrow();
+$fct = $this->formControlText();
+
+$fieldset = $form->getEntityFieldset();
+
+/** @var AdresseFieldset $adresseFieldset */
+$adresseFieldset = $fieldset->get($fieldset::ADRESSE);
+
+?>
+
+<nav>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <button class="nav-link active" id="nav-infos"
+                data-bs-toggle="tab" data-bs-target="#form-infos"
+                type="button"
+                role="tab" aria-controls="form-identite"
+                aria-selected="true">Identification
+        </button>
+        <button class="nav-link" id="nav-adresse"
+                data-bs-toggle="tab" data-bs-target="#form-adresse"
+                type="button"
+                role="tab" aria-controls="form-adresse"
+                aria-selected="false">Adresse
+        </button>
+        <button class="nav-link" id="nav-csv" data-bs-toggle="tab"
+                data-bs-target="#form-capacites" type="button"
+                role="tab" aria-controls="form-capacites" aria-selected="false">
+            Capacités d'accueil
+        </button>
+        <button class="nav-link" id="nav-convention" data-bs-toggle="tab"
+                data-bs-target="#form-convention" type="button"
+                role="tab" aria-controls="form-convention" aria-selected="false">
+            Modéle de convention
+        </button>
+        <button class="nav-link" id="nav-terrains-associes"
+                data-bs-toggle="tab"
+                data-bs-target="#form-terrains-associes" type="button"
+                role="tab" aria-controls="form-terrains-associes"
+                aria-selected="false">
+            Terrains associés
+        </button>
+        <button class="nav-link" id="nav-contraintes" data-bs-toggle="tab"
+                data-bs-target="#form-contraintes" type="button"
+                role="tab" aria-controls="form-contraintes"
+                aria-selected="false">
+            Contraintes
+        </button>
+        <button class="nav-link" id="nav-complement"
+                data-bs-toggle="tab" data-bs-target="#form-complement"
+                type="button"
+                role="tab" aria-controls="form-complement"
+                aria-selected="false">Informations
+        </button>
+    </div>
+</nav>
+
+<?= $this->form()->openTag($form->prepare()) ?>
+<div class="card">
+    <div class="card-body">
+        <?= $fe($form->prepare(), $form::INVALIDE_ERROR_MESSAGE) ?>
+        <?= $fr($fieldset->get($form::INPUT_ID)); ?>
+        <?= $fr($fieldset->get($fieldset::CODE)); ?>
+
+        <div class="tab-content" id="nav-tabContent">
+            <div class="tab-pane fade show active border-0" id="form-infos"
+                 role="tabpanel" aria-labelledby="nav-infos">
+                <div class="row">
+                    <div class="col-md-6">
+                        <?= $fcg($fieldset->get($fieldset::CATEGORIE_STAGE)); ?>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <?= $fct($fieldset->get($fieldset::LIBELLE)); ?>
+                    </div>
+                    <div class="col-md-6">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 col-xs-6">
+                        <label>Etat</label>
+                        <div class="form-check form-switch">
+                            <?= $fcg($fieldset->get($fieldset::ACTIF)) ?>
+                            <?= $fcg($fieldset->get($fieldset::HORS_SUBDIVISION)) ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade showb border-0 " id="form-adresse"
+                 role="tabpanel" aria-labelledby="nav-adresse">
+                <div class="row">
+                    <div class="col-md-12">
+                        <?= $fct($adresseFieldset->get($adresseFieldset::INPUT_ADRESSE)); ?>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <?= $fct($adresseFieldset->get($adresseFieldset::INPUT_COMPLEMENT)); ?>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <?= $fct($adresseFieldset->get($adresseFieldset::INPUT_VILLE)); ?>
+                        <?= $fr($adresseFieldset->get($adresseFieldset::INPUT_VILLE_CODE)); ?>
+                    </div>
+                    <div class="col-md-3">
+                        <?= $fct($adresseFieldset->get($adresseFieldset::INPUT_CP)); ?>
+                    </div>
+                    <div class="col-md-3">
+                        <?= $fct($adresseFieldset->get($adresseFieldset::INPUT_CEDEX)); ?>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <span class="text-small text-muted">* : Champs obligatoires pour que l'adresse soit compléte.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade show border-0 " id="form-capacites"
+                 role="tabpanel" aria-labelledby="nav-capacites">
+
+                <div class="row">
+                    <div class="col-md-4 xs-12">
+                        <?= $fcg($fieldset->get(TerrainStageFieldset::MIN_PLACE)); ?>
+                    </div>
+                    <div class="col-md-4 xs-12">
+                        <?= $fcg($fieldset->get(TerrainStageFieldset::IDEAL_PLACE)); ?>
+                    </div>
+                    <div class="col-md-4 xs-12">
+                        <?= $fcg($fieldset->get(TerrainStageFieldset::MAX_PLACE)); ?>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="tab-pane fade show border-0 " id="form-convention"
+                 role="tabpanel" aria-labelledby="nav-convention">
+                <div class="row">
+                    <div class="col-md-6">
+                        <?= $fcg($fieldset->get(TerrainStageFieldset::MODELE_CONVENTION)); ?>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="tab-pane fade show border-0" id="form-terrains-associes"
+                 role="tabpanel" aria-labelledby="nav-terrains-associes">
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="hidden select-terrains-associes" data-type-categorie="<?=TypeCategorieStageProvider::CATEGORIE_PRINCIPALE?>">
+                            <?= $fcg($fieldset->get(TerrainStageFieldset::TERRAINS_PRINCIPAUX_ASSOCIES)) ?>
+                        </div>
+                        <div class="hidden select-terrains-associes" data-type-categorie="<?=TypeCategorieStageProvider::CATEGORIE_SECONDAIRE?>">
+                            <?= $fcg($fieldset->get(TerrainStageFieldset::TERRAINS_SECONDAIRES_ASSOCIES)) ?>
+                        </div>
+                    </div>
+                    <div class="col-md-12 hidden select-terrains-associes" data-type-categorie="undefined">
+                        <div class=" alert alert-info">
+                            Vous devez selectionner une catégorie de terrains avant de définir les terrains associés
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade show border-0" id="form-contraintes"
+                 role="tabpanel" aria-labelledby="nav-contraintes">
+
+                <div class="row">
+                    <div class="col-md-12 col-xs-12">
+                        <div class="d-flex">
+                            <?php
+                            $input = $fieldset->get(TerrainStageFieldset::PREFERENCES_AUTORISEES);
+                            echo $this->formlabel($input);
+                            $input->setLabel("");
+                            ?>
+                            <div class="form-check form-switch">
+                                <?= $this->formelement($input) ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <?= $fcg($fieldset->get(TerrainStageFieldset::RESTRICTIONS_TERRAIN_NIVEAU_ETUDE)); ?>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade show border-0" id="form-complement"
+                 role="tabpanel" aria-labelledby="nav-complement">
+                <div class="row">
+                    <div class="col-md-6">
+                        <?= $fct($fieldset->get(TerrainStageFieldset::SERVICE)); ?>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <?= $fct($fieldset->get(TerrainStageFieldset::LIEN)); ?>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <?= $fcg($fieldset->get(TerrainStageFieldset::INFOS)); ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer">
+
+        <div class="row">
+            <div class="col-md-12">
+                <?= $fcg($form->get(TerrainStageForm::INPUT_SUBMIT)); ?>
+            </div>
+        </div>
+        <?= $this->formHidden($form->get(TerrainStageForm::CSRF)); ?>
+    </div>
+</div>
+<?= $this->form()->closeTag(); ?>
+
+<script>
+    $(function () {
+        $('.selectpicker').selectpicker('render');
+
+        // Type de catégorie
+        var selectCat = $("#<?=TerrainStageFieldset::CATEGORIE_STAGE?>");
+
+        function updateTerrainsAssociesType(){
+            let selected = $(selectCat).find(':selected');
+            let typeCat = $(selected).data('type-categorie');
+            if(typeCat===undefined){
+                $(".select-terrains-associes[data-type-categorie='"+typeCat+"']").show();
+                $(".select-terrains-associes:not([data-type-categorie='"+typeCat+"'])").hide();
+            }
+            else{
+                $(".select-terrains-associes:not([data-type-categorie='"+typeCat+"'])").show();
+                $(".select-terrains-associes[data-type-categorie='undefined']").hide();
+                $(".select-terrains-associes[data-type-categorie='"+typeCat+"']").hide();
+
+            }
+
+        }
+
+        updateTerrainsAssociesType();
+        selectCat.on('change', function (){
+            updateTerrainsAssociesType();
+        })
+
+        let autocomp = $("#<?=AdresseFieldset::INPUT_VILLE?>");
+        //Remplacement du formControlClick pour intégrer l'icone de recherche
+        let searchData = autocomp.parent().find(".form-control-clear");
+        searchData.hide();
+        searchData.html("<span class='loadingInProgress fas fa-spinner fa-pulse'></span>");
+        autocomp.on("blur", function () {
+            searchData.hide();
+        })
+        autocomp.on("keydown", function () {
+            if (this.value === '') {
+                searchData.hide();
+            } else {
+                searchData.show();
+            }
+        })
+
+        // ville de naissance
+        autocomp.autocompleteUnicaen({
+            elementDomId: '<?= AdresseFieldset::INPUT_VILLE_CODE ?>',
+            source: '<?= $this->url(LocalisationController::RECHERCHER_VILLE_ROUTE, [], [], true)?>',
+            minLength: 2,
+            delay: 750,
+            select: function (event, ui) {
+                $('#<?= AdresseFieldset::INPUT_VILLE ?>').val(ui.item.label);
+                $('#<?= AdresseFieldset::INPUT_VILLE_CODE ?>').val(ui.item.id);
+                $('#<?= AdresseFieldset::INPUT_CP ?>').val(ui.item.codepostal);
+                searchData.hide();
+            },
+        });
+        autocomp.on('input propertychange', function () {
+            let code = $('#<?= AdresseFieldset::INPUT_VILLE_CODE ?>')
+            if (code.val() !== null) {
+                code.val(null);
+            }
+        });
+
+        tinymce.remove();
+        $('#form-complement').find('#<?= TerrainStageFieldset::INFOS ?>').addClass("infoArea");
+        tinymce.init({
+            selector: '.infoArea',
+            toolbar: 'newdocument undo redo | bold italic underline | bullist',
+            resize: true,
+            language: 'fr_FR',
+            entity_encoding: "raw",
+            plugins: 'lists template',
+            statusbar: true,
+            browser_spellcheck: true,
+            branding: false,
+            menu: {},
+            body_id: 'motif',
+            setup: function (editor) {
+                editor.on("initEditor", function () {
+                    $('#<?= TerrainStageFieldset::INFOS ?>').val(tinymce.get('<?= TerrainStageFieldset::INFOS ?>').getContent());
+                });
+            }
+        });
+    });
+</script>

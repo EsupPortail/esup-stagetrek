@@ -1,0 +1,197 @@
+<?php
+
+use Application\Controller\Stage\SessionStageController;
+use Application\Controller\Stage\StageController;
+use Application\Entity\Db\Etudiant;
+use Application\Entity\Db\SessionStage;
+
+use UnicaenApp\View\Helper\Messenger;
+
+/**
+ * @see StageController::ajouterStagesAction()
+ * @var String $title
+ * @var SessionStage $session
+ * @var Etudiant[] $etudiants
+ */
+
+
+$tableId = "ajouter-stages-" . $session->getId() . "-liste";
+$formId = "ajouter-stages-" . $session->getId() . "-form";
+
+?>
+
+<h1 class="page-header">
+    <i class="fas fa-notes-medical"></i> <?= $title ?>
+    <br/>
+    <small class=""> <?= $session->getAnneeUniversitaire()->getLibelle() ?> -
+        <?= $session->getGroupe()->getLibelle() ?>
+    </small>
+</h1>
+
+<div class="card">
+    <div class="card-header">Informations</div>
+    <div class="card-body ">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">Seul un étudiant inscrit dans le groupe <?= $session->getGroupe()->getLibelle() ?> peut disposer d'un stage pour la session <?= $session->getLibelle() ?>.</li>
+            <li class="list-group-item">Un étudiant en disponibilité sur la période de la session ne peux pas avoir de stage.</li>
+        </ul>
+        <?php
+        $today = new DateTime();
+        if (!empty($etudiants) && $session->getDateDebutChoix() <= $today) : ?>
+            <div class="card-text alert alert-warning">
+                <?php ?>
+               La date de début des choix pour la session est  <strong>dépassée</strong>.
+                <br /> Les modifications ne doivent servir qu'à corriger des erreurs.
+            </div>
+        <?php endif; ?>
+
+        <div class="card-text alert alert-warning">
+            <?php if (empty($etudiants)) : ?>
+                Aucun stage ne peux être ajouté à la session <?= $session->getLibelle() ?>
+            <?php else : ?>
+                Les modifications seront effective à la validation du formulaire.
+            <?php endif; ?>
+        </div>
+
+    </div>
+
+    <div class="card-footer">
+        <?= $this->backButton("Fiche de la session")->backTo($this->url(SessionStageController::ROUTE_AFFICHER, ['sessionStage' => $session->getId()], [], true)) ?>
+    </div>
+</div>
+
+<?php
+//Ajout de messages spécifique
+$namespace = StageController::ACTION_AJOUTER_STAGES . Messenger::NAMESPACED_SEVERITY_SEPARATOR . "*";
+$msg = $this->messenger()->addCurrentMessagesFromFlashMessengerWithNamespace($namespace);
+?>
+<?php if ($msg && $msg->hasMessages()) : ?>
+    <div class="row">
+        <div class="col-md-12">
+            <?= $msg ?>
+        </div>
+    </div>
+<?php endif; ?>
+
+<?php if (!empty($etudiants)) : ?>
+    <div class="card my-3">
+        <div class="card-header">Selectionner les étudiants pour qui créer le stage</div>
+        <div class="card-footer">
+            <div class="row">
+                <div class="col-md-8">
+                    <button id="selectAll" class="btn btn-secondary">
+                        <span class="far fa-check-square"></span> Tout selectionner
+                    </button>
+
+                    <button id="deselectAll" class="btn btn-secondary disabled">
+                        <span class="far fa-square"></span> Tout déselectionner
+                    </button>
+
+                </div>
+                <div class="col-md-4 text-end">
+                    <form id="<?= $formId ?>" method="post" class="ajaxSubmit loadingForm"
+                          action="<?= $this->url(StageController::ROUTE_AJOUTER_STAGES, ["sessionStage" => $session->getId()], [], true) ?>"
+                    >
+                        <button id="add-btn" name=submit" id="submit" type="submit" class="btn btn-success disabled">
+                            <span class="icon icon-ajouter"></span> Ajouter
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <table id="<?= $tableId ?>" class="table table-hover table-condensed">
+                <thead>
+                <tr>
+                    <th class=""></th>
+                    <th class="col-md-2" data-tyê="num">n° d'étudiant</th>
+                    <th class="col-md-5">Nom</th>
+                    <th class="col-md-5">Prénom</th>
+                </thead>
+                <tbody>
+                <?php /** @var Etudiant $etudiant */
+                foreach ($etudiants as $etudiant) :
+                    ?>
+                    <tr class="" data-session-id="<?= $session->getId() ?>"
+                        data-etudiant-id="<?= $etudiant->getId() ?>">
+                        <td></td>
+                        <td><?= $etudiant->getNumEtu() ?></td>
+                        <td> <?= $etudiant->getNom() ?></td>
+                        <td> <?= $etudiant->getPrenom() ?></td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+<?php endif; ?>
+
+<?php if (!empty($etudiants)) : ?>
+    <script type="text/javascript">
+        $(function () {
+            $('[data-bs-toggle="popover"]').popover({html: true});
+            if ($.fn.DataTable.isDataTable("#<?= $tableId ?>")) {
+                $('#<?= $tableId ?>').DataTable().destroy();
+            }
+            let options = generateDataTableSetings({
+                stateSave: false,
+                retrieve: false,
+                deferRender: true,
+                "order": [[2, "asc"], [1, "asc"]],
+                "lengthMenu": [[10, 50, 100, 250, -1], [10, 50, 100, 250, "Tous"]],
+                columnDefs: [{
+                    className: 'select-checkbox',
+                    targets: 0,
+                    orderable: false,
+                    searchable: false,
+                },
+                    {targets: ['no-sort'], orderable: false},
+                    {targets: ['no-search'], searchable: false},
+                    {targets: ['hidden'], visible: false},
+                ],
+                "select": {
+                    "style": 'multiple',
+                    "selector": 'tr'
+                },
+                'dom': "<'row'<'col-sm-12 col-md-6 'l><'col-sm-12 col-md-6' f>> " +
+                    "<'row' <'col-sm-12'tr> >" +
+                    "<'row' <'col-sm-12 col-md-5'i> <'col-sm-12 col-md-7'p> >",
+            });
+            let tableInstance = $("#<?= $tableId ?>").on('draw.dt', function () {
+                $('[data-bs-toggle="popover"]').popover({html: true});
+            }).DataTable(options);
+
+            $("#selectAll").on('click', function () {
+                tableInstance.rows().select();
+            })
+
+            $("#deselectAll").on('click', function () {
+                tableInstance.rows().deselect();
+            })
+            tableInstance.on('select.dt deselect.dt', function (e) {
+                let selectedRows = tableInstance.rows(".selected").nodes().length;
+                if (selectedRows > 0){
+                    $("#deselectAll").removeClass('disabled');
+                    $("#add-btn").removeClass('disabled');
+                }
+                else{
+                    $("#deselectAll").addClass('disabled');
+                    $("#add-btn").addClass('disabled');
+                }
+            });
+
+
+
+            $("#<?=$formId?>").on('submit', function (event) {
+                var that = $(this);
+                //Rajout des étudiants selectionnées dans le formulaires
+                // Recheche des lignes selectionnées qui ne sont pas filtré (possiblement paginé
+                var rows = tableInstance.rows({'selected': true, 'search': 'applied'}).nodes();
+                $(rows).each(function () {
+                    etudiantId = $(this).data('etudiant-id');
+                    that.append("<input type='hidden' name='etudiants[" + etudiantId + "]' value='" + etudiantId + "'>");
+                });
+            })
+        });
+    </script>
+
+<?php endif; ?>

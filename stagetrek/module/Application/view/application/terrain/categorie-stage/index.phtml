@@ -1,0 +1,110 @@
+<?php
+
+use Application\Controller\Terrain\CategorieStageController;
+use Application\Controller\Terrain\TerrainStageController;
+use Application\Entity\Db\CategorieStage;
+use Application\View\Helper\Terrains\CategorieStageViewHelper;
+
+/**
+ * @see CategorieStageController::indexAction()
+ * @var CategorieStage[] $categoriesStages
+ */
+
+$this->headTitle("Les catégories");
+
+/** @var CategorieStageViewHelper $vh */
+$vh = $this->categorieStage();
+$canSeeCategories = $vh->actionAllowed(CategorieStageController::ACTION_LISTER);
+$canAddCategorie = $vh->actionAllowed(CategorieStageController::ACTION_AJOUTER);
+$canImportCategorie = $vh->actionAllowed(CategorieStageController::ACTION_IMPORTER);
+
+/** @var \Application\View\Helper\Terrains\TerrainStageViewHelper $terrainVh */
+$terrainVh = $this->terrainStage();
+$canSeeTerrains = $terrainVh->actionAllowed(TerrainStageController::ACTION_LISTER);
+?>
+
+<h1 class="page-header">
+    <span class="icon">
+        <i class="fas fa-hospital"></i>
+    </span>
+    Les categories de terrains de stages
+</h1>
+
+<div class="my-3">
+<div class="card card-primary">
+    <div class="card-header">Options d'affichage</div>
+    <div class="card-body">
+        <form>
+            <div class="row px-3">
+                <div class="col-md-4 form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="row-principale-switch"
+                           checked>
+                    <label class="mx-3 form-check-label" for="row-principale-switch">Afficher les catégories principales</label>
+                </div>
+                <div class="col-md-4 form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="row-secondaire-switch"
+                           checked>
+                    <label class="mx-3 form-check-label" for="row-secondaire-switch">Afficher les catégories secondaires</label>
+                </div>
+                <div class="col-md-4 form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="col-code-switch" data-col="col-code">
+                    <label class="mx-3 form-check-label" for="col-code-switch">Afficher le code des catégories</label>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+
+<div class="my-3">
+    <div class="card card-primary">
+        <div class="card-header">Liste des catégories</div>
+        <?php if ($canSeeTerrains || $canAddCategorie || $canImportCategorie) : ?>
+            <div class="card-header card-sub-header">
+                <div class="row">
+                    <div class="col-md-4">
+                        <?= $terrainVh->lienLister() ?>
+                    </div>
+                    <div class="col-md-8 text-end">
+                        <?= $vh->lienAjouter() ?>
+                        <?= $vh->lienImporter(); ?>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
+        <div class="card-body">
+            <div id="liste-categories-content"
+                 data-url="<?= $this->url(CategorieStageController::ROUTE_LISTER, [], [], true) ?>">
+                <?= $vh->renderListe($categoriesStages); ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    //Rechargement de la page sur event
+    $(function () {
+        let body = $("body");
+        let liste = $("#liste-categories-content");
+
+        $("#col-code-switch").on('change', function(){
+            body.trigger("toggle-code");
+        })
+
+        $("#row-principale-switch").on('change', function(){
+            body.trigger("toggle-cat-principale");
+        })
+
+        $("#row-secondaire-switch").on('change', function(){
+            body.trigger("toggle-cat-secondaire");
+        })
+
+        body.on("<?=CategorieStageController::EVENT_AJOUTER?> "
+            + "<?=CategorieStageController::EVENT_MODIFIER?> "
+            + "<?=CategorieStageController::EVENT_SUPPRIMER?> "
+            + "<?=CategorieStageController::EVENT_IMPORTER?> "
+            , function () {
+                liste.refresh();
+            });
+    })
+</script>

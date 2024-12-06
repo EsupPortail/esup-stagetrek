@@ -1,0 +1,60 @@
+<?php
+
+use Application\Controller\Convention\ConventionStageController;
+use Application\Controller\Stage\StageController;
+use Application\Entity\Db\ConventionStage;
+use Application\Entity\Db\Stage;
+use Application\Form\Convention\ConventionStageTeleversementForm;
+use Application\View\Helper\Convention\ConventionViewHelper;
+use Laminas\View\Renderer\PhpRenderer;
+
+/**
+ * @see ConventionStageController::televerserAction()
+ *
+
+ * @var string $title
+ * @var ConventionStageTeleversementForm $form
+ * @var ConventionStage $convention
+ * @var Stage $stage
+ */
+
+/** @var ConventionViewHelper $vh */
+$vh = $this->convention();
+?>
+
+<div class="card card-primary">
+    <h1 class="page-header card-header">
+        <span class="icon icon-ajouter"></span>
+        <?= $title ?>
+    </h1>
+    <div class="card-body">
+
+        <?php if($convention->hasFile()) :?>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-warning">
+                    Une convention de stage existe déjà.
+                </div>
+            </div>
+        </div>
+        <?php endif ?>
+
+        <?= $vh->renderTeleversementForm($form); ?>
+    </div>
+
+    <div class="card-footer">
+        <div class="row">
+            <div class="col-md-12">
+                <?= $this->backButton("Fiche du stage")->backTo($this->url(StageController::ROUTE_AFFICHER, ['stage' => $stage->getId()], [], true)) ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        let body = $("body");
+        body.off("<?= ConventionStageController::EVENT_TELEVERSER?>", closeModal)
+            .one("<?= ConventionStageController::EVENT_TELEVERSER?>", closeModal);
+    })
+</script>

@@ -1,0 +1,152 @@
+<?php
+
+use Application\Entity\Db\SessionStage;
+use Application\Entity\Db\Stage;
+use Application\Provider\Misc\Icone;
+use Application\Provider\Privilege\StagePrivileges;
+use Application\View\Helper\Convention\ConventionViewHelper;
+use Application\View\Helper\Etudiant\EtudiantViewHelper;
+use Application\View\Helper\SessionsStages\SessionStageViewHelper;
+use Application\View\Helper\Stages\StageViewHelper;
+
+/**
+ * @see SessionStageViewHelper::renderPreferences()
+ * @var SessionStage $sessionStage
+ */
+$tableId = "session_" . $sessionStage->getId() . "_conventions";
+$today = new DateTime();
+$stages = $sessionStage->getStages();
+/** @var StageViewHelper $stageVh */
+$stageVh = $this->stage();
+/** @var EtudiantViewHelper $evh */
+$evh = $this->etudiant();
+$canSeeStage = $this->isAllowed(StagePrivileges::getResourceId(StagePrivileges::STAGE_AFFICHER));
+/** @var ConventionViewHelper $conventionVh */
+$conventionVh = $this->convention();
+?>
+
+<table id="<?= $tableId ?>" class="table table-hover table-condensed table-data">
+    <thead>
+    <tr>
+        <th class="hidden"></th>
+        <th class="col-md-3">Etudiant</th>
+        <th class="no-search" data-type="num">État</th>
+        <?php if ($canSeeStage) : ?>
+            <th class="col-md-1 text-end no-search no-sort">Actions</th>
+        <?php endif; ?>
+    </tr>
+    </thead>
+    <tbody>
+    <?php /** @var Stage $stage */
+    foreach ($stages as $stage):
+        $etudiant = $stage->getEtudiant();
+        $evh->setEtudiant($etudiant);
+        $stageVh->setStage($stage);
+        $affectation = $stage->getAffectationStage();
+        $terrain = (isset($affectation) && $affectation->hasEtatValidee() && $stage->isStagePrincipal()) ? $affectation->getTerrainStage() : null;
+        $terrain = (isset($affectation) && $affectation->hasEtatValidee() && $stage->isStageSecondaire()) ? $affectation->getTerrainStageSecondaire() : $terrain;
+        $convention = $stage->getConventionStage();
+        $modele = ($terrain) ? $terrain->getModeleConventionStage() : null;
+        $conventionVh->setStage($stage);
+        $conventionVh->setConventionStage($convention);
+        $order = PHP_INT_MAX;
+        $etat = "";
+        $bg = "";
+        switch (true) {
+            case !isset($affectation) || !($affectation->hasEtatValidee() || $affectation->hasEtatPreValidee()) || !isset($terrain) :
+                $etat = "<span class='fas fa-ban mx-3 text-muted'></span>
+                        <span class='text-muted'>Stage non affecté</span>";
+                $bg = "table-muted";
+                $order = 1000;
+//                    Si l'on est aprés la fin du stage, même si théoriquement le terrains est associé a une convention, on considére qu'il n'en a pas
+//                    Permet de gérer des terrains dont la convention est arrivé aprés cout
+            case !isset($convention) && $stage->getDateFinStage() < $today:
+//                    Pas de convention attendu
+            case !isset($convention) && !isset($modele):
+                $etat = "<span class='icon icon-times-circle mx-3 text-muted'></span>
+                        <span class='text-muted'>Stage non conventionné</span>";
+                $bg = "table-muted";
+                $order = 999;
+                break;
+            case isset($convention) && $stage->isNonEffectue():
+                $etat = "<span class='icon icon-warning mx-3 text-danger'></span>
+                        <span class='text-success'>Stage conventionné non effecuté</span>";
+                $bg = "table-danger";
+                $order = 1;
+                break;
+//                Cas OK... TODO : a reprendre quand les signatures seront en place
+//                  On ne vérifie pas le modéle utilisé, s'il y a une convention, on suppose que c'est la bonne
+            case isset($convention) :
+                $etat = "<span class='icon icon-checked mx-3 text-success'></span>
+<span class='text-success'>Stage conventionné</span>";
+                $bg = "table-success";
+                $order = 2;
+                break;
+//                L'affectation attent une convention qui n'est pas encore déposé
+            case isset($modele) && $today < $stage->getDateDebutStage() :
+                $etat = "<span class='fas fa-hourglass mx-3 text-primary'></span>
+                        <span class='text-primary'>En attente de la convention</span>";
+                $bg = "table-primary";
+                $order = 3;
+                break;
+            case isset($modele) && $today < $stage->getDateFinStage() :
+                $etat = "<span class='icon icon-times-circle mx-3 text-danger'></span>
+                        <span class='text-danger'>Convention non définie - Terrain conventionné</span>";
+                $bg = "table-warning";
+                $order = 4;
+                break;
+            default : //Cas normalement non définie
+                $etat = "";
+                $bg = "";
+                $order = PHP_INT_MAX;
+        }
+        ?>
+        <tr class="<?= $bg ?>">
+            <td class="hidden">Stage <?= ($stage->isStagePrincipal()) ? "Principaux" : "Secondaires" ?></td>
+            <td data-order="<?= $etudiant->getDisplayName() ?><?= $etudiant->getNumEtu() ?>"
+                data-filter="<?= $etudiant->getDisplayName() ?><?= $etudiant->getNumEtu() ?>"
+            >
+                <?= $etudiant->getDisplayName() ?> (<?= $evh->lienAfficher($etudiant->getNumEtu()) ?>)
+            </td>
+            <td data-order="<?= $order ?>">
+                <?= $etat ?>
+            </td>
+            <?php if ($canSeeStage) : ?>
+                <td class="text-end">
+                    <?= $stageVh->lienAfficher(Icone::AFFICHER, ['class' => 'text-primary']) ?>
+                    <?= $conventionVh->lienGenerer(Icone::RUN_PROCESS, ['class' => 'text-primary']) ?>
+                    <?= $conventionVh->lienTeleverser(Icone::TELEVERSER, ['class' => 'text-primary']) ?>
+                    <?= $conventionVh->lienTelecharger(Icone::TELECHARGER, ['class' => 'text-success']) ?>
+                </td>
+            <?php endif ?>
+        </tr>
+    <?php endforeach; ?>
+    </tbody>
+</table>
+
+
+<script type="text/javascript">
+    $(function () {
+        $('[data-bs-toggle="popover"]').popover({html: true});
+        let options = generateDataTableSetings(
+            {
+                stateSave: true,
+                retrieve: true,
+                "order": [[2, "asc"], [1, "asc"]],
+                "lengthMenu": [[50, 100, 250, -1], [50, 100, 250, "Tous"]],
+                "orderFixed": {
+                    "pre": [0, 'asc'],
+                },
+                rowGroup: {
+                    dataSrc: 0
+                },
+            }
+        );
+        //options = {};
+        $("#<?= $tableId ?>").on('draw.dt', function () {
+            $('[data-bs-toggle="popover"]').popover({html: true});
+        }).DataTable(options);
+        $("#<?= $tableId ?>").removeClass('hidden');
+    });
+</script>
+

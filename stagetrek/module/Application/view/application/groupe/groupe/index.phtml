@@ -1,0 +1,45 @@
+<?php
+
+use Application\Controller\Groupe\GroupeController;
+use Application\Entity\Db\Groupe;
+use Application\Form\Groupe\GroupeRechercheForm;
+
+
+/**
+ * @see GroupeController::indexAction()
+
+ * @var GroupeRechercheForm $form
+ * @var Groupe[] $groupes
+ */
+
+$vh = $this->groupe();
+
+$title = "Les groupes";
+$this->headTitle($this->translate("Les groupes"));
+
+?>
+
+<h1 class="page-header">
+    <span class="icon">
+        <i class="fas fa-users"></i>
+    </span>
+    <?= $title ?>
+</h1>
+
+<div class="my-3">
+    <?= $vh->renderRechercheForm($form); ?>
+</div>
+
+<div class="my-3">
+    <?= $vh->renderListe($groupes) ?>
+</div>
+
+<script>
+    $(function () {
+        let body = $("body");
+        body.on("<?= GroupeController::EVENT_AJOUTER ?> "
+            , function (event) {
+                window.location.reload();
+            });
+    });
+</script>

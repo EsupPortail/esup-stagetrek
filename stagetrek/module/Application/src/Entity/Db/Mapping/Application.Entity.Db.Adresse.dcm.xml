@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Application\Entity\Db\Adresse" table="adresse">
+    <id name="id" type="bigint" column="id">
+      <generator strategy="SEQUENCE"/>
+      <sequence-generator sequence-name="adresse_id_seq" allocation-size="1" initial-value="1"/>
+    </id>
+    <field name="adresse" type="string" column="adresse" length="255" nullable="true">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="complement" type="string" column="complement" length="255" nullable="true">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="ville" type="string" column="ville" length="255" nullable="true">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="villeCode" type="integer" column="ville_code" nullable="true">
+      <options>
+        <option name="unsigned"/>
+      </options>
+    </field>
+    <field name="codePostal" type="string" column="code_postal" length="5" nullable="true">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="cedex" type="string" column="cedex" length="25" nullable="true">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+
+    <many-to-one field="adresseType" target-entity="Application\Entity\Db\AdresseType" fetch="LAZY">
+      <join-columns>
+        <join-column name="adresse_type_id" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+
+  </entity>
+</doctrine-mapping>

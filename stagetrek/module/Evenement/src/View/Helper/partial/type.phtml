@@ -1,0 +1,10 @@
+<?php
+
+use UnicaenEvenement\Entity\Db\Type;
+
+/**
+ * @var Type $type
+ * @var string $icon
+ */
+
+echo sprintf('<span class="badge badge-secondary mx-1 rounded-pill evenement-type-label evenement-type-%s">%s</span>%s', $type->getCode(), $icon, $type->getLibelle());

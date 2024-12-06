@@ -1,0 +1,63 @@
+<?php
+
+use Application\Controller\Parametre\NiveauEtudeController;
+use Application\Form\Parametre\Fieldset\NiveauEtudeFieldset;
+use Application\Form\Parametre\NiveauEtudeForm;
+
+
+/**
+ * @see NiveauEtudeController::ajouterAction()
+ * @see NiveauEtudeController::modifierAction()
+ *
+
+ * @var NiveauEtudeForm $form
+ * @var NiveauEtudeFieldset $fieldset
+ */
+
+$fe = $this->formErrors();
+$fcg = $this->formControlGroup();
+$fr = $this->formrow();
+$fct = $this->formControlText();
+
+$fieldset = $form->getEntityFieldset();
+?>
+
+<div class="fieldset">
+    <?= $this->form()->openTag($form->prepare()) ?>
+    <?= $fe($form->prepare(), $form::INVALIDE_ERROR_MESSAGE) ?>
+    <?= $fr($fieldset->get($fieldset::ID)); ?>
+
+    <div class="row">
+        <div class="col-md-8">
+            <?= $fct($fieldset->get($fieldset::LIBELLE)); ?>
+        </div>
+        <div class="col-md-4">
+            <?= $fcg($fieldset->get($fieldset::NB_STAGES)); ?>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <?= $fcg($fieldset->get($fieldset::NIVEAU_ETUDE_PARENT)); ?>
+        </div>
+        <div class="col-md-4">
+            <?= $fcg($fieldset->get($fieldset::ORDRE)); ?>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <?= $fcg($form->get($form::INPUT_SUBMIT)); ?>
+        </div>
+    </div>
+    <?= $this->formHidden($form->get($form::CSRF)); ?>
+    <?= $this->form()->closeTag(); ?>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        //Affichage des selectpicker des le départ
+        $('.selectpicker').selectpicker('render');
+    });
+</script>

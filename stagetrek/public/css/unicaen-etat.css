@@ -1,0 +1,41 @@
+.etat-leftpart {
+    color:white;
+    position:relative;
+    left:0;
+    /*top: -1px;*/
+    width:2rem;
+    display: inline-block;
+    text-align: center;
+    border-radius: 0.25rem 0 0 0.25rem;
+    height: 1.5rem;
+}
+
+.etat-rightpart {
+    position:relative;
+    left:-0.35rem;
+    width:2rem;
+    color:white;
+    display: inline-block;
+    text-align: center;
+    border-radius: 0 0.25rem 0.25rem 0;
+    height: 1.5rem;
+}
+
+.etat-solo {
+    border-radius: 0.25rem;
+    width:2.5rem;
+    color:white;
+    display: inline-block;
+    text-align: center;
+    height: 1.75rem;
+}
+
+.cartouche {
+    border-radius: 0.25rem;
+    border: 1px gray solid;
+    padding: 1rem;
+}
+
+.element {
+    padding: 0.25rem;
+}

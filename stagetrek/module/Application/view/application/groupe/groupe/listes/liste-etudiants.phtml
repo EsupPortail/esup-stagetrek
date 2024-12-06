@@ -1,0 +1,66 @@
+<?php
+
+use Application\Entity\Db\Groupe;
+use Application\View\Helper\Etudiant\EtudiantViewHelper;
+use Application\View\Helper\Groupe\GroupeViewHelper;
+
+
+/**
+
+ * @var Groupe $groupe
+ */
+
+/** @var GroupeViewHelper $vh */
+$vh = $this->groupe();
+$vh->setGroupe($groupe);
+
+/** @var EtudiantViewHelper $evh */
+$evh = $this->etudiant();
+$tableId = "liste-etudiants-".$groupe->getId();
+?>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <?php // Liste des étudiants que l'on peut ajouter ?>
+        <table id="<?= $tableId ?>" class="table table-hover table-condensed">
+            <thead>
+            <tr>
+                <th class="col-md-3" data-type="num" data-priority="0">n° étudiant</th>
+                <th class="col-md-5">Nom</th>
+                <th class="col-md-4">Prénom</th>
+            </thead>
+            <tbody>
+            <?php foreach ($groupe->getEtudiants() as $etudiant):
+                $evh->setEtudiant($etudiant);
+                ?>
+                <tr data-etudiant-id="<?=$etudiant->getId()?>">
+                    <td data-filter="<?=  $etudiant->getNumEtu() ?>"
+                        data-order="<?=  $etudiant->getNumEtu() ?>"
+                    >
+                        <?= $evh->lienAfficher() ?>
+                    </td>
+                    <td>
+                        <?= $etudiant->getNom() ?>
+                    </td>
+                    <td>
+                        <?= $etudiant->getPrenom() ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+            <tbody>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        let options = generateDataTableSetings({
+            stateSave: false,
+            retrieve: true,
+            "order": [[1, "asc"],[2, "asc"],[0, "asc"]],
+            "lengthMenu": [[50, 100, 250, -1], [50, 100, 250, "Tous"]],
+        })
+        let tableInstance = $("#<?= $tableId ?>").DataTable(options);
+    });
+</script>

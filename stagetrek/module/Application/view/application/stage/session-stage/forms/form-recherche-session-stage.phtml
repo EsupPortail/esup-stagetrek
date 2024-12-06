@@ -1,0 +1,52 @@
+<?php
+
+use Application\Controller\Stage\SessionStageController;
+use Application\Form\Stages\SessionStageRechercheForm;
+use Application\View\Helper\SessionsStages\SessionStageViewHelper;
+
+
+/**
+ * @see SessionStageController::indexAction()
+ * @see SessionStageController::rechercherAction()
+ * @see SessionStageViewHelper::renderRechercheForm()
+ * @var SessionStageRechercheForm $form
+ */
+
+$fct = $this->formControlText();
+$fcg = $this->formControlGroup();
+?>
+
+<?php echo $this->form()->openTag($form->prepare()); ?>
+    <div class="card card-primary">
+        <div class="card-header">
+                <span class="fa fa-search"></span>
+                Rechercher une session de stages
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <?= $fcg($form->get($form::INPUT_ANNEE)); ?>
+                </div>
+                <div class="col-md-4">
+                    <?= $fcg($form->get($form::INPUT_GROUPE)); ?>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <?= $fct($form->get($form::INPUT_LIBELLE)); ?>
+                </div>
+                <div class="col-md-4">
+                    <?= $fcg($form->get($form::INPUT_ETAT)); ?>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer border-0">
+            <div class="row">
+                <div class="col-md-12">
+                    <?= $this->formButton($form->get($form::INPUT_RECHERCHER)); ?>
+                    <?= $this->formButton($form->get($form::INPUT_EFFACER)); ?>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php echo $this->form()->closeTag(); ?>

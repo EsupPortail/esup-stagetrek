@@ -1,0 +1,85 @@
+<?php
+
+use Application\Entity\Db\SessionStage;
+use Application\View\Helper\SessionsStages\SessionStageViewHelper;
+
+/**
+ * @see SessionStageViewHelper::renderDates()
+ * @var SessionStage $sessionStage
+ * @var Boolean $vueEtudiante
+ */
+
+if(!isset($vueEtudiante)){$vueEtudiante = false;}
+//Background selon les dates
+$today = new DateTime();
+$bgDateCalculOrdre = ($sessionStage->getDateCalculOrdresAffectations() <= $today && $today <= $sessionStage->getDateFinCalculOrdresAffectations())
+    ? "bg-light-success" : (($sessionStage->getDateFinCalculOrdresAffectations() < $today) ? "bg-muted" : "");
+$bgDateChoix = ($sessionStage->getDateDebutChoix() <= $today && $today <= $sessionStage->getDateFinChoix())
+    ? "bg-light-success" : (($sessionStage->getDateFinChoix() < $today) ? "bg-muted" : "");
+$bgDateCommission = ($sessionStage->getDateCommission() <= $today && $today <= $sessionStage->getDateFinCommission())
+    ? "bg-light-success" : (($sessionStage->getDateFinCommission() < $today) ? "bg-muted" : "");
+$bgDateStage = ($sessionStage->getDateDebutStage() <= $today && $today <= $sessionStage->getDateFinStage())
+    ? "bg-light-success" : (($sessionStage->getDateFinStage() < $today) ? "bg-muted" : "");
+$bgDateValidation = ($sessionStage->getDateDebutValidation() <= $today && $today <= $sessionStage->getDateFinValidation())
+    ? "bg-light-success" : (($sessionStage->getDateFinValidation() < $today) ? "bg-muted" : "");
+$bgDateEvaluation = ($sessionStage->getDateDebutEvaluation() <= $today && $today <= $sessionStage->getDateFinEvaluation())
+    ? "bg-light-success" : (($sessionStage->getDateFinEvaluation() < $today) ? "bg-muted" : "");
+
+?>
+<div class="row">
+<div class="col-md-12">
+        <table class='table table-hover table-condensed mt-1'>
+            <thead>
+            <tr>
+                <th class="col-md-6">Date</th>
+                <th class="col-md-2">Début</th>
+                <th class="col-md-2">Fin</th>
+                <th class="col-md-2"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php if(!$vueEtudiante) :?>
+            <tr class="<?=$bgDateCalculOrdre ?>">
+                <td>Calcul automatique des ordres d'affectations</td>
+                <td>
+                    <?= ($sessionStage->getDateCalculOrdresAffectations()) ? $sessionStage->getDateCalculOrdresAffectations()->format('d/m/Y') : "Date indéterminée"?></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <?php endif; ?>
+            <tr class="<?=$bgDateChoix ?>">
+                <td>Procédure de choix</td>
+                <td><?=$sessionStage->getDateDebutChoix()->format('d/m/Y')?></td>
+                <td><?=$sessionStage->getDateFinChoix()->format('d/m/Y')?></td>
+                <td></td>
+            </tr>
+            <tr class="<?=$bgDateCommission ?>">
+                <td>Commission d'affectation des stages</td>
+                <td><?=$sessionStage->getDateCommission()->format('d/m/Y')?></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr class="<?=$bgDateStage ?>">
+                <td>Stage</td>
+                <td><?=$sessionStage->getDateDebutStage()->format('d/m/Y')?></td>
+                <td><?=$sessionStage->getDateFinStage()->format('d/m/Y')?></td>
+                <td></td>
+            </tr>
+            <tr class="<?=$bgDateValidation ?>">
+                <td>Phase de validation du stage</td>
+                <td><?=$sessionStage->getDateDebutValidation()->format('d/m/Y')?></td>
+                <td><?=$sessionStage->getDateFinValidation()->format('d/m/Y')?></td>
+                <td></td>
+            </tr>
+            <?php if(!$vueEtudiante) : //TODO : a dévelloper?>
+            <tr class="<?=$bgDateEvaluation ?>">
+                <td>Phase d'évaluation du stage</td>
+                <td><?=$sessionStage->getDateDebutEvaluation()->format('d/m/Y')?></td>
+                <td><?=$sessionStage->getDateFinEvaluation()->format('d/m/Y')?></td>
+                <td></td>
+            </tr>
+            <?php endif; ?>
+            </tbody>
+        </table>
+    </div>
+</div>

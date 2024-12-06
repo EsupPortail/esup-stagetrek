@@ -1,0 +1,86 @@
+<?php
+
+use Application\Controller\Affectation\AffectationController;
+use Application\Controller\Preference\PreferenceController;
+use Application\Entity\Db\AffectationStage;
+use Application\Entity\Db\Etudiant;
+use Application\View\Helper\Affectation\AffectationViewHelper;
+use Application\View\Helper\Preferences\PreferenceViewHelper;
+
+/**
+ * @see AffectationController::afficherAction()
+ * @var String $title
+ * @var AffectationStage $affectationStage
+ */
+
+/** @var AffectationViewHelper $vh */
+$vh = $this->affectation($affectationStage);
+
+/** @var Etudiant $etudiant */
+$etudiant = $affectationStage->getEtudiant();
+$stage = $affectationStage->getStage();
+$session = $affectationStage->getSessionStage();
+//Id des divs spécifiques pour éviter d'être en doublon avec ceux de la page de la session
+$uid = uniqid('fiche-affectationStage-');
+
+/** @var PreferenceViewHelper $preferenceVh */
+$preferenceVh = $this->preference();
+$preferenceVh->setStage($stage);
+$canSeePreferences = $preferenceVh->actionAllowed(PreferenceController::ACTION_LISTER);
+?>
+
+<h1 class="page-header">
+    <span class="icon">
+        <i class="fas fa-map-marker"></i>
+    </span>
+    <?= $title ?>
+</h1>
+
+<nav>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <button class="nav-link active" id="nav-<?=$uid?>-infos" data-bs-toggle="tab" data-bs-target="#<?=$uid?>-infos" type="button"
+                role="tab" aria-controls="<?=$uid?>-infos" aria-selected="true">Affectation
+        </button>
+        <button class="nav-link" id="nav-<?=$uid?>-couts" data-bs-toggle="tab" data-bs-target="#<?=$uid?>-couts" type="button"
+                role="tab" aria-controls="<?=$uid?>-couts" aria-selected="false">Coûts et score
+        </button>
+        <?php if($canSeePreferences) :?>
+        <button class="nav-link" id="nav-<?=$uid?>-preferences" data-bs-toggle="tab" data-bs-target="#<?=$uid?>-preferences" type="button"
+                role="tab" aria-controls="<?=$uid?>-preferences" aria-selected="false">Préférences
+        </button>
+        <?php endif; ?>
+        <button class="nav-link" id="nav-<?=$uid?>-complements" data-bs-toggle="tab" data-bs-target="#<?=$uid?>-complements" type="button"
+                role="tab" aria-controls=<?=$uid?>-"complements" aria-selected="false">Informations
+        </button>
+    </div>
+</nav>
+
+<div class="card tab-content" id="nav-tabContent">
+    <div class="tab-pane fade show active" id="<?=$uid?>-infos" role="tabpanel" aria-labelledby="nav-<?=$uid?>-infos">
+        <div class="card-body">
+            <?= $vh->renderInfos() ?>
+        </div>
+    </div>
+
+
+    <div class="tab-pane fade" id="<?=$uid?>-couts" role="tabpanel" aria-labelledby="nav-<?=$uid?>-couts">
+        <div class="card-body">
+            <?= $vh->renderCouts() ?>
+        </div>
+    </div>
+
+    <?php if($canSeePreferences) :?>
+    <div class="tab-pane fade" id="<?=$uid?>-preferences" role="tabpanel" aria-labelledby="nav-<?=$uid?>-preferences">
+        <div class="card-body">
+            <?= $vh->renderPreferences() ?>
+        </div>
+    </div>
+    <?php endif; ?>
+
+    <div class="tab-pane fade" id="<?=$uid?>-complements" role="tabpanel" aria-labelledby="nav-<?=$uid?>-complements">
+        <div class="card-body">
+            <?= $vh->renderComplementsInfos() ?>
+        </div>
+    </div>
+</div>
+

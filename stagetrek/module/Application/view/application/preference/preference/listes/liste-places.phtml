@@ -1,0 +1,111 @@
+<?php
+
+use Application\Entity\Db\Preference;
+use Application\Entity\Db\Stage;
+use Application\Entity\Db\TerrainStage;
+use Application\View\Helper\Preferences\PreferenceViewHelper;
+
+
+/**
+ * @see PreferenceViewHelper::renderListePlaces()
+
+ * @var Stage $stage
+ */
+
+$session = $stage->getSessionStage();
+$tableId = "places_preferences_stage-" . $stage->getId();
+$vh = $this->preference();
+$vh->setStage($stage);
+$preferences = $stage->getPreferences();
+$terrainsPref = [];
+/** @var Preference $preference */
+foreach ($preferences as $preference){
+    $terrainsPref[$preference->getTerrainStage()->getId()] = $preference;
+    if($preference->getTerrainStageSecondaire() != null) {
+//        TODO : choix a revoir, peut-etre plutot tous les afficher ?
+//        Pour les terrains de stages secondaire, on considére la préférences de plus faible rang
+        $previous = ($terrainsPref[$preference->getTerrainStageSecondaire()->getId()]) ?? null;
+        $p = $preference;
+        if(isset($previous) && $previous->getRang()<$preference->getRang()){ $p = $previous;}
+        $terrainsPref[$preference->getTerrainStageSecondaire()->getId()] = $p;
+    }
+}
+?>
+
+    <div class="card">
+        <div class="card-header">Places ouvertes par terrain</div>
+        <div class="card-body">
+            <table id="<?= $tableId ?>" class="table table-hover table-condensed">
+                <thead>
+                <tr>
+                    <th class="hidden">Type de terrain</th>
+                    <th class="col-md" data-type="num">Catégorie</th>
+                    <th class="col-md">Terrain</th>
+                    <th class="col-md-2 no-search text-center" data-type="num">Places ouvertes</th>
+                    <th class="col-md-2 no-search text-center" data-type="num">Demandes</th>
+                    <th class="col-md-2 no-search text-center" data-type="num">Préférence</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php /** @var TerrainStage $terrain */
+                foreach ($session->getTerrainsStages() as $terrain):
+                    $categorie = $terrain->getCategorieStage();
+                    $nbPlaces = $session->getNbPlacesOuvertes($terrain);
+                    $preference = ($terrainsPref[$terrain->getId()]) ?? null;
+                    if(!$terrain->isActif()){continue;}
+                    if(!$terrain->getPreferencesAutorisees()){continue;}
+                    $niveauDemande = $session->getNiveauDemande($terrain);
+
+                    ?>
+                    <tr>
+                        <td class="hidden">Terrains <?=($terrain->isTerrainPrincipal()) ? "Principaux" : "Secondaires" ?></td>
+                        <td class="" data-order="<?= $categorie->getOrdre()?>">
+                            <?= $categorie->getLibelle() ?>
+                        </td>
+                        <td> <?= $terrain->getLibelle() ?>
+                        <?php if($terrain->isHorsSubdivision()) :?>
+                            <div class="text-small text-muted">Terrain Hors-Subdivision</div>
+                        <?php elseif($terrain->isContraintForNiveauEtude($session->getNiveauEtude())) :?>
+                            <div class="text-small text-muted">Terrain normalement restreint pour les stages de <?= $session->getNiveauEtude()->getLibelle()?></div>
+                        <?php endif; ?>
+                        </td>
+                        <td class="text-center"> <?= $nbPlaces ?></td>
+                        <td class="text-center" data-order="<?= (isset($niveauDemande)) ? $niveauDemande->getOrdre() : PHP_INT_MAX ?>"> <?= $vh->renderDemande($terrain) ?></td>
+                        <td class="text-center" data-order="<?=($preference) ? $preference->getRang() : PHP_INT_MAX ?>">
+                            <?php if(isset($preference)) :?>
+                                <span class="badge badge-primary"><?=$preference->getRang()?></span>
+                            <?php else : ?>
+                                <span class='text-muted'>-</span>
+                            <?php endif ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+
+    <script type="text/javascript">
+        $(function () {
+            let options = generateDataTableSetings({
+                    order: [[1, 'asc'], [2, 'asc']],
+                    "lengthMenu": [[50, 100, 250, -1], [50, 100, 250, "Tous"]],
+                    "orderFixed": {
+                        "pre": [ 0, 'asc' ],
+                    },
+                    rowGroup: {
+                        dataSrc: 0
+                    }
+                }
+            );
+            let tableInstance = $("#<?= $tableId ?>").on('draw.dt', function () {
+                $('[data-bs-toggle="popover"]').popover({html: true});
+            }).DataTable(options);
+        });
+    </script>
+
+<?php
+
+?>

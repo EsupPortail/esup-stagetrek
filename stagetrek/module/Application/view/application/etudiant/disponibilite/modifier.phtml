@@ -1,0 +1,44 @@
+<?php
+
+use Application\Controller\Etudiant\DisponibiliteController;
+use Application\Controller\Etudiant\EtudiantController;
+use Application\Entity\Db\Etudiant;
+use Application\Form\Etudiant\DisponibiliteForm;
+use Application\View\Helper\Disponibilite\DisponibiliteViewHelper;
+
+/**
+ * @see DisponibiliteController::modifierAction()
+ * @var string $title
+ * @var DisponibiliteForm $form
+ * @var Etudiant $etudiant
+ */
+
+/** @var DisponibiliteViewHelper $vh */
+$vh = $this->disponibilite();
+?>
+
+<div class="card card-primary">
+    <h1 class="page-header card-header">
+        <span class="icon icon-modifier"></span>
+        <?= $title ?>
+    </h1>
+    <div class="card-body">
+        <?= $vh->renderForm($form); ?>
+    </div>
+
+    <div class="card-footer">
+        <div class="row">
+            <div class="col-md-12">
+                <?= $this->backButton("Fiche de l'étudiant")->backTo($this->url(EtudiantController::ROUTE_AFFICHER, ['etudiant' => $etudiant->getId()], [], true)) ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        let body = $("body");
+        body.off("<?= DisponibiliteController::EVENT_MODIFIER?>", closeModal)
+            .one("<?= DisponibiliteController::EVENT_MODIFIER?>", closeModal);
+    })
+</script>

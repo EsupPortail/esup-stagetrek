@@ -1,0 +1,34 @@
+<?php
+
+use Application\Controller\Referentiel\SourceController as Controller;
+use Application\Form\Referentiel\SourceForm;
+use Application\View\Helper\Referentiel\SourceViewHelper;
+
+/**
+ * @see SourceController::modifierAction()
+ *
+ * @var String                  $title
+ * @var SourceForm        $form
+ */
+
+/** @var SourceViewHelper $vh */
+$vh = $this->source()
+?>
+
+<div class="card card-primary">
+    <h1 class="page-header card-header">
+        <span class="icon icon-ajouter"></span>
+        <?= $title ?>
+    </h1>
+    <div class="card-body">
+        <?= $vh->renderForm($form); ?>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        let body = $("body");
+        body.off("<?= Controller::EVENT_MODIFIER?>", closeModal)
+            .one("<?= Controller::EVENT_MODIFIER?>", closeModal);
+    })
+</script>

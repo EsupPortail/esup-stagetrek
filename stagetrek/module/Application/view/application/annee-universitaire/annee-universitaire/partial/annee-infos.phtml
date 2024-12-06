@@ -1,0 +1,64 @@
+<?php
+
+use Application\Controller\AnneeUniversitaire\AnneeUniversitaireController;
+use Application\Entity\Db\AnneeUniversitaire;
+use Application\Entity\Db\Groupe;
+use Application\View\Helper\Annees\AnneeUniversitaireViewHelper;
+
+
+/**
+ * @see AnneeUniversitaireController::afficherAction()
+ * @var AnneeUniversitaire $annee
+ */
+
+/** @var AnneeUniversitaireViewHelper $vh */
+$vh = $this->anneeUniversitaire($annee);
+?>
+
+<?php
+//TODO : a déplacer dans le calcul du états des années
+$today = new DateTime();
+if ($annee->getDateDebut() < $today && !$annee->isAnneeVerrouillee()): ?>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-warning">
+                L'année universitaire n'est <strong>pas validée</strong> alors qu'elle est
+                <strong><?= ($annee->getDateFin() < $today) ? "terminée" : "commencée" ?></strong>
+                depuis le <strong><?=  ($annee->getDateFin() < $today) ? $annee->getDateFin()->format('d/m/Y') : $annee->getDateDebut()->format('d/m/Y') ?></strong>.
+            </div>
+        </div>
+    </div>
+<?php endif;?>
+
+<?php if($annee->getGroupes()->isEmpty()): ?>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert <?= ($annee->isAnneeVerrouillee()) ? "alert-info" : "alert-warning"?>">
+                L'année universitaire n'est associée à <strong>aucun</strong> groupe d'étudiants.
+            </div>
+        </div>
+    </div>
+<?php endif;?>
+
+<?php /** @var Groupe $g */
+foreach ($annee->getGroupes() as $g) :?>
+    <?php if ($g->getEtudiants()->isEmpty()): ?>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert <?= ($annee->isAnneeVerrouillee()) ? "alert-info" : "alert-warning"?>">
+                    Aucun étudiant n'est inscrit dans le groupe <?= $g->getLibelle() ?>
+                </div>
+            </div>
+        </div>
+    <?php endif;?>
+    <?php if ($g->getSessionsStages()->isEmpty()): ?>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert <?= ($annee->isAnneeVerrouillee()) ? "alert-info" : "alert-warning"?>">
+                    Aucune session de stage n'est planifiée pour le groupe <?= $g->getLibelle() ?>
+                </div>
+            </div>
+        </div>
+    <?php endif;?>
+<?php endforeach; ?>

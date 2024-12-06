@@ -1,0 +1,82 @@
+<?php
+
+use Application\Controller\Contact\ContactController;
+use Application\Form\Contacts\ContactRechercheForm;
+
+
+/**
+ * @see ContactController::indexAction()
+ * @see ContactController::rechercherAction()
+ * @var ContactRechercheForm $form
+ */
+
+$fct = $this->formControlText();
+$fcg = $this->formControlGroup();
+?>
+
+
+<?php echo $this->form()->openTag($form->prepare()); ?>
+<div class="card card-primary">
+    <div class="card-header">
+        <span class="fa fa-search"></span>
+        Rechercher un contact
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4">
+                <?= $fct($form->get($form::INPUT_DISPLAY_NAME)); ?>
+            </div>
+            <div class="col-md-4">
+                <?= $fcg($form->get($form::INPUT_LIBELLE)); ?>
+            </div>
+            <div class="col-md-4">
+                <?= $fcg($form->get($form::INPUT_CODE)); ?>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <?= $fcg($form->get($form::INPUT_MAIL)); ?>
+            </div>
+            <div class="col-md-4">
+                <?= $fcg($form->get($form::INPUT_TELEPHONE)); ?>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="d-flex">
+                    <?php
+                    $input = $form->get($form::INPUT_ACTIF);
+                    $label = $this->formlabel($input);
+                    $input->setLabel("");
+                    ?>
+                    <div class="form-check form-switch">
+                        <?= $this->formelement($input) ?>
+                    </div>
+                    <span class="mx-1"> <?= $label ?></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="d-flex">
+                    <?php
+                    $input = $form->get($form::INPUT_AFFICHER_CODE);
+                    $label = $this->formlabel($input);
+                    $input->setLabel("");
+                    ?>
+                    <div class="form-check form-switch">
+                        <?= $this->formelement($input) ?>
+                    </div>
+                    <span class="mx-1"> <?= $label ?></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer border-0">
+        <div class="row">
+            <div class="col-md-12">
+                <?= $this->formButton($form->get($form::INPUT_RECHERCHER)); ?>
+                <?= $this->formButton($form->get($form::INPUT_EFFACER)); ?>
+            </div>
+        </div>
+    </div>
+</div>
+<?php echo $this->form()->closeTag(); ?>

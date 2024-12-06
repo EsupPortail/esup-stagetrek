@@ -1,0 +1,66 @@
+<?php
+
+use Application\Entity\Db\ModeleConventionStage;
+use Application\View\Helper\Etudiant\EtudiantViewHelper;
+
+
+/**
+ * @see EtudiantViewHelper::renderInfos()
+ *
+
+ * @var ModeleConventionStage $modeleConventionStage
+ */
+?>
+
+<div class="row row-cols-1 row-cols-md-2">
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-header">
+                Identité
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <strong>Libelle</strong>
+                    </div>
+                    <div class="col-md-8">
+                        <?= $modeleConventionStage->getLibelle() ?>
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Code du template</strong>
+                    </div>
+                    <div class="col-md-8">
+                        <?= $modeleConventionStage->getCode() ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-header">
+                Description
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <?php $description = $modeleConventionStage->getDescription();
+                        if ($description && $description != ""):
+                        ?>
+                        <?= $description ?>
+                        <?php else : ?>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="alert alert-info">
+                                    Description non définie
+                                </div>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

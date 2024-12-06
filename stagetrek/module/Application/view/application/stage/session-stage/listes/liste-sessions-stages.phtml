@@ -1,0 +1,116 @@
+<?php
+
+use Application\Entity\Db\SessionStage;
+use Application\View\Helper\SessionsStages\SessionStageViewHelper;
+
+
+/**
+ * @see SessionStageViewHelper::renderListe()
+ * @var SessionStage[] $sessionsStages
+ */
+
+$tableId = $tableId = "liste-sessions-stages";
+/** @var SessionStageViewHelper $vh */
+$vh = $this->sessionStage();
+
+$anneeVh = $this->anneeUniversitaire();
+$groupeVh = $this->groupe();
+?>
+
+<div class="card">
+    <div class="card-header">Liste des sessions de stages</div>
+    <div class="card-body">
+
+        <table id="<?= $tableId ?>" class="table table-hover table-condensed">
+            <thead>
+            <tr>
+                <th class="hidden">Année</th>
+                <th class="hidden" data-type="num">Date de l'année</th>
+                <th class="col-md-4">Session</th>
+                <th class="col-md-3">Groupe</th>
+                <th class="col-md-1 text-center" data-type="num">Début</th>
+                <th class="col-md-1 text-center" data-type="num">Fin</th>
+                <th class="col-md-3 text-end" data-type="num">État</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($sessionsStages as $session):
+                $vh->setSessionStage($session);
+                $etat = $session->getEtatActif();
+                $annee = $session->getAnneeUniversitaire();
+                $anneeVh->setAnneeUniversitaire($annee);
+                $groupe = $session->getGroupe();
+                $groupeVh->setGroupe($groupe);
+                $etatAnnee = $annee->getEtatActif();
+
+                $bg = match (true) {
+                    $session->hasEtatError() => "table-danger",
+                    $session->hasEtatAlerte() => "table-danger",
+                    $session->hasEtatDesactive(), $session->hasEtatFutur() => "table-muted",
+                    $session->hasEtatPhaseChoix(), $session->hasEtatPhaseAffectation(), $session->hasEtatAVenir(), $session->hasEtatEnCours(), $session->hasEtatPhaseValidation(), $session->hasEtatPhaseEvaluation() => "table-primary",
+                    $session->hasEtatTerminee() => "table-success",
+                    default => "table-danger",
+                };
+                ?>
+                <tr class="<?= $bg ?>">
+                    <td class="hidden">
+                        <div class="row my-0">
+                            <div class="col-md-9">
+                                Année <?= $annee->getLibelle() ?>
+                            </div>
+                            <div class="col-md-3 text-end" style="color:<?= ($etatAnnee) ? $etatAnnee->getType()->getCouleur() : "" ?>">
+                                <span class="<?= (isset($etatAnnee)) ? $etatAnnee->getType()->getIcone() : "fa fa-question" ?>"></span>
+                                <?= (isset($etatAnnee)) ? $etatAnnee->getTypeLibelle() : "Indéterminé" ?>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="hidden" data-order="<?=$annee->getDateDebut()->getTimestamp()?>"></td>
+                    <td data-order="<?= $session->getLibelle(); ?>"
+                        data-filter="<?= $session->getLibelle(); ?>">
+                        <?= $vh->lienAfficher() ?>
+                    </td>
+                    <td data-filter="<?= $groupe->getLibelle() ?>"
+                        data-order="<?= $groupe->getLibelle() ?>">
+                        <?= $groupeVh->lienAfficher() ?>
+                    </td>
+                    <td data-order="<?= $session->getDateDebutStage()->getTimestamp() ?>"
+                        class="text-center">
+                        <?= $session->getDateDebutStage()->format('d/m/Y') ?>
+                    </td>
+                    <td data-order="<?= $session->getDateFinStage()->getTimestamp() ?>"
+                        class="text-center">
+                        <?= $session->getDateFinStage()->format('d/m/Y') ?>
+                    </td>
+                    <td class="text-end" data-order="<?= ($etat) ? ($etat->getType()->getOrdre()) : PHP_INT_MIN ?>"
+                        style="color:<?=  (isset($etat)) ? $etat->getType()->getCouleur() : "" ?>"
+                    >
+                        <span class="<?= (isset($etat)) ? $etat->getType()->getIcone() : "fa fa-question" ?>"></span>
+                        <?= (isset($etat)) ? $etat->getTypeLibelle() : "Indéterminé" ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        let options = generateDataTableSetings(
+            {
+                stateSave: false,
+                retrieve: true,
+                "order": [[4, "desc"], [5, "desc"],[3, "asc"]],
+                "orderFixed": {
+                    "pre": [ 1, 'desc' ],
+                },
+                rowGroup: {
+                    dataSrc: 0
+                },
+            }
+        );
+        $("#<?= $tableId ?>").on('draw.dt', function() {
+            $('[data-bs-toggle="popover"]').popover({html: true});
+        }).DataTable(options);
+    });
+</script>

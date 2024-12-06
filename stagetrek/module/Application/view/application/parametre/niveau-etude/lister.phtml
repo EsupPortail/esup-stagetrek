@@ -1,0 +1,14 @@
+<?php
+
+use Application\Controller\Parametre\NiveauEtudeController;
+use Application\Entity\Db\NiveauEtude;
+
+
+/**
+ * @see NiveauEtudeController::listerAction()
+
+ * @var NiveauEtude[] $niveaux
+ */
+
+echo $this->niveauEtude()->renderListe($niveaux);
+

@@ -1,0 +1,293 @@
+<?php
+
+use Application\Controller\Affectation\AffectationController;
+use Application\Controller\Contact\ContactStageController;
+use Application\Controller\Convention\ConventionStageController;
+use Application\Controller\Etudiant\EtudiantController;
+use Application\Controller\Preference\PreferenceController;
+use Application\Controller\Stage\SessionStageController;
+use Application\Controller\Stage\StageController;
+use Application\Controller\Stage\ValidationStageController;
+use Application\Entity\Db\Stage;
+use Application\View\Helper\Affectation\AffectationViewHelper;
+use Application\View\Helper\Contacts\ContactStageViewHelper;
+use Application\View\Helper\Convention\ConventionViewHelper;
+use Application\View\Helper\Preferences\PreferenceViewHelper;
+use Application\View\Helper\SessionsStages\SessionStageViewHelper;
+use Application\View\Helper\Stages\StageViewHelper;
+use Application\View\Helper\Stages\ValidationStageViewHelper;
+
+/**
+ * @see StageController::afficherAction()
+ * @var Stage $stage
+ */
+/** @var StageViewHelper $vh */
+$vh = $this->stage($stage);
+$etudiant = $stage->getEtudiant();
+$session = $stage->getSessionStage();
+$affectationStage = $stage->getAffectationStage();
+/** @var SessionStageViewHelper $sessionVh */
+$sessionVh = $this->sessionStage($session);
+
+/** @var PreferenceViewHelper $preferenceVh */
+$preferenceVh = $this->preference();
+$preferenceVh->setStage($stage);
+
+/** @var AffectationViewHelper $affectationVh */
+$affectationVh = $this->affectation($affectationStage);
+
+/** @var ContactStageViewHelper $contactVh */
+$contactVh = $this->contactStage();
+$contactVh->setStage($stage);
+
+/** @var ConventionViewHelper $conventionVh */
+$conventionVh = $this->convention($stage->getConventionStage());
+$conventionVh->setStage($stage);
+$canSeePreferences = $preferenceVh->actionAllowed(PreferenceController::ACTION_LISTER);
+$canEditPreferences = $preferenceVh->actionAllowed(PreferenceController::ACTION_MODIFIER_PREFERENCES);
+
+$canSeeConvention = $conventionVh->actionAllowed(ConventionStageController::ACTION_AFFICHER);
+$canGenerateConvention = $conventionVh->actionAllowed(ConventionStageController::ACTION_TELEVERSER);
+$canUploaderConvention = $conventionVh->actionAllowed(ConventionStageController::ACTION_GENERER);
+$canDeleteConvention = $conventionVh->actionAllowed(ConventionStageController::ACTION_SUPPRIMER);
+
+/** @var ValidationStageViewHelper $validationVh */
+$validationVh = $this->validation();
+$validationVh->setStage($stage);
+$canSeeValidation = $validationVh->actionAllowed(ValidationStageController::ACTION_AFFICHER);
+
+$terrain1 = ($affectationStage) ? $affectationStage->getTerrainStage() : null;
+$terrain2 = ($affectationStage) ? $affectationStage->getTerrainStageSecondaire() : null;
+
+?>
+
+<h1 class="page-header">
+        <span class="icon">
+        <i class="fas fa-notes-medical"></i>
+    </span>
+    <?= $vh->lienStagePrecedent() ?>
+    <?= $etudiant->getDisplayName() ?> - Stage n°<?= $stage->getNumero() ?>
+    <?= $vh->lienStageSuivant() ?>
+    <div class="fs-4 text-muted">
+        Stage
+        du <?= $stage->getDateDebutStage()->format('d/m/Y') ?>
+        au <?= $stage->getDateFinStage()->format('d/m/Y') ?>
+    </div>
+    <div class="fs-4 text-muted">
+        <?php
+        if(isset($terrain1)) {
+            echo "".$terrain1->getLibelle();
+        }
+        if(isset($terrain2)) {
+            echo " et ". $terrain2->getLibelle();
+        }
+        ?>
+    </div>
+</h1>
+
+<?php if($stage->hasStageSecondaire() || $stage->isStageSecondaire()):
+    //Navigation entre stage principaux et stage secondaire
+    $stage1 = ($stage->isStageSecondaire()) ?  $stage->getStagePrincipal() : $stage;
+    $stage2 = ($stage->isStagePrincipal()) ?  $stage->getStageSecondaire() : $stage;
+    ?>
+    <div class="row">
+        <div class="col-md-12">
+            <?= $vh->setStage($stage1)->lienAfficher("Affectation principale", [
+                    'class' => ($stage->isStagePrincipal()) ? 'btn-affectation-type btn btn-success' : 'btn-affectation-type btn btn-secondary',
+                    'title' => "Afficher l'affectation principale du stage"
+                ]) ?>
+            <?= $vh->setStage($stage2)->lienAfficher("Affectation secondaire", [
+                    'class' => ($stage->isStageSecondaire()) ? 'btn-affectation-type btn btn-success' : 'btn-affectation-type btn btn-secondary',
+                    'title' => "Afficher l'affectation secondaire du stage"
+            ]) ?>
+        </div>
+    </div>
+<?php  $vh->setStage($stage); endif; ?>
+
+
+
+<nav>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <button class="nav-link active" id="nav-infos" data-bs-toggle="tab" data-bs-target="#infos" type="button"
+                role="tab" aria-controls="infos" aria-selected="true">Informations
+        </button>
+        <?php if($canSeePreferences):?>
+        <button class="nav-link" id="nav-preferences" data-bs-toggle="tab" data-bs-target="#preferences" type="button"
+                role="tab" aria-controls="preferences" aria-selected="false">Préférences
+        </button>
+        <?php endif; ?>
+        <button class="nav-link" id="nav-affectation" data-bs-toggle="tab" data-bs-target="#affectation" type="button"
+                role="tab" aria-controls="affectation" aria-selected="false">Affectation
+        </button>
+        <button class="nav-link" id="nav-contacts" data-bs-toggle="tab" data-bs-target="#contacts" type="button"
+                role="tab" aria-controls="contacts" aria-selected="false">Contacts
+        </button>
+        <?php if($canSeeConvention) :?>
+        <button class="nav-link" id="nav-convention" data-bs-toggle="tab" data-bs-target="#convention" type="button"
+                role="tab" aria-controls="convention" aria-selected="false">Convention
+        </button>
+        <?php endif; ?>
+        <?php if($canSeeValidation) :?>
+        <button class="nav-link" id="nav-validation" data-bs-toggle="tab" data-bs-target="#validation" type="button"
+                role="tab" aria-controls="validation" aria-selected="false">Validation
+        </button>
+        <?php endif; ?>
+    </div>
+</nav>
+
+<div class="card tab-content" id="nav-tabContent">
+    <div class="tab-pane fade show active" id="infos" role="tabpanel" aria-labelledby="nav-infos">
+        <div class="card-body">
+            <?php /** @see StageController::afficherInfosAction() */
+            $url = $this->url(StageController::ROUTE_AFFICHER_INFOS, ['stage' => $stage->getId()], [], true);
+            ?>
+            <div id="infos-content" class="" data-url="<?= $url ?>">
+                <?= $vh->renderInfos() ?>
+                <hr/>
+                <?= $sessionVh->renderDates() ?>
+            </div>
+        </div>
+
+        <div class="card-footer">
+            <div class="row">
+                <div class="col-md-12">
+                    <?= $this->backButton("Fiche de l'étudiant")->backTo($this->url(EtudiantController::ROUTE_AFFICHER, ['etudiant' => $etudiant->getId()], [], true)) ?>
+                    <?= $this->backButton("Fiche de la session")->backTo($this->url(SessionStageController::ROUTE_AFFICHER, ['sessionStage' => $session->getId()], [], true)) ?>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php if($canSeePreferences):?>
+    <div class="tab-pane fade show" id="preferences" role="tabpanel" aria-labelledby="nav-preferences">
+        <?php if($canEditPreferences) :?>
+            <div class="card-header card-sub-header text-end">
+                <?= $preferenceVh->lienModifierPreferences() ?>
+            </div>
+        <?php endif; ?>
+        <?php /** @see PreferenceController::listerAction() */
+        $url = $this->url(PreferenceController::ROUTE_LISTER, ['stage' => $stage->getId()], [], true);
+        ?>
+        <div id="preferences-content" class="card-body" data-url="<?= $url ?>">
+            <?= $preferenceVh->renderListe($stage->getPreferences()->toArray()) ?>
+        </div>
+    </div>
+    <?php endif; ?>
+
+    <div class="tab-pane fade show" id="affectation" role="tabpanel" aria-labelledby="nav-affectation">
+        <?php if($affectationVh->actionAllowed(AffectationController::ACTION_MODIFIER)) :?>
+            <div class="card-header card-sub-header text-end">
+                <?= $affectationVh->lienModifier() ?>
+            </div>
+        <?php endif; ?>
+
+        <?php /** @see StageController::afficherAffectationAction() */
+        $url = $this->url(StageController::ROUTE_AFFICHER_AFFECTATION, ['stage' => $stage->getId()], [], true);
+        ?>
+        <div id="affectation-content" class="card-body" data-url="<?= $url ?>">
+            <?= $vh->renderAffectationInfos()?>
+        </div>
+    </div>
+    <div class="tab-pane fade show" id="contacts" role="tabpanel" aria-labelledby="nav-contacts">
+
+        <?php if($contactVh->actionAllowed(ContactStageController::ACTION_AJOUTER)) :?>
+            <div class="card-header card-sub-header text-end">
+                <?= $contactVh->lienAjouter() ?>
+            </div>
+        <?php endif; ?>
+        <div class="card-body">
+            <?php /** @see StageController::listerContactsAction() */
+            $url = $this->url(StageController::ROUTE_LISTER_CONTACTS, ['stage' => $stage->getId()], [], true);
+            ?>
+            <div id="contacts-content" class="" data-url="<?= $url ?>">
+            <?= $vh->renderListeContacts()?>
+            </div>
+        </div>
+    </div>
+
+
+    <?php if($canSeeConvention) :?>
+    <div class="tab-pane fade show" id="convention" role="tabpanel" aria-labelledby="nav-convention">
+        <?php if($canGenerateConvention || $canUploaderConvention || $canDeleteConvention) :
+            //TODO : rafraichier les actions a l'ajout / suppression de la convention
+            ?>
+            <div class="card-header card-sub-header text-end">
+                <?= $conventionVh->lienTeleverser() ?>
+                <?= $conventionVh->lienGenerer() ?>
+                <?= $conventionVh->lienSupprimer() ?>
+            </div>
+        <?php endif; ?>
+            <?php /** @see ConventionStageController::afficherAction() */
+            $url = $this->url(ConventionStageController::ROUTE_AFFICHER, ['stage' => $stage->getId()], [], true);
+            ?>
+            <div id="convention-content" class="card-body" data-url="<?= $url ?>">
+                <?= $conventionVh->render()?>
+                <div class="my-3"></div>
+                <?= $conventionVh->renderSignataires()?>
+            </div>
+    </div>
+    <?php endif; ?>
+
+    <?php if($canSeeValidation) :?>
+    <div class="tab-pane fade show" id="validation" role="tabpanel" aria-labelledby="nav-validation">
+        <?php if($validationVh->actionAllowed(ValidationStageController::ACTION_MODIFIER)) :?>
+            <div class="card-header card-sub-header text-end">
+                <?= $validationVh->lienModifier() ?>
+            </div>
+        <?php endif; ?>
+        <div class="card-body">
+            <?php /** @see ValidationStageController::afficherAction() */
+            $url = $this->url(ValidationStageController::ROUTE_AFFICHER, ['stage' => $stage->getId()], [], true);
+            ?>
+            <div id="validation-content" class="" data-url="<?= $url ?>">
+                <?= $validationVh->render()?>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
+</div>
+
+<script>
+    $(function () {
+        let url = document.location.toString();
+        if (url.match('#')) {
+            let onglet = url.split('#')[1]
+            $('#nav-' +  onglet + '').trigger('click');
+        }
+
+        //Pour garder l'onglet actif lors d'un changement de vue
+        $('.btn-affectation-type').on('click', function (event){
+            event.preventDefault()
+            let ongletActif = $('.nav-link.active');
+            window.location.href = event.target.href+ongletActif.data('bs-target')
+
+        })
+        let body = $("body");
+        body.on("<?= AffectationController::EVENT_MODIFIER ?> "
+            + "<?= ValidationStageController::EVENT_MODIFIER ?> "
+            , function () {
+                $("#affectation-content").refresh();
+                $("#preferences-content").refresh();
+                $("#infos-content").refresh();
+                $("#contacts-content").refresh();
+                $("#convention-content").refresh();
+                $("#validation-content").refresh();
+            });
+
+        body.on("<?= ContactStageController::EVENT_AJOUTER ?> "
+            + "<?= ContactStageController::EVENT_MODIFIER ?> "
+            + "<?= ContactStageController::EVENT_SEND_LIEN_VALIDATION ?> "
+            + "<?= ContactStageController::EVENT_SUPPRIMER ?> "
+            , function () {
+                $("#contacts-content").refresh();
+                $("#convention-content").refresh();
+            });
+
+        body.on("<?= ConventionStageController::EVENT_TELEVERSER ?> "
+            + "<?= ConventionStageController::EVENT_GENERER ?> "
+            + "<?= ConventionStageController::EVENT_SUPPRIMER ?> "
+            , function () {// requic d'un reload pour gerer les boutons d'actions
+                window.location.hash = '#convention';
+                window.location.reload();
+        });
+    });
+</script>

@@ -1,0 +1,190 @@
+<?php
+
+use Application\Controller\Affectation\AffectationController;
+use Application\Entity\Db\AffectationStage;
+use Application\View\Helper\Affectation\AffectationViewHelper;
+
+/**
+ * @see AffectationController::affectationStage()
+ * @see AffectationViewHelper::renderInfos()
+ * @var AffectationStage $affectationStage
+ * @var bool $vueEtudiante
+ */
+if (!isset($vueEtudiante)) {
+    $vueEtudiante = false;
+}
+$etudiant = $affectationStage->getEtudiant();
+$stage = $affectationStage->getStage();
+$terrain = $affectationStage->getTerrainStage();
+$terrainSescondaire = $affectationStage->getTerrainStageSecondaire();
+$categorie = ($terrain) ? $terrain->getCategorieStage() : null;
+$categorieSecondaire = ($terrainSescondaire) ? $terrainSescondaire->getCategorieStage() : null;
+$today = new DateTime();
+?>
+
+<?php if (!$vueEtudiante):
+// L'étudiant ne voit pas toutes les informations
+?>
+<div class="row row-cols-1 row-cols-md-2">
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-header">
+                Description
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <strong>Etudiant</strong>
+                    </div>
+                    <div class="col-md-8">
+                        <?= $etudiant->getDisplayName() ?> (<?= $etudiant->getNumEtu() ?>)
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Stage</strong>
+                    </div>
+                    <div class="col-md-8">
+                        <?= $stage->getLibelle() ?>
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Groupe</strong>
+                    </div>
+                    <div class="col-md-8">
+                        <?= $stage->getGroupe()->getLibelle() ?>
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Année</strong>
+                    </div>
+                    <div class="col-md-8">
+                        <?= $stage->getAnneeUniversitaire()->getLibelle() ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <?php
+        $etat = $affectationStage->getEtatActif();
+        $bg = match (true) {
+            $affectationStage->hasEtatEnErreur() => "card-danger",
+            $affectationStage->hasEtatEnRetard(),
+            $affectationStage->hasEtatEnAlerte() => "card-warning",
+            $affectationStage->hasEtatFutur(),
+            $affectationStage->hasEtatNonAffecte(),
+            $affectationStage->hasEtatStageNonEffectue(),
+            $affectationStage->hasEtatEnDisponibilite() => "card-muted",
+            default => "card-primary",
+        }
+        ?>
+
+        <div class="card h-100 <?= $bg ?>">
+            <div class="card-header">
+                État de l'affectation
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <?= $this->etatinstance($etat, ['display-categorie' => false, 'display-libelle' => true, 'unknown-type-libelle' => "Indéterminée"]); ?>
+                    </div>
+                </div>
+                 <?php if (isset($etat) && $etat->getInfos() != "") : ?>
+                    <div class="row">
+                        <div class="col-md-12"><strong>Informations</strong></div>
+                        <div class="col-md-12">
+                            <?= $etat->getInfos(); ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
+                <div class="row">
+                    <div class="col-md-4">
+                        <strong>Visible par l'étudiant</strong>
+                    </div>
+                    <div class="col-md-8">
+                        <?= ($affectationStage->isVisibleByEtudiant()) ? "Oui" : "Non" ?>
+                    </div>
+                </div>
+
+                <?php if($stage->getDateFinChoix() <= $today && $today <= $stage->getDateDebutStage()) : ?>
+<!--                TODO : a revoir la définition de préférences Non représentative (distingué un non affecté car l'algo n'as pas tournéé du reste des situations)-->
+                <?php if ($affectationStage->hasPreferencesNonRepresentative()) : ?>
+                <div class="row">
+                    <div class="col-md-12">
+                        <strong>Préférences non représentative</strong>
+                    </div>
+                </div>
+                <?php endif; ?>
+                <?php if($affectationStage->hasNoPreferences() && !$affectationStage->hasEtatValidee()) : ?>
+                    <div class="row">
+                        <div class="col-md-12 text-danger">
+                            <strong>Aucune préférence définie</strong>
+                        </div>
+                    </div>
+                <?php endif; ?>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
+
+<div class="row row-cols-1 row-cols-md-2">
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-header">
+                Affectation principale
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <?php if (!$terrain) : ?>
+                        <div class="col-md-12">
+                            L'affectation au terrain de stage principal n'est pas définie
+                        </div>
+                    <?php else : ?>
+                        <div class="col-md-4">
+                            <strong>Catégorie</strong>
+                        </div>
+                        <div class="col-md-8">
+                            <?= $categorie->getLibelle() ?>
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Terrain</strong>
+                        </div>
+                        <div class="col-md-8">
+                            <?= $terrain->getLibelle() ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-header">
+                Affectation secondaire
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <?php if (!$terrainSescondaire) : ?>
+                        <div class="col-md-12 text-muted">
+                            Pas d'affectation à un stage secondaire
+                        </div>
+                    <?php else : ?>
+                        <div class="col-md-4">
+                            <strong>Catégorie</strong>
+                        </div>
+                        <div class="col-md-8">
+                            <?= $categorieSecondaire->getLibelle() ?>
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Terrain</strong>
+                        </div>
+                        <div class="col-md-8">
+                            <?= $terrainSescondaire->getLibelle() ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

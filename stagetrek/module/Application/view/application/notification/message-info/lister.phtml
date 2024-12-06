@@ -1,0 +1,13 @@
+<?php
+
+use Application\Controller\Notification\MessageInfoController;
+use Application\Entity\Db\MessageInfo;
+
+
+/**
+ * @see MessageInfoController::listerAction()
+ * @var MessageInfo[] $messages
+ */
+?>
+
+<?= $this->messageInfo()->renderListe($messages); ?>

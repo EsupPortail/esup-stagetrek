@@ -1,0 +1,15 @@
+<?php
+
+use Application\Controller\Parametre\ParametreCoutTerrainController;
+use Application\Entity\Db\ParametreCoutAffectation;
+use Application\View\Helper\Parametres\ParametreCoutTerrainViewHelper;
+
+/**
+ * @see ParametreCoutTerrainController::listerAction()
+ *
+ * @var ParametreCoutAffectation[] $parametres
+ * @var ParametreCoutTerrainViewHelper $vh
+ */
+
+$vh = $this->parametreCoutTerrain();
+echo $vh->renderListe($parametres);

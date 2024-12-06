@@ -1,0 +1,15 @@
+<?php
+
+use Application\Controller\Etudiant\DisponibiliteController;
+use Application\Entity\Db\Etudiant;
+use Application\View\Helper\Disponibilite\DisponibiliteViewHelper;
+use Laminas\View\Renderer\PhpRenderer;
+
+/**
+ * @see DisponibiliteController::listerAction()
+ * @var Etudiant $etudiant
+ * @var DisponibiliteViewHelper $vh
+ */
+
+$vh = $this->disponibilite();
+echo $vh->renderListe($etudiant->getDisponibilites()->toArray());

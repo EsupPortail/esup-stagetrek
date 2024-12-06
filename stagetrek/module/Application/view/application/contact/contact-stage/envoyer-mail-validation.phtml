@@ -1,0 +1,127 @@
+<?php
+
+use Application\Controller\Contact\ContactStageController;
+use Application\Entity\Db\ContactStage;
+use Application\Form\Misc\ConfirmationForm;
+
+
+/**
+ * @see ContactStageController::envoyerMailValidationAction()
+ *
+ * @var PhpRenderer         $this
+ * @var string              $title
+ * @var ConfirmationForm    $form
+ * @var ContactStage        $contactStage
+ * @var Boolean             $mailSend
+*/
+
+$stage = $contactStage->getStage();
+$etudiant = $stage->getEtudiant();
+
+?>
+
+<div class="card card-primary">
+    <h1 class="page-header card-header">
+        <span class="icon icon-mail"></span>
+        <?= $title ?>
+    </h1>
+    <div class="card-body">
+
+    <div class="row">
+        <div class="col-md-2">
+            <strong>Contact</strong>
+        </div>
+        <div class="col-md-4">
+            <?= $contactStage->getLibelle()?>
+        </div>
+        <?php if($contactStage->getDisplayName()) :?>
+        <div class="col-md-2">
+            <strong>Nom, Prénom</strong>
+        </div>
+            <div class="col-md-4">
+            <?= $contactStage->getDisplayName()?>
+        </div>
+        <?php endif; ?>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <strong>Adresse mail</strong>
+        </div>
+        <div class="col-md-4">
+                <?= $contactStage->getEmail()?>
+        </div>
+    </div>
+
+    <hr/>
+    <div class="row">
+        <div class="col-md-2">
+            <strong>Etudiant</strong>
+        </div>
+        <div class="col-md-4">
+            <?= $etudiant->getDisplayName() ?>
+        </div>
+        <div class="col-md-2">
+            <strong>Stage</strong>
+        </div>
+        <div class="col-md-4">
+            <?= $stage->getLibelle() ?>
+        </div>
+    </div>
+    <hr />
+    <?php if(isset($form)): ?>
+        <?php
+        //Messages en fonction des dates
+        $today = new DateTime();
+        if ($today < $stage->getDateDebutValidation()): ?>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-info">
+                    La phase de validation du stage commencera le
+                    <strong><?= $stage->getDateDebutValidation()->format('d/m/Y') ?></strong>.
+                    <br /> Le lien de validation ne sera pas utilisable avant.
+                </div>
+            </div>
+        </div>
+        <?php endif; ?>
+
+        <?php if ($contactStage->tokenValide() != ""): ?>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-info">
+                    Un lien de validation valide existe déjà.
+                    <br/> Ce lien expire
+                    le <strong><?= $contactStage->getTokenExpirationDate()->format('d/m/Y')?></strong>
+                    à <strong><?= $contactStage->getTokenExpirationDate()->format('H:i')?></strong>.
+                </div>
+            </div>
+        </div>
+        <?php endif; ?>
+
+        <?= $this->confirmation($form) ?>
+
+    <?php elseif(isset($mailSend)) :?>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-success">
+                Le mail de validation a été envoyé avec succés.
+                <br/><i>Le lien de validation est valide jusqu'au
+                    <?= $contactStage->getTokenExpirationDate()->format('d/m/Y') ?>
+                    à <?=$contactStage->getTokenExpirationDate()->format('H:i')?>
+                </i>
+            </div>
+        </div>
+    </div>
+     <?php endif; ?>
+</div>
+</div>
+
+<script>
+    $(function () {
+        let body = $("body");
+        body.off("<?= ContactStageController::EVENT_SEND_LIEN_VALIDATION?>", closeModal)
+            .one("<?= ContactStageController::EVENT_SEND_LIEN_VALIDATION?>", closeModal);
+    })
+</script>
+
+

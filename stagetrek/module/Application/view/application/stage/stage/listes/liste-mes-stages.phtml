@@ -1,0 +1,172 @@
+<?php
+
+use Application\Controller\Stage\StageController;
+use Application\Entity\Db\Etudiant;
+use Application\Entity\Db\Stage;
+use Application\View\Helper\Stages\StageViewHelper;
+
+
+/**
+ * @see StageController::mesStagesAction()
+ * @see StageViewHelper::renderListeMesStages()
+ * @var Etudiant $etudiant
+ */
+
+$tableId = "liste-stages-" . $etudiant->getId();
+
+/** @var StageViewHelper $vh */
+$vh = $this->stage()->setVueEtudiante(true);
+$evh = $this->etudiant();
+
+$stages = $etudiant->getStages()->toArray();
+$stages = Stage::sortStage($stages, 'desc');
+$today = new DateTime();
+?>
+
+
+<div class="card">
+    <div class="card-header">Liste de vos stages</div>
+    <div class="card-body">
+        <?php if(empty($stages)) : ?>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="alert alert-info">
+                        Vos stages à effectuer n'ont pas encore été définis.
+                    </div>
+                </div>
+            </div>
+        <?php else :?>
+        <table id="<?= $tableId ?>" class="table table-hover table-condensed table-data">
+            <thead>
+            <tr>
+                <th class="hidden">Année</th>
+                <th class="" data-type="num">Stage</th>
+                <th class="col-md-3">Session</th>
+                <th class="col-md-4">Affectation</th>
+                <th class="col-md-1 text-center">Début</th>
+                <th class="col-md-1 text-center">Fin</th>
+                <th class="col-md-2 no-search text-end">État</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php /** @var Stage $stage */
+            foreach ($stages as $stage):
+                $etudiant = $stage->getEtudiant();
+                $vh->setStage($stage);
+                $evh->setEtudiant($etudiant);
+                $etat = $stage->getEtatActif();
+
+                $affectation = $stage->getAffectationStage();
+                $terrain = $stage->getTerrainStage();
+                $noBorder = ($stage->hasStageSecondaire()) ? "border-bottom-0" : "";
+
+                //TODO : a revoir pour l'étudiant en fonction d'autres parametre
+                $bg = match (true) {
+                    $stage->hasEtatDesactive(),
+                    $stage->hasEtatNonEffectue(),
+                    $stage->hasEtatEnDisponibilite(),
+                    $stage->hasEtatFutur() => "table-muted",
+                    $stage->hasEtatPhasePreferences(),
+                    $stage->hasEtatPhaseAffectation(),
+                    $stage->hasEtatAVenir(),
+                    $stage->hasEtatEnCours(),
+                    $stage->hasEtatPhaseValidation(),
+                    $stage->hasEtatPhaseEvaluation() => "table-primary",
+                    $stage->hasEtatValide() => "table-success",
+                    $stage->hasEtatNonValide() => "table-danger",
+                    $stage->hasEtatValidationEnRetard(),
+                    $stage->hasEtatEvaluationEnRetard(),
+                    //cas d'erreur : on met en temporairement indisponile pour l'étudianty
+                    $stage->hasEtatEnAlerte() => "table-muted",
+                    $stage->hasEtatEnErreur() => "table-muted",
+                    default => "table-danger",
+                };
+                ?>
+                <?php if($stage->isStagePrincipal()) :?>
+                <tr class="<?= $bg ?>">
+                    <td class="hidden <?=$noBorder?>"><?= $stage->getAnneeUniversitaire()->getLibelle()?> - <?= $stage->getGroupe()->getLibelle() ?></td>
+                    <td class="<?=$noBorder?>">
+                        <?= $vh->lienAfficher("n°". $stage->getNumero(),['text-primary']) ?>
+                    </td>
+                    <td class="<?=$noBorder?>">
+                        <?= $stage->getSessionStage()->getLibelle() ?>
+                    </td>
+                    <td class="<?=$noBorder?>">
+                        <?php if(!$stage->isVisibleByEtudiant() || !$affectation->hasEtatValidee()) :?>
+                        <span class="text-muted">Information non disponible</span>
+                        <?php elseif(!isset($terrain)) :?>
+                            <span class="text-muted">Non affecté</span>
+                        <?php else :?>
+                            <?= $terrain->getLibelle() ?> (<?= $terrain->getCategorieStage()->getAcronyme()?>)
+                        <?php endif; ?>
+                    </td>
+                    <td class="text-center <?=$noBorder?>">
+                        <?= $stage->getDateDebutStage()->format('d/m/Y') ?>
+                    </td>
+                    <td class="text-center <?=$noBorder?>">
+                        <?= $stage->getDateFinStage()->format('d/m/Y') ?>
+                    </td>
+                    <?php  if($stage->hasEtatEnAlerte() || $stage->hasEtatEnErreur()) :?>
+                        <td class="text-end text-muted"><span class="icon icon-warning"></span>Temporairement indisponible</td>
+                    <?php else :?>
+                        <td class="text-end" style="color:<?=  (isset($etat)) ? $etat->getType()->getCouleur() : "" ?>"
+                        >
+                            <span class="<?= (isset($etat)) ? $etat->getType()->getIcone() : "fa fa-question" ?>"></span>
+                            <?= (isset($etat)) ? $etat->getTypeLibelle() : "Indéterminé" ?>
+                        </td>
+                    <?php endif; ?>
+                </tr>
+            <?php elseif($stage->getDateFinCommission() < $today && $affectation->getValidee()) :
+                //Pour l'étudiant qui a un stage secondaire, on ne lui affiche qu'aprés la date d'affectation
+                ?>
+                <tr class="<?= $bg ?>">
+                    <td class="hidden"><?= $stage->getAnneeUniversitaire()->getLibelle()?> - <?= $stage->getGroupe()->getLibelle() ?></td>
+                    <td></td>
+                    <td class="text-small">
+                        <?= $vh->lienAfficher("Stage secondaire",['text-muted']) ?>
+                    <td>
+                           <?= $terrain->getLibelle() ?> (<?= $terrain->getCategorieStage()->getAcronyme()?>)
+                    </td>
+                    <td></td><td></td>
+                    <?php  if($stage->hasEtatEnAlerte() || $stage->hasEtatEnErreur()) :?>
+                        <td class="text-end text-muted"><span class="icon icon-warning"></span>Temporairement indisponible</td>
+                      <?php else :?>
+                    <td class="text-end" style="color:<?=  (isset($etat)) ? $etat->getType()->getCouleur() : "" ?>"
+                    >
+                        <span class="<?= (isset($etat)) ? $etat->getType()->getIcone() : "fa fa-question" ?>"></span>
+                        <?= (isset($etat)) ? $etat->getTypeLibelle() : "Indéterminé" ?>
+                    </td>
+                    <?php endif; ?>
+                </tr>
+            <?php endif?>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+        <?php endif?>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $('[data-bs-toggle="popover"]').popover({html: true});
+        let options = generateDataTableSetings(
+            {
+                stateSave: true,
+                retrieve: true,
+                paging: false,
+                ordering: false,
+                'dom': "<'row' <'col-sm-12 col-md-12'f>>" +
+                    "<'row' <'col-sm-12'tr> >" +
+                    "<'row' <'col-sm-12 col-md-12'i>>",
+                rowGroup: {
+                    dataSrc: 0
+                },
+            }
+        );
+        //options = {};
+        let tableInstance = $("#<?= $tableId ?>").on('draw.dt', function () {
+            $('[data-bs-toggle="popover"]').popover({html: true});
+        }).DataTable(options);
+        $("#<?= $tableId ?>").removeClass('hidden');
+    });
+</script>

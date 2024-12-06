@@ -1,0 +1,36 @@
+<?php
+
+use Application\Controller\Notification\MessageInfoController as Controller;
+use Application\Form\Notification\Fieldset\MessageInfoFieldset;
+use Application\Form\Notification\MessageInfoForm;
+use Application\View\Helper\Notification\MessageInfoViewHelper;
+
+/**
+ * @see MessageInfoController::modifierAction()
+ * @var string $title
+ * @var MessageInfoForm $form
+ * @var MessageInfoFieldset $fieldset
+ * */
+
+/** @var MessageInfoViewHelper $vh */
+$vh = $this->messageInfo();
+?>
+
+<div class="card card-success">
+    <h1 class="page-header card-header">
+        <span class="icon icon-ajouter"></span>
+        <?= $title ?>
+    </h1>
+    <div class="card-body">
+        <?= $vh->renderForm($form); ?>
+
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        let body = $("body");
+        body.off("<?= Controller::EVENT_AJOUTER?>", closeModal)
+            .one("<?= Controller::EVENT_AJOUTER?>", closeModal);
+    });
+</script>

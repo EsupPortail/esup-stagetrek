@@ -1,0 +1,33 @@
+<?php
+
+use Application\Controller\Parametre\NiveauEtudeController;
+use Application\Form\Parametre\NiveauEtudeForm;
+use Application\View\Helper\Parametres\NiveauEtudeViewHelper;
+
+/**
+ * @see NiveauEtudeController::ajouterAction()
+ * @var String                  $title
+ * @var NiveauEtudeForm        $form
+ */
+
+/** @var NiveauEtudeViewHelper $vh */
+$vh = $this->niveauEtude()
+?>
+
+<div class="card card-success">
+    <h1 class="page-header card-header">
+        <span class="icon icon-ajouter"></span>
+        <?= $title ?>
+    </h1>
+    <div class="card-body">
+        <?= $vh->renderForm($form); ?>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        let body = $("body");
+        body.off("<?= NiveauEtudeController::EVENT_AJOUTER?>", closeModal)
+            .one("<?= NiveauEtudeController::EVENT_AJOUTER?>", closeModal);
+    })
+</script>

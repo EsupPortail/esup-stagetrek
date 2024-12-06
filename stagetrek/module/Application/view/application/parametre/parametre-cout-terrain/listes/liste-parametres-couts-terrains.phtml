@@ -1,0 +1,59 @@
+<?php
+
+use Application\Entity\Db\ParametreTerrainCoutAffectationFixe;
+use Application\Provider\Misc\Icone;
+use Application\Provider\Privilege\ParametrePrivileges;
+use Application\View\Helper\Parametres\ParametreCoutTerrainViewHelper;
+
+/**
+ * @see ParametreCoutTerrainViewHelper::renderListe() *
+ * @var ParametreTerrainCoutAffectationFixe[] $parametres
+ */
+/** @var ParametreCoutTerrainViewHelper $vh */
+$vh = $this->parametreCoutTerrain();
+$canEdit = $vh->hasPrivilege(ParametrePrivileges::PARAMETRE_MODIFIER);
+$canDelete = $vh->hasPrivilege(ParametrePrivileges::PARAMETRE_SUPPRIMER);
+$actionMenu = $canEdit || $canDelete;
+?>
+
+<div class="row">
+    <div class="col-md-12">
+        <?php $tableId = "liste-parametres-terrains-couts-affectations-fixes"; ?>
+        <table id="<?= $tableId ?>" class="table table-hover table-condensed table-data">
+            <thead>
+            <tr>
+                <th class="col-md-4" data-type="num">Catégorie</th>
+                <th class="col-md-5">Terrain</th>
+                <th class="col-md-2 text-center" data-type="num">Coût</th>
+                <?php if ($actionMenu) : ?>
+                    <th class="no-sort no-search col-md-1 text-end" data-priority="0">Actions</th>
+                <?php endif; ?>
+            </tr>
+            </thead>
+            <tbody>
+            <?php
+            /** @var ParametreTerrainCoutAffectationFixe $parametre */
+            foreach ($parametres as $parametre) :
+                $vh->setParametreTerrainCoutAffectationFixe($parametre);
+                ?>
+                <tr>
+                    <td data-order="<?= $parametre->getTerrainStage()->getCategorieStage()->getOrdre() ?>">
+                        <?= $parametre->getTerrainStage()->getCategorieStage()->getLibelle() ?>
+                    </td>
+                    <td> <?= $parametre->getTerrainStage()->getLibelle() ?></td>
+                    <td class="text-center"
+                        data-order="<?= ($parametre->getUseCoutMedian()) ? PHP_INT_MAX : $parametre->getCout() ?>">
+                        <?= ($parametre->getUseCoutMedian()) ? "Coût médian" : $parametre->getCout() ?>
+                    </td>
+                    <?php if ($actionMenu) : ?>
+                        <td class="text-end">
+                            <?= $vh->lienModifier(Icone::MODIFIER, ['class' => 'text-primary ajax-modal']) ?>
+                            <?= $vh->lienSupprimer(Icone::SUPPRIMER, ['class' => 'text-danger ajax-modal']) ?>
+                        </td>
+                    <?php endif; ?>
+                </tr>
+            <?php endforeach; ?>
+            <tbody>
+        </table>
+    </div>
+</div>

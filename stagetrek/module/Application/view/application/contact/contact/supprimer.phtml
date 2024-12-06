@@ -1,0 +1,49 @@
+<?php
+
+use Application\Controller\Contact\ContactController;
+use Application\Entity\Db\Contact;
+use Application\Form\Misc\ConfirmationForm;
+use Application\View\Helper\Misc\ConfirmationFormViewHelper;
+
+
+/**
+ * @see ContactController::supprimerAction()
+ * @var string $title
+ * @var ConfirmationForm $form
+ * @var Contact $contact
+ */
+
+/** @var ConfirmationFormViewHelper $vh */
+$vh = $this->confirmation($form)
+?>
+
+<div class="card card-danger">
+    <h1 class="page-header card-header">
+        <span class="icon icon-supprimer"></span>
+        <?= $title ?>
+    </h1>
+    <div class="card-body">
+        <?php if(!$form->hasBeenConfirmed()) :?>
+            <div class='alert alert-warning'>
+                <strong>Cette action est irréversible</strong>
+                <div>Toutes les informations liées au contact seront <strong>définitivement supprimées</strong></div>
+                <?php if(!$contact->getContactsTerrains()->isEmpty()) :?>
+                    <div>Le contact est associé à <strong><?= $contact->getContactsTerrains()->count() ?></strong> terrains de stages</div>
+                <?php endif; ?>
+                <?php if(!$contact->getContactsStages()->isEmpty()) :?>
+                    <div>Le contact est associé à <strong><?= $contact->getContactsStages()->count() ?></strong> stages</div>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
+
+        <?= $vh->render(); ?>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        let body = $("body");
+        body.off("<?= ContactController::EVENT_SUPPRIMER?>", closeModal)
+            .one("<?= ContactController::EVENT_SUPPRIMER?>", closeModal);
+    });
+</script>

@@ -1,0 +1,61 @@
+<?php
+/**
+ * @var \Application\Entity\Db\ReferentielPromo[] $referentielsPromos
+ */
+
+use Application\Entity\Db\ReferentielPromo;
+use Application\Provider\Misc\Icone;
+use Application\Provider\Privilege\ReferentielPrivilege;
+use Application\View\Helper\Referentiel\ReferentielPromoViewHelper;
+use Application\View\Helper\Referentiel\SourceViewHelper;
+
+/** @var ReferentielPromoViewHelper $vh */
+$vh = $this->referentielPromo();
+/** @var SourceViewHelper $sVh */
+$sVh = $this->source();
+$canEdit = $vh->hasPrivilege(ReferentielPrivilege::REFERENTIEL_PROMO_MODIFIER);
+$canDelete = $vh->hasPrivilege(ReferentielPrivilege::REFERENTIEL_PROMO_SUPPRIMER);
+$actionMenu = $canEdit||$canDelete;
+?>
+
+
+    <div class="row">
+        <div class="col-md-12">
+        <table class="table table-hover table-condensed table-data">
+            <thead>
+            <tr>
+                <th class="col-md-2">Source</th>
+                <th class="col-md-4">Libellé</th>
+                <th class="col-md-4">Code référentiel
+                    <sup><span class="icon icon-info text-muted"
+                               title="Code de la promotion étudiante dans le référentiel">
+                </span></sup></th>
+                <th class="col-md-1 text-center" data-type="num">Ordre</th>
+                <?php if($actionMenu) :?>
+                <th class="no-sort no-search col-md-1 text-end" data-priority="0">Actions</th>
+                <?php endif; ?>
+            </thead>
+            <tbody>
+            <?php /** @var ReferentielPromo $promo */
+            foreach ($this->referentielsPromos as $promo) :
+                $source = $promo->getSource();
+                $vh->setReferentielPromo($promo);
+                $sVh->setSource($source);
+                ?>
+                <tr>
+                    <td><?= $sVh ?></td>
+                    <td><?= $vh ?></td>
+                    <td><?= $promo->getCodePromo() ?></td>
+                    <td class="text-center"><?= $promo->getOrdre() ?></td>
+                    <?php if($actionMenu) :?>
+                        <td class="text-end">
+                            <?= $vh->lienModifier(Icone::MODIFIER, ['class' => 'text-primary ajax-modal']) ?>
+                            <?= $vh->lienSupprimer(Icone::SUPPRIMER, ['class' => 'text-danger ajax-modal']) ?>
+                        </td>
+                    <?php endif; ?>
+                </tr>
+            <?php endforeach; ?>
+            <tbody>
+        </table>
+    </div>
+</div>

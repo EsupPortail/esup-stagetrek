@@ -1,0 +1,193 @@
+<?php
+
+use Application\Controller\Terrain\TerrainStageController;
+use Application\Entity\Db\TerrainStage;
+
+
+/**
+ * @see TerrainStageController::afficherAction()
+ *
+
+ * @var TerrainStage $terrain
+ */
+
+$vh = $this->terrainStage($terrain);
+$adresse = $terrain->getAdresse();
+?>
+
+
+<div class="row row-cols-1 row-cols-md-2">
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-header">Identification du terrain</div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <strong>Code</strong>
+                    </div>
+                    <div class="col-md-8">
+                        <?= $terrain->getCode() ?>
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Catégorie</strong>
+                    </div>
+                    <div class="col-md-8">
+                        <?= $terrain->getCategorieStage()->getLibelle() ?>
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Libellé</strong>
+                    </div>
+                    <div class="col-md-8">
+                        <?= $terrain->getLibelle() ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100 <?= (!$terrain->isActif()) ? "card-muted" : "" ?>">
+            <div class="card-header">Etat</div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <strong>Type de terrain</strong>
+                    </div>
+                    <div class="col-md-8">
+                        <?= ($terrain->isTerrainPrincipal()) ? "Principal" : "Secondaire" ?>
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Actif</strong>
+                    </div>
+                    <div class="col-md-8">
+                        <?= ($terrain->isActif()) ? "Oui" : "Non" ?>
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Hors Subdivision</strong>
+                    </div>
+                    <div class="col-md-8">
+                        <?= ($terrain->isHorsSubdivision()) ? "Oui" : "Non" ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row row-cols-1 row-cols-md-2">
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-header">Adresse</div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <strong>Adresse</strong>
+                    </div>
+                    <div class="col-md-8">
+                        <?= (isset($adresse) && $adresse->getAdresse() != "")
+                            ? $adresse->getAdresse()
+                            : "<span class='text-muted text-small'>Non renseignée</span>" ?>
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Complément</strong>
+                    </div>
+                    <div class="col-md-8">
+                        <?= (isset($adresse) && $adresse->getComplement() != "")
+                            ? $adresse->getComplement()
+                            : "<span class='text-muted text-small'>Non renseigné</span>" ?>
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Code postal</strong>
+                    </div>
+                    <div class="col-md-8">
+                        <?= (isset($adresse) && $adresse->getCodePostal() != "")
+                            ? $adresse->getCodePostal()
+                            : "<span class='text-muted text-small'>Non renseigné</span>" ?>
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Ville</strong>
+                    </div>
+                    <div class="col-md-8">
+                        <?= (isset($adresse) && $adresse->getVille() != "")
+                            ? $adresse->getVille()
+                            : "<span class='text-muted text-small'>Non renseignée</span>" ?>
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Cedex</strong>
+                    </div>
+                    <div class="col-md-8">
+                        <?= (isset($adresse) && $adresse->getCedex() != "")
+                            ? $adresse->getCedex()
+                            : "<span class='text-muted text-small'>Non renseigné</span>" ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-header">Capacités d'accueil</div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <strong>Minimale</strong>
+                    </div>
+                    <div class="col-md-8">
+                        <?= $terrain->getMinPlace() ?>
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Idéale</strong>
+                    </div>
+                    <div class="col-md-8">
+                        <?= $terrain->getIdealPlace() ?>
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Maximale</strong>
+                    </div>
+                    <div class="col-md-8">
+                        <?= $terrain->getMaxPlace() ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-header">
+                Informations complémentaires
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-2">
+                        <strong>Service</strong>
+                    </div>
+                    <div class="col-md-10">
+                        <?= ($terrain->getService()) ? $terrain->getService() : "<span class='text-muted text-small'>Non renseigné</span>" ?>
+                    </div>
+                    <div class="col-md-2">
+                        <strong>Liens d'information</strong>
+                    </div>
+                    <div class="col-md-10">
+                        <?= ($terrain->getLien() && $terrain->getLien() != "") ?
+                            $vh->renderTerrainLienInfo() :
+                            "<span class='text-muted text-small'>Non renseigné</span>"
+                        ?>
+                    </div>
+                    <?php if($terrain->getInfos()) :?>
+                        <div class="col-md-2">
+                            <strong>Autres informations</strong>
+                        </div>
+                        <div class="col-md-10">
+                            <?= $terrain->getInfos() ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+

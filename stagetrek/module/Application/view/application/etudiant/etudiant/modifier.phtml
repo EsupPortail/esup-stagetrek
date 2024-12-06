@@ -1,0 +1,42 @@
+<?php
+
+use Application\Controller\Etudiant\EtudiantController;
+use Application\Entity\Db\Etudiant;
+use Application\Form\Etudiant\EtudiantForm;
+use Application\View\Helper\Etudiant\EtudiantViewHelper;
+use Laminas\View\Renderer\PhpRenderer;
+
+/**
+ * @see EtudiantController::modifierAction()
+ * @var string $title
+ * @var EtudiantForm $form
+ * @var Etudiant $etudiant
+ */
+/** @var EtudiantViewHelper $vh */
+$vh = $this->etudiant();
+?>
+
+<div class="card card-primary">
+    <h1 class="page-header card-header">
+        <span class="icon icon-modifier"></span>
+        <?= $title ?>
+    </h1>
+    <div class="card-body">
+        <?= $vh->renderForm($form); ?>
+    </div>
+    <div class="card-footer">
+        <div class="row">
+            <div class="col-md-12">
+                <?= $this->backButton("Fiche de l'étudiant")->backTo($this->url(EtudiantController::ROUTE_AFFICHER, ['etudiant' => $etudiant->getId()], [], true)) ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        let body = $("body");
+        body.off("<?= EtudiantController::EVENT_MODIFIER?>", closeModal)
+            .one("<?= EtudiantController::EVENT_MODIFIER?>", closeModal);
+    })
+</script>

@@ -1,0 +1,58 @@
+<?php
+
+use Application\Controller\Etudiant\EtudiantController;
+use Application\Form\Etudiant\EtudiantRechercheForm;
+
+
+/**
+ * @see EtudiantController::indexAction()
+ * @see EtudiantController::rechercherAction()
+ * @var EtudiantRechercheForm $form
+ */
+
+$fct = $this->formControlText();
+$fcg = $this->formControlGroup();
+?>
+
+
+<?php echo $this->form()->openTag($form->prepare()); ?>
+    <div class="card">
+        <div class="card-header">
+            <span class="fa fa-search"></span>
+            Rechercher un étudiant
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <?= $fct($form->get($form::INPUT_NOM)); ?>
+                </div>
+                <div class="col-md-4">
+                    <?= $fct($form->get($form::INPUT_PRENOM)); ?>
+                </div>
+                <div class="col-md-4">
+                    <?= $fct($form->get($form::INPUT_NUM_ETU)); ?>
+                </div>
+            </div>
+            <hr/>
+            <div class="row">
+                <div class="col-md-4">
+                    <?= $fcg($form->get($form::INPUT_ANNEE)); ?>
+                </div>
+                <div class="col-md-4">
+                    <?= $fcg($form->get($form::INPUT_GROUPE)); ?>
+                </div>
+                <div class="col-md-4">
+                    <?= $fcg($form->get($form::INPUT_ETAT)); ?>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer border-0">
+            <div class="row">
+                <div class="col-md-12">
+                    <?= $this->formButton($form->get($form::INPUT_RECHERCHER)); ?>
+                    <?= $this->formButton($form->get($form::INPUT_EFFACER)); ?>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php echo $this->form()->closeTag(); ?>

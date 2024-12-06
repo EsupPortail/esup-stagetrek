@@ -1,0 +1,18 @@
+<?php
+
+use Application\Controller\Terrain\CategorieStageController;
+use Application\Entity\Db\CategorieStage;
+
+
+/**
+ * @see CategorieStageController::listerAction()
+ *
+
+ * @var CategorieStage[] $categoriesStages
+ */
+
+$vh = $this->categorieStage();
+?>
+
+<?= $vh->renderListe($categoriesStages); ?>
+

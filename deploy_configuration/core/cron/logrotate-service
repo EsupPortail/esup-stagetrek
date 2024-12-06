@@ -1,0 +1,11 @@
+/var/log/stagetrek/evenements.log
+/var/log/stagetrek/updates.log
+ {
+        su root root
+        rotate 10
+        dayly
+        missingok
+        notifempty
+        compress
+        dateext
+}

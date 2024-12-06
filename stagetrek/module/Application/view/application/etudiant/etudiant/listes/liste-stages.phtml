@@ -1,0 +1,161 @@
+<?php
+
+use Application\Controller\Etudiant\EtudiantController;
+use Application\Entity\Db\Etudiant;
+use Application\Entity\Db\Stage;
+use Application\Provider\Misc\Icone;
+use Application\View\Helper\Stages\StageViewHelper;
+
+
+/**
+ * @see EtudiantController::listerStagesAction()
+ * @var Etudiant $etudiant ;
+ */
+
+/* @var Stage[] $stages $stages */
+$stages = $etudiant->getStages()->toArray();
+
+$tableId = "liste-stages-" . $etudiant->getId();
+/** @var StageViewHelper $vh */
+$vh = $this->stage();
+$vh->setEtudiant($etudiant);
+
+$stages = $etudiant->getStages()->toArray();
+$stages = Stage::sortStage($stages, 'desc');
+
+
+$anneeVh = $this->anneeUniversitaire();
+$groupeVh = $this->groupe();
+$sessionVh = $this->sessionStage();
+?>
+
+<div class="row">
+    <div class="col-md-12">
+        <table id="<?= $tableId ?>" class="table table-hover table-condensed table-data">
+            <thead>
+            <tr>
+                <th class="hidden">Année</th>
+                <th class="" data-type="num">Stage</th>
+                <th class="col-md-3">Session</th>
+                <th class="col-md-4">Affectation</th>
+                <th class="col-md-1 text-center">Début</th>
+                <th class="col-md-1 text-center">Fin</th>
+                <th class="col-md-2 no-search" data-type="num">État</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php /** @var Stage $stage */
+            foreach ($stages as $stage):
+                $etudiant = $stage->getEtudiant();
+                $vh->setStage($stage);
+                $etat = $stage->getEtatActif();
+                $validation = $stage->getValidationStage();
+                $affectation = $stage->getAffectationStage();
+                $terrain = $stage->getTerrainStage();
+                $noBorder = ($stage->hasStageSecondaire()) ? "border-bottom-0" : "";
+                $bg = match (true) {
+                    $stage->hasEtatDesactive(),
+                    $stage->hasEtatNonEffectue(),
+                    $stage->hasEtatEnDisponibilite(),
+                    $stage->hasEtatFutur() => "table-muted",
+                    $stage->hasEtatPhasePreferences(),
+                    $stage->hasEtatPhaseAffectation(),
+                    $stage->hasEtatAVenir(),
+                    $stage->hasEtatEnCours(),
+                    $stage->hasEtatPhaseValidation(),
+                    $stage->hasEtatPhaseEvaluation() => "table-primary",
+                    $stage->hasEtatValide() => "table-success",
+                    $stage->hasEtatNonValide() => "table-danger",
+                    $stage->hasEtatValidationEnRetard(),
+                    $stage->hasEtatEvaluationEnRetard(),
+                    $stage->hasEtatEnAlerte() => "table-warning",
+                    $stage->hasEtatEnErreur() => "table-danger",
+                    default => "table-danger",
+                };
+
+                ?>
+                <?php if($stage->isStagePrincipal()) :?>
+                <tr class="<?= $bg ?>">
+                    <td class="hidden <?=$noBorder?>"><?= $stage->getAnneeUniversitaire()->getLibelle()?> - <?= $stage->getGroupe()->getLibelle() ?></td>
+                    <td class="<?=$noBorder?>">
+                        <?= $vh->lienAfficher("n°". $stage->getNumero(),['text-primary']) ?>
+                    </td>
+                    <td class="<?=$noBorder?>">
+                        <?= $stage->getSessionStage()->getLibelle() ?>
+                    </td>
+                    <td class="<?=$noBorder?>">
+                        <?php if(!isset($terrain)) :?>
+                            <span class="text-muted">Non affecté</span>
+                        <?php else :?>
+                            <?= $terrain->getLibelle() ?> (<?= $terrain->getCategorieStage()->getAcronyme()?>)
+                        <?php endif; ?>
+                    </td>
+                    <td class="text-center <?=$noBorder?>">
+                        <?= $stage->getDateDebutStage()->format('d/m/Y') ?>
+                    </td>
+                    <td class="text-center <?=$noBorder?>">
+                        <?= $stage->getDateFinStage()->format('d/m/Y') ?>
+                    </td>
+                    <td class="" data-order="<?= ($etat) ? ($etat->getType()->getOrdre()) : PHP_INT_MIN ?>"
+                        style="color:<?=  (isset($etat)) ? $etat->getType()->getCouleur() : "" ?>"
+                    >
+                        <span class="<?= (isset($etat)) ? $etat->getType()->getIcone() : "fa fa-question" ?>"></span>
+                        <?= (isset($etat)) ? $etat->getTypeLibelle() : "Indéterminé" ?>
+
+                        <?php if(isset($validation) && $validation->getWarning()) :?>
+                            <span  class="mx-3 text-warning icon icon-warning" title="Une alerte a été émise par le responsable du stage"></span>
+                        <?php endif; ?>
+                    </td>
+                </tr>
+            <?php elseif($stage->isStageSecondaire()):?>
+                <tr class="<?= $bg ?>">
+                    <td class="hidden"><?= $stage->getAnneeUniversitaire()->getLibelle()?> - <?= $stage->getGroupe()->getLibelle() ?></td>
+                    <td></td>
+                    <td class="text-small text-muted">
+                        <?= $vh->lienAfficher("Stage secondaire",['text-muted']) ?>
+                    <td>
+                        <?php if(!isset($terrain)) : //Théoriquement le stage secondaire ne devrais pas existé?>
+                            <span class="text-muted">Non affecté</span>
+                        <?php else :?>
+                            <?= $terrain->getLibelle() ?> (<?= $terrain->getCategorieStage()->getAcronyme()?>)
+                        <?php endif; ?>
+                    </td>
+                    <td></td><td></td>
+                    <td class="" data-order="<?= ($etat) ? ($etat->getType()->getOrdre()) : PHP_INT_MIN ?>"
+                       style="color:<?=  (isset($etat)) ? $etat->getType()->getCouleur() : "" ?>"
+                    >
+                        <span class="<?= (isset($etat)) ? $etat->getType()->getIcone() : "fa fa-question" ?>"></span>
+                        <?= (isset($etat)) ? $etat->getTypeLibelle() : "Indéterminé" ?>
+                        <?php if(isset($validation) && $validation->getWarning()) :?>
+                        <span  class="mx-3 text-warning icon icon-warning" title="Une alerte a été émise par le responsable du stage"></span>
+                        <?php endif; ?>
+                    </td>
+                </tr>
+            <?php endif?>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $(function () {
+        let options = generateDataTableSetings(
+            {
+                stateSave: false,
+                retrieve: true,
+                searching:false,
+                paging:false,
+                ordering: false,
+                info:false,
+                rowGroup: {
+                    dataSrc: 0
+                },
+            }
+        );
+        let tableInstance = $("#<?= $tableId ?>").DataTable(options);
+    });
+</script>
+
+

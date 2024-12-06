@@ -1,0 +1,15 @@
+<?php
+
+use Application\Controller\AnneeUniversitaire\AnneeUniversitaireController;
+use Application\Entity\Db\AnneeUniversitaire;
+use Application\View\Helper\Annees\AnneeUniversitaireViewHelper;
+use Laminas\View\Renderer\PhpRenderer;
+
+/**
+ * @see AnneeUniversitaireController::afficherInfosAction()
+ * @var AnneeUniversitaire $annee
+ */
+
+/** @var AnneeUniversitaireViewHelper $vh */
+$vh = $this->anneeUniversitaire($annee);
+echo $vh->renderInfos();

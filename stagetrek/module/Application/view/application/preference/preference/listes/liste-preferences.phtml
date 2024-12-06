@@ -1,0 +1,143 @@
+<?php
+
+use Application\Controller\Preference\PreferenceController;
+use Application\Entity\Db\Preference;
+use Application\Entity\Db\Stage;
+use Application\View\Helper\Preferences\PreferenceViewHelper;
+
+
+/**
+ * @see PreferenceController::listerAction()
+ * @see PreferenceViewHelper::renderListe()
+
+ * @var Stage $stage
+ * @var Preference[] $preferences
+ * @var bool $vueEtudiante
+ */
+
+$tableId = uniqid("liste-preferences-");
+$preferences = Preference::sortPreferences($preferences);
+/** @var PreferenceViewHelper $vh */
+$vh = $this->preference();
+$vueEtudiante = ($vueEtudiante) ? $vueEtudiante : false;
+
+
+$today = new DateTime();
+$vh->setStage($stage);
+$nbPref = sizeof($preferences);
+$nbMaxPreferences = $vh->getRangMaxPreference();
+?>
+
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <strong>Ordre d'affectation : </strong>
+                        <?= ($stage->getOrdreAffectation()) ?? "<span class='text-muted'>Non définie</span>" ?>
+                        <?php if ($stage->getOrdreAffectation() && $today < $stage->getDateFinCommission()) : ?>
+                            <span class="text-small text-muted my-3">(A priori)</span>
+                        <?php endif; ?>
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Nombre de préférence(s) : </strong>
+                        <?php
+                        echo $nbPref . " / " . $nbMaxPreferences
+                        ?>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <?php if ($today < $stage->getDateFinChoix()): ?>
+                        <div class="alert alert-info">
+                            La phase de choix est fixé
+                            du <strong><?=  $stage->getDateDebutChoix()->format('d/m/Y') ?></strong>
+                            au <strong><?=  $stage->getDateFinChoix()->format('d/m/Y') ?></strong>
+                        </div>
+                        <?php elseif ($today < $stage->getDateDebutStage() && $nbPref > $nbMaxPreferences): ?>
+                            <div class="alert alert-warning">
+                                <strong>Le nombre de préférence(s) maximum est dépassé</strong>
+                            </div>
+                        <?php elseif ($stage->getDateFinChoix() < $today && $today < $stage->getDateDebutStage() && $nbPref == 0) : ?>
+                            <div class="alert alert-warning">
+                                Aucune préférence n'as été définie.
+                            </div>
+                        <?php endif ?>
+                    </div>
+                </div>
+
+
+<div class="row">
+    <div class="col-md-12">
+<!--        <div class="card">-->
+<!--            <div class="card-header">Liste des préférences</div>-->
+<!--            <div class="card-body">-->
+                <table id="<?= $tableId ?>" class="table table-hover table-condensed">
+                    <thead>
+                    <tr>
+                        <th class="hidden" data-type="num"></th> <!-- Colonne pour le trie initial -->
+                        <th class="col-md-1 text-center no-sort">Rang</th>
+                        <th class="col-md-5 no-sort">Terrain principal</th>
+                        <th class="col-md-4 no-sort">Terrain secondaire</th>
+                        <th class="col-md-2 no-sort">Demande</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach ($preferences as $preference) :
+                        $vh->setPreference($preference);
+                        $terrain = $preference->getTerrainStage();
+                        $terrainSecondaire = $preference->getTerrainStageSecondaire();
+                        $stage = $preference->getStage();
+                        $affectation = $stage->getAffectationStage();
+                        $bgClass = "";
+                        if ($affectation && $affectation->hasEtatValidee() &&
+                            (!$vueEtudiante || $stage->getDateFinCommission() < new DateTime())
+                        ) {
+                            $bgClass = ($preference->isSat()) ? "table-success" : "table-muted";
+                        }
+                        ?>
+                        <tr class="<?= $bgClass ?>">
+                            <td class="hidden"><?= $preference->getRang() ?></td>
+                            <td class="text-center"><?= $preference->getRang() ?></td>
+                            <td>
+                                <?= $terrain->getCategorieStage()->getAcronyme() ?>
+                                - <?= $terrain->getLibelle() ?>
+                            </td>
+                            <td>
+                                <?php if ($terrainSecondaire != null) : ?>
+                                    <?= $terrainSecondaire->getCategorieStage()->getAcronyme() ?> -
+                                    <?= $terrainSecondaire->getLibelle() ?>
+                                <?php else : ?>
+                                    Non
+                            <?php endif; ?>
+                            </td>
+                            <td><?= $vh->renderDemande() ?></td>
+                        </tr>
+                    <?php endforeach ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+<!--    </div>-->
+<!--</div>-->
+
+<script type="text/javascript">
+    $(function () {
+        $('[data-bs-toggle="popover"]').popover({html: true});
+        let options = generateDataTableSetings(
+            {
+                "responsive": true,
+                "autoWidth": false,
+                searching: false, paging: false, info: false,
+                "order": [[0, "asc"]],
+                columnDefs: [
+                    {targets: ['no-sort'], orderable: false},
+                ],
+                "language": {
+                    'emptyTable': "Aucune préférence n'as été définie.",
+                }
+            }
+        );
+        $("#<?= $tableId ?>").on('draw.dt', function () {
+            $('[data-bs-toggle="popover"]').popover({html: true});
+        }).DataTable(options);
+    });
+</script>

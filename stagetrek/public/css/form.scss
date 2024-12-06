@@ -1,0 +1,44 @@
+/**
+ *Régles pour les formulaire pour surcharge celle de Boostrap5
+ */
+
+textarea.no-resize{
+  resize: none;
+}
+
+//Pour les check box en mode swith
+.form-switch{
+  padding: 0;
+  .form-check {
+    padding: 0;
+  }
+  .form-check-input{
+    margin-left: 0.25rem;
+    margin-right: 0.25rem;
+  }
+}
+
+form {
+  label {
+    margin-bottom: 0.25rem;
+    font-weight: 700;
+  }
+
+  .has-clear {
+    position: relative;
+
+    .form-control-clear {
+      position: absolute;
+      right: 0;
+      top: 25px;
+      width: 34px;
+      height: 34px;
+      line-height: 34px;
+      text-align: center;
+      z-index: 10;
+      pointer-events: auto;
+      cursor: pointer;
+      color: #6c757d;
+    }
+  }
+}

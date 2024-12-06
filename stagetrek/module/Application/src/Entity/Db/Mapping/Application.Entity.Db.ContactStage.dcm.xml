@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Application\Entity\Db\ContactStage" table="contact_stage">
+    <indexes>
+      <index name="IDX_EF568366E7A1254A" columns="contact_id"/>
+      <index name="IDX_EF5683662298D193" columns="stage_id"/>
+    </indexes>
+    <id name="id" type="bigint" column="id">
+      <generator strategy="SEQUENCE"/>
+      <sequence-generator sequence-name="contact_stage_id_seq" allocation-size="1" initial-value="1"/>
+    </id>
+    <field name="visibleParEtudiant" type="boolean" column="visible_par_etudiant" nullable="false">
+      <options>
+        <option name="default"/>
+      </options>
+    </field>
+    <field name="isResponsableStage" type="boolean" column="is_responsable_stage" nullable="false">
+      <options>
+        <option name="default"/>
+      </options>
+    </field>
+    <field name="isSignataireConvention" type="boolean" column="is_signataire_convention" nullable="false">
+      <options>
+        <option name="default"/>
+      </options>
+    </field>
+    <field name="prioriteOrdreSignature" type="integer" column="priorite_ordre_signature" nullable="true">
+      <options>
+        <option name="unsigned"/>
+        <option name="default">0</option>
+      </options>
+    </field>
+    <field name="canValiderStage" type="boolean" column="can_valider_stage" nullable="false">
+      <options>
+        <option name="default"/>
+      </options>
+    </field>
+    <field name="tokenValidation" type="string" column="token_validation" length="255" nullable="true">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="tokenExpirationDate" type="datetime" column="token_expiration_date" nullable="true"/>
+
+    <field name="sendMailAutoListeEtudiantsStage" type="boolean" column="send_mail_auto_liste_etudiants_stage" nullable="false">
+      <options>
+        <option name="default"/>
+      </options>
+    </field>
+    <field name="sendMailAutoValidationStage" type="boolean" column="send_mail_auto_validation_stage" nullable="false">
+      <options>
+        <option name="default"/>
+      </options>
+    </field>
+    <field name="sendMailAutoRappelValidationStage" type="boolean" column="send_mail_auto_rappel_validation_stage" nullable="false">
+      <options>
+        <option name="default"/>
+      </options>
+    </field>
+    <many-to-one field="contact" target-entity="Application\Entity\Db\Contact" fetch="LAZY">
+      <join-columns>
+        <join-column name="contact_id" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="stage" target-entity="Application\Entity\Db\Stage" fetch="LAZY">
+      <join-columns>
+        <join-column name="stage_id" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

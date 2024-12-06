@@ -1,0 +1,119 @@
+<?php
+
+use Application\Controller\Contrainte\ContrainteCursusController;
+use Application\Entity\Db\ContrainteCursusPortee;
+use Application\Form\Contrainte\ContrainteCursusForm;
+use Application\Form\Contrainte\Fieldset\ContrainteCursusFieldset;
+
+
+/**
+ * @see ContrainteCursusController::ajouterAction()
+ * @see ContrainteCursusController::modifierAction()
+ *
+
+ * @var ContrainteCursusForm $form
+ * @var ContrainteCursusFieldset $fieldset
+ */
+
+$fe = $this->formErrors();
+$fcg = $this->formControlGroup();
+$fr = $this->formRow();
+$fct = $this->formControlText();
+
+$fieldset = $form->getEntityFieldset();
+?>
+
+    <?= $this->form()->openTag($form->prepare()) ?>
+    <?= $fe($form->prepare(), $form::INVALIDE_ERROR_MESSAGE) ?>
+    <?= $fr($fieldset->get($fieldset::ID)); ?>
+
+    <div class="row">
+        <div class="col-md-12">
+            <?= $fct($fieldset->get($fieldset::LIBELLE)); ?>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <?= $fct($fieldset->get($fieldset::ACRONYME)); ?>
+        </div>
+        <div class="col-md-6">
+            <?= $fcg($fieldset->get($fieldset::ORDRE)); ?>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <?= $fct($fieldset->get($fieldset::DESCRIPTION)); ?>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <?= $fcg($fieldset->get($fieldset::PORTEE)); ?>
+        </div>
+        <div class="col-md-6">
+            <span class="portee-complement" data-portee-id="<?= ContrainteCursusPortee::ID_PORTEE_CATEGORIE ?>">
+                 <?= $fcg($fieldset->get($fieldset::CATEGORIE_STAGE)); ?>
+            </span>
+            <span class="portee-complement" data-portee-id="<?= ContrainteCursusPortee::ID_PORTEE_TERRAIN ?>">
+                 <?= $fcg($fieldset->get($fieldset::TERRAIN_STAGE)); ?>
+            </span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <?= $fcg($fieldset->get($fieldset::NB_STAGE_MIN)); ?>
+        </div>
+        <div class="col-md-6">
+            <?= $fcg($fieldset->get($fieldset::NB_STAGE_MAX)); ?>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <span class="mx-3 text-muted text-small">Mettre 0 ou vide en l'abscence d'une borne minimale ou maximale sur la contrainte</span>
+        </div>
+        <div class="col-md-6">
+            <div class="mx-3 text-muted text-small">Au moins l'une des 2 bornes est requise.</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <?= $fcg($fieldset->get($fieldset::DATE_DEBUT)); ?>
+        </div>
+        <div class="col-md-6">
+            <?= $fcg($fieldset->get($fieldset::DATE_FIN)); ?>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <?= $fcg($form->get($form::INPUT_SUBMIT)); ?>
+        </div>
+    </div>
+    <?= $this->formHidden($form->get($form::CSRF)); ?>
+    <?= $this->form()->closeTag(); ?>
+
+<script type="text/javascript">
+    //On cache les champs de "sous-portée" qui ne corresponde pas à la portée selectionnée
+    $(function () {
+        $('.selectpicker').selectpicker('render');
+
+        let porteeSelector = $("#<?=$fieldset::PORTEE ?>");
+
+        function updatePortee() {
+            let portee = porteeSelector.val();
+            $(".portee-complement").each(function () {
+                if ($(this).data("portee-id") == portee) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                    let input = $(this).find("select");
+                    input.val(null);
+                }
+            });
+        }
+
+        porteeSelector.on("change", updatePortee);
+        updatePortee();
+    });
+</script>

@@ -1,0 +1,113 @@
+<?php
+
+use Application\Controller\Stage\StageController;
+use Application\Entity\Db\Stage;
+use Application\View\Helper\Affectation\AffectationViewHelper;
+use Application\View\Helper\Stages\StageViewHelper;
+
+/**
+ * @see StageController::afficherAction()
+ * @see StageController::afficherAffectationAction()
+ * @see StageViewHelper::renderAffectationInfos()
+ * @var Stage $stage
+ * @var bool $vueEtudiante
+ */
+if (!isset($vueEtudiante)) {
+    $vueEtudiante = false;
+}
+$affectation = $stage->getAffectationStage();
+/** @var AffectationViewHelper $vh */
+$vh = $this->affectation($affectation);
+$vh->setVueEtudiante($vueEtudiante);
+$today = new DateTime();
+?>
+
+<?php if (!$vueEtudiante) : ?>
+    <?php if ($today < $stage->getDateCommission()) : ?>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-info">
+                    La phase d'affectation est prévue entre le
+                    <strong><?= $stage->getDateCommission()->format("d/m/y") ?></strong> et le
+                    <strong><?= $stage->getDateFinCommission()->format("d/m/y") ?></strong>.
+                </div>
+            </div>
+        </div>
+    <?php elseif (!($affectation->hasEtatValidee() || $affectation->hasEtatEnDisponibilite() || $affectation->hasEtatStageNonEffectue()) && $stage->getDateFinCommission() < $today) : ?>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-danger">
+                    La commission d'affectation est normalement terminée depuis le
+                    <strong><?= $stage->getDateCommission()->format('d/m/Y') ?></strong>.
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <?= $vh->renderInfos() ?>
+    <?= $vh->renderCouts() ?>
+    <?= $vh->renderComplementsInfos() ?>
+<?php else : ?>
+
+    <?php if ($today < $stage->getDateFinCommission()) : ?>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-info">
+                    La phase d'affectation est prévue entre le
+                    <strong><?= $stage->getDateFinChoix()->format("d/m/y") ?></strong> et le
+                    <strong><?= $stage->getDateFinCommission()->format("d/m/y") ?></strong>.
+                </div>
+            </div>
+        </div>
+        <?php return;
+    endif; ?>
+
+    <?php if (!($affectation->isVisibleByEtudiant() || $affectation->hasEtatValidee() || $affectation->hasEtatEnDisponibilite() || $affectation->hasEtatStageNonEffectue()) && $stage->getDateFinCommission() < $today) : ?>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-danger">
+                    <strong>Les informations concernant votre affectation sont actuellement indisponible.</strong>
+                </div>
+            </div>
+        </div>
+        <?php return; endif; ?>
+    <?php
+    ?>
+
+    <?php if ($affectation->hasEtatStageNonEffectue()) : ?>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-info">
+                    Le stage a été marqué comme <strong>Non effectué</strong>
+                </div>
+            </div>
+        </div>
+
+    <?php elseif ($affectation->hasEtatEnDisponibilite()) : ?>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-info">
+                    Vous êtes en disponibilité durant la période du stage.
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <?php if (!$affectation->isVisibleByEtudiant()) : ?>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-info">
+                    Les informations sur votre affectation de stage sont actuellement indisponible
+                </div>
+            </div>
+        </div>
+    <?php else : ?>
+
+        <div class="row">
+            <div class="col-md-12">
+                <?= $vh->renderInfos() ?>
+            </div>
+        </div>
+    <?php endif; ?>
+<?php endif; ?>
+

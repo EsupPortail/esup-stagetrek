@@ -1,0 +1,17 @@
+<?php
+
+use Application\Controller\Contact\ContactStageController;
+use Application\Entity\Db\Contact;
+use Application\Entity\Db\ContactStage;
+use Application\View\Helper\Contacts\ContactStageViewHelper;
+
+/**
+ * @see ContactStageController::listerAction()
+ * @var Contact $contact
+ * @var ContactStage[] $contactsStages
+ */
+
+/** @var ContactStageViewHelper $vh */
+$vh = $this->contactStage();
+$vh->setContact($contact);
+echo $vh->renderListe($contactsStages);

@@ -1,0 +1,45 @@
+<?php
+
+use Application\Controller\Contact\ContactStageController;
+use Application\Form\Contacts\ContactStageAddForm;
+use Application\Form\Contacts\ContactStageForm;
+use Application\View\Helper\Contacts\ContactStageViewHelper;
+
+
+/**
+ * @see ContactStageController::ajouterAction()
+ * @var String $title
+ * @var ContactStageForm $form
+ */
+
+
+
+/** @var ContactStageViewHelper $vh */
+$vh = $this->contactStage();
+?>
+
+<div class="card card-success">
+    <h1 class="page-header card-header">
+        <span class="icon icon-ajouter"></span>
+        <?= $title ?>
+    </h1>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-warning">
+                    L'ajout des contacts de stages est normalement automatique. Cette action est réservée à la correction
+                    d'erreurs.
+                </div>
+            </div>
+        </div>
+        <?= $vh->renderForm($form); ?>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        let body = $("body");
+        body.off("<?= ContactStageController::EVENT_AJOUTER?>", closeModal)
+            .one("<?= ContactStageController::EVENT_AJOUTER?>", closeModal);
+    })
+</script>

@@ -1,0 +1,71 @@
+<?php
+
+use Application\Controller\AnneeUniversitaire\AnneeUniversitaireController;
+use Application\Entity\Db\AnneeUniversitaire;
+use Application\Entity\Db\Groupe;
+use Application\Entity\Db\SessionStage;
+use Application\View\Helper\Annees\AnneeUniversitaireViewHelper;
+use Application\View\Helper\SessionsStages\SessionStageViewHelper;
+
+
+/**
+ * @see AnneeUniversitaireController::afficherAction()
+ * @var AnneeUniversitaire $annee
+ */
+
+/** @var AnneeUniversitaireViewHelper $vh */
+$vh = $this->anneeUniversitaire($annee);
+
+$groupes = $annee->getGroupes()->toArray();
+$groupes = Groupe::sortGroupes($groupes);
+
+/** @var SessionStageViewHelper $sessionVh */
+$sessionVh = $this->sessionStage();
+?>
+<div class="row">
+    <div class="col-md-12">
+        <?php echo $this->calendrierStage()->renderCalendrierTimeline($annee); ?>
+    </div>
+</div>
+
+<div class="row row-cols-1 row-cols-md-2">
+    <?php /** @var Groupe $groupe */
+    foreach ($groupes as $groupe):
+    $sessions = $groupe->getSessionsStages()->toArray();
+    $sessions = SessionStage::sortSessions($sessions);
+    /** @var SessionStage $session */
+    foreach ($sessions as $session):?>
+        <div class="col my-3 hidden infos-session collapse" id="infos-session-<?= $session->getId() ?>">
+            <?= $vh->renderSessionInfos($session) ?>
+        </div>
+    <?php endforeach; ?>
+    <?php endforeach; ?>
+</div>
+
+
+<script>
+    $(function () {
+        $('.tl_timeframe').on("click", function () {
+            $(this).toggleClass('active');
+            $(this).toggleClass('bg-primary');
+            id = $(this).data('id');
+            $('#infos-session-' + id).toggle();
+
+            if($(this).hasClass('active')){
+                sessionStorage.setItem("session-"+id , id);
+            }
+            else{
+                sessionStorage.removeItem("session-"+id);
+            }
+            //TODO : faire une pseudo fiches des sessiosn et gérer l'affichage au click
+        })
+
+        $.each(sessionStorage, function (key, id){
+            sessionStorage.removeItem("session-"+id);
+            if(key == "session-"+id){
+                $('.tl_timeframe[data-id="'+id+'"]').trigger('click');
+            }
+        })
+
+    })
+</script>

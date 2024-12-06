@@ -1,0 +1,54 @@
+<?php
+
+use Application\Controller\Notification\FaqCategorieController;
+use Application\Form\Notification\FaqCategorieQuestionForm;
+use Application\Form\Notification\Fieldset\FaqCategorieQuestionFieldset;
+
+/**
+ * @see FaqCategorieController::ajouterAction()
+ * @see FaqCategorieController::modifierAction()
+ *
+ * @var string $title
+ * @var FaqCategorieQuestionForm $form
+ */
+
+$fcg = $this->formControlGroup();
+$fe = $this->formErrors();
+$fr = $this->formrow();
+$fct = $this->formControlText();
+
+
+/** @var FaqCategorieQuestionFieldset $fieldset */
+$fieldset = $form->getEntityFieldset();
+?>
+<div class="fieldset">
+
+    <?= $this->form()->openTag($form->prepare()) ?>
+    <?= $fe($form->prepare(), $form::INVALIDE_ERROR_MESSAGE) ?>
+    <?= $fr($fieldset->get($fieldset::ID)); ?>
+    <div class="row">
+        <div class="col-md-6">
+            <?= $fct($fieldset->get($fieldset::LIBELLE)); ?>
+        </div>
+        <div class="col-md-6">
+            <?= $fcg($fieldset->get($fieldset::ORDRE)); ?>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-10">
+            <?= $fcg($form->get($form::SUBMIT)); ?>
+        </div>
+    </div>
+
+    <?= $this->formHidden($form->get($form::CSRF));?>
+    <?= $this->form()->closeTag(); ?>
+</div>
+
+
+<script type="text/javascript">
+    $(function () {
+        //Affichage des selectpicker des le départ
+        $('.selectpicker').selectpicker('render');
+    });
+</script>

@@ -1,0 +1,254 @@
+<?php
+
+use Application\Controller\Stage\StageController;
+use Application\Entity\Db\Stage;
+use Application\View\Helper\Stages\StageViewHelper;
+
+/**
+ * @see StageController::afficherAction()
+ * @see StageController::afficherInfosAction()
+ * @see StageViewHelper::renderInfos()
+ * @var Stage $stage
+ * @var bool $vueEtudiante
+ */
+if (!isset($vueEtudiante)) {
+    $vueEtudiante = false;
+}
+/** @var StageViewHelper $vh */
+$vh = $this->stage($stage)->setVueEtudiante($vueEtudiante);
+$etudiant = $stage->getEtudiant();
+$session = $stage->getSessionStage();
+$groupe = $stage->getGroupe();
+$annee = $stage->getAnneeUniversitaire()
+?>
+
+
+<?php if (!$vueEtudiante) : ?>
+    <div class="row row-cols-1 row-cols-md-2">
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-header">
+                    Description
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <strong>Etudiant</strong>
+                        </div>
+                        <div class="col-md-8">
+                            <?= $etudiant->getDisplayName() ?> (<?= $this->etudiant($etudiant)->lienAfficher() ?>)
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Session</strong>
+                        </div>
+                        <div class="col-md-8">
+                            <?= $this->sessionStage($session)->lienAfficher() ?>
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Groupe</strong>
+                        </div>
+                        <div class="col-md-8">
+                            <?= $this->groupe($groupe)->lienAfficher() ?>
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Année</strong>
+                        </div>
+                        <div class="col-md-8">
+                            <?= $this->anneeUniversitaire($annee)->lienAfficher() ?>
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Niveau</strong>
+                        </div>
+                        <div class="col-md-8">
+                            <?= $stage->getNiveauEtude()->getLibelle() ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <?php
+            $etat = $stage->getEtatActif();
+            $bg = match (true) {
+                $stage->hasEtatEnErreur() => "card-danger",
+                $stage->hasEtatEnAlerte() => "card-warning",
+                $stage->hasEtatDesactive(), $stage->hasEtatFutur(), $stage->hasEtatNonEffectue() => "card-muted",
+                $stage->hasEtatPhasePreferences(), $stage->hasEtatPhaseAffectation(), $stage->hasEtatAVenir(), $stage->hasEtatEnCours(), $stage->hasEtatPhaseValidation(), $stage->hasEtatPhaseEvaluation() => "card-primary",
+                $stage->hasEtatValidationEnRetard(), $stage->hasEtatEvaluationEnRetard() => "card-warning",
+                $stage->hasEtatValide() => "card-success",
+                $stage->hasEtatNonValide() => "card-danger",
+                default => "",
+            }
+            ?>
+
+            <div class="card h-100 <?= $bg ?>">
+                <div class="card-header">
+                    État du stage
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <?= $this->etatinstance($etat, ['display-categorie' => false, 'display-libelle' => true, 'unknown-type-libelle' => "Indéterminée"]); ?>
+                        </div>
+                    </div>
+                    <?php if (isset($etat) && $etat->getInfos() != "") : ?>
+                        <div class="row">
+                            <div class="col-md-12"><strong>Informations</strong></div>
+                            <div class="col-md-12">
+                                <?= $etat->getInfos(); ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php else : //Vue pour l'étudiant
+    ?>
+    <div class="row row-cols-1 row-cols-md-2">
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-header">
+                    Description
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <strong>Session</strong>
+                        </div>
+                        <div class="col-md-8">
+                            <?= $session->getLibelle() ?>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <strong>Groupe</strong>
+                        </div>
+                        <div class="col-md-8">
+                            <?= $groupe->getLibelle() ?>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <strong>Année</strong>
+                        </div>
+                        <div class="col-md-8">
+                            <?= $annee->getLibelle() ?>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <strong>Niveau</strong>
+                        </div>
+                        <div class="col-md-8">
+                            <?= $stage->getNiveauEtude()->getLibelle() ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col">
+            <?php
+            $etat = $stage->getEtatActif();
+            $bg = "";
+            $infos = null;
+            //            Modifications des infos selon la situation
+            switch (true) {
+                case $stage->hasEtatEnErreur() :
+                    $bg = "card-danger";
+                    $infos = "Une anomalie a été détecté sur votre stage.
+                    <div class='text-small text-muted'>Si celle-ci persiste merci de contacter votre scolarité</div>";
+                break;
+                case $stage->hasEtatEnAlerte() :
+                    $bg = "card-warning";
+                    $infos = "Une anomalie a été détecté sur votre stage.
+                    <div class='text-small text-muted'>Si celle-ci persiste merci de contacter votre scolarité</div>";
+                break;
+                case $stage->hasEtatNonEffectue() :
+                    $bg = "card-muted";
+                    $infos = "Le stage a été marqué comme <strong>Non effectué</strong>
+                        <div class='text-small text-muted'>S'il s'agit d'une erreur merci de contacter rapidemente votre scolarité.</div>";
+                    break;
+                case $stage->hasEtatEnDisponibilite() :
+                    $bg = "card-muted";
+                    $infos = "Vous êtes en disponibilité durant la période du stage.";
+                    $infos .= "<div class='text-small text-muted'>S'il s'agit d'une erreur merci de contacter votre scolarité.</div>";
+                    break;
+                case $stage->hasEtatDesactive() :
+                    $bg = "card-muted";
+                    $infos = "Les informations sur le stage sont actuellement indisponible.";
+                    break;
+                case $stage->hasEtatFutur() :
+                    $bg = "card-muted";
+                    $infos = $info = sprintf("La procédure des choix commencera le <strong>%s</strong>", $stage->getDateDebutChoix()->format('d/m/Y'));
+                    break;
+                case $stage->hasEtatPhasePreferences() :
+                    $bg = "card-primary";
+                    $infos = sprintf("Vous avez jusqu'au <strong>%s</strong> pour définir vos choix.", $stage->getDateFinChoix()->format('d/m/Y'));
+                    break;
+                case $stage->hasEtatPhaseAffectation() :
+                    $bg = "card-primary";
+                    $infos = sprintf("La commission d'affectation est prévue le <strong>%s</strong>.", $stage->getDateCommission()->format('d/m/Y'));
+                    $infos .= "<div class='text-small text-muted'>Cette date est donnée à titre informatif. IL est possible que celle-ci est lieux quelques jours plus tard.</div>";
+                    break;
+                case $stage->hasEtatAVenir() :
+                    $bg = "card-primary";
+                    $infos = sprintf("Début du stage le <strong>%s</strong>.", $stage->getDateDebutStage()->format('d/m/Y'));
+                    break;
+                case $stage->hasEtatEnCours() :
+                    $bg = "card-primary";
+                    $infos = sprintf("Stage en cours jusqu'au <strong>%s</strong>.", $stage->getDateFinStage()->format('d/m/Y'));
+                    break;
+                case $stage->hasEtatPhaseValidation() :
+                    $bg = "card-primary";
+                    $infos = sprintf("Phase de validation du stage en cours jusqu'au <strong>%s</strong>.", $stage->getDateFinValidation()->format('d/m/Y'));
+                    break;
+                case $stage->hasEtatValidationEnRetard() :
+                    $bg = "card-warning";
+                    $infos = "La validation du stage n'as pas encore effectuée.";
+                    break;
+                case $stage->hasEtatPhaseEvaluation() :
+                    $bg = "card-primary";
+                    $infos = sprintf("Phase d'évaluation du stage en cours jusqu'au <strong>%s</strong>.", $stage->getDateFinEvaluation()->format('d/m/Y'));
+                    break;
+                case $stage->hasEtatEvaluationEnRetard() :
+                    $bg = "card-warning";
+                    $infos = "Vous n'avez pas encore effectué l'évaluation du stage.";
+                    break;
+                case $stage->hasEtatValide() :
+                    $bg = "card-success";
+//                    $infos = "Le stage a été <strong>validé</strong> par le responsable de stage";
+                    break;
+                case $stage->hasEtatNonValide() :
+                    $bg = "card-danger";
+//                    $infos = "Le stage a été <strong>invalidé</strong> par le responsable de stage";
+                    break;
+            }
+            ?>
+
+            <div class="card h-100 <?= $bg ?>">
+                <div class="card-header">
+                    État du stage
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <?= $this->etatinstance($etat, ['display-categorie' => false, 'display-libelle' => true, 'unknown-type-libelle' => "Indéterminée"]); ?>
+                        </div>
+                    </div>
+                    <?php if ($infos) : ?>
+                        <div class="row">
+                            <div class="col-md-12"><strong>Informations</strong></div>
+                            <div class="col-md-12">
+                                <?= $infos ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>

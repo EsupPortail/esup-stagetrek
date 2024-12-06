@@ -1,0 +1,115 @@
+<?php
+
+use Application\Controller\AnneeUniversitaire\AnneeUniversitaireController;
+use Application\Controller\Groupe\GroupeController;
+use Application\Controller\Stage\SessionStageController;
+use Application\Entity\Db\AnneeUniversitaire;
+use Application\Provider\Misc\Icone;
+use Application\View\Helper\Annees\AnneeUniversitaireViewHelper;
+use Application\View\Helper\Groupe\GroupeViewHelper;
+use Application\View\Helper\SessionsStages\SessionStageViewHelper;
+
+/**
+ * @see AnneeUniversitaireController::afficherAction()
+ * @var AnneeUniversitaire $annee
+ */
+
+$title = sprintf("Année %s", $annee->getLibelle());
+$this->headTitle($this->translate($title));
+
+/** @var AnneeUniversitaireViewHelper $vh */
+$vh = $this->anneeUniversitaire($annee);
+/** @var GroupeViewHelper $groupeVh */
+$groupeVh = $this->groupe();
+$groupeVh->setAnneeUniversitaire($annee);
+/** @var SessionStageViewHelper $sessionVh */
+$sessionVh = $this->sessionStage();
+$sessionVh->setAnneeUniversitaire($annee);
+
+$canAddGroupe = $groupeVh->actionAllowed(GroupeController::ACTION_AJOUTER);
+$canAddSession = $sessionVh->actionAllowed(SessionStageController::ACTION_AJOUTER);
+
+
+?>
+
+<h1 class="page-header">
+    <span class="icon">
+        <i class="fas fa-calendar-alt"></i>
+    </span>
+    <?= $vh->lienAnneePrecedente() ?>
+    Calendrier de l'année Universitaire <?= $annee->getLibelle() ?>
+    <?= $vh->lienAnneeSuivante() ?>
+</h1>
+
+<div class="card mt-3">
+        <div class="card-header card-sub-header text-end">
+            <?= $vh->lienModifier() ?>
+            <?= $groupeVh->lienAjouter(Icone::AJOUTER." Ajouter un groupe") ?>
+            <?= $sessionVh->lienAjouter(Icone::AJOUTER." Ajouter une session") ?>
+            <?= $vh->lienValider() ?>
+            <?= $vh->lienDeverouiller() ?>
+            <?= $vh->lienSupprimer() ?>
+        </div>
+    <div class="card-body">
+
+        <?php
+        /** @see AnneeUniversitaireController::afficherInfosAction() */
+        $url = $this->url(AnneeUniversitaireController::ROUTE_AFFICHER_INFOS, ['anneeUniversitaire' => $annee->getId()], [], true);
+        ?>
+        <div id="calendrier-content" class="card-body" data-url="<?= $url ?>">
+            <?= $vh->renderInfos() ?>
+        </div>
+        <?php
+        /** @see AnneeUniversitaireController::afficherCalendrierAction() */
+        $url = $this->url(AnneeUniversitaireController::ROUTE_AFFICHER_CALENDRIER, ['anneeUniversitaire' => $annee->getId()], [], true);
+        ?>
+        <div id="calendrier-content" class="card-body" data-url="<?= $url ?>">
+            <?= $vh->renderCalendrier() ?>
+        </div>
+    </div>
+    <div class="card-footer">
+        <?= $this->backButton("Liste des années")->backTo($this->url(AnneeUniversitaireController::ROUTE_INDEX, [], [], true)) ?>
+    </div>
+</div>
+
+<script type="text/javascript">
+    //Rechargement de la page sur event
+    $(function () {
+        let body = $("body");
+        //Rechargement de la page car modification des boutons disponibles et potentiellement du titre de la page
+        body.on("<?= AnneeUniversitaireController::EVENT_MODIFIER ?> "
+            , function (event) {
+                $('#calendrier-content').refresh();
+            });
+
+        body.on("<?=AnneeUniversitaireController::EVENT_SUPPRIMER?> "
+            , function (event) {
+                $("#nav-tabContent > div").empty().append(
+                    "<div class='tab-pane show'><div class='m-3 alert alert-info'>" +
+                    "L'année universitaire vient d'être supprimée, vous allez être rediriger dans quelques secondes." +
+                    "</div></div>"
+                );
+                setTimeout(function () {
+                    window.location.href = "<?= $this->url(AnneeUniversitaireController::ROUTE_LISTER, [])?>";
+                }, 2000);
+            });
+
+
+        body.on("<?= SessionStageController::EVENT_AJOUTER ?> "+
+                "<?= SessionStageController::EVENT_MODIFIER ?> "+
+                "<?= SessionStageController::EVENT_SUPPRIMER ?> "
+            , function (event) {
+                $('#infos-content').refresh();
+                $('#calendrier-content').refresh();
+            });
+
+        body.on("<?= AnneeUniversitaireController::EVENT_VALIDER ?> "+
+            "<?= AnneeUniversitaireController::EVENT_DEVEROUILLER ?> "+
+            "<?= GroupeController::EVENT_AJOUTER ?> "+
+            "<?= SessionStageController::EVENT_AJOUTER ?> "+
+            "<?= SessionStageController::EVENT_SUPPRIMER ?> "
+            , function () { // car rechargement des actions possibles
+                window.location.reload();
+            });
+    })
+</script>

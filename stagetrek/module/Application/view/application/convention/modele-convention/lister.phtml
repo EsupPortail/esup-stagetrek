@@ -1,0 +1,18 @@
+<?php
+
+use Application\Controller\Convention\ModeleConventionController;
+use Application\Entity\Db\ModeleConventionStage;
+use Application\View\Helper\Convention\ModeleConventionViewHelper;
+use Laminas\View\Renderer\PhpRenderer;
+
+/**
+ * @see ModeleConventionController::listerAction()
+ *
+
+ * @var ModeleConventionStage[] $modeles
+ * @var ModeleConventionViewHelper $vh
+ */
+
+$vh = $this->modeleConvention();
+echo $vh->renderListe($modeles);
+

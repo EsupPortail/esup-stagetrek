@@ -1,0 +1,47 @@
+<?php
+
+use Application\Controller\AnneeUniversitaire\AnneeUniversitaireController;
+use Application\Entity\Db\AnneeUniversitaire;
+use Application\Form\Misc\ConfirmationForm;
+use Application\View\Helper\Misc\ConfirmationFormViewHelper;
+
+/**
+ * @see AnneeUniversitaireController::deverouillerAction()
+ * @var string $title
+ * @var ConfirmationForm $form
+ * @var AnneeUniversitaire $annee
+ */
+/** @var ConfirmationFormViewHelper $vh */
+$vh = $this->confirmation($form)
+?>
+
+<div class="card card-danger">
+    <h1 class="page-header card-header">
+        <span class="fas fa-lock"></span>
+        <?= $title ?>
+    </h1>
+    <div class="card-body">
+        <?php
+        $today = new DateTime();
+        if ($annee->getDateDebut() < $today) :
+        $msg = sprintf("L'année universitaire <b>%s</b> est <b>%s</b> depuis le <b>%s</b>.", $annee->getLibelle(), ($annee->getDateFin() < $today) ? "terminée" : "commencée", ($annee->getDateFin() < $today) ? $annee->getDateFin()->format('d/m/Y') : $annee->getDateDebut()->format('d/m/Y'));
+        ?>
+            <div class='alert alert-warning'>
+                <?= $msg ?>
+            </div>
+        <?php endif; ?>
+        <?= $vh->render(); ?>
+    </div>
+
+</div>
+
+<script>
+    $(function () {
+        let body = $("body");
+        body.off("<?= AnneeUniversitaireController::EVENT_DEVEROUILLER?>", closeModal)
+            .one("<?= AnneeUniversitaireController::EVENT_DEVEROUILLER?>", closeModal);
+        body.one("<?= $form::CANCEL_EVENT ?>", function () {
+            window.location.href = "<?= $this->url(AnneeUniversitaireController::ROUTE_AFFICHER, ['anneeUniversitaire' => $annee->getId()], [], true)?>";
+        });
+    });
+</script>

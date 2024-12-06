@@ -1,0 +1,93 @@
+<?php
+
+use Application\Controller\Terrain\CategorieStageController;
+use Application\Entity\Db\CategorieStage;
+use Application\Provider\Misc\Icone;
+use Application\Provider\Privilege\TerrainPrivileges;
+
+/**
+ * @see CategorieStageController::listerAction()
+ *
+ * @var CategorieStage[] $categoriesStages
+ */
+$tableId = "liste-categories-stages";
+$vh = $this->categorieStage();
+$canEdit = $vh->hasPrivilege(TerrainPrivileges::CATEGORIE_STAGE_MODIFIER);
+$canDelete = $vh->hasPrivilege(TerrainPrivileges::CATEGORIE_STAGE_SUPPRIMER);
+?>
+
+<div class="row">
+    <div class="col-md-12">
+        <table id="<?= $tableId ?>" class="table table-hover table-condensed">
+            <thead>
+            <tr>
+                <th class="hidden"></th>
+                <th class="col-md-2 no-search hidden col-code">Code</th>
+                <th class="col-md-2">Acronyme</th>
+                <th class="col-md-5">Libellé</th>
+                <th class="col-md-2 text-center" data-type="num">Ordre d'affichage</th>
+                <?php if ($canEdit || $canDelete) : ?>
+                    <th class="col-md-1 no-search no-sort text-end">Actions</th>
+                <?php endif; ?>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($categoriesStages as $categorie):
+                $vh->setCategorieStage($categorie); ?>
+                <tr class="<?=($categorie->isCategoriePrincipale()) ? "cat-principale" : "cat-secondaire" ?>">
+                    <td class="hidden">
+                        Catégories <?= ($categorie->isCategoriePrincipale()) ? "Principales" : "Secondaires" ?></td>
+                    <td class="hidden col-code">
+                        <?= $categorie->getCode(); ?>
+                    </td>
+                    <td data-filter="<?= $categorie->getAcronyme(); ?>">
+                        <?= $categorie->getAcronyme(); ?>
+                    </td>
+                    <td data-filter="<?= $categorie->getLibelle(); ?>">
+                        <?= $categorie->getLibelle(); ?>
+                    </td>
+                    <td class="text-center"><?= $categorie->getOrdre() ?></td>
+                    <?php if ($canEdit || $canDelete) : ?>
+                        <td class="text-end">
+                            <?= $vh->lienModifier(Icone::MODIFIER, ['class' => 'text-primary ajax-modal']) ?>
+                            <?= $vh->lienSupprimer(Icone::SUPPRIMER, ['class' => 'text-danger ajax-modal']) ?>
+                        </td>
+                    <?php endif; ?>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        // TODO : bug a corriger : ne marche pas en cas de refresh
+        let body = $("body");
+        body.on("toggle-code", function (){
+            $("#<?= $tableId ?> .col-code").toggleClass("hidden");
+        });
+
+        body.on("toggle-cat-principale", function (){
+            $("#<?= $tableId ?> .cat-principale").toggleClass("hidden");
+        });
+        body.on("toggle-cat-secondaire", function (){
+            $("#<?= $tableId ?> .cat-secondaire").toggleClass("hidden");
+        });
+
+        let options = generateDataTableSetings(
+            {
+                paging: false,
+                info: false,
+                "order": [[3, "asc"], [1, "asc"], [2, "asc"]],
+                "orderFixed": {
+                    "pre": [0, 'asc'],
+                },
+                rowGroup: {
+                    dataSrc: 0
+                }
+            }
+        );
+        $("#<?= $tableId ?>").DataTable(options);
+    });
+</script>

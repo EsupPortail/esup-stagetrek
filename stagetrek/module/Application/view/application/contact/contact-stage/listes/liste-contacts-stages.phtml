@@ -1,0 +1,143 @@
+<?php
+
+use Application\Controller\Contact\ContactStageController;
+use Application\Entity\Db\Contact;
+use Application\Entity\Db\ContactStage;
+use Application\Provider\Misc\Icone;
+use Application\View\Helper\Contacts\ContactStageViewHelper;
+use Application\View\Helper\Etudiant\EtudiantViewHelper;
+use Application\View\Helper\Stages\StageViewHelper;
+
+/**
+ * @see ContactStageController::listerAction()
+ * @var Contact $contact
+ * @var ContactStage[] $contactsStages
+ */
+
+$tableId = "liste-contacts-stages";
+/** @var ContactStageViewHelper $vh  */
+$vh = $this->contactStage();
+$vh->setContact($contact);
+?>
+
+<div class="row">
+    <div class="col-md-12">
+        <table id="<?= $tableId ?>" class="table table-hover table-condensed table-header-rotated">
+        <thead>
+        <tr>
+            <th class="no-search hidden"></th>
+            <th class="no-search hidden"></th>
+            <th></th>
+            <th class="no-search no-sort rotate-45"><div class="first"><span> Visbile par l'étudiant</span></div></th>
+            <th class="no-search no-sort rotate-45"><div><span>Responsable du stage </span></div></th>
+            <th class="no-search no-sort rotate-45"><div><span>Peut valider le stage</span></div></th>
+            <th class="no-search no-sort rotate-45"><div><span>Signataire de la convention</span></div></th>
+            <th class="no-search no-sort rotate-45"><div><span>Mail de validation</span></div></th>
+            <th class="no-search no-sort rotate-45"><div><span>Mail de rappel de validation</span></div></th>
+            <th class="no-search no-sort rotate-45"><div><span>Etat de la validation</span></div></th>
+            <th class="no-search no-sort rotate-45"><div><span>Token de validation</span></div></th>
+            <th></th>
+            </tr>
+            <tr>
+                <th class="hidden no-search no-sort"></th>
+                <th class="hidden no-search"></th> <!-- Pour le trie-->
+                <th class="col-md-3">Etudiant</th>
+                <th class="no-search"></th>
+                <th class="no-search"></th>
+                <th class="no-search"></th>
+                <th class="no-search"></th>
+                <th class="no-search"></th>
+                <th class="no-search"></th>
+                <th class="no-search" data-type="num"></th>
+                <th class="no-search"></th>
+<!--                <th class="" colspan="8"></th>-->
+<!--                <th class="no-sort no-search""></th>-->
+                <th class="no-sort no-search text-end" data-priority="0">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php /** @var ContactStage $cs */
+            foreach ($contactsStages as $cs):
+                $vh->setContactStage($cs);
+                $stage = $cs->getStage();
+                $annee = $stage->getAnneeUniversitaire();
+                $session = $stage->getSessionStage();
+                $etudiant = $stage->getEtudiant();
+                /** @var StageViewHelper $stageVh */
+                $stageVh = $this->stage($stage);
+                /** @var EtudiantViewHelper $etudiantVh */
+                $etudiantVh = $this->etudiant($etudiant);
+                $affectation = $stage->getAffectationStage();
+                $terrain = ($affectation) ? $stage->getTerrainStage() : null;
+                $validation = $stage->getValidationStage();
+                ?>
+                <tr class="">
+                    <td class="hidden">
+                        <?= $annee->getLibelle() ?>
+                        <span class="mx-3"><?= $session->getLibelle() ?></span>
+                    </td>
+                    <td class="hidden" data-order="<?=$stage->getDateFinStage()->getTimestamp()?>">
+                    </td>
+                    <td data-order="<?= $etudiant->getDisplayName()." ".$etudiant->getNumEtu() ?>"
+                        data-filter="<?= $etudiant->getDisplayName()." ".$etudiant->getNumEtu() ?>"
+                    >
+                       <?= $etudiant->getDisplayName() ?> (<?= $etudiantVh->lienAfficher() ?>)
+                    </td>
+                    <td class="text-center"><span class="icon
+                        <?= ($cs->isVisibleParEtudiant()) ? "icon-checked text-success" : "icon-unchecked text-danger" ?>
+                   "></span></td>
+                    <td class="text-center"><span class="icon
+                        <?= ($cs->isResponsableStage()) ? "icon-checked text-success" : "icon-unchecked text-danger" ?>
+                   "></span></td>
+                    <td class="text-center"><span class="icon
+                        <?= ($cs->canValiderStage()) ? "icon-checked text-success" : "icon-unchecked text-danger" ?>
+                   "></span></td>
+                    <td class="text-center"><span class="icon
+                        <?= ($cs->isSignataireConvention()) ? "icon-checked text-success" : "icon-unchecked text-danger" ?>
+                   "></span></td>
+                    <td class="text-center"><span class="icon
+                        <?= ($cs->sendMailAutoValidationStage()) ? "icon-checked text-success" : "icon-unchecked text-danger" ?>
+                   "></span></td>
+                    <td class="text-center"><span class="icon
+                        <?= ($cs->sendMailAutoValidationStage()) ? "icon-checked text-success" : "icon-unchecked text-danger" ?>
+                   "></span></td>
+                    <td class="text-center" data-order="<?=$stageVh->getStageEtatValidationOrder($stage)?>">
+                       <?= $stageVh->getStageEtatValidationIcon($stage) ?>
+                    </td>
+                    <td class="text-center">
+                        <?= $vh->getTokenValidationEtatIcon($cs) ?>
+                    </td>
+                    <td class="text-end">
+                        <?= $stageVh->lienAfficher(Icone::AFFICHER, ['class' => 'text-primary me-1']) ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+            <tbody>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        let options = generateDataTableSetings({
+            stateSave: true,
+            retrieve: true,
+            "lengthMenu": [[50, 100, 250, -1], [50, 100, 250, "Tous"]],
+            "order": [[2, "asc"],[3, "desc"]],
+            "orderFixed": {
+                "pre": [1, 'desc' ],
+            },
+            rowGroup: {
+                dataSrc: [0],
+                startRender:function (rows, group) {
+                    return $('<tr/>')
+                        .append('<td colspan="12" class="bg-muted">' + group + ' (' + rows.count() + ')</td>')
+                        .attr('data-name', group)
+                }
+            },
+        });
+        $("#<?= $tableId ?>").on('draw.dt', function() {
+            $('[data-bs-toggle="popover"]').popover({html: true});
+        }).DataTable(options);
+    });
+</script>

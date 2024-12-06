@@ -1,0 +1,42 @@
+<?php
+
+use Application\Controller\Stage\SessionStageController;
+use Application\Form\Misc\ConfirmationForm;
+use Application\View\Helper\Misc\ConfirmationFormViewHelper;
+
+
+/**
+ * @see SessionStageController::supprimerAction()
+ * @var string              $title
+ * @var ConfirmationForm    $form
+ */
+
+/** @var ConfirmationFormViewHelper $vh */
+$vh = $this->confirmation($form)
+?>
+
+<div class="card card-danger">
+    <h1 class="page-header card-header">
+        <span class="icon icon-supprimer"></span>
+        <?= $title ?>
+    </h1>
+    <div class="card-body">
+
+        <?php if(!$form->hasBeenConfirmed()) :?>
+            <div class='alert alert-warning'>
+                <strong>Cette action est irréversible</strong>
+                <div>Toutes les informations liées à la session de stage seront <strong>définitivement supprimées</strong></div>
+            </div>
+        <?php endif; ?>
+
+        <?= $vh->render(); ?>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        let body = $("body");
+        body.off("<?= SessionStageController::EVENT_SUPPRIMER?>", closeModal)
+            .one("<?= SessionStageController::EVENT_SUPPRIMER?>", closeModal);
+    });
+</script>

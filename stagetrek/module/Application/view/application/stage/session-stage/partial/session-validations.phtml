@@ -1,0 +1,165 @@
+<?php
+
+use Application\Entity\Db\ContactStage;
+use Application\Entity\Db\SessionStage;
+use Application\Entity\Db\Stage;
+use Application\Provider\Misc\Icone;
+use Application\Provider\Privilege\StagePrivileges;
+use Application\View\Helper\Contacts\ContactStageViewHelper;
+use Application\View\Helper\Etudiant\EtudiantViewHelper;
+use Application\View\Helper\SessionsStages\SessionStageViewHelper;
+use Application\View\Helper\Stages\StageViewHelper;
+
+/**
+ * @see SessionStageViewHelper::renderPreferences()
+ * @var SessionStage $sessionStage
+ */
+$tableId = "session_validation";
+$today = new DateTime();
+$stages = $sessionStage->getStages();
+/** @var StageViewHelper $stageVh */
+$stageVh = $this->stage();
+/** @var EtudiantViewHelper $evh */
+$evh = $this->etudiant();
+$canSeeStage = $this->isAllowed(StagePrivileges::getResourceId(StagePrivileges::STAGE_AFFICHER));
+/** @var ContactStageViewHelper $contactVh */
+$contactVh = $this->contactStage();
+?>
+
+<?php //TODO : une page de recheche ? ==> implique également une actions de refresh ?>
+<table id="<?= $tableId ?>" class="table table-hover table-condensed table-data">
+    <thead>
+    <tr>
+        <th style="width: 1px;" class="no-search no-sort"></th>
+        <th class="hidden"></th>
+        <th class="col-md-3">Etudiant</th>
+        <th class="no-search col-md" data-type="num">État</th>
+        <th class="no-search col-md-1 text-center" data-type="num">Alerte</th>
+        <th class="no-search col-md-1 text-center" data-type="num">Contacts</th>
+        <th class="none no-search no-sort">Contacts autorisés à valider le stage</th>
+        <?php if ($canSeeStage) : ?>
+            <th class="col-md-1 text-end no-search no-sort">Actions</th>
+        <?php endif; ?>
+    </tr>
+    </thead>
+    <tbody>
+    <?php /** @var Stage $stage */
+    foreach ($stages as $stage):
+        $etudiant = $stage->getEtudiant();
+        $evh->setEtudiant($etudiant);
+        $stageVh->setStage($stage);
+        $validation = $stage->getValidationStage();
+        $contactsStages = $stage->getContactsStages()->toArray();
+        $contactsStages = array_filter($contactsStages, function (ContactStage $cs) {
+            return $cs->canValiderStage();
+        });
+        $etat = $validation->getEtatActif();
+        $bg = match (true) {
+            $validation->hasEtatEnErreur() => "table-danger",
+            $validation->hasEtatEnAlerte(), $validation->hasEtatEnRetard() => "table-warning",
+            $validation->getWarning() => "table-warning",
+            $validation->hasEtatInvalide() => "table-danger",
+            $validation->hasEtatValide() => "table-success",
+            $validation->hasEtatEnAttente() => "table-primary",
+            $validation->hasEtatStageNonEffectue(), $validation->hasEtatEtudiantEnDispo(), $validation->hasEtatFutur() => "table-muted",
+            default => "table-danger"
+        };
+        ?>
+        <tr class="<?= $bg ?>">
+            <td></td>
+            <td class="hidden">Stage <?= ($stage->isStagePrincipal()) ? "Principaux" : "Secondaires" ?></td>
+            <td data-order="<?= $etudiant->getDisplayName() ?><?= $etudiant->getNumEtu() ?>"
+                data-filter="<?= $etudiant->getDisplayName() ?><?= $etudiant->getNumEtu() ?>"
+            >
+                <?= $etudiant->getDisplayName() ?> (<?= $evh->lienAfficher($etudiant->getNumEtu()) ?>)
+            </td>
+            <td class="" data-order="<?= ($etat) ? ($etat->getType()->getOrdre()) : PHP_INT_MIN ?>"
+                style="color:<?= (isset($etat)) ? $etat->getType()->getCouleur() : "" ?>"
+            >
+                <span class="<?= (isset($etat)) ? $etat->getType()->getIcone() : "fa fa-question" ?>"></span>
+                <?= (isset($etat)) ? $etat->getTypeLibelle() : "Indéterminé" ?>
+            </td>
+            <td class="text-center" data-order="<?= ($validation->getWarning()) ? 0 : 1 ?>">
+                <?php if ($validation->getWarning()) : ?>
+                    <span class='mx-3 text-warning icon icon-warning' title="Un problème a été signalé"></span>
+                <?php endif ?>
+            </td>
+
+            <?php
+            $nb = sizeof($contactsStages);
+            $tc = match (true) {
+                $nb > 0 => "text-primary",
+                $stage->hasEtatNonEffectue(), $stage->hasEtatEnDisponibilite(), $validation->validationEffectue(), // si le stage a été validé
+                    $today < $stage->getDateFinCommission() => "text-muted",
+                $today < $stage->getDateDebutStage() => "text-warning",
+                default => "text-danger"
+            };
+            $title = ($nb == 0) ? "Aucun contact de stage n'est autorisé à effectuer la validation" : "";
+            ?>
+            <td class="text-center detail-control" data-order="<?= $nb ?>">
+                <span class="<?= $tc ?>" title="<?= $title ?>"> <?= $nb ?> <span class="mx-1 fas fa-user-doctor"></span></span>
+            </td>
+            <td class="none">
+                <?php /** @var ContactStage $cs */
+                foreach ($contactsStages as $cs):
+                    $contactVh->setContactStage($cs);
+                    $contactVh->setStage($stage);
+                    ?>
+                <div class="mx-3">
+                        <?= ($cs->getDisplayName() && $cs->getDisplayName() != "") ? $cs->getDisplayName() : $cs->getEmail() ?>
+                    <?php if (!$validation->validationEffectue()) : ?>
+                    <span class="mx-3 text-small">
+                        <?= ($cs->tokenValide()) ? "Lien valide <span class='mx-3 text-muted'>(expire le " . $cs->getTokenExpirationDate()->format('d/m/Y à H:i') . ")</span>" : ""; ?>
+                        <?= (!$cs->tokenValide() && $cs->getTokenValidation()) ? "Le liens n'est plus valide" : "" ?>
+                        <?= (!$cs->tokenValide() && !$cs->getTokenValidation()) ? "Le liens n'est pas définie" : "" ?>
+                    </span>
+                    <span class="mx-3">
+                        <?= $contactVh->lienMailValidation() ?>
+                    </span>
+                    <?php endif; ?>
+                </div>
+                <?php endforeach; ?>
+                <?php if($nb ==0) :?>
+                <div class='mx-3'>
+                    Aucun contact de stage n'est autorisé à effectuer la validation
+                </div>
+                <?php endif; ?>
+            </td>
+
+            <?php if ($canSeeStage) : ?>
+                <td class="text-end">
+                    <?= $stageVh->lienAfficher(Icone::AFFICHER, ['class' => 'text-primary']) ?>
+                </td>
+            <?php endif ?>
+        </tr>
+    <?php endforeach; ?>
+    </tbody>
+</table>
+
+
+<script type="text/javascript">
+    $(function () {
+        $('[data-bs-toggle="popover"]').popover({html: true});
+        let options = generateDataTableSetings(
+            {
+                stateSave: true,
+                retrieve: true,
+                "order": [[3, "asc"], [4, "asc"]],
+                "lengthMenu": [[50, 100, 250, -1], [50, 100, 250, "Tous"]],
+                "orderFixed": {
+                    "pre": [1, 'asc'],
+                },
+                rowGroup: {
+                    dataSrc: 1
+                },
+            }
+        );
+        //options = {};
+        $("#<?= $tableId ?>").on('draw.dt', function () {
+            $('[data-bs-toggle="popover"]').popover({html: true});
+        }).DataTable(options);
+    });
+</script>
+<style>
+    /*.dtr-control::before {display:none !important;}*/
+</style>

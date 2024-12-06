@@ -1,0 +1,15 @@
+.evenement-etat-en_attente {
+    color: grey;
+}
+
+.evenement-etat-en_cours {
+    color: #c3e8d1;
+}
+
+.evenement-etat-succes {
+    color: forestgreen;
+}
+
+.evenement-etat-echec {
+    color: red;
+}

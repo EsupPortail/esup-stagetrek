@@ -1,0 +1,17 @@
+<?php
+
+use Application\Controller\Groupe\GroupeController;
+use Application\Entity\Db\Groupe;
+use Application\View\Helper\Groupe\GroupeViewHelper;
+use Laminas\View\Renderer\PhpRenderer;
+
+/**
+ * @see GroupeController::afficherInfosAction()
+ *
+
+ * @var Groupe $groupe
+ */
+
+/** @var GroupeViewHelper $vh */
+$vh = $this->groupe($groupe);
+echo $vh->renderInfos();

@@ -1,0 +1,52 @@
+<?php
+/**
+ * Page permettant de forcer a fermer une modal si elle est ouverte
+ * @see AbstractActionController::successAction()
+ * @var string $title
+ * @var string $message
+ * @var string $subtext
+ * @var string $priority
+ */
+
+use Application\Controller\Misc\Interfaces\AbstractActionController;
+
+use UnicaenApp\View\Helper\Messenger;
+
+?>
+
+<?php
+if (!isset($title)) {
+    $title = "Action terminée";
+}
+if (!isset($message)) {
+    $message = "L'action a été effectuée";
+}
+if (!isset($subtext)) {
+    $subtext = null;
+}
+if (!isset($priority)) {
+    $priority = Messenger::SUCCESS;
+}
+?>
+
+<div class="card card-<?=$priority?>">
+    <h1 class="page-header card-header">
+        <?= $title ?>
+    </h1>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-<?=$priority?>">
+                    <?= $message ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<?php if($subtext) : ?>
+    <div class="card">
+        <div class="card-body">
+            <?= $subtext ?>
+        </div>
+    </div>
+<?php endif; ?>

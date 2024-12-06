@@ -1,0 +1,194 @@
+<?php
+
+use Application\Controller\Affectation\AffectationController;
+use Application\Controller\Convention\ConventionStageController;
+use Application\Controller\Stage\SessionStageController;
+use Application\Controller\Stage\StageController;
+use Application\Entity\Db\SessionStage;
+use Application\Provider\Privilege\ConventionsPrivileges;
+use Application\Provider\Privilege\StagePrivileges;
+use Application\View\Helper\Affectation\AffectationViewHelper;
+use Application\View\Helper\SessionsStages\SessionStageViewHelper;
+use Application\View\Helper\Stages\StageViewHelper;
+
+/**
+ * @see SessionStageController::afficherAction()
+ * @var SessionStage $sessionStage
+ */
+
+/** @var SessionStageViewHelper $vh */
+$vh = $this->sessionStage($sessionStage);
+/** @var StageViewHelper $stageVh */
+$stageVh = $this->stage();
+$stageVh->setSessionStage($sessionStage);
+$canEdit = $vh->actionAllowed(SessionStageController::ACTION_MODIFIER);
+$canDelete = $vh->actionAllowed(SessionStageController::ACTION_SUPPRIMER);
+
+/** @var AffectationViewHelper $affectationVh */
+$affectationVh = $this->affectation();
+$affectationVh->setSessionStage($sessionStage);
+$canSeeAffectation = $affectationVh->hasPrivilege(StagePrivileges::AFFECTATION_AFFICHER);
+$canEditAffectation = $affectationVh->actionAllowed(AffectationController::ACTION_MODIFIER_AFFECTATIONS);
+
+$conventionVh = $this->convention();
+$canSeeConvention = $conventionVh->hasPrivilege(ConventionsPrivileges::CONVENTION_AFFICHER);
+
+$conventionVh = $this->convention();
+$canSeeValidation = $stageVh->hasPrivilege(StagePrivileges::VALIDATION_STAGE_AFFICHER);
+$canExportAffectation = false; //Action a revoir
+
+?>
+
+<h1 class="page-header">
+    <span class="icon">
+        <i class="fas fa-briefcase-medical"></i>
+    </span>
+    <?= $vh->lienSessionPrecedente() ?>
+    Fiche de la session <?= $sessionStage->getLibelle() ?>
+    <?= $vh->lienSessionSuivante() ?>
+    <br/>
+    <small class="text-muted"> <?= $sessionStage->getAnneeUniversitaire()->getLibelle() ?> -
+        <?= $sessionStage->getGroupe()->getLibelle() ?>
+    </small>
+</h1>
+
+<nav>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <button class="nav-link active" id="nav-infos" data-bs-toggle="tab" data-bs-target="#infos" type="button"
+                role="tab" aria-controls="infos" aria-selected="true">Informations
+        </button>
+
+        <button class="nav-link" id="nav-terrains" data-bs-toggle="tab" data-bs-target="#terrains" type="button"
+                role="tab" aria-controls="terrains" aria-selected="true">Terrains de stages
+        </button>
+        <button class="nav-link" id="nav-stages" data-bs-toggle="tab" data-bs-target="#stages" type="button"
+                role="tab" aria-controls="stages" aria-selected="true">Stages
+        </button>
+        <button class="nav-link" id="nav-prefs" data-bs-toggle="tab" data-bs-target="#prefs" type="button"
+                role="tab" aria-controls="prefs" aria-selected="true">Préférences
+        </button>
+        <?php if($canSeeAffectation) :?>
+        <button class="nav-link" id="nav-affectations" data-bs-toggle="tab" data-bs-target="#affectations" type="button"
+                role="tab" aria-controls="affectations" aria-selected="true">Affectations
+        </button>
+        <?php endif; ?>
+        <?php if($canSeeConvention) :?>
+        <button class="nav-link" id="nav-convention" data-bs-toggle="tab" data-bs-target="#conventions" type="button"
+                role="tab" aria-controls="conventions" aria-selected="true">Conventions
+        </button>
+        <?php endif; ?>
+        <?php if($canSeeValidation) :?>
+        <button class="nav-link" id="nav-validations" data-bs-toggle="tab" data-bs-target="#validations" type="button"
+                role="tab" aria-controls="validations" aria-selected="true">Validations des stages
+        </button>
+        <?php endif; ?>
+    </div>
+</nav>
+
+<div class="card tab-content" id="nav-tabContent">
+    <div class="tab-pane fade show active" id="infos" role="tabpanel" aria-labelledby="nav-infos">
+        <?php if ($canEdit || $canDelete) : ?>
+            <div class="card-header card-sub-header text-end">
+                <?= $vh->lienModifier() ?>
+                <?= $vh->lienSupprimer() ?>
+            </div>
+        <?php endif; ?>
+        <div class="card-body">
+            <?= $vh->renderInfos() ?>
+            <hr/>
+            <?= $vh->renderDates() ?>
+        </div>
+        <div class="card-footer">
+            <?= $this->backButton("Liste des sessions")->backTo($this->url(SessionStageController::ROUTE_INDEX, [], [], true)) ?>
+        </div>
+    </div>
+
+    <div class="tab-pane fade show" id="terrains" role="tabpanel" aria-labelledby="nav-terrains">
+        <?php if ($canEdit) : ?>
+            <div class="card-header card-sub-header text-end">
+                <?= $vh->lienModifierPlaces() ?>
+            </div>
+        <?php endif ?>
+        <div class="card-body">
+            <?= $vh->renderPlacesTerrains() ?>
+        </div>
+    </div>
+
+    <div class="tab-pane fade show" id="stages" role="tabpanel" aria-labelledby="nav-stages">
+        <?php if ($canEdit) : ?>
+            <div class="card-header card-sub-header text-end">
+                <?= $stageVh->lienAjouter();?>
+                <?= $vh->lienModifierOrdresAfectations(); ?>
+                <?= $stageVh->lienSupprimer(); ?>
+            </div>
+        <?php endif; ?>
+        <div id="stages-content" class="card-body stages-content"
+             data-url="<?= $this->url(StageController::ROUTE_LISTER, ["sessionStage" => $sessionStage->getId()], [], true) ?>">
+            <?= $stageVh->renderListe($sessionStage->getStages()->toArray()) ?>
+        </div>
+    </div>
+
+
+    <div class="tab-pane fade show" id="prefs" role="tabpanel" aria-labelledby="nav-prefs">
+        <div id="prefs-content" class="card-body prefs-content">
+            <?= $vh->renderPreferences() ?>
+        </div>
+    </div>
+
+
+    <?php if($canSeeAffectation) :?>
+    <div class="tab-pane fade show" id="affectations" role="tabpanel" aria-labelledby="nav-affectations">
+        <?php if ($canExportAffectation || $canEditAffectation) : ?>
+            <div class="card-header card-sub-header text-end">
+                <?= $affectationVh->lienModifierAffectations() ?>
+                <?= $affectationVh->lienExporter() ?>
+            </div>
+        <?php endif; ?>
+        <?php $url = $this->url(AffectationController::ROUTE_LISTER, ['sessionStage' => $sessionStage->getId()], [], true); ?>
+        <div class="card-body" id="affectations-content" data-url="<?= $url ?>">
+            <?= $affectationVh->renderListe($sessionStage->getAffectations()->toArray()) ?>
+        </div>
+    </div>
+    <?php endif; ?>
+    <?php if($canSeeConvention) :?>
+        <div class="tab-pane fade show" id="conventions" role="tabpanel" aria-labelledby="nav-conventions">
+            <div class="card-body" id="convention-content">
+                <?= $vh->renderConventions() ?>
+            </div>
+        </div>
+    <?php endif; ?>
+    <?php if($canSeeValidation) :?>
+        <div class="tab-pane fade show" id="validations" role="tabpanel" aria-labelledby="nav-validations">
+            <div class="card-body" id="validations-content">
+                <?= $vh->renderValidationsStages() ?>
+            </div>
+        </div>
+    <?php endif; ?>
+
+</div>
+
+<script type="text/javascript">
+    //Rechargement de la page sur event
+    $(function () {
+        let body = $("body");
+        body.on("<?=SessionStageController::EVENT_MODIFIER?> "
+            + "<?=ConventionStageController::EVENT_TELEVERSER?> "
+            + "<?=ConventionStageController::EVENT_GENERER?> "
+            , function () {//Possiblement le libellé change aussi
+                // on ne peux donc pas faire un simple refresh
+                window.location.href = "<?= $this->url(SessionStageController::ROUTE_AFFICHER, ["sessionStage" => $sessionStage->getId()], [], true) ?>";
+            });
+
+        body.on("<?=SessionStageController::EVENT_SUPPRIMER?> "
+            , function () {
+                $("#nav-tabContent > div").empty().append(
+                    "<div class='tab-pane show'><div class='m-3 alert alert-info'>" +
+                    "La session de stage vient d'être supprimée, vous allez être rediriger dans quelques secondes." +
+                    "</div></div>"
+                );
+                setTimeout(function () {
+                    window.location.href = "<?= $this->url(SessionStageController::ROUTE_INDEX)?>";
+                }, 2000);
+            });
+    });
+</script>

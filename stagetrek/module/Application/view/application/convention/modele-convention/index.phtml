@@ -1,0 +1,48 @@
+<?php
+
+use Application\Controller\Convention\ModeleConventionController;
+use Application\Entity\Db\ModeleConventionStage;
+use Application\View\Helper\Convention\ModeleConventionViewHelper;
+use Laminas\View\Renderer\PhpRenderer;
+
+/**
+ * @see ModeleConventionController::indexAction()
+ *
+
+ * @var ModeleConventionStage[] $modeles
+ * @var ModeleConventionViewHelper $vh
+ */
+
+$vh = $this->modeleConvention();
+$title = "Modéles des conventions";
+$this->headTitle($this->translate("Modéles des conventions"));
+?>
+
+<h1 class="page-header">
+    <span class="icon">
+        <i class="fas fa-file"></i>
+    </span>
+    <?= $title ?>
+</h1>
+
+
+<div id="liste-modeles-conventions-content"
+     data-url="<?= $this->url(ModeleConventionController::ROUTE_LISTER, [], [], true) ?>">
+    <?= $vh->renderListe($modeles); ?>
+</div>
+
+
+
+<script type="text/javascript">
+    //Rechargement de la page sur event
+    $(function () {
+        let body = $("body");
+        body.on("<?=ModeleConventionController::EVENT_AJOUTER?> "
+            + "<?=ModeleConventionController::EVENT_MODIFIER?> "
+            + "<?=ModeleConventionController::EVENT_SUPPRIMER?> "
+            , function (event) {
+                $("#liste-modeles-conventions-content").refresh();
+            });
+    })
+</script>
+

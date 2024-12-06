@@ -1,0 +1,36 @@
+<?php
+
+use Application\Controller\Groupe\GroupeController;
+use Application\Form\Groupe\GroupeForm;
+use Application\View\Helper\Groupe\GroupeViewHelper;
+use Laminas\View\Renderer\PhpRenderer;
+
+/**
+ * @see GroupeController::ajouterAction()
+ *
+
+ * @var string $title
+ * @var GroupeForm $form
+ */
+
+/** @var GroupeViewHelper $vh */
+$vh = $this->groupe();
+?>
+
+<div class="card card-success">
+    <h1 class="page-header card-header">
+        <span class="icon icon-ajouter"></span>
+        <?= $title ?>
+    </h1>
+    <div class="card-body">
+        <?= $vh->renderForm($form); ?>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        let body = $("body");
+        body.off("<?= GroupeController::EVENT_AJOUTER?>", closeModal)
+            .one("<?= GroupeController::EVENT_AJOUTER?>", closeModal);
+    })
+</script>

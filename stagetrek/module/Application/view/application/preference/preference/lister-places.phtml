@@ -1,0 +1,18 @@
+<?php
+
+use Application\Controller\Preference\PreferenceController;
+use Application\Entity\Db\Stage;
+use Application\View\Helper\Preferences\PreferenceViewHelper;
+use Laminas\View\Renderer\PhpRenderer;
+
+/**
+ * @see PreferenceController::listerPlacesAction()
+ *
+
+ * @var Stage $stage
+ * @var PreferenceViewHelper $vh
+ */
+
+$vh = $this->preference();
+$vh->setStage($stage);
+echo $vh->renderListePlaces();

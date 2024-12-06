@@ -1,0 +1,14 @@
+<?php
+
+use Application\Controller\Contact\ContactController;
+use Application\Entity\Db\Contact;
+use Application\View\Helper\Contacts\ContactViewHelper;
+
+/**
+ * @see ContactController::listerAction()
+ * @var Contact[] $contacts
+ */
+
+/** @var ContactViewHelper $vh */
+$vh = $this->contact();
+echo $vh->renderListe($contacts);

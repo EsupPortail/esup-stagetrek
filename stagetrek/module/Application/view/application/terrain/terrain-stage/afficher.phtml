@@ -1,0 +1,132 @@
+<?php
+
+use Application\Controller\Contact\ContactTerrainController;
+use Application\Controller\Terrain\TerrainStageController;
+use Application\Entity\Db\ContrainteCursus;
+use Application\Entity\Db\TerrainStage;
+use Application\View\Helper\Terrains\TerrainStageViewHelper;
+
+/**
+ * @see TerrainStageController::afficherAction()
+ *
+
+ * @var TerrainStage $terrain
+ * @var ContrainteCursus[] $contraintes
+ */
+
+/** @var TerrainStageViewHelper $vh */
+$vh = $this->terrainStage($terrain);
+
+$canEdit = $vh->actionAllowed(TerrainStageController::ACTION_MODIFIER);
+$canDelete = $vh->actionAllowed(TerrainStageController::ACTION_SUPPRIMER);
+?>
+
+<h1 class="page-header">
+    <span class="icon">
+        <i class="fas fa-house-medical"></i>
+    </span>
+    <?= $terrain->getLibelle() ?>
+</h1>
+<nav>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <button class="nav-link active" id="nav-infos" data-bs-toggle="tab" data-bs-target="#infos" type="button"
+                role="tab" aria-controls="infos" aria-selected="true">Informations
+        </button>
+        <button class="nav-link" id="nav-terrains-stages-associes" data-bs-toggle="tab"
+                data-bs-target="#terrains-stages-associes" type="button"
+                role="tab" aria-controls="terrains-stages-associes" aria-selected="false">Terrains de stages associés
+        </button>
+        <button class="nav-link" id="nav-contacts" data-bs-toggle="tab" data-bs-target="#contacts" type="button"
+                role="tab" aria-controls="contacts" aria-selected="false">Contacts
+        </button>
+        <button class="nav-link" id="nav-convention" data-bs-toggle="tab" data-bs-target="#convention"
+                type="button"
+                role="tab" aria-controls="convention" aria-selected="false">Convention
+        </button>
+        <button class="nav-link" id="nav-contraintes" data-bs-toggle="tab" data-bs-target="#contraintes" type="button"
+                role="tab" aria-controls="contraintes" aria-selected="false">Contraintes
+        </button>
+    </div>
+</nav>
+
+<div class="card tab-content" id="nav-tabContent">
+    <div class="tab-pane fade show active" id="infos" role="tabpanel" aria-labelledby="nav-infos">
+        <?php if ($canEdit || $canDelete) : ?>
+            <div class="card-header card-sub-header text-end">
+                <?= $vh->lienModifier() ?>
+                <?= $vh->lienSupprimer() ?>
+            </div>
+        <?php endif; ?>
+        <div id="infos-content" class="card-body">
+            <?= $this->partial('partial/terrain-infos', ['terrain' => $terrain]); ?>
+        </div>
+        <div class="card-footer">
+            <?= $this->backButton("Liste des terrains")->backTo($this->url(TerrainStageController::ROUTE_INDEX, [], [], true)) ?>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="terrains-stages-associes" role="tabpanel"
+         aria-labelledby="nav-terrains-stages-associes">
+        <div id="terrains-stages-associes-content" class="card-body">
+            <?= $vh->renderListeTerrainsAssocies(); ?>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="contacts" role="tabpanel" aria-labelledby="nav-contacts">
+        <?php $ctVh = $this->contactTerrain();
+        $ctVh->setTerrainStage($terrain);
+        ?>
+        <div class="card-header card-sub-header text-end">
+            <?= $ctVh->lienAjouter() ?>
+        </div>
+        <div id="contacts-content" class="card-body"
+             data-url="<?= $this->url(TerrainStageController::ROUTE_LISTER_CONTACT, ['terrainStage' => $terrain->getId()], [], true) ?>">
+            <?= $vh->renderListeContacts(); ?>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="convention" role="tabpanel" aria-labelledby="nav-convention">
+        <div id="convention-content" class="card-body"
+             data-url="<?= $this->url(TerrainStageController::ROUTE_AFFICHER_MODELE_CONVENTION, [], [], true) ?>"
+        >
+            <?= $this->partial('partial/terrain-convention', ['terrain' => $terrain]); ?>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="contraintes" role="tabpanel" aria-labelledby="nav-contraintes">
+        <div id="contraintes-content" class="card-body">
+            <?= $this->partial('partial/terrain-contraintes', ['terrain' => $terrain, 'contraintes' => $contraintes]); ?>
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    //Rechargement lors des event
+    $(function () {
+
+        let body = $("body");
+        body.on("<?=TerrainStageController::EVENT_MODIFIER?>",
+            function () {
+                window.location.reload();
+            }
+        );
+        body.on("<?=ContactTerrainController::EVENT_AJOUTER?> "
+            + "<?=ContactTerrainController::EVENT_MODIFIER?> "
+            + "<?=ContactTerrainController::EVENT_SUPPRIMER?> "
+            , function () {
+                $("#contacts-content").refresh();
+                $("#convention-content").refresh();
+            }
+        );
+        body.on("<?=TerrainStageController::EVENT_SUPPRIMER?> "
+            , function () {
+                $("#nav-tabContent > div").empty().append(
+                    "<div class='tab-pane show'><div class='m-3 card card-info'><div class='card-body'><div class='alert alert-info'>" +
+                    "Le terrain de stage vient d'être supprimé, vous allez être rediriger dans quelques secondes." +
+                    "</div></div></div></div>"
+                );
+                setTimeout(function () {
+                    window.location.href = "<?= $this->url(TerrainStageController::ROUTE_INDEX)?>";
+                }, 2000);
+            });
+    });
+</script>

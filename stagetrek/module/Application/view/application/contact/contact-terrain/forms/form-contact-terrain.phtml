@@ -1,0 +1,187 @@
+<?php
+
+use Application\Controller\Contact\ContactTerrainController;
+use Application\Entity\Db\ContactTerrain;
+use Application\Form\Contacts\ContactTerrainForm;
+use Application\Form\Contacts\Fieldset\ContactTerrainFieldset;
+
+
+/**
+ * @see ContactTerrainController::ajouterAction()
+ * @see ContactTerrainController::modifierAction()
+ * @var ContactTerrainForm $form
+ * @var ContactTerrainFieldset $fieldset
+ */
+
+$fe = $this->formErrors();
+$fcg = $this->formControlGroup();
+$fr = $this->formrow();
+$fct = $this->formControlText();
+
+/** @var ContactTerrainFieldset $fieldset */
+$fieldset = $form->getEntityFieldset();
+
+/** @var ContactTerrain $ct */
+$ct = $fieldset->getObject();
+$contact = $fieldset->getContact();
+$terrain = $fieldset->getTerrainStage();
+?>
+
+<?php if ($contact):
+    $nom = $contact->getDisplayName();
+    if ($nom == "") {
+        $nom = null;
+    }
+    $mail = $contact->getEmail();
+    if ($mail == "") {
+        $mail = null;
+    }
+    $tel = $contact->getTelephone();
+    if ($tel == "") {
+        $tel = null;
+    }
+    ?>
+
+    <div class="card my-3">
+        <div class="card-header">Information sur le contact</div>
+
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-2">
+                    <strong>Libellé</strong>
+                </div>
+                <div class="col-md-4">
+                    <?= $contact->getLibelle() ?>
+                </div>
+                <div class="col-md-2">
+                    <strong>Nom / Prénom</strong>
+                </div>
+                <div class="col-md-4">
+                    <?= ($nom) ?? "<span class='text-muted'>Non définis</span>" ?>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <strong>Mail</strong>
+                </div>
+                <div class="col-md-4">
+                    <?= ($mail) ?? "<span class='text-danger'>Non définie</span>" ?>
+                </div>
+                <div class="col-md-2">
+                    <strong>Téléphone</strong>
+                </div>
+                <div class="col-md-4">
+                    <?= ($tel) ?? "<span class='text-muted'>Non définie</span>" ?>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>
+
+<?php if ($terrain): ?>
+
+    <div class="card my-3">
+        <div class="card-header">Information sur le terrain de stage</div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-2">
+                    <strong>Libellé</strong>
+                </div>
+                <div class="col-md-4">
+                    <?= $terrain->getLibelle() ?>
+                </div>
+                <div class="col-md-2">
+                    <strong>Catégorie</strong>
+                </div>
+                <div class="col-md-4">
+                    <?= $terrain->getCategorieStage()->getLibelle() ?>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>
+
+
+<div class="fieldset">
+    <?= $this->form()->openTag($form->prepare()) ?>
+    <div class="card my-3">
+        <div class="card-header"><strong>Propriétés du contact</strong></div>
+        <div class="card-body">
+            <?= $fe($form->prepare(), $form::INVALIDE_ERROR_MESSAGE) ?>
+            <?= $fr($fieldset->get($fieldset::ID)) ?>
+            <div class="row <?= (isset($contact) && isset($terrain)) ? "hidden" : "" ?>">
+                <div class="col-md-6 <?= (isset($contact)) ? "hidden" : "" ?>">
+                    <?= $fcg($fieldset->get($fieldset::CONTACT)) ?>
+                </div>
+                <div class="col-md-6 <?= (isset($terrain)) ? "hidden" : "" ?>">
+                    <?= $fcg($fieldset->get($fieldset::TERRAIN)) ?>
+                </div>
+            </div>
+
+            <?php $inputs = [];
+            $inputs[] = $fieldset->get($fieldset::IS_VISIBLE_ETUDIANT);
+            $inputs[] = $fieldset->get($fieldset::IS_RESPONSABLE_STAGE);
+            $inputs[] = $fieldset->get($fieldset::CAN_VALIDER_STAGE);
+            $inputs[] = $fieldset->get($fieldset::SEND_MAIL_AUTO_VALIDATION_STAGE);
+            $inputs[] = $fieldset->get($fieldset::SEND_MAIL_AUTO_RAPPEL_VALIDATION_STAGE);
+            ?>
+            <?php foreach ($inputs as $input): ?>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="d-flex">
+                            <div class="form-check form-switch">
+                                <?= $this->formelement($input) ?>
+                                <?= $this->formlabel($input) ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+
+            <hr/>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="h-100 d-flex">
+                        <div class="form-check form-switch" style="margin-top: auto; margin-bottom: auto">
+                            <?php $input = $fieldset->get($fieldset::IS_SIGNATAIRE_CONVENTION); ?>
+                            <?= $this->formelement($input) ?>
+                            <?= $this->formlabel($input) ?>
+                        </div>
+                    </div>
+                </div>
+                <?php $input = $fieldset->get($fieldset::PRIORITE_ORDRE_SIGNATURE) ?>
+                <div class="col-md-4">
+                    <div class="h-100 d-flex">
+                        <div  style="margin-top: auto; margin-bottom: auto">
+                    <?= $this->formlabel($input) ?>
+                        </div>
+                    </div>
+                </div>
+                <?php $input->setLabel("") ?>
+                <div class="col-md-2">
+                    <div class="h-100 d-flex">
+                        <div style="margin-top: auto; margin-bottom: auto">
+                    <?= $fcg($input) ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="card-footer">
+        <div class="row">
+            <div class="col-md-12">
+                <?= $fcg($form->get($form::INPUT_SUBMIT)); ?>
+                <?= $this->formHidden($form->get($form::CSRF)); ?>
+            </div>
+        </div>
+    </div>
+    <?= $this->form()->closeTag(); ?>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $('.selectpicker').selectpicker('render');
+    });
+</script>

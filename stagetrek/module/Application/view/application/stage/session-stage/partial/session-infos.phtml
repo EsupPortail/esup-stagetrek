@@ -1,0 +1,101 @@
+<?php
+
+use Application\Entity\Db\SessionStage;
+use Application\View\Helper\Annees\AnneeUniversitaireViewHelper;
+use Application\View\Helper\Groupe\GroupeViewHelper;
+use Application\View\Helper\SessionsStages\SessionStageViewHelper;
+
+/**
+ * @see SessionStageViewHelper::renderInfos()
+ * @var SessionStage $sessionStage
+ */
+/** @var GroupeViewHelper $groupeVh */
+$groupeVh = $this->groupe($sessionStage->getGroupe());
+/** @var AnneeUniversitaireViewHelper $anneeVh */
+$anneeVh = $this->anneeUniversitaire($sessionStage->getAnneeUniversitaire());
+?>
+
+<div class="row row-cols-1 row-cols-md-2">
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-header">
+                Description
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <strong>Libellé</strong>
+                    </div>
+                    <div class="col-md-8">
+                        <?= $sessionStage->getLibelle() ?>
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Année</strong>
+                    </div>
+                    <div class="col-md-8">
+                        <?= $anneeVh->lienAfficher() ?>
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Groupe</strong>
+                    </div>
+                    <div class="col-md-8">
+                        <?= $groupeVh->lienAfficher() ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <?php
+        $etat = $sessionStage->getEtatActif();
+        $bg = match (true) {
+            !(isset($etat)) => "card-warning",
+            $sessionStage->hasEtatError() => "card-danger",
+            $sessionStage->hasEtatAlerte() => "card-warning",
+            $sessionStage->hasEtatFutur() => "card-muted",
+            $sessionStage->hasEtatDesactive() => "card-muted",
+            default => "card-primary",
+        };
+        ?>
+
+        <div class="card h-100 <?= $bg ?>">
+            <div class="card-header">
+                État de la session
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <?= $this->etatinstance($etat, ['display-categorie' => false, 'display-libelle' => true, 'unknown-type-libelle' => "Indéterminée"]); ?>
+                    </div>
+                </div>
+                <?php if (isset($etat) && $etat->getInfos() != "") : ?>
+                    <div class="row">
+                        <div class="col-md-12"><strong>Informations</strong></div>
+                        <div class="col-md-12">
+                            <?= $etat->getInfos(); ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
+
+                <hr/>
+                <div class="row">
+                    <div class="col-md-5">
+                        <strong>Visible par les étudiants</strong>
+                    </div>
+                    <div class="col-md-7">
+                        <?= ($sessionStage->isVisibleByEtudiants()) ? "Oui" : "Non" ?>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-5">
+                        <strong>Session de rattrapage</strong>
+                    </div>
+                    <div class="col-md-7">
+                        <?= ($sessionStage->isSessionRattrapge()) ? "Oui" : "Non" ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

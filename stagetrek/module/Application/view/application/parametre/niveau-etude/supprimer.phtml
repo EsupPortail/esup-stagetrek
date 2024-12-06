@@ -1,0 +1,33 @@
+<?php
+
+use Application\Controller\Parametre\NiveauEtudeController;
+use Application\Form\Misc\ConfirmationForm;
+use Application\View\Helper\Misc\ConfirmationFormViewHelper;
+
+/**
+ * @see NiveauEtudeController::supprimerAction()
+ * @var string              $title
+ * @var ConfirmationForm    $form
+*/
+
+/** @var ConfirmationFormViewHelper $vh */
+$vh = $this->confirmation($form)
+?>
+
+<div class="card card-danger">
+    <h1 class="page-header card-header">
+        <span class="icon icon-supprimer"></span>
+        <?= $title ?>
+    </h1>
+    <div class="card-body">
+        <?= $vh->render(); ?>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        let body = $("body");
+        body.off("<?= NiveauEtudeController::EVENT_SUPPRIMER?>", closeModal)
+            .one("<?= NiveauEtudeController::EVENT_SUPPRIMER?>", closeModal);
+    });
+</script>

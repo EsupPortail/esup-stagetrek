@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="Application\Entity\Db\ModeleConventionStage" table="modele_convention_stage">
+
+        <id name="id"                   column="id"                 type="integer">
+            <generator strategy="SEQUENCE"/>
+            <sequence-generator sequence-name="modele_convention_stage_id_seq" allocation-size="1" initial-value="1"/>
+        </id>
+
+        <unique-constraints>
+            <unique-constraint name="modele_convention_stage_pkey" columns="id"/>
+            <unique-constraint name="modele_convention_stage_unique" columns="code"/>
+        </unique-constraints>
+
+        <field name="code"              column="code"                   type="string"    length="100"     nullable="false" />
+        <field name="libelle"           column="libelle"                type="string"    length="4096"    nullable="false" />
+        <field name="description"       column="description"            type="string"    length="100"    nullable="false" />
+
+        <many-to-one field="corpsTemplate" target-entity="UnicaenRenderer\Entity\Db\Template" fetch="LAZY">
+            <cascade>
+                <cascade-persist/>
+            </cascade>
+            <join-columns>
+                <join-column name="corps_template_id" referenced-column-name="id"/>
+            </join-columns>
+        </many-to-one>
+
+        <one-to-many field="terrainsStages" target-entity="Application\Entity\Db\TerrainStage" mapped-by="modeleConventionStage" />
+
+        <!--    Historique-->
+        <field name="histoCreation" type="datetime" column="histo_creation" nullable="false">
+            <options>
+                <option name="default">now()</option>
+            </options>
+        </field>
+        <field name="histoModification" type="datetime" column="histo_modification" nullable="true"/>
+        <field name="histoDestruction" type="datetime" column="histo_destruction" nullable="true"/>
+        <many-to-one field="histoCreateur" target-entity="UnicaenUtilisateur\Entity\Db\User" fetch="LAZY">
+            <join-columns>
+                <join-column name="histo_createur_id" referenced-column-name="ID"/>
+            </join-columns>
+        </many-to-one>
+        <many-to-one field="histoModificateur" target-entity="UnicaenUtilisateur\Entity\Db\User" fetch="LAZY">
+            <join-columns>
+                <join-column name="histo_modificateur_id" referenced-column-name="ID"/>
+            </join-columns>
+        </many-to-one>
+        <many-to-one field="histoDestructeur" target-entity="UnicaenUtilisateur\Entity\Db\User" fetch="LAZY">
+            <join-columns>
+                <join-column name="histo_destructeur_id" referenced-column-name="ID"/>
+            </join-columns>
+        </many-to-one>
+
+    </entity>
+</doctrine-mapping>

@@ -1,0 +1,28 @@
+<?php
+
+use Application\Controller\Etudiant\EtudiantController;
+use Application\Entity\Db\Etudiant;
+
+
+/**
+ * @see EtudiantController::importerAction()
+
+ * @var Etudiant $etudiant
+ */
+
+?>
+
+<div class="row">
+    <div class="col-md-12">
+        <b>Données qui seront crées / mise à jour par l'importation depuis la source</b>
+    </div>
+    <div class="col-md-12 pl-5">Numéro d'étudiant, Nom, Prénom, Adresse mail, Date de naissance</div>
+    <div class="col-md-12 pl-5 text-muted">
+        Les autres données doivent être fournis par une importation depuis un fichier csv ou manuellement
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <b>L'importation de nouveaux étudiants peut prendre quelques minutes.</b>
+    </div>
+</div>

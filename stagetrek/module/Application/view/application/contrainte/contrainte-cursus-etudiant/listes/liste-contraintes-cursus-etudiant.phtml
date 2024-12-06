@@ -1,0 +1,125 @@
+<?php
+
+use Application\Controller\Contrainte\ContrainteCursusEtudiantController;
+use Application\Entity\Db\ContrainteCursusEtudiant;
+use Application\Provider\EtatType\ContrainteCursusEtudiantEtatTypeProvider;
+use Application\Provider\Misc\Icone;
+use Application\Provider\Privilege\EtudiantPrivileges;
+use Application\View\Helper\ContrainteCursus\ContrainteCursusEtudiantViewHelper;
+
+/**
+ * @see ContrainteCursusEtudiantController::listerAction()
+ * @var ContrainteCursusEtudiant[] $contraintesCursusEtudiant ;
+ */
+
+$tableId = "liste-contraintes-cursus";
+/** @var ContrainteCursusEtudiantViewHelper $vh */
+$vh = $this->contrainteCursus();
+
+$canSee = $vh->hasPrivilege(EtudiantPrivileges::ETUDIANT_CONTRAINTES_AFFICHER);
+$canEdit = $vh->hasPrivilege(EtudiantPrivileges::ETUDIANT_CONTRAINTE_MODIFIER);
+$canActiver = $vh->hasPrivilege(EtudiantPrivileges::ETUDIANT_CONTRAINTE_ACTIVER);
+$canDesactiver = $vh->hasPrivilege(EtudiantPrivileges::ETUDIANT_CONTRAINTE_DESACTIVER);
+$canValider = $vh->hasPrivilege(EtudiantPrivileges::ETUDIANT_CONTRAINTE_VALIDER);
+$canInvalider = $vh->hasPrivilege(EtudiantPrivileges::ETUDIANT_CONTRAINTE_INVALIDER);
+
+$hasAction = $canSee||$canEdit||$canActiver||$canDesactiver||$canValider||$canInvalider;
+?>
+
+<div class="row">
+    <div class="col-md-12">
+<!--<div class="card">-->
+<!--    <div class="card-header"><strong>Liste des contraintes de cursus</strong></div>-->
+<!--    <div class="card-body">-->
+        <table id="<?= $tableId ?>" class="table table-hover table-condensed">
+            <thead>
+            <tr>
+                <th class="hidden no-sort">Portée</th>
+                <th class="hidden no-search" data-type="num">Ordre Portée</th>
+                <th class="col-md" data-type="num">Contraintes</th>
+                <th class="no-search col-md-1" data-type="num">Validation</th>
+                <th class="col-md-3" data-type="num">État</th>
+                <?php if($hasAction) :?>
+                <th class="no-search no-sort all col-md-1 text-end">Actions</th>
+                <?php endif; ?>
+            </tr>
+            </thead>
+            <tbody>
+            <?php /** @var ContrainteCursusEtudiant $contrainte */
+            foreach ($contraintesCursusEtudiant as $contrainte):
+                $etudiant = $contrainte->getEtudiant();
+                $vh->setEtudiant($etudiant);
+                $vh->setContrainteCursusEtudiant($contrainte);
+                $etat = $contrainte->getEtatActif();
+                $bg = match (true) {
+                    $contrainte->hasEtatAlerte() => "table-warning",
+                    $contrainte->hasEtatInsat(),
+                    $contrainte->hasEtatErreur() => "table-danger",
+                    $contrainte->hasEtatNonSat() => "table-primary",
+                    $contrainte->hasEtatSat(),
+                    $contrainte->hasEtatValideeCommission() => "table-success",
+                    $contrainte->hasEtatInactif() => "table-muted",
+                    default => "table-danger"
+                }
+
+            ?>
+            <tr class="<?= $bg ?>">
+                <td>
+                    <?= $contrainte->getPortee()->getLibelle() ?>
+                </td>
+                <td class="hidden" data-order="<?= $contrainte->getPortee()->getOrdre() ?>"></td>
+                <td data-order="<?= $contrainte->getOrdre() ?>"
+                    data-filter="<?= $contrainte->getLibelle() ?>"
+                >
+                    <?= $contrainte->getLibelle() ?>
+
+                </td>
+                <td class="" data-order="<?= ($etat) ? $etat->getType()->getOrdre() : 0 ?>">
+                    <?= $vh->renderValidationInfo(); ?>
+                </td>
+                <td class="" data-order="<?= ($etat) ? ($etat->getType()->getOrdre()) : PHP_INT_MIN ?>"
+                    style="color:<?=  (isset($etat)) ? $etat->getType()->getCouleur() : "" ?>"
+                >
+                    <span class="<?= (isset($etat)) ? $etat->getType()->getIcone() : "fa fa-question" ?>"></span>
+                    <?= (isset($etat)) ? $etat->getTypeLibelle() : "Indéterminé" ?>
+                </td>
+                <?php if($hasAction) :?>
+                <td class="text-end">
+                    <?= $vh->lienAfficher(Icone::AFFICHER, ['title'=> "Afficher les détails de la contrainte pour l'étudiant", 'class'=>'text-primary ajax-modal']) ?>
+                    <?= $vh->lienModifier(Icone::MODIFIER, ['class'=>'text-primary ajax-modal'])?>
+                    <?= $vh->lienValider("<span class='fas fa-check-square'></span>", ['class' => 'text-success ajax-modal']) ?>
+                    <?= $vh->lienInvalider("<span class='fas fa-times-rectangle'></span>",['class' => 'text-danger ajax-modal']) ?>
+                    <?= $vh->lienActiver(Icone::AJOUTER, ['class' => 'text-success ajax-modal']) ?>
+                    <?= $vh->lienDesactiver("<span class='fas fa-times-square'></span>", ['class' => 'text-muted ajax-modal']) ?>
+
+                </td>
+                <?php endif; ?>
+            </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $('[data-bs-toggle="popover"]').popover({html: true});
+        let options = generateDataTableSetings({
+            stateSave: true,
+            retrieve: true,
+            searching:false,
+            paging:false,
+            info:false,
+            "order": [[2, "asc"]],
+            "orderFixed": {
+                "pre": [1, 'asc'],
+            },
+            "rowGroup": {
+                "dataSrc": 0
+            }
+        });
+        $("#<?= $tableId ?>").on('draw.dt', function() {
+            $('[data-bs-toggle="popover"]').popover({html: true});
+        }).DataTable(options);
+    });
+</script>

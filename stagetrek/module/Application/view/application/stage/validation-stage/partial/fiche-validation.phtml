@@ -1,0 +1,217 @@
+<?php
+
+use Application\Entity\Db\Stage;
+
+/**
+ * @see ValidationStageController::afficherAction()
+ * @var Stage $stage
+ * @var bool $vueEtudiante
+ */
+if (!isset($vueEtudiante)) {
+    $vueEtudiante = false;
+}
+$validationStage = $stage->getValidationStage();
+$today = new DateTime();
+?>
+
+<?php if (!isset($validationStage)) : //LA validation est indisponible?>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-danger">
+                <strong>L'accés à la validation du stage est actuellement indisponible</strong>
+            </div>
+        </div>
+    </div>
+    <?php return; endif; ?>
+
+<?php if (!$vueEtudiante) :
+    $etat = $validationStage->getEtatActif();
+    $bg = match (true) {
+        $validationStage->hasEtatEnErreur(), $validationStage->hasEtatInvalide() => "card-danger",
+        $validationStage->hasEtatEnAlerte(), $validationStage->hasEtatEnRetard() => "card-warning",
+        $validationStage->hasEtatEnAttente() => "card-primary",
+        $validationStage->hasEtatValide() => "card-success",
+        $validationStage->hasEtatFutur(), $validationStage->hasEtatStageNonEffectue(), $validationStage->hasEtatEtudiantEnDispo() => "card-muted",
+        default => "",
+    }
+    ?>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card h-100 <?= $bg ?>">
+                <div class="card-header">
+                    État de la validation
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <?= $this->etatinstance($etat, ['display-categorie' => false, 'display-libelle' => true, 'unknown-type-libelle' => "Indéterminée"]); ?>
+                        </div>
+                    </div>
+                    <?php if (isset($etat) && $etat->getInfos() != "") : ?>
+                        <div class="row">
+                            <div class="col-md-12"><strong>Informations</strong></div>
+                            <div class="col-md-12">
+                                <?= $etat->getInfos(); ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                    <?php if ($validationStage->getWarning()) : ?>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="alert alert-warning">Le responsable de stage a signalé un problème sur le
+                                    stage
+                                </div>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+
+                    <hr/>
+
+                    <?php if ($validationStage->validationEffectue()) : ?>
+                        <div class="row">
+                            <div class="col-md-2 col-xs-4">
+                                <strong><?= ($validationStage->isValide()) ? "Validé" : "Non validé" ?> </strong>
+                            </div>
+                            <?php if ($validationStage->getDateValidation() != null) : ?>
+                                <div class="col-md-10 col-xs-8">
+                                    le <?= $validationStage->getDateValidation()->format('d/m/Y') ?>
+                                    à <?= $validationStage->getDateValidation()->format('H\hi') ?>
+                                </div>
+                            <?php endif; ?>
+                            <div class="col-md-2 col-xs-4">
+                                <strong>Par </strong>
+                            </div>
+                            <div class="col-md-10 col-xs-8">
+                                <?= ($validationStage->getValidateBy()) ?: "Non défini" ?>
+                            </div>
+                        </div>
+                    <?php else : ?>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <?php if ($today < $stage->getDateDebutValidation()): ?>
+                                            La phase de validation est fixée entre le
+                                            <strong><?= $stage->getDateDebutValidation()->format('d/m/Y') ?></strong>
+                                            et le
+                                            <strong><?= $stage->getDateFinValidation()->format('d/m/Y') ?></strong>.
+                                        <?php elseif ($stage->getDateDebutValidation() <= new DateTime() && new DateTime() < $stage->getDateFinValidation()): ?>
+                                            La phase de validation est <strong>en cours</strong> jusqu'au
+                                            <strong><?= $stage->getDateFinValidation()->format('d/m/Y') ?></strong>.
+                                        <?php else : ?>
+                                            La phase de validation est normalement <strong>terminée</strong> depuis le
+                                            <strong><?= $stage->getDateFinValidation()->format('d/m/Y') ?></strong>.
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-2">
+        <div class="col">
+            <div class="card h-100">
+                <div class="card">
+                    <div class="card-header">
+                        Commentaires pour l'étudiant
+                    </div>
+                    <div class="card-body">
+                        <?= ($validationStage->getCommentaire()) ?? "<span class='text-muted'>Aucun commentaire</span>" ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-header">
+                    Commentaires pour la commission
+                </div>
+                <div class="card-body">
+                    <?= ($validationStage->getCommentaireCache()) ?? "<span class='text-muted'>Aucun commentaire</span>" ?>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php else : //Vue étudiante
+    $typeStage = "";
+    if ($stage->isStagePrincipal() && $stage->hasStageSecondaire()) {
+        $typeStage = "principal";
+    }
+    if ($stage->isStageSecondaire()) {
+        $typeStage = "secondaire";
+    }
+    ?>
+
+    <?php
+    $etat = $validationStage->getEtatActif();
+    switch (true) {
+        case $validationStage->hasEtatEnErreur() :
+            $bg = "card-danger";
+            $infos = "Une anomalie a été détecté sur la validation de votre stage.
+                    <div class='text-small text-muted'>Si celle-ci persiste merci de contacter votre scolarité</div>";
+            break;
+        case $validationStage->hasEtatEnAlerte() :
+            $bg = "card-danger";
+            $infos = "Une anomalie a été détecté sur votre stage.
+                    <div class='text-small text-muted'>Si celle-ci persiste merci de contacter votre scolarité</div>";
+            break;
+        case $validationStage->hasEtatInvalide() :
+            $bg = "card-danger";
+            $infos = $validationStage->getCommentaire();
+            break;
+        case $validationStage->hasEtatValide() :
+            $bg = "card-success";
+            $infos = $validationStage->getCommentaire();
+            break;
+        case $validationStage->hasEtatEnAttente() :
+        case $validationStage->hasEtatFutur() :
+            $bg = "card-primary";
+            $infos = sprintf(" La phase de validation du stage est fixée entre
+                le <strong>%s</strong> et le <strong>%s</strong>", $stage->getDateDebutValidation()->format('d/m/Y'), $stage->getDateFinValidation()->format('d/m/Y'));
+            break;
+        case $validationStage->hasEtatEnRetard() :
+            $bg = "card-warning";
+            $infos = "Votre responsable de stage n'as pas encore procédé à la validation de votre stage";
+            break;
+        case $validationStage->hasEtatStageNonEffectue() :
+            $bg = "card-muted";
+            $infos = "Le stage a été marqué comme <strong>Non effectué</strong>.";
+            break;
+        case $validationStage->hasEtatEtudiantEnDispo() :
+            $bg = "card-muted";
+            $infos = "Vous êtes en disponibilité durant la période du stage";
+            break;
+        default :
+            $bg = "card-muted";
+            $etat = null;
+            $infos = "Les informations sur la validation de votre stage sont actuellement indisponibles";
+    }
+    ?>
+    <div class="card <?= $bg ?>">
+        <div class="card-header">État de la validation du stage <?= $typeStage ?></div>
+        <div class="card-body">
+            <?php if (isset($etat)) : ?>
+                <div class="row">
+                    <div class="col-md-12">
+                        <?= $this->etatinstance($etat, ['display-categorie' => false, 'display-libelle' => true, 'unknown-type-libelle' => "Indéterminée"]); ?>
+                    </div>
+                </div>
+            <?php endif; ?>
+            <?php if (!$infos || $infos == "") {
+                $infos = "<span class='text-muted'>Aucune information complémentaire</span>";
+            } ?>
+            <div class="row">
+                <div class="col-md-12"><strong>Informations</strong></div>
+                <div class="col-md-12">
+                    <?= $infos ?>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>

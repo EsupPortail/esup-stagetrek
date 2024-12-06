@@ -1,0 +1,48 @@
+<?php
+
+use Application\Controller\Notification\MessageInfoController as Controller;
+use Application\Entity\Db\MessageInfo;
+use Application\Provider\Privilege\MessagePrivilege;
+use Application\View\Helper\Notification\MessageInfoViewHelper;
+
+/**
+ * @see MessageInfoController::indexAction()
+ * @var MessageInfo[] $messages
+ */
+/** @var MessageInfoViewHelper $vh */
+$vh = $this->messageInfo();
+$canAdd = $vh->hasPrivilege(MessagePrivilege::MESSAGE_INFO_AJOUTER);
+?>
+
+<h1 class="page-header">
+    <span class="icon">
+        <i class="fas fa-message"></i>
+    </span>Gestion des messages d'informations
+</h1>
+
+
+<div class="card mt-3">
+    <?php if ($canAdd) : ?>
+        <div class="card-header card-sub-header text-end">
+            <?= $vh->lienAjouter(); ?>
+        </div>
+    <?php endif; ?>
+
+    <div class="card-body" id="messages-infos-content"
+         data-url="<?= $this->url(Controller::ROUTE_LISTER, [], [], true) ?>">
+        <?= $vh->renderListe($messages) ?>
+    </div>
+</div>
+
+<script type="text/javascript">
+    //Rechargement de la page sur event
+    $(function () {
+        let body = $("body");
+        body.on("<?=Controller::EVENT_AJOUTER?> "
+            + "<?=Controller::EVENT_MODIFIER?> "
+            + "<?=Controller::EVENT_SUPPRIMER?> "
+            , function () {
+                $("#messages-infos-content").refresh();
+            });
+    });
+</script>

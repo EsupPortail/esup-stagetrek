@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Application\Entity\Db\ContrainteCursus" table="contrainte_cursus">
+    <indexes>
+      <index name="IDX_DC13A7AC161EEE50" columns="portee"/>
+      <index name="IDX_DC13A7AC1A1F90F9" columns="categorie_stage_id"/>
+      <index name="IDX_DC13A7ACFEF753E0" columns="terrain_stage_id"/>
+    </indexes>
+    <id name="id" type="bigint" column="id">
+      <generator strategy="SEQUENCE"/>
+      <sequence-generator sequence-name="contrainte_cursus_id_seq" allocation-size="1" initial-value="1"/>
+    </id>
+    <field name="libelle" type="string" column="libelle" length="255" nullable="false">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="acronyme" type="string" column="acronyme" length="100" nullable="false">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="description" type="string" column="description" length="255" nullable="false">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="nombreDeStageMin" type="integer" column="nombre_de_stage_min" nullable="true">
+      <options>
+        <option name="unsigned"/>
+      </options>
+    </field>
+    <field name="nombreDeStageMax" type="integer" column="nombre_de_stage_max" nullable="true">
+      <options>
+        <option name="unsigned"/>
+      </options>
+    </field>
+    <field name="dateDebut" type="date" column="date_debut" nullable="false">
+      <options>
+        <option name="default">1900-01-01</option>
+      </options>
+    </field>
+    <field name="dateFin" type="date" column="date_fin" nullable="false">
+      <options>
+        <option name="default">2999-12-31</option>
+      </options>
+    </field>
+    <field name="ordre" type="integer" column="ordre" nullable="true">
+      <options>
+        <option name="unsigned"/>
+        <option name="default">0</option>
+      </options>
+    </field>
+    <field name="isContradictoire" type="boolean" column="is_contradictoire" nullable="true">
+      <options>
+        <option name="default"/>
+      </options>
+    </field>
+
+    <many-to-one field="contrainteCursusPortee" target-entity="Application\Entity\Db\ContrainteCursusPortee" fetch="LAZY">
+      <join-columns>
+        <join-column name="portee" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+
+    <many-to-one field="categorieStage" target-entity="Application\Entity\Db\CategorieStage" fetch="LAZY">
+      <join-columns>
+        <join-column name="categorie_stage_id" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="terrainStage" target-entity="Application\Entity\Db\TerrainStage" fetch="LAZY">
+      <join-columns>
+        <join-column name="terrain_stage_id" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+
+  </entity>
+</doctrine-mapping>

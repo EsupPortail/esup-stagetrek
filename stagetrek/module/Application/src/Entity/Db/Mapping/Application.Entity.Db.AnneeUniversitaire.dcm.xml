@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Application\Entity\Db\AnneeUniversitaire" table="annee_universitaire">
+    <indexes>
+      <index name="annee_universitaire_pkey" columns="id"/>
+    </indexes>
+    <unique-constraints>
+      <unique-constraint name="annee_universitaire_id_unique" columns="id"/>
+    </unique-constraints>
+    <id name="id" type="bigint" column="id">
+      <generator strategy="SEQUENCE"/>
+      <sequence-generator sequence-name="annee_universitaire_id_seq" allocation-size="1" initial-value="1"/>
+    </id>
+    <field name="libelle" type="string" column="libelle" length="255" nullable="true">
+      <options>
+        <option name="fixed"/>
+        <option name="default">year</option>
+      </options>
+    </field>
+    <field name="dateDebut" type="date" column="date_debut" nullable="false">
+      <options>
+        <option name="default">year</option>
+      </options>
+    </field>
+    <field name="dateFin" type="date" column="date_fin" nullable="false">
+      <options>
+        <option name="default">year</option>
+      </options>
+    </field>
+    <field name="anneeVerrouillee" type="boolean" column="annee_verrouillee" nullable="true">
+      <options>
+        <option name="default"/>
+      </options>
+    </field>
+
+    <one-to-one field="anneePrecedente" target-entity="Application\Entity\Db\AnneeUniversitaire">
+      <join-column name="annee_universitaire_precedente_id" referenced-column-name="id" />
+    </one-to-one>
+
+    <one-to-one field="anneeSuivante" target-entity="Application\Entity\Db\AnneeUniversitaire">
+      <join-column name="annee_universitaire_suivante_id" referenced-column-name="id" />
+    </one-to-one>
+
+    <one-to-many field="groupes" target-entity="Application\Entity\Db\Groupe" mapped-by="anneeUniversitaire" />
+
+    <!--    État de l'année-->
+    <many-to-many field="etats" target-entity="UnicaenEtat\Entity\Db\EtatInstance" fetch="LAZY">
+      <join-table name="annee_universitaire_etat_linker">
+        <join-columns>
+          <join-column name="annee_universitaire_id" referenced-column-name="id"/>
+        </join-columns>
+        <inverse-join-columns>
+          <join-column name="etat_instance_id" referenced-column-name="id"/>
+        </inverse-join-columns>
+      </join-table>
+    </many-to-many>
+
+  </entity>
+</doctrine-mapping>

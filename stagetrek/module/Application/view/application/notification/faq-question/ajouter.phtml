@@ -1,0 +1,34 @@
+<?php
+
+use Application\Controller\Notification\FaqQuestionController as Controller;
+use Application\Form\Notification\FaqQuestionForm;
+use Application\Form\Notification\Fieldset\MessageInfoFieldset;
+use Application\View\Helper\Notification\FAQViewHelper;
+
+/**
+ * @see FaqQuestionController::ajouterAction()
+ * @var string $title
+ * @var FaqQuestionForm $form
+ * @var MessageInfoFieldset $fieldset
+ * */
+/** @var FAQViewHelper $vh */
+$vh = $this->faq();
+?>
+
+<div class="card card-success">
+    <h1 class="page-header card-header">
+        <span class="icon icon-ajouter"></span>
+        <?= $title ?>
+    </h1>
+    <div class="card-body">
+        <?= $vh->renderForm($form); ?>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        let body = $("body");
+        body.off("<?= Controller::EVENT_AJOUTER?>", closeModal)
+            .one("<?= Controller::EVENT_AJOUTER?>", closeModal);
+    });
+</script>

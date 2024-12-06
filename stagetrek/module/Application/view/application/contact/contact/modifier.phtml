@@ -1,0 +1,36 @@
+<?php
+
+use Application\Controller\Contact\ContactController;
+use Application\Form\Contacts\ContactForm;
+use Application\View\Helper\Contacts\ContactViewHelper;
+
+
+/**
+ * @see ContactController::modifierAction()
+ * @var String $title
+ * @var ContactForm $form
+ */
+
+
+/** @var ContactViewHelper $vh */
+$vh = $this->contact();
+?>
+
+
+<div class="card card-primary">
+    <h1 class="page-header card-header">
+        <span class="icon icon-modifier"></span>
+        <?= $title ?>
+    </h1>
+    <div class="card-body">
+        <?= $vh->renderForm($form); ?>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        let body = $("body");
+        body.off("<?= ContactController::EVENT_MODIFIER?>", closeModal)
+            .one("<?= ContactController::EVENT_MODIFIER?>", closeModal);
+    })
+</script>

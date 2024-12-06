@@ -1,0 +1,38 @@
+<?php
+
+use Application\Controller\Terrain\CategorieStageController;
+use Application\Form\TerrainStage\CategorieStageForm;
+use Application\View\Helper\Terrains\CategorieStageViewHelper;
+
+
+/**
+ * @see CategorieStageController::modifierAction()
+ *
+
+ * @var String $title
+ * @var CategorieStageForm $form
+ */
+
+
+/** @var CategorieStageViewHelper $vh */
+$vh = $this->categorieStage();
+?>
+
+
+<div class="card card-primary">
+    <h1 class="page-header card-header">
+        <span class="icon icon-modifier"></span>
+        <?= $title ?>
+    </h1>
+    <div class="card-body">
+        <?= $vh->renderForm($form); ?>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        let body = $("body");
+        body.off("<?= CategorieStageController::EVENT_MODIFIER?>", closeModal)
+            .one("<?= CategorieStageController::EVENT_MODIFIER?>", closeModal);
+    })
+</script>

@@ -1,0 +1,15 @@
+span.badge.SUCCESS {
+    background: darkgreen;
+}
+span.badge.FAILED {
+    background: darkred;
+}
+span.badge.PENDING {
+    background: darkorange;
+}
+span.badge.template {
+    background: teal;
+}
+span.badge.redir {
+    background: salmon;
+}

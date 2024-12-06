@@ -1,0 +1,35 @@
+<?php
+
+use Application\Controller\Contrainte\ContrainteCursusEtudiantController;
+use Application\Entity\Db\ContrainteCursusEtudiant;
+use Application\Form\Misc\ConfirmationForm;
+
+
+/**
+ * @see ContrainteCursusEtudiantController::desactiverContrainteAction()
+ *
+
+ * @var string $title
+ * @var ConfirmationForm $form
+ * @var ContrainteCursusEtudiant $contrainte
+ */
+?>
+
+<div class="card card-success">
+    <h1 class="page-header card-header">
+        <span class="icon icon-checked"></span>
+        <?= $title ?>
+    </h1>
+    <div class="card-body">
+        <?= $this->confirmation($form); ?>
+    </div>
+</div>
+
+
+<script>
+    $(function () {
+        let body = $("body");
+        body.off("<?= ContrainteCursusEtudiantController::EVENT_MODIFIER?>", closeModal)
+            .one("<?= ContrainteCursusEtudiantController::EVENT_MODIFIER?>", closeModal);
+    });
+</script>

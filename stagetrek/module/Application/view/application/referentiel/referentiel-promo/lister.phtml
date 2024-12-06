@@ -1,0 +1,16 @@
+<?php
+
+use Application\Controller\Referentiel\ReferentielPromoController;
+use Application\Entity\Db\ReferentielPromo;
+use Application\View\Helper\Referentiel\ReferentielPromoViewHelper;
+
+
+/**
+ * @see ReferentielPromoController::listerAction()
+
+ * @var ReferentielPromo[] $referentielsPromos
+ */
+
+/** @var ReferentielPromoViewHelper $vh */
+$vh = $this->referentielPromo();
+echo $vh->renderListe($referentielsPromos);

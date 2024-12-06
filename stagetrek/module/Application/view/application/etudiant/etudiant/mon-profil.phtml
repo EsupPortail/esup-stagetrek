@@ -1,0 +1,73 @@
+<?php
+
+use Application\Controller\Etudiant\EtudiantController;
+use Application\Entity\Db\Adresse;
+use Application\Entity\Db\Etudiant;
+
+/**
+ * @see EtudiantController::monProfilAction()
+ * @var Etudiant $etudiant
+ */
+/** @var Adresse $adresse */
+$adresse = $etudiant->getAdresse();
+?>
+
+<h1 class="page-header">
+    <span class="icon">
+        <i class="fas fa-user"></i>
+    </span>
+    Mon Profil
+</h1>
+
+
+<nav>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <button class="nav-link active" id="nav-infos" data-bs-toggle="tab" data-bs-target="#infos" type="button"
+                role="tab" aria-controls="infos" aria-selected="true">Mes informations
+        </button>
+        <button class="nav-link" id="nav-cursus" data-bs-toggle="tab" data-bs-target="#cursus" type="button"
+                role="tab" aria-controls="contacts-cursus" aria-selected="false">Mon Cursus
+        </button>
+        <button class="nav-link" id="nav-disponibilites" data-bs-toggle="tab" data-bs-target="#disponibilites"
+                type="button"
+                role="tab" aria-controls="disponibilites" aria-selected="false">Mes disponibilités
+        </button>
+    </div>
+</nav>
+
+<div class="card tab-content" id="nav-tabContent">
+    <div class="tab-pane fade show active" id="infos" role="tabpanel" aria-labelledby="nav-infos">
+        <div class="card-body">
+            <?= $this->partial('partial/mes-infos', ['etudiant' => $etudiant]); ?>
+        </div>
+    </div>
+
+    <div class="tab-pane fade show" id="cursus" role="tabpanel" aria-labelledby="nav-infos">
+        <div class="card-body">
+            <?= $this->partial('partial/mon-cursus', ['etudiant' => $etudiant]); ?>
+        </div>
+    </div>
+    <div class="tab-pane fade show" id="disponibilites" role="tabpanel" aria-labelledby="nav-infos">
+        <div class="card-body">
+            <?php $dispos = $etudiant->getDisponibilites()->toArray() ?>
+
+            <div class="row">
+                <div class="col-md-12 ">
+                    <?php if (!empty($dispos)) : ?>
+                        <?= $this->disponibilite()->renderListe($dispos) ?>
+                    <?php else : ?>
+                        <div class="text-muted">Vous n'avez pris aucune disponibilité.</div>
+                    <?php endif; ?>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 ">
+                    <div class="text-small text-muted">
+                        Pour toutes demandes de disponibilité merci de contacter votre scolarité.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

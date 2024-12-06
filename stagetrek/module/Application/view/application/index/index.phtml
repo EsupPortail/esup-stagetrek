@@ -1,0 +1,82 @@
+<?php
+
+use Application\Controller\Index\IndexController;
+use Application\Entity\Db\MessageInfo;
+
+use UnicaenUtilisateur\Entity\Db\User;
+
+/**
+ * @see IndexController::indexAction()
+ *
+ * @var User $utilisateur
+ * @var MessageInfo $messages
+ */
+
+$identity = $this->identity();
+?>
+
+
+
+<div class="jumbotron">
+    <div class="card border-dark border-1 rounded-3 p-5">
+        <div class="row card-body g-0" id="row-in-index-application">
+            <div class="col-md-8">
+                <div class="align-middle">
+                    <h1 class="card-title">
+                        <?php echo $this->appInfos()->nom; ?>
+                    </h1>
+                    <p class="card-text fs-4">
+                        <?php echo $this->appInfos()->desc; ?>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4">
+            </div>
+        </div>
+        <?php if (!$this->identity()): ?>
+            <div class="row g-0">
+                <div class="col-md-8">
+                    <a class="btn btn-primary btn-lg" href="<?php echo $this->url('zfcuser/login') ?>">
+                        <i class="fas fa-user"></i>
+                        <?php echo $this->translate('Se connecter...') ?>
+                    </a>
+                </div>
+            </div>
+        <?php endif; ?>
+    </div>
+</div>
+
+<?php if (!empty($messages)) : ?>
+<div class="jumbotron" id="index-informations">
+    <div class="card">
+        <div class="card-header">
+            Informations
+        </div>
+        <div class="card-body">
+            <?php /** @var MessageInfo $messageInfo */
+            foreach ($messages as $messageInfo) :?>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-<?= $messageInfo->getPriority() ?>">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <strong><?= $messageInfo->getTitle() ?></strong>
+                                </div>
+                                <div class="col-md-4 text-end text-muted">
+                                    <?= $messageInfo->getDateMessage()->format('d/m/Y') ?>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <?= $messageInfo->getMessage() ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</div>
+
+<?php endif; ?>

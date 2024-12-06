@@ -1,0 +1,276 @@
+<?php
+
+use Application\Controller\Affectation\AffectationController;
+use Application\Controller\Stage\SessionStageController;
+use Application\Entity\Db\AffectationStage;
+use Application\Entity\Db\SessionStage;
+
+/**
+ * @see AffectationController::exporterAction()
+ * @var string $title
+ * @var SessionStage $sessionStage
+ */
+
+$affectations = $sessionStage->getAffectations();
+$tableId = "export-affectationStage-table";
+
+$vh = $this->affectation();
+$vh->setSessionStage($sessionStage);
+$today = new DateTime();
+?>
+
+<h1 class="page-header">
+    <span class="icon icon-exporter"></span>
+    <?= $title ?>
+    <br/>
+    <small class="text-muted">
+        Session <?= $sessionStage->getLibelle() ?>
+    </small>
+</h1>
+
+<div class="my-3 card card-primary">
+    <div class="card-header">
+        Selectionner les champs à exporter
+    </div>
+    <div class="card-body">
+
+        <div class="row m-0">
+            <div class="col-md-4 form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="col-id-switch" data-col="col-id" checked>
+                <label class="mx-3 form-check-label" for="col-id-switch">Id</label>
+            </div>
+            <div class="col-md-4 form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="col-ordre-switch" data-col="col-ordre" checked>
+                <label class="mx-3 form-check-label" for="col-ordre-switch">Ordre d'affectation</label>
+            </div>
+        </div>
+        <div class="row m-0">
+            <div class="col-md-4 form-check form-switch">
+                <input class="form-check-input" disabled type="checkbox" id="col-num_etu-switch" data-col="col-num_etu" checked>
+                <label class="mx-3 form-check-label" for="col-num_etu-switch">Numéro d'étudiant</label>
+            </div>
+            <div class="col-md-4 form-check form-switch">
+                <input class="form-check-input" disabled type="checkbox" id="col-prenom-switch" data-col="col-prenom" checked>
+                <label class="mx-3 form-check-label" for="col-prenom-switch">Prénom</label>
+            </div>
+            <div class="col-md-4 form-check form-switch">
+                <input class="form-check-input" disabled type="checkbox" id="col-nom-switch" data-col="col-nom" checked>
+                <label class="mx-3 form-check-label" for="col-nom-switch">Nom</label>
+            </div>
+        </div>
+
+        <div class="row m-0">
+        <div class="col-md-4 form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="col-categorie-switch" data-col="col-categorie" checked>
+            <label class="mx-3 form-check-label" for="col-categorie-switch">Catégorie du stage</label>
+        </div>
+        <div class="col-md-4 form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="col-terrain-switch" data-col="col-terrain" checked>
+            <label class="mx-3 form-check-label" for="col-terrain-switch">Terrain du stage</label>
+        </div>
+        </div>
+
+        <div class="row m-0">
+        <div class="col-md-4 form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="col-cout-total-switch" data-col="col-cout-total" checked>
+            <label class="mx-3 form-check-label" for="col-cout-total-switch">Coût total</label>
+        </div>
+        <div class="col-md-4 form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="col-cout-terrain-switch" data-col="col-cout-terrain" checked>
+            <label class="mx-3 form-check-label" for="col-cout-terrain-switch">Coût du terrain</label>
+        </div>
+        <div class="col-md-4 form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="col-cout-bonus-switch" data-col="col-cout-bonus" checked>
+            <label class="mx-3 form-check-label" for="col-cout-bonus-switch">Bonus / malus</label>
+        </div>
+        </div>
+
+        <div class="row m-0">
+        <div class="col-md-4 form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="col-score-pre-switch" data-col="col-score-pre">
+            <label class="mx-3 form-check-label" for="col-score-pre-switch">Score avant l'affectation</label>
+        </div>
+        <div class="col-md-4 form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="col-score-post-switch" data-col="col-score-post">
+            <label class="mx-3 form-check-label" for="col-score-post-switch">Score après l'affectation</label>
+        </div>
+        </div>
+
+        <div class="row m-0">
+        <div class="col-md-4 form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="col-etat-switch" data-col="col-etat">
+            <label class="mx-3 form-check-label" for="col-etat-switch">État</label>
+        </div>
+        <div class="col-md-4 form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="col-etat-info-switch" data-col="col-etat-info">
+            <label class="mx-3 form-check-label" for="col-etat-info-switch">Informations</label>
+        </div>
+        </div>
+    </div>
+
+    <div class="card-footer">
+    <div class="row">
+        <div class="col-md-12">
+            <?= $this->backButton("Fiche de la session")->backTo($this->url(SessionStageController::ROUTE_AFFICHER, ['sessionStage' => $sessionStage->getId()], [], true)) ?>
+        </div>
+    </div>
+    </div>
+</div>
+
+
+<div class="card card-primary">
+    <div class="card-header">
+        Liste des affectations
+    </div>
+    <div class="card-body">
+        <table id="<?= $tableId ?>" class="table table-hover table-condensed">
+            <thead>
+            <tr>
+                <th class="col-md-1 no-export">Id</th>
+                <th class="col-md-1 no-search no-export" data-type="num">Ordre</th>
+                <th class="col-md-3 no-export">Etudiant</th>
+                <th class="col-md-4 no-export">Terrain</th>
+                <th class="col-md-4 no-search no-export">État</th>
+<!--                Colonne caché pour les export-->
+                <th class="hidden no-search no-sort" id="col-id">Id</th>
+                <th class="hidden no-search no-sort" id="col-ordre">Ordre d'affectation</th>
+                <th class="hidden no-search no-sort" id="col-num_etu">Numéro d'étudiant</th>
+                <th class="hidden no-search no-sort" id="col-prenom">Prenom</th>
+                <th class="hidden no-search no-sort" id="col-nom">Nom</th>
+                <th class="hidden no-search no-sort" id="col-categorie">Catégorie</th>
+                <th class="hidden no-search no-sort" id="col-terrain">Terrain</th>
+                <th class="hidden no-search no-sort" id="col-cout-total">Cout total</th>
+                <th class="hidden no-search no-sort" id="col-cout-terrain">Cout du terrain</th>
+                <th class="hidden no-search no-sort" id="col-cout-bonus">Bonus / malus</th>
+                <th class="no-export hidden no-search no-sort" id="col-score-pre">Score avant l'affectation</th>
+                <th class="no-export hidden no-search no-sort" id="col-score-post">Score après l'affectation</th>
+                <th class="no-export hidden no-search no-sort" id="col-etat">État</th>
+                <th class="no-export hidden no-search no-sort" id="col-etat-info">Informations sur l'état</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php /** @var AffectationStage $affectation */
+            foreach ($affectations as $affectation):
+                $vh->setAffectationStage($affectation);
+                $sessionStage = $affectation->getSessionStage();
+                $vh->setSessionStage($sessionStage);
+                $stage = $affectation->getStage();
+                $etudiant = $affectation->getEtudiant();
+                $terrain = $stage->getTerrainStage();
+                $categorie = ($terrain) ? $terrain->getCategorieStage() : null;
+
+
+                $etat = $affectation->getEtatActif();
+                $bg = match (true) {
+                    $affectation->hasEtatFutur(),
+                    $affectation->hasEtatEnDisponibilite(),
+                    $affectation->hasEtatStageNonEffectue()
+                    => "table-muted",
+                    $affectation->hasEtatNonAffecte()
+                    => "",
+                    $affectation->hasEtatProposition()
+                    => "table-info",
+                    $affectation->hasEtatPreValidee()
+                    => "table-primary",
+                    $affectation->hasEtatValidee()
+                    => "table-success",
+                    $affectation->hasEtatEnRetard(),
+                    $affectation->hasEtatEnAlerte()
+                    => "table-warning",
+                    $affectation->hasEtatEnErreur()
+                    => "table-danger"
+                };
+                ?>
+                <tr class="<?= $bg ?>">
+
+                    <td data-order="<?= $affectation->getId() ?>">
+                        <?= $vh->lienAfficher() ?>
+                    </td>
+                    <td class="" data-order="<?=($stage->getOrdreAffectation()) ?? PHP_INT_MAX ?>">
+                        <?= ($stage->getOrdreAffectation()) ?? "<span class='text-muted'>-</span>" ?>
+                    </td>
+                    <td>
+                        <?= $etudiant->getDisplayName() ?> (<?= $etudiant->getNumEtu() ?>)
+                    </td>
+                    <td data-order="<?= ($terrain) ? $categorie->getLibelle()." ".$terrain->getLibelle() : 'ZZZZ' ?>"
+                        data-filter="
+                        <?= isset($terrain) ? $terrain->getLibelle() : ""?>
+                        <?= isset($categorie) ? $categorie->getAcronyme() : ""?>
+                    " >
+                        <?php if(!isset($terrain)) : ?>
+                            <span class="text-muted">Non définie</span>
+                        <?php  else : ?>
+                            <div><?= $terrain->getLibelle()?> (<?=$categorie->getAcronyme()?>)</div>
+                        <?php endif; ?>
+                    </td>
+                    <td class="" data-order="<?= ($etat) ? ($etat->getType()->getOrdre()) : PHP_INT_MIN ?>"
+                        style="color:<?=  (isset($etat)) ? $etat->getType()->getCouleur() : "" ?>"
+                    >
+                        <span class="<?= (isset($etat)) ? $etat->getType()->getIcone() : "fa fauestion" ?>"></span>
+                        <?= (isset($etat)) ? $etat->getTypeLibelle() : "Indéterminé" ?>
+
+                        <?php if($stage->getDateFinChoix() < $today && $affectation->hasPreferencesNonRepresentative()) :?>
+                            <div class="text-small">Préférences non-représentatives</div>
+                            <?php if($affectation->hasNoPreferences()) :?>
+                                <div class="text-small text-danger">Aucune préférence définie</div>
+                            <?php endif; ?>
+                        <?php endif; ?>
+                    </td>
+                    <!-- Données a exporter-->
+                    <td class="hidden no-search no-sort"><?= $affectation->getId() ?></td>
+                    <td class="hidden no-search no-sort"><?= $stage->getOrdreAffectation() ?></td>
+                    <td class="hidden no-search no-sort"><?= $etudiant->getNumEtu() ?></td>
+                    <td class="hidden no-search no-sort"><?= $etudiant->getPrenom() ?></td>
+                    <td class="hidden no-search no-sort"><?= $etudiant->getNom() ?></td>
+                    <td class="hidden no-search no-sort"><?= ($categorie) ? $categorie->getLibelle() : "" ?></td>
+                    <td class="hidden no-search no-sort"><?= ($terrain) ? $terrain->getLibelle() : "" ?></td>
+                    <td class="hidden no-search no-sort"><?=  $affectation->getCout() ?></td>
+                    <td class="hidden no-search no-sort"><?=  $affectation->getCoutTerrain() ?></td>
+                    <td class="hidden no-search no-sort"><?=  $affectation->getBonusMalus() ?></td>
+                    <td class="hidden no-search no-sort"><?=  $affectation->getScorePreAffectation() ?></td>
+                    <td class="hidden no-search no-sort"><?=  $affectation->getScorePostAffectation() ?></td>
+                    <td class="hidden no-search no-sort"><?=  (isset($etat)) ? $etat->getTypeLibelle() : "Indéterminée"?></td>
+                    <td class="hidden no-search no-sort"><?=  $etat->getInfos() ?></td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $('[data-bs-toggle="popover"]').popover({html: true});
+        let options = generateDataTableSetings(
+            {
+                stateSave: true,
+                retrieve: true,
+                responsive: false,
+                "order": [[2, "asc"]],
+                "lengthMenu": [[50, 100, 250, -1], [50, 100, 250, "Tous"]],
+                columnDefs: [
+                    {targets: ['no-sort'], orderable: false},
+                    {targets: ['no-search'], searchable: false},
+                ],
+                'dom': "<'row'<'col-sm-12 col-md-6' B>>" +
+                    "<'row' <'col-sm-12 col-md-6 'l><'col-sm-12 col-md-6' f>>" +
+                    "<'row' <'col-sm-12'tr> >" +
+                    "<'row' <'col-sm-12 col-md-5'i> <'col-sm-12 col-md-7'p>>",
+                buttons: getExportButtonSetings(
+                    "affectations_stages_<?= $sessionStage->getDateDebutStage()->format('d-m-y') ?>",
+                    "Affectations de la session <?= $sessionStage->getLibelle() ?>",
+                ),
+            }
+        );
+        let tableInstance = $("#<?= $tableId ?>").on('draw.dt', function() {
+            $('[data-bs-toggle="popover"]').popover({html: true});
+        }).DataTable(options);
+
+        $('.form-check-input').on('change', function (){
+            let col = $(this).data('col');
+            let checked = $(this).is(':checked');
+            if(checked){$("#"+col).removeClass("no-export");}
+            else{$("#"+col).addClass("no-export");}
+        })
+    });
+</script>

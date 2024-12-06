@@ -1,0 +1,51 @@
+<?php
+
+use Application\Controller\Referentiel\SourceController;
+use Application\Entity\Db\Source;
+use Application\Provider\Privilege\ReferentielPrivilege;
+use Application\View\Helper\Referentiel\SourceViewHelper;
+use Application\Controller\Referentiel\SourceController as Controller;
+
+/**
+ * @see SourceController::indexAction()
+ * @var Source[] $sources
+ */
+
+$title = "Liste des sources de données";
+$this->headTitle($this->translate($title));
+/** @var SourceViewHelper $vh */
+$vh = $this->source();
+$canAdd = $vh->hasPrivilege(ReferentielPrivilege::REFERENTIEL_SOURCE_AJOUTER);
+?>
+<h1 class="page-header">
+    <span class="icon">
+        <i class="fas fa-address-book"></i>
+    </span>
+    <?= $title ?>
+</h1>
+
+
+<div class="card mt-3">
+    <?php if ($canAdd) : ?>
+        <div class="card-header card-sub-header text-end">
+            <?= $vh->lienAjouter() ?>
+        </div>
+    <?php endif; ?>
+    <div class="card-body"  id="sources" data-url="<?= $this->url(Controller::ROUTE_LISTER, [], [], true) ?>">
+        <?= $vh->renderListe($sources) ?>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    //Rechargement de la page sur event
+    $(function () {
+        let body = $("body");
+        body.on("<?=Controller::EVENT_AJOUTER?> "
+            + "<?=Controller::EVENT_MODIFIER?> "
+            + "<?=Controller::EVENT_SUPPRIMER?> "
+            , function () {
+                $("#sources").refresh();
+            });
+    });
+</script>

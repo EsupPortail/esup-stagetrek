@@ -1,0 +1,35 @@
+<?php
+
+use Application\Controller\Contact\ContactController;
+use Application\Form\Contacts\ContactForm;
+use Application\View\Helper\Contacts\ContactViewHelper;
+
+
+/**
+ * @see ContactController::ajouterAction()
+ * @var String $title
+ * @var ContactForm $form
+ */
+
+
+/** @var ContactViewHelper $vh */
+$vh = $this->contact();
+?>
+
+<div class="card card-success">
+    <h1 class="page-header card-header">
+        <span class="icon icon-ajouter"></span>
+        <?= $title ?>
+    </h1>
+    <div class="card-body">
+        <?= $vh->renderForm($form); ?>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        let body = $("body");
+        body.off("<?= ContactController::EVENT_AJOUTER?>", closeModal)
+            .one("<?= ContactController::EVENT_AJOUTER?>", closeModal);
+    })
+</script>

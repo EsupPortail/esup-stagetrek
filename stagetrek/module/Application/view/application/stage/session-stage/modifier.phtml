@@ -1,0 +1,33 @@
+<?php
+
+use Application\Controller\Stage\SessionStageController;
+use Application\Form\Stages\SessionStageForm;
+use Application\View\Helper\SessionsStages\SessionStageViewHelper;
+
+/**
+ * @see SessionStageController::modifierAction()
+ * @var String $title
+ * @var SessionStageForm $form
+ */
+
+/** @var SessionStageViewHelper $vh */
+$vh = $this->sessionStage();
+?>
+
+<div class="card card-primary">
+    <h1 class="page-header card-header">
+        <span class="icon icon-modifier"></span>
+        <?= $title ?>
+    </h1>
+    <div class="card-body">
+        <?= $vh->renderForm($form); ?>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        let body = $("body");
+        body.off("<?= SessionStageController::EVENT_MODIFIER?>", closeModal)
+            .one("<?= SessionStageController::EVENT_MODIFIER?>", closeModal);
+    })
+</script>

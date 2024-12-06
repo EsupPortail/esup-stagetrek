@@ -1,0 +1,59 @@
+<?php
+
+use Application\Entity\Db\Parametre;
+use Application\Form\Parametre\Fieldset\ParametreFieldset;
+use Application\Form\Parametre\ParametreForm;
+
+/**
+ * @see ParametresController::modifierParametreStageAction()
+ *
+ * @var String $title
+ * @var ParametreForm $form
+ */
+
+$fe = $this->formErrors();
+$fcg = $this->formControlGroup();
+$fr = $this->formrow();
+$fct = $this->formControlText();
+
+/** @var ParametreFieldset $fieldset */
+$fieldset = $form->getEntityFieldset();
+/** @var Parametre $parametre */
+$parametre = $form->getObject();
+?>
+
+<div class="fieldset">
+    <?= $this->form()->openTag($form->prepare()) ?>
+    <?= $fe($form->prepare(), $form::INVALIDE_ERROR_MESSAGE) ?>
+    <?= $fr($fieldset->get($fieldset::ID)); ?>
+
+    <div class="row">
+        <div class="col-md-6">
+            <?= $fct($fieldset->get($fieldset::LIBELLE)); ?>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <?= $fcg($fieldset->get($fieldset::DESCRIPTION)); ?>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <?= $fct($fieldset->get($fieldset::PARAM_VALUE)); ?>
+            <div class="my-1 text-small"><strong>Type de valeur : </strong><?= $parametre->getParametreType()->getLibelle() ?></div>
+        </div>
+        <div class="col-md-6">
+            <?= $fcg($fieldset->get($fieldset::ORDRE)); ?>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <?= $fcg($form->get($form::INPUT_SUBMIT)); ?>
+        </div>
+    </div>
+    <?= $this->formHidden($form->get($form::CSRF)); ?>
+    <?= $this->form()->closeTag(); ?>
+</div>

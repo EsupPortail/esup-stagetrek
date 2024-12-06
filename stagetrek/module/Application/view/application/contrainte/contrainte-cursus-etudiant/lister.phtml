@@ -1,0 +1,19 @@
+<?php
+
+use Application\Controller\Contrainte\ContrainteCursusEtudiantController;
+use Application\Entity\Db\Etudiant;
+use Application\View\Helper\ContrainteCursus\ContrainteCursusEtudiantViewHelper;
+
+
+/**
+ * @see ContrainteCursusEtudiantController::listerAction()
+
+ * @var Etudiant $etudiant
+ */
+
+/** @var ContrainteCursusEtudiantViewHelper $vh */
+$vh = $this->contrainteCursus();
+$vh->setEtudiant($etudiant);
+?>
+
+<?= $vh->renderListe($etudiant->getContraintesCursusEtudiants()->toArray()); ?>

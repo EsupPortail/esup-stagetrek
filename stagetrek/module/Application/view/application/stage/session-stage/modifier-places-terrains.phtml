@@ -1,0 +1,368 @@
+<?php
+/**
+ * @see SessionStageController::modifierPlacesTerrainsAction()
+ */
+
+use Application\Controller\Stage\SessionStageController;
+use Application\Entity\Db\SessionStage;
+use Application\Entity\Db\TerrainStage;
+use Application\Provider\Misc\Icone;
+use Application\View\Helper\SessionsStages\SessionStageViewHelper;
+
+
+/**
+ * @see SessionStageController::modifierPlacesTerrainsAction()
+ * @var String $title
+ * @var SessionStage $sessionStage
+ */
+
+$stages = $sessionStage->getStages()->toArray();
+$tableId = "modifier-places-" . $sessionStage->getId() . "-liste";
+$formId = "modifier-places-" . $sessionStage->getId() . "-form";
+
+/** @var SessionStageViewHelper $vh */
+$vh = $this->sessionStage($sessionStage);
+
+$nbPlacesTotal = $sessionStage->getNbPlacesOuvertesTotal();
+$nbStages = sizeof($stages);
+?>
+
+<h1 class="page-header">
+    <span class="icon icon-ordre"></span> <?= $title ?>
+    <br/>
+    <small class="text-muted">
+        <?= $sessionStage->getAnneeUniversitaire()->getLibelle() ?> -
+        <?= $sessionStage->getGroupe()->getLibelle() ?> -
+        <?= $sessionStage->getLibelle() ?>
+    </small>
+</h1>
+
+
+<div class="card">
+    <div class="card-header">Informations</div>
+    <div class="card-body">
+        <?php //Différent messages selon la dates
+        $today = new DateTime();
+        if ($sessionStage->getDateFinCommission() <= $today) : ?>
+            <div class="card-text alert alert-warning">
+                <strong>La commission d'affectation de la session est terminée.</strong>
+                <br/> Les modifications ne doivent servir qu'à corriger des erreurs.
+            </div>
+        <?php endif; ?>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                <div class="row">
+                    <div class="col-md-4">
+                        <strong>Nombre de place(s) ouverte(s) : </strong>
+                        <?= $nbPlacesTotal ?>
+                        <span class="mx-1 fas fa-house-medical"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Nombre d'étudiant(s) :</strong>
+                        <?= $nbStages ?>
+                        <span class="mx-1 fas fa-users"></span>
+                    </div>
+                </div>
+            </li>
+            <li class="list-group-item">
+                Utiliser le bouton <span class="text-primary icon icon-information"></span>
+                pour afficher plus d'informations sur le nombre de place(s) à ouvrir et modifier en conséquence le terrain
+                de stage.
+            </li>
+            <li class="list-group-item">
+                Les recommandations sont calculées en fonction du nombre d'étudiant(s) inscrit(s) dans les différentes
+                sessions afin d'optimiser les places disponibles par groupe.
+            </li>
+            <li class="list-group-item">
+                Le nombre de place(s) pré-affectée(s) désigne le nombre d'étudiant(s) de la session ayant une affectation sur
+                le terrain de stage (indépendament de l'état de l'affectation)
+            </li>
+            <li class="list-group-item">
+                Le nombre de place(s) affectée(s) désigne le nommbre d'étudiant(s) de la session ayant une affectation validée
+                par la commission sur le terrain de stage.
+            </li>
+            <li class="list-group-item">
+                Le nombre de place(s) restante(s) disponible(s) est calculé en fonction de la capacité maximale du terrain de
+                stage et du nombre de place(s) ouverte(s) sur l'ensemble des sessions de stages de la période.
+            </li>
+        </ul>
+    </div>
+    <div class="card-footer">
+        <div class="row">
+            <div class="col-md-12">
+                <?= $this->backButton("Fiche de la session")->backTo($this->url(SessionStageController::ROUTE_AFFICHER, ['sessionStage' => $sessionStage->getId()], [], true)) ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card my-3">
+    <div class="card-header">Modifier le nombre de place(s) ouverte(s)</div>
+    <div class="card-header card-sub-header text-end">
+        <?php //TODO : une entité formulaire ? ?>
+        <form id="<?= $formId ?>" method="post" class="loadingForm"
+              action="<?= $this->url(SessionStageController::ROUTE_MODIFIER_PLACES_TERRAIN, ["sessionStage" => $sessionStage->getId()], [], true) ?>"
+        >
+            <?= $vh->lienImporterPlaces() ?>
+            <button type="button" class="btn btn-secondary mx-1" data-bs-toggle="dropdown" aria-expanded="false">
+                <?= Icone::RUN_PROCESS ?> Actions sur tous les terrains
+            </button>
+            <ul class="dropdown-menu">
+                <li class="dropdown-item select-aide-all pointer-hover"
+                    data-value="data-nb-actuel"
+                > Nombre de place(s) actuellement ouverte(s)
+                </li>
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+                <li class="dropdown-item select-aide-all pointer-hover"
+                    data-value="data-nb-min"
+                > Capacité minimale des terrains
+                </li>
+                <li class="dropdown-item select-aide-all pointer-hover"
+                    data-value="data-nb-ideal"
+                > Capacité idéale des terrains
+                </li>
+                <li class="dropdown-item select-aide-all pointer-hover"
+                    data-value="data-nb-max"
+                > Capacité maximale des terrains
+                </li>
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+                <li class="dropdown-item select-aide-all pointer-hover"
+                    data-value="data-nb-reco"
+                > Nombre de place(s) recommandée(s)
+                </li>
+                <li class="dropdown-item select-aide-all pointer-hover"
+                    data-value="data-nb-pre-affectees"
+                > Nombre de place(s) pré-affectée(s)
+                </li>
+                <li class="dropdown-item select-aide-all pointer-hover"
+                    data-value="data-nb-requis"
+                > Nombre de place(s) affectée(s)
+                </li>
+                <li class="dropdown-item select-aide-all pointer-hover"
+                    data-value="data-nb-dispo"
+                > Ajouter le nombre de place(s) disponible(s) restante(s)
+                </li>
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+                <li class="dropdown-item select-aide-all pointer-hover"
+                    data-value="data-close-terrain"
+                > Fermer les terrains
+                </li>
+            </ul>
+
+            <button name=submit" id="submit" type="submit" class="btn btn-success">
+                <?= Icone::SAVE ?> Valider les modifications
+        </form>
+    </div>
+    <div class="card-body">
+        <table id="<?= $tableId ?>" class="table table-hover table-condensed">
+            <thead>
+            <tr>
+                <th class="hidden">Type de terrain</th>
+                <th class="col-md-3" data-type="num">Catégorie</th>
+                <th class="col-md-4">Terrain</th>
+                <th class="col-md-1 no-search text-center" data-type="num">Actuelle</th>
+                <th class="col-md-1 no-search" data-type="num">Demandes</th>
+                <th class="col-md no-seach no-sort text-end" data-type="num">Nouveau nombre de place(s) à ouvrir</th>
+            </thead>
+            <tbody>
+            <?php /** @var TerrainStage $terrain */
+            foreach ($sessionStage->getTerrainsStages() as $terrain) :
+                $categorie = $terrain->getCategorieStage();
+                $niveauDemande =  $sessionStage->getNiveauDemande($terrain);
+                $terrainLinker = $sessionStage->getTerrainLinkFor($terrain);
+                // Les différents nombres / aides a appliquer
+                $actuel = $sessionStage->getNbPlacesOuvertes($terrain);
+                $min = $terrain->getMinPlace();
+                $ideal = $terrain->getIdealPlace();
+                $max = $terrain->getMaxPlace();
+                $reco = $terrainLinker->getNbPlacesRecommandees();
+                $preAffectes = $terrainLinker->getNbPlacesPreAffectees();
+                $requis = $terrainLinker->getNbPlacesAffectees();
+                $dispo = $terrainLinker->getNbPlacesDisponibles();
+                ?>
+                <tr>
+                    <td class="hidden">Terrains <?=($terrain->isTerrainPrincipal()) ? "Principaux" : "Secondaires" ?></td>
+                    <td data-order="<?= $categorie->getOrdre() ?>"> <?= $categorie->getLibelle() ?></td>
+                    <td> <?= $terrain->getLibelle() ?></td>
+
+                    <td class="text-center">
+                        <?= $actuel ?>
+                    </td>
+                    <td class=""
+                        data-order="<?= (isset($niveauDemande)) ? $niveauDemande->getOrdre() : PHP_INT_MAX ?>">  <?= $vh->getDemandesTerrainsInfos($terrain) ?>
+                    </td>
+                    <td class="text-end">
+                        <label for="setNbPlaces-<?= $terrain->getId() ?>"></label>
+                        <input class="col-md-5 setNbPlaces" type="number"
+                         id="setNbPlaces-<?= $terrain->getId() ?>"
+                         value="<?= $actuel ?>"
+                         data-terrain-id="<?= $terrain->getId() ?>"
+                         data-nb-actuel="<?= $actuel ?>"
+                         data-nb-min="<?= $min ?>"
+                         data-nb-ideal="<?= $ideal ?>"
+                         data-nb-max="<?= $max ?>"
+                         data-nb-reco="<?= $reco ?>"
+                         data-nb-pre-affectees="<?= $preAffectes ?>"
+                         data-nb-requis="<?= $requis ?>"
+                         data-nb-dispo="<?= ($actuel + $dispo) ?>"
+                         data-close-terrain="0"
+                         min="0" tabindex="1">
+
+                        <a class="mx-1" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="text-primary icon icon-information"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown-item select-nb-places pointer-hover"
+                                data-terrain-id="<?= $terrain->getId() ?>"
+                                data-value="data-nb-actuel"
+                            ><span class='me-1 badge badge-primary'><?= $actuel ?></span>
+                                Nombre de place(s) actuellement ouverte(s)
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li class="dropdown-item select-nb-places pointer-hover"
+                                data-terrain-id="<?= $terrain->getId() ?>"
+                                data-value="data-nb-min"
+                            ><span class='me-1 badge badge-secondary'><?= $min ?></span>
+                                Capacité minimale du terrain
+                            </li>
+                            <li class="dropdown-item select-nb-places pointer-hover"
+                                data-terrain-id="<?= $terrain->getId() ?>"
+                                data-value="data-nb-ideal"
+                            ><span class='me-1 badge badge-light-success'><?= $ideal ?></span>
+                                Capacité idéale du terrain
+                            </li>
+                            <li class="dropdown-item select-nb-places pointer-hover"
+                                data-terrain-id="<?= $terrain->getId() ?>"
+                                data-value="data-nb-max"
+                            ><span class='me-1 badge badge-light-danger'><?= $max ?></span>
+                                Capacité maximale du terrain
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li class="dropdown-item select-nb-places pointer-hover"
+                                data-terrain-id="<?= $terrain->getId() ?>"
+                                data-value="data-nb-reco"
+                            ><span class='me-1 badge badge-success'><?= $reco ?></span>
+                                Nombre de place(s) recommandée(s)
+                            </li>
+                            <li class="dropdown-item select-nb-places pointer-hover"
+                                data-terrain-id="<?= $terrain->getId() ?>"
+                                data-value="data-nb-pre-affectees"
+                            ><span class='me-1 badge badge-light-warning'><?= $preAffectes ?> / <?= $actuel ?></span>
+                                Nombre de place(s) pré-affectée(s)
+                            </li>
+                            <li class="dropdown-item select-nb-places pointer-hover"
+                                data-terrain-id="<?= $terrain->getId() ?>"
+                                data-value="data-nb-requis"
+                            ><span class='me-1 badge badge-warning'><?= $requis ?> / <?= $actuel ?></span>
+                                Nombre de place(s) affectée(s)
+                            </li>
+                            <li class="dropdown-item select-nb-places pointer-hover"
+                                data-terrain-id="<?= $terrain->getId() ?>"
+                                data-value="data-nb-dispo"
+                            ><span class='me-1 badge badge-light-primary'> + <?= $dispo ?></span>
+                                Ajouter le nombre de place(s) disponible(s) restante(s)
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li class="dropdown-item select-nb-places pointer-hover"
+                                data-terrain-id="<?= $terrain->getId() ?>"
+                                data-value="data-close-terrain"
+                            ><span class='me-1 badge badge-muted'><span class='fas fa-times'></span></span>
+                                Fermer le terrain de stage
+                            </li>
+                        </ul>
+
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        let allInputSetNbPlaces =  $('.setNbPlaces');
+        $('[data-bs-toggle="popover"]').popover({html: true});
+        if ($.fn.DataTable.isDataTable("#<?= $tableId ?>")) {
+            $('#<?= $tableId ?>').DataTable().destroy();
+        }
+        $('.select-nb-places').on('click', function () {
+            let dataValue = $(this).attr('data-value');
+            let terrainId = $(this).attr('data-terrain-id');
+            let input = $('#setNbPlaces-' + terrainId);
+            input.val(input.attr(dataValue)).trigger('change');
+        })
+
+        $('.select-aide-all').on('click', function () {
+            let dataValue = $(this).attr('data-value');
+            // let input = $('.setNbPlaces'); // pb de faire le select ici : non prise en compte de la pagination
+            allInputSetNbPlaces.each(function (){
+                $(this).val( $(this).attr(dataValue)).trigger('change');
+            })
+        });
+
+        let form = $("#<?=$formId?>");
+        $(".setNbPlaces").on("change", function () {
+            let terrainId = $(this).data('terrain-id');
+            let nbPlace = parseInt($(this).val());
+            if (isNaN(nbPlace)) {
+                nbPlace = 0;
+            } else if (nbPlace < 0) {
+                nbPlace = 0
+            }
+            $(this).val(nbPlace) //Pour gerer le cas des flotant
+            let input = form.find("#places-" + terrainId);
+            if (input.length === 0) {
+                form.append("<input id='places-" + terrainId + "' type='hidden' name='places[" + terrainId + "]'>");
+                input = form.find("#places-" + terrainId);
+            }
+            input.val(nbPlace);
+        });
+
+        let options = generateDataTableSetings({
+            deferRender: true,
+            "order": [[1, "asc"], [2, "asc"]],
+            "lengthMenu": [[10, 50, 100, 250, -1], [10, 50, 100, 250, "Tous"]],
+            columnDefs: [
+                {targets: ['no-sort'], orderable: false},
+                {targets: ['no-search'], searchable: false},
+                {targets: ['hidden'], visible: false},
+            ],
+            "orderFixed": {
+                "pre": [ 0, 'asc' ],
+            },
+            rowGroup: {
+                dataSrc: 0
+            },
+            stateSave: false,
+            retrieve: false,
+            'dom': "<'row'<'col-sm-12 col-md-6 'l><'col-sm-12 col-md-6' f>> " +
+                "<'row' <'col-sm-12'tr> >" +
+                "<'row' <'col-sm-12 col-md-5'i> <'col-sm-12 col-md-7'p> >",
+        })
+        $("#<?= $tableId ?>").on('draw.dt', function () {
+            $('[data-bs-toggle="popover"]').popover({html: true});
+        }).DataTable(options);
+    });
+</script>
+
+<script>
+    $(function () {
+        $("body").on("<?= SessionStageController::EVENT_MODIFIER?>",
+            function () {
+                window.location = window.location.href
+            });
+    })
+</script>

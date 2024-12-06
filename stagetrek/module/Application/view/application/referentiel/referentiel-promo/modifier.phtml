@@ -1,0 +1,34 @@
+<?php
+
+use Application\Controller\Referentiel\ReferentielPromoController as Controller;
+use Application\Form\Referentiel\ReferentielPromoForm;
+use Application\View\Helper\Referentiel\ReferentielPromoViewHelper;
+
+/**
+ * @see ReferentielPromoController::modifierAction()
+ *
+ * @var String                  $title
+ * @var ReferentielPromoForm        $form
+ */
+
+/** @var ReferentielPromoViewHelper $vh */
+$vh = $this->referentielPromo()
+?>
+
+<div class="card card-primary">
+    <h1 class="page-header card-header">
+        <span class="icon icon-modifier"></span>
+        <?= $title ?>
+    </h1>
+    <div class="card-body">
+        <?= $vh->renderForm($form); ?>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        let body = $("body");
+        body.off("<?= Controller::EVENT_MODIFIER?>", closeModal)
+            .one("<?= Controller::EVENT_MODIFIER?>", closeModal);
+    })
+</script>

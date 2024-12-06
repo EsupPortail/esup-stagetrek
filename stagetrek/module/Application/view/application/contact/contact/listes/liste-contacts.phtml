@@ -1,0 +1,110 @@
+<?php
+
+use Application\Controller\Contact\ContactController;
+use Application\Controller\Contact\ContactTerrainController;
+use Application\Entity\Db\Contact;
+use Application\Provider\Misc\Icone;
+use Application\View\Helper\Contacts\ContactTerrainViewHelper;
+use Application\View\Helper\Contacts\ContactViewHelper;
+
+/**
+ * @see ContactController::listerAction()
+ * @var Contact[] $contacts
+ * @var bool $codeVisible
+ */
+
+$tableId = "liste-contacts";
+
+/** @var ContactViewHelper $vh */
+$vh = $this->contact();
+/** @var ContactTerrainViewHelper $ctVh */
+$ctVh = $this->contactTerrain();
+
+$canAdd = $vh->actionAllowed(ContactController::ACTION_AJOUTER);
+$canImportC = $vh->actionAllowed(ContactController::ACTION_IMPORTER);
+$canImportCT = $ctVh->actionAllowed(ContactTerrainController::ACTION_IMPORTER);
+?>
+
+
+<div class="card">
+    <div class="card-header">Liste des contacts</div>
+    <?php if($canAdd) :?>
+    <div class="card-header card-sub-header text-end">
+        <?= $vh->lienAjouter();  ?>
+        <?php if($canImportC || $canImportCT) :?>
+        <button type="button" class="btn btn-primary mx-1" data-bs-toggle="dropdown"
+        aria-expanded="false">
+        <?= Icone::IMPORTER ?> Importer
+        </button>
+        <div class="dropdown-menu">
+            <?php if($canImportC) :?>
+            <a class="dropdown-item ajax-modal"
+               data-event="<?=  ContactController::EVENT_MODIFIER?>"
+               title="Importer des contacts" href="<?=  $this->url(ContactController::ROUTE_IMPORTER, [], [], true)?>">
+                Contacts
+            </a>
+        <?php endif; ?>
+        <?php if($canImportCT) :?>
+            <a class="dropdown-item ajax-modal"
+               data-event="<?=  ContactTerrainController::EVENT_MODIFIER?>"
+               title="Importer des contacts de terrains" href="<?=  $this->url(ContactTerrainController::ROUTE_IMPORTER, [], [], true)?>">
+               Liens Contacts / Terrains de stages
+            </a>
+        <?php endif; ?>
+        </div>
+        <?php endif; ?>
+
+
+    </div>
+    <?php endif; ?>
+    <div class="card-body">
+        <table id="<?= $tableId ?>" class="table table-hover table-condensed table-data">
+            <thead>
+            <tr>
+                <th class="col-md-2 <?=(!$codeVisible) ? "hidden" : "" ?>" data-priority="2">Code</th>
+                <th class="col-md-3" data-priority="2">Nom/Prénom</th>
+                <th class="col-md-4">Libelle / Fonction</th>
+                <th class="col-md-3" data-priority="3">Mail</th>
+                <th class="col-md-1" data-priority="4">Téléphone</th>
+                <th class="col-md-1 no-search no-sort text-end">Action</th>
+<!--                <th class="no-sort no-search col-md-1 text-end" data-priority="0">Actions</th>-->
+            </thead>
+            <tbody>
+            <?php /** @var Contact $contact */
+            foreach ($contacts as $contact):
+                $vh->setContact($contact);
+                ?>
+                <tr class=" <?= (!$contact->isActif()) ? "bg-row-old" : "" ?>">
+                    <td class="<?=(!$codeVisible) ? "hidden" : "" ?>">
+                        <?= $contact->getCode() ?>
+                    </td>
+                    <td>
+                        <?= $contact->getLibelle() ?>
+                        <?php if (!$contact->isActif()) : ?>
+                        <div class="text-muted text-small">(Inactif)</div>
+                        <?php endif; ?>
+                    </td>
+                    <td><?= $contact->getDisplayName() ?></td>
+                    <td><?= $contact->getEmail() ?></td>
+                    <td><?= $contact->getTelephone() ?></td>
+                    <td class="text-end">
+                        <?= $vh->lienAfficher(Icone::AFFICHER, ['class'=>'text-primary']) ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+            <tbody>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        let options = generateDataTableSetings({
+            stateSave: true,
+            retrieve: true,
+            "lengthMenu": [[50, 100, 250, -1], [50, 100, 250, "Tous"]],
+            "order": [[1, "asc"], [2, "asc"], [3, "asc"]],
+        })
+        let $("#<?= $tableId ?>").DataTable(options);
+    });
+</script>

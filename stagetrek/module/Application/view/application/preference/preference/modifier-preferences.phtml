@@ -1,0 +1,336 @@
+<?php
+
+use Application\Controller\Preference\PreferenceController;
+use Application\Controller\Stage\StageController;
+use Application\Entity\Db\Preference;
+use Application\Entity\Db\Stage;
+use Application\Entity\Db\TerrainStage;
+use Application\Provider\Misc\Icone;
+use Application\View\Helper\Preferences\PreferenceViewHelper;
+
+/**
+ * @see PreferenceController::modifierPreferencesAction()
+ *
+
+ * @var Stage $stage
+ * @var bool $vueEtudiante
+ * @var PreferenceViewHelper $vh
+ */
+/** @var PreferenceViewHelper $vh*/
+$vh = $this->preference();
+$vh->setVueEtudiante($vueEtudiante);
+$vh->setStage($stage);
+
+$etudiant = $stage->getEtudiant();
+$session = $stage->getSessionStage();
+$affectation = $stage->getAffectationStage();
+$today = new DateTime();
+$seeRecommandations = true; //($stage->getDateDebutChoix() < $today && $today <= $stage->getDateFinChoix());
+$canAdd = $vh->actionAllowed(PreferenceController::ACTION_AJOUTER);
+
+$preferences = $stage->getPreferences();
+$preferences = Preference::sortPreferences($preferences->toArray());
+
+$nbPref = sizeof($preferences);
+$nbMaxPreferences = $vh->getRangMaxPreference();
+
+$canSeeSat = (!$vueEtudiante && isset($affectation) && $affectation->hasEtatValidee())
+        ||  ($vueEtudiante && ( $stage->getDateFinCommission() <= $today)
+        && $affectation && $affectation->hasEtatValidee());
+?>
+<h1 class="page-header">
+    <span class="fas fa-list-check"></span> Modifier les préférences de
+    <?= $etudiant->getDisplayName() ?> - Stage n°<?= $stage->getNumero() ?>
+    <br/>
+    <small class="text-muted">
+        Stage du <?= $stage->getDateDebutStage()->format('d/m/Y') ?>
+        au <?= $stage->getDateFinStage()->format('d/m/Y') ?>
+    </small>
+    <br/>
+</h1>
+
+<nav>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <button class="nav-link active" id="nav-infos" data-bs-toggle="tab" data-bs-target="#infos" type="button"
+                role="tab" aria-controls="infos" aria-selected="true">Informations
+        </button>
+        <button class="nav-link" id="nav-places" data-bs-toggle="tab" data-bs-target="#places" type="button"
+                role="tab" aria-controls="places" aria-selected="false">Terrains de stages
+        </button>
+        <?php if ($seeRecommandations) : ?>
+            <button class="nav-link" id="nav-recommandations" data-bs-toggle="tab" data-bs-target="#recommandations"
+                    type="button"
+                    role="tab" aria-controls="recommandations" aria-selected="false">Recommandations
+            </button>
+        <?php endif; ?>
+    </div>
+</nav>
+<div class="card tab-content" id="nav-tabContent">
+
+    <div class="tab-pane fade show active" id="infos" role="tabpanel" aria-labelledby="nav-infos">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <?php //Différent messages selon la dates
+                    if ($stage->getDateFinChoix() <= $today) : ?>
+                        <div class="card-text alert alert-warning">
+                            <strong>La phase de définition des préférences est terminée depuis le
+                                <?= $stage->getDateFinChoix()->format('d/m/Y') ?>
+                            </strong>
+                            <br/> Les modifications ne doivent servir qu'à corriger des erreurs.
+                        </div>
+                    <?php elseif ($stage->getDateDebutChoix() < $today && $today <= $stage->getDateFinChoix()) : ?>
+                        <div class="alert alert-info">
+                            La phase de définition des préférences est en cours jusqu'au
+                            <strong><?= $stage->getDateFinChoix()->format('d/m/Y') ?></strong>.
+                        </div>
+                    <?php else : ?>
+                        <div class="alert alert-info">
+                            La phase de définition des préférences est fixée
+                            du <strong><?= $stage->getDateDebutChoix()->format('d/m/Y') ?></strong>
+                            au <strong><?= $stage->getDateFinChoix()->format('d/m/Y') ?></strong>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <strong>Ordre d'affectation : </strong>
+                    <?= ($stage->getOrdreAffectation()) ?? "<span class='text-muted'>Non définie</span>" ?>
+                    <?php if ($stage->getOrdreAffectation() && $today < $stage->getDateFinCommission()) : ?>
+                        <span class="text-small text-muted my-3">(A priori)</span>
+                    <?php endif; ?>
+                </div>
+                <div class="col-md-4">
+                    <strong>Nombre de préférence(s) : </strong>
+                    <?php
+                    echo $nbPref . " / " . $nbMaxPreferences
+                    ?>
+                </div>
+                <div class="col-md-12">
+                    <?php if ($today < $stage->getDateDebutStage() && $nbPref > $nbMaxPreferences): ?>
+                        <div class="alert alert-warning">
+                            <strong>Le nombre de préférence(s) maximum est dépassé</strong>
+                        </div>
+                    <?php endif ?>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-md-12">Utilisez <span class="icon icon-reorder cursor-move"></span> pour
+                    modifier l'ordre des préférences
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="row">
+                <div class="col-md-12">
+                    <?php $url = (!$vueEtudiante)
+                        ? $this->url(StageController::ROUTE_AFFICHER, ['stage' => $stage->getId()], [], true)
+                        : $this->url(StageController::ROUTE_MON_STAGE, ['stage' => $stage->getId()], [], true);
+                        echo $this->backButton("Fiche du stage")->backTo($url)
+                    ?>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane fade show" id="places" role="tabpanel" aria-labelledby="nav-places">
+        <?php /** @see PreferenceController::listerPlacesAction() */
+        $url = $this->url(PreferenceController::ROUTE_LISTER_PLACES, ['stage' => $stage->getId()], [], true);
+        ?>
+        <div id="places-content" class="card-body" data-url="<?= $url ?>">
+            <?= $vh->renderListePlaces() ?>
+        </div>
+    </div>
+
+    <div class="tab-pane fade show" id="recommandations" role="tabpanel" aria-labelledby="nav-recommandations">
+        <div class="card-body">
+            <?= $vh->renderRecommandations(); ?>
+        </div>
+    </div>
+</div>
+
+<?php $tableId = uniqid("modifier-preferences-"); ?>
+<div class="card my-3">
+    <div class="card-header">Préférences</div>
+    <?php if ($canAdd) : ?>
+        <div class="card-header card-sub-header text-end">
+            <?= $vh->lienAjouter() ?>
+        </div>
+    <?php endif; ?>
+    <div class="card-body">
+
+        <table id="<?= $tableId ?>" class="table table-hover table-condensed">
+            <thead>
+            <tr>
+                <th class="hidden" data-type="num"></th> <!-- Colonne pour le réordonnancement -->
+                <th class="hidden" data-type="num"></th> <!-- Colonne pour le trie initial -->
+                <th class="col-md-1 no-sort">Rang</th>
+                <th class="col-md-4 no-sort">Terrain principal</th>
+                <th class="col-md-4 no-sort">Terrain secondaire</th>
+                <th class="col-md-3 text-end no-sort">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($preferences as $preference) :
+                $vh->setPreference($preference);
+                /** @var TerrainStage $terrainSecondaire */
+                $terrain = $preference->getTerrainStage();
+                /** @var TerrainStage $terrainSecondaire */
+                $terrainSecondaire = $preference->getTerrainStageSecondaire();
+                $bgClass = "";
+                if($canSeeSat){
+                    $bgClass = ($preference->isSat()) ? "table-success" : "table-muted";
+                }
+                ?>
+                <tr class="<?= $bgClass ?>">
+                    <td class="hidden"><?= $preference->getId() ?></td>
+                    <td class="hidden"><?= $preference->getRang() ?></td>
+                    <td class="">
+                        <span class="icon icon-reorder row-reorder cursor-move me-1"
+                              draggable="true"
+                              data-preference-id="<?= $preference->getId() ?>"
+                        ></span>
+                        <span class="rang-preference"
+                              data-preference-id="<?= $preference->getId() ?>"
+                        >
+                        <?= $preference->getRang() ?>
+                        </span>
+                    </td>
+                    <td>
+                        <?= $terrain->getCategorieStage()->getAcronyme() ?>
+                        - <?= $terrain->getLibelle() ?>
+                        <?php if(!$terrain->isActif()) :?>
+                            <div class="text-small text-danger">Terrain normalement non disponible à la définition de préférences</div>
+                        <?php elseif($terrain->isHorsSubdivision()) :?>
+                            <div class="text-small text-muted">Terrain Hors-Subdivision</div>
+                        <?php elseif($terrain->isContraintForNiveauEtude($session->getNiveauEtude())) :?>
+                            <div class="text-small text-danger">Terrain restreint pour les stages de <?= $session->getNiveauEtude()->getLibelle()?></div>
+                        <?php elseif(!$terrain->getPreferencesAutorisees()) :?>
+                            <div class="text-small text-danger">Terrain normalement non disponible à la définition de préférences</div>
+                        <?php endif; ?>
+                    </td>
+                    <td>
+                        <?php if ($terrainSecondaire != null) : ?>
+                            <?= $terrainSecondaire->getCategorieStage()->getAcronyme() ?> -
+                            <?= $terrainSecondaire->getLibelle() ?>
+
+                            <?php if(!$terrainSecondaire->isActif()) :?>
+                                <div class="text-small text-danger">Terrain normalement non disponible à la définition de préférences</div>
+                            <?php elseif($terrainSecondaire->isHorsSubdivision()) :?>
+                                <div class="text-small text-muted">Terrain Hors-Subdivision</div>
+                            <?php elseif($terrainSecondaire->isContraintForNiveauEtude($session->getNiveauEtude())) :?>
+                                <div class="text-small text-danger">Terrain restreint pour les stages de <?= $session->getNiveauEtude()->getLibelle()?></div>
+                            <?php elseif(!$terrainSecondaire->getPreferencesAutorisees()) :?>
+                                <div class="text-small text-danger">Terrain normalement non disponible à la définition de préférence</div>
+                            <?php endif; ?>
+                        <?php else : ?>
+                            Non
+                        <?php endif; ?>
+                    </td>
+                    <td class="text-end">
+                        <?= $vh->lienModifier(Icone::MODIFIER, ['class' => 'text-primary ajax-modal']) ?>
+                        <?= $vh->lienSupprimer(Icone::SUPPRIMER, ['class' => 'text-danger ajax-modal']) ?>
+                    </td>
+                </tr>
+            <?php endforeach ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        let options = generateDataTableSetings(
+            {
+                "responsive": true,
+                "autoWidth": false,
+                "rowReorder": {"selector": ".row-reorder", "update": false},
+                searching: false, paging: false, info: false,
+                columnDefs: [
+                    {targets: ['no-sort'], orderable: false},
+                ],
+                "order": [[1, "asc"]],
+                "language": {
+                    'emptyTable': "Aucune préférence n'as été définie.",
+                }
+            }
+        );
+        //options = {};
+        let tableInstance = $("#<?= $tableId ?>").DataTable(options);
+
+        // $('.reorder').on('dragend', function(event){
+        //     alert("B");
+        //     console.log("fin");
+        // });
+
+        function setPreferenceOrder(preferenceId, rang) {
+            let url = "<?= $this->url(PreferenceController::ROUTE_MODIFIER_RANG, [], [], false); ?>";
+            url += "/" + preferenceId + "/" + rang;
+            $.ajax({
+                type: "POST",
+                url: url,
+                beforeSend:
+                    function () {
+                        $(".row-reorder").removeClass('row-reorder cursor-move').addClass('no-reorder cursor-not-allowed');
+                    },
+                success:
+                    function (retour) {
+                        if (retour['value'] === 1) {
+                            let preferences = retour['preferences'];
+                            for (let i = 0; i < preferences.length; i++) {
+                                let prefId = preferences[i]['preferenceId'];
+                                let rang = preferences[i]['rang'];
+                                $(".rang-preference[data-preference-id='" + prefId + "']").html(rang);
+                            }
+                            $(".no-reorder").removeClass('no-reorder cursor-not-allowed').addClass('row-reorder cursor-move');
+                            $("#places-content").refresh();
+                        } else {
+                            let erreur = (retour['error']);
+                            console.error("erreur : " + erreur);
+                            $(".no-reorder").detach();
+                            $(".rang-preference").html('<i class="fas fa-exclamation-triangle text-danger" title="Impossible de déterminer le rang des préférences."></i>');
+                            alert("Une erreur est survenue lors de la modififications des préférences.");
+                            $("#places-content").refresh();
+                        }
+                    },
+                error:
+                //Pour qu'en cas de problème les reorder s'effectue quand même
+                    function () {
+                        $(".no-reorder").detach();
+                        $(".rang-preference").html('<i class="fas fa-exclamation-triangle text-danger" title="Impossible de déterminer le rang des préférences."></i>');
+                        alert("Une erreur est survenue lors de la modififications des préférences.");
+                        $("#places-content").refresh();
+                    }
+            });
+        }
+
+        tableInstance.on('row-reorder', function (e, diff, edit) {
+            let eventTarget = edit.originalEvent.target;
+            let preferenceId = $(eventTarget).data('preference-id');
+            let ien = diff.length
+            let rang = null;
+            for (let i = 0; i < ien; i++) {
+                let row = tableInstance.row(diff[i].node);
+                let rowData = row.data();
+                let prefId = rowData[0];
+                //pour modifier l'icone de toutesles lignes modifié
+                $(".rang-preference[data-preference-id='" + prefId + "']").html('<i class="fas fa-spinner fa-pulse fas"></i>');
+                if (prefId == preferenceId) {
+                    rang = diff[i].newPosition + 1;
+                }
+            }
+            if (rang != null) {
+                setPreferenceOrder(preferenceId, rang)
+            }
+        })
+        $('body').on("<?=PreferenceController::EVENT_MODIFIER ?> " +
+            "<?=PreferenceController::EVENT_AJOUTER ?> " +
+            "<?=PreferenceController::EVENT_SUPPRIMER ?> "
+            , function () {
+                window.location.reload();
+            });
+
+    });
+</script>

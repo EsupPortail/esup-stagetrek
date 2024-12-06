@@ -1,0 +1,79 @@
+<?php
+
+use Application\Entity\Db\Disponibilite;
+use Application\Provider\Misc\Icone;
+use Application\Provider\Privilege\EtudiantPrivileges;
+use Application\View\Helper\Disponibilite\DisponibiliteViewHelper;
+use UnicaenPrivilege\Provider\Privilege\Privileges;
+
+/** *
+ * @var Disponibilite[] $disponibilites
+ */
+
+/** @var DisponibiliteViewHelper $vh */
+$vh = $this->disponibilite();
+$tableId = "liste-disponibilites";
+if(!empty($disponibilites)){
+    $d = current($disponibilites);
+    $etudiant = $d->getEtudiant();
+    $vh->setEtudiant($etudiant);
+    $tableId.= "-".$etudiant->getId();
+}
+
+$canEditDispo = $this->isAllowed(Privileges::getResourceId(EtudiantPrivileges::DISPONIBILITE_MODIFIER));
+$canDeleteDispo = $this->isAllowed(Privileges::getResourceId(EtudiantPrivileges::DISPONIBILITE_SUPPRIMER));
+?>
+
+<div class="row">
+<div class="col-md-12">
+
+<table id="<?= $tableId ?>" class="table table-hover table-condensed">
+    <thead>
+    <tr>
+        <th class="col-md-1" data-type="num">Début</th>
+        <th class="col-md-1" data-type="num">Fin</th>
+        <th class="col-md">Informations</th>
+        <?php if($canEditDispo || $canDeleteDispo): ?>
+        <th class="col-md-1 no-sort no-search text-end"> Actions</th>
+        <?php endIf ?>
+    </thead>
+    <tbody>
+    <?php foreach ($disponibilites as $dispo):
+        $vh->setDisponibilite($dispo);
+        $bg = ($dispo->isActive()) ? "table-success" : "table-muted";
+    ?>
+        <tr class="<?= $bg ?>">
+            <td data-order="<?= $dispo->getDateDebut()->getTimestamp() ?>">
+                <?= $dispo->getDateDebut()->format('d/m/Y') ?>
+            </td>
+            <td data-order="<?= $dispo->getDateFin()->getTimestamp() ?>">
+                <?= $dispo->getDateFin()->format('d/m/Y') ?>
+            </td>
+            <td><?= $dispo->getInformationsComplementaires() ?></td>
+
+            <?php if($canEditDispo || $canDeleteDispo): ?>
+            <td class="text-end">
+                <?= $vh->lienModifier(Icone::MODIFIER, ['class' => 'text-primary ajax-modal']); ?>
+                <?= $vh->lienSupprimer(Icone::SUPPRIMER, ['class' => 'text-danger ajax-modal']); ?>
+            </td>
+            <?php endIf ?>
+        </tr>
+    <?php endforeach; ?>
+    <tbody>
+</table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        let options = generateDataTableSetings({
+            stateSave: false,
+            retrieve: true,
+            searching:false,
+            paging:false,
+            info:false,
+            "order": [[0, "desc"],[1, "desc"],[2, "asc"]],
+        })
+        $("#<?= $tableId ?>").DataTable(options);
+    });
+</script>

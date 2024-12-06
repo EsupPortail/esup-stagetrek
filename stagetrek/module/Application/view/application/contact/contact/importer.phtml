@@ -1,0 +1,88 @@
+<?php
+
+use Application\Controller\Contact\ContactController;
+use Application\Controller\Terrain\TerrainStageController;
+use Application\Form\Misc\ImportForm;
+use Application\Service\Misc\CSVService;
+use Application\Validator\Import\ContactCsvImportValidator;
+use UnicaenApp\View\Helper\Messenger;
+
+/**
+ * @see ContactController::importerAction()
+ * @var string $title
+ * @var ImportForm $form
+ */
+$fe = $this->formErrors();
+$fr = $this->formrow();
+$fcg = $this->formControlGroup();
+?>
+
+<div class="card card-primary">
+    <h1 class="page-header card-header">
+        <span class="icon icon-importer"></span>
+        <?= $title ?>
+    </h1>
+    <div class="card-body">
+        <div class="fieldset">
+            <?= $this->form()->openTag($form->prepare()) ?>
+            <?= $fe($form->prepare(), $form::INVALIDE_ERROR_MESSAGE) ?>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <?= $fcg($form->get($form::INPUT_IMPORT_FILE)); ?>
+                </div>
+                <div class="col-md-8 text-muted text-small">
+                    <ul>
+                        <li>Le fichier CSV doit utiliser comme séparateur le '
+                            <?= CSVService::SEPARATOR ?>' et avoir les champs suivant : <br/>
+                            <?php $h = "";
+                            foreach (ContactCsvImportValidator::getImportHeader() as $key) {
+                                $h .= sprintf("<strong><span class='mx-2'>%s</span></strong>; ", $key);
+                            }
+                            echo $h;
+                            ?>
+                        </li>
+                        <li>
+                            Le champs <strong><?= ContactCsvImportValidator::HEADER_CODE ?></strong>
+                            doit être unique.
+                        </li>
+                        <li>
+                            Laissez le champ
+                            <strong><?= ContactCsvImportValidator::HEADER_CODE ?></strong>
+                            vide pour un nouveau contact utilisant la nommenclature par défaut.
+                        </li>
+                        <?php //Message éventuelle pour l'import
+                        $msg = $this->messenger()->addCurrentMessagesFromFlashMessengerWithNamespace(ContactController::ACTION_IMPORTER . Messenger::NAMESPACED_SEVERITY_SEPARATOR . "*");
+                        ?>
+                    </ul>
+                </div>
+            </div>
+
+            <?php if ($msg && $msg->hasMessages()) : ?>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div>
+                            <strong><?= $msg ?></strong>
+                        </div>
+                    </div>
+                </div>
+            <?php endif; ?>
+            <hr/>
+            <div class="row">
+                <div class="col-md-12">
+                    <?= $fcg($form->get($form::INPUT_SUBMIT)); ?>
+                </div>
+            </div>
+            <?= $this->formHidden($form->get($form::CSRF)); ?>
+            <?= $this->form()->closeTag(); ?>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        let body = $("body");
+        body.off("<?= TerrainStageController::EVENT_IMPORTER?>", closeModal)
+            .one("<?= TerrainStageController::EVENT_IMPORTER?>", closeModal);
+    })
+</script>

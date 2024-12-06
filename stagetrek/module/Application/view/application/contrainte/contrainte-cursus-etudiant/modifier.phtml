@@ -1,0 +1,37 @@
+<?php
+
+use Application\Controller\Contrainte\ContrainteCursusEtudiantController;
+use Application\Form\Contrainte\ContrainteCursusEtudiantForm;
+use Application\View\Helper\ContrainteCursus\ContrainteCursusEtudiantViewHelper;
+use Laminas\View\Renderer\PhpRenderer;
+
+/**
+ * @see ContrainteCursusEtudiantController::modifierAction()
+ *
+
+ * @var string $title
+ * @var ContrainteCursusEtudiantForm $form
+ */
+/** @var ContrainteCursusEtudiantViewHelper $vh */
+$vh = $this->contrainteCursus();
+
+?>
+
+<div class="card card-primary">
+    <h1 class="page-header card-header">
+        <span class="icon icon-modifier"></span>
+        <?= $title ?>
+    </h1>
+    <div class="card-body">
+        <?= $vh->renderForm($form); ?>
+    </div>
+</div>
+
+
+<script>
+    $(function () {
+        let body = $("body");
+        body.off("<?= ContrainteCursusEtudiantController::EVENT_MODIFIER?>", closeModal)
+            .one("<?= ContrainteCursusEtudiantController::EVENT_MODIFIER?>", closeModal);
+    })
+</script>

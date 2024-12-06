@@ -1,0 +1,44 @@
+<?php
+
+use Application\Controller\Affectation\AffectationController;
+use Application\Entity\Db\AffectationStage;
+use Application\Form\Affectation\AffectationStageForm;
+use Application\View\Helper\Affectation\AffectationViewHelper;
+
+/**
+ * @see AffectationController::modifierAction()
+ * @var string $title
+ * @var AffectationStageForm $form
+ * @var AffectationStage $affectationStage
+ */
+
+/** @var AffectationViewHelper $vh */
+$vh = $this->affectation();
+$vh->setAffectationStage($affectationStage);
+?>
+
+<div class="card card-primary">
+    <h1 class="page-header card-header">
+        <span class="icon icon-modifier"></span>
+        <?= $title ?>
+    </h1>
+    <div class="card-body">
+
+        <?= $this->partial('partial/modifications-affectation-infos', ['affectationStage' => $affectationStage]) ?>
+
+        <div class="card my-3">
+            <div class="card-header">Affectation</div>
+            <div class="card-body">
+                <?= $vh->renderForm($form); ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        let body = $("body");
+        body.off("<?= AffectationController::EVENT_MODIFIER?>", closeModal)
+            .one("<?= AffectationController::EVENT_MODIFIER?>", closeModal);
+    })
+</script>

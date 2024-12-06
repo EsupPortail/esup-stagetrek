@@ -1,0 +1,240 @@
+<?php
+
+use Application\Controller\Stage\SessionStageController;
+use Application\Controller\Stage\StageController;
+use Application\Entity\Db\SessionStage;
+use Application\Entity\Db\Stage;
+use Application\View\Helper\SessionsStages\SessionStageViewHelper;
+use Application\View\Helper\Stages\StageViewHelper;
+
+use UnicaenApp\View\Helper\Messenger;
+
+/**
+ * @see SessionStageController::supprimerStagesAction()
+ * @var String $title
+ * @var SessionStage $session
+ * @var Stage[] $stages
+ */
+
+$tableId = "supprimer-stages-" . $session->getId()."-liste";
+$formId = "supprimer-stages-" . $session->getId()."-form";
+
+/** @var SessionStageViewHelper $vh */
+$vh = $this->sessionStage($session);
+
+/** @var StageViewHelper $stageVh */
+$stageVh = $this->stage();
+?>
+
+
+<h1 class="page-header">
+    <span class="fas fa-notes-medical"></span> <?= $title ?>
+    <br/>
+    <small class="text-muted"> <?= $session->getAnneeUniversitaire()->getLibelle() ?> -
+        <?= $session->getGroupe()->getLibelle() ?>
+    </small>
+</h1>
+
+<div class="card">
+    <div class="card-header">Informations</div>
+    <div class="card-body ">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">La suppression d'un stage est <strong>définitive</strong>.</li>
+            <li class="list-group-item">Toutes les informations liés aux stages selectionnées seront également supprimées
+                <span class="text-small">(Préférences, ordre d'affectation ...)</span>
+            </li>
+            <li class="list-group-item">Les stages ayant une affectation ne peuvent pas être supprimées.</li>
+        </ul>
+        <?php
+        $today = new DateTime();
+        if (!empty($stages) && $session->getDateDebutChoix() <= $today) : ?>
+            <div class="card-text alert alert-warning">
+                <strong>La date de début des choix est dépassée.</strong>.
+                <br /> Les modifications ne doivent servir qu'à corriger des erreurs.
+            </div>
+        <?php endif; ?>
+
+        <div class="card-text alert alert-warning">
+            <?php if (empty($stages)) : ?>
+                Aucun stage ne peux être supprimer à la session <?= $session->getLibelle() ?>
+            <?php else :?>
+                Les modifications seront effectives à la validation du formulaire.
+            <?php endif; ?>
+        </div>
+    </div>
+    <div class="card-footer">
+        <div class="row">
+            <div class="col-md-12">
+                <?= $this->backButton("Fiche de la session")->backTo($this->url(SessionStageController::ROUTE_AFFICHER, ['sessionStage' => $session->getId()], [], true)) ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php
+$namespace = StageController::ACTION_SUPPRIMER_STAGES . Messenger::NAMESPACED_SEVERITY_SEPARATOR . "*";
+$msg = $this->messenger()->addCurrentMessagesFromFlashMessengerWithNamespace($namespace);
+?>
+<?php if ($msg && $msg->hasMessages()) : ?>
+    <div class="row">
+        <div class="col-md-12">
+            <?= $msg ?>
+        </div>
+    </div>
+<?php endif; ?>
+
+<?php if (!empty($stages)) : ?>
+    <div class="card my-3">
+        <div class="card-header">Supprimer les stages selectionnées</div>
+        <div class="card-footer">
+            <div class="row">
+                <div class="col-md-8">
+                    <button id="selectAll" class="btn btn-secondary">
+                        <span class="far fa-check-square"></span> Tout selectionner
+                    </button>
+
+                    <button id="deselectAll" class="btn btn-secondary disabled">
+                        <span class="far fa-square"></span> Tout déselectionner
+                    </button>
+
+                </div>
+                <div class="col-md-4 text-end">
+                    <form id="<?= $formId ?>" method="post" class="loadingForm"
+                          action="<?=$this->url(StageController::ROUTE_SUPPRIMER_STAGES, ["sessionStage" => $session->getId()], [], true) ?>"
+                    >
+                        <button id="delete-btn" name=submit" type="submit" class="btn btn-danger disabled">
+                            <span class="icon icon-supprimer"></span> supprimer
+                        </button>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <table id="<?= $tableId ?>" class="table table-hover table-condensed">
+                <thead>
+                <tr>
+                    <th class=""></th>
+                    <th class="col-md-2">n° d'étudiant</th>
+                    <th class="col-md-4">Nom</th>
+                    <th class="col-md-4">Prénom</th>
+                    <th class="col-md-2 no-search text-end">État</th>
+                </thead>
+                <tbody>
+                <?php /** @var Stage $stage */
+                foreach ($stages as $stage) :
+                    $etudiant = $stage->getEtudiant();
+                    $vh->setEtudiant($etudiant);
+                    $stageVh->setStage($stage);
+                    $ordre = ($stage->getOrdreAffectation()) ? $stage->getOrdreAffectation() : null;
+
+                    $etat = $stage->getEtatActif();
+                    $bg = match (true) {
+                        $stage->hasEtatDesactive(),
+                        $stage->hasEtatNonEffectue(),
+                        $stage->hasEtatEnDisponibilite(),
+                        $stage->hasEtatFutur() => "table-muted",
+                        $stage->hasEtatPhasePreferences(),
+                        $stage->hasEtatPhaseAffectation(),
+                        $stage->hasEtatAVenir(),
+                        $stage->hasEtatEnCours(),
+                        $stage->hasEtatPhaseValidation(),
+                        $stage->hasEtatPhaseEvaluation() => "table-primary",
+                        $stage->hasEtatValide() => "table-success",
+                        $stage->hasEtatNonValide() => "table-danger",
+                        $stage->hasEtatValidationEnRetard(),
+                        $stage->hasEtatEvaluationEnRetard(),
+                        $stage->hasEtatEnAlerte() => "table-warning",
+                        $stage->hasEtatEnErreur() => "table-danger",
+                        default => "table-danger",
+                    };
+                    ?>
+                    <tr class="<?= $bg ?>" data-stage-id="<?= $stage->getId() ?>">
+                        <td></td>
+                        <td><?= $etudiant->getNumEtu() ?></td>
+                        <td> <?= $etudiant->getNom() ?></td>
+                        <td> <?= $etudiant->getPrenom() ?></td>
+                        <td class="text-end" data-order="<?= ($etat) ? ($etat->getType()->getOrdre()) : PHP_INT_MIN ?>"
+                            style="color:<?=  (isset($etat)) ? $etat->getType()->getCouleur() : "" ?>"
+                        >
+                            <span class="<?= (isset($etat)) ? $etat->getType()->getIcone() : "fa fa-question" ?>"></span>
+                            <?= (isset($etat)) ? $etat->getTypeLibelle() : "Indéterminé" ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+
+    <script type="text/javascript">
+        $(function () {
+            $('[data-bs-toggle="popover"]').popover({html: true});
+            if ($.fn.DataTable.isDataTable("#<?= $tableId ?>")) {
+                $('#<?= $tableId ?>').DataTable().destroy();
+            }
+            let options = generateDataTableSetings({
+                retrieve: false,
+                saveStage: false,
+                deferRender: true,
+                "order": [[3, "asc"],[4, "asc"]],
+                "lengthMenu": [[10, 50, 100, 250, -1], [10, 50, 100, 250, "Tous"]],
+                columnDefs: [{
+                    className: 'select-checkbox',
+                    targets: 0,
+                    orderable: false,
+                    searchable: false,
+                },
+                    {targets: ['no-sort'], orderable: false},
+                    {targets: ['no-search'], searchable: false},
+                    {targets: ['hidden'], visible: false},
+                ],
+                "select": {
+                    "style": 'multiple',
+                    "selector": 'tr'
+                },
+                'dom': "<'row'<'col-sm-12 col-md-6 'l><'col-sm-12 col-md-6' f>> " +
+                    "<'row' <'col-sm-12'tr> >" +
+                    "<'row' <'col-sm-12 col-md-5'i> <'col-sm-12 col-md-7'p> >",
+            })
+            let tableInstance = $("#<?= $tableId ?>").on('draw.dt', function () {
+                $('[data-bs-toggle="popover"]').popover({html: true});
+            }).DataTable(options);
+
+            $("#selectAll").on('click', function(){
+                tableInstance.rows().select();
+            })
+
+            $("#deselectAll").on('click', function(){
+                tableInstance.rows().deselect();
+            })
+
+            tableInstance.on('select.dt deselect.dt', function () {
+                let selectedRows = tableInstance.rows(".selected").nodes().length;
+                if (selectedRows > 0){
+                    $("#deselectAll").removeClass('disabled');
+                    $("#delete-btn").removeClass('disabled');
+                }
+                else{
+                    $("#deselectAll").addClass('disabled');
+                    $("#delete-btn").addClass('disabled');
+                }
+            });
+
+            $("#<?=$formId?>").on('submit', function (){
+                let that = $(this);
+                //Rajout des étudiants selectionnées dans le formulaires
+                // Recheche des lignes selectionnées qui ne sont pas filtré (possiblement paginé
+                let rows = tableInstance.rows({'selected': true, 'search': 'applied'}).nodes();
+                $(rows).each(function () {
+                    let stageId=$(this).data('stage-id');
+                    that.append("<input type='hidden' name='stages["+stageId+"]' value='"+stageId+"'>");
+                });
+            })
+
+        });
+    </script>
+<?php endif;?>

@@ -1,0 +1,15 @@
+<?php
+
+use Application\Controller\Parametre\ParametreCoutAffectationController;
+use Application\Entity\Db\ParametreCoutAffectation;
+use Application\View\Helper\Parametres\ParametreCoutAffectationViewHelper;
+/**
+ * @see ParametreCoutAffectationController::listersAction()
+ *
+
+ * @var ParametreCoutAffectation[] $parametres
+ * @var ParametreCoutAffectationViewHelper $vh
+ */
+
+$vh = $this->parametreCoutAffectation();
+echo $vh->renderListe($parametres);

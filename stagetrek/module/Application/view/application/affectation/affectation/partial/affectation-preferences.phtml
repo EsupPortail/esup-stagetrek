@@ -1,0 +1,77 @@
+<?php
+
+use Application\Controller\Affectation\AffectationController;
+use Application\Entity\Db\AffectationStage;
+
+/**
+ * @see AffectationController::affectationStage()
+ * @var AffectationStage $affectationStage
+ * @var bool $vueEtudiante
+ */
+if (!isset($vueEtudiante)) {
+    $vueEtudiante = false;
+}
+
+$etudiant = $affectationStage->getEtudiant();
+$session = $affectationStage->getSessionStage();
+$preferences = $etudiant->getPreferenceForSession($session);
+$today = new DateTime();
+$terrainSecondaire = $affectationStage->getTerrainStageSecondaire();
+?>
+<?php if ($today < $session->getDateFinChoix()) : ?>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-info">
+                La phase de définition des préférences est fixée du
+                du <strong><?= $session->getDateDebutChoix()->format('d/m/Y') ?></strong>
+                au <strong><?= $session->getDateFinChoix()->format('d/m/Y') ?></strong>.
+            </div>
+        </div>
+    </div>
+<?php endif; ?>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                Préférences
+            </div>
+            <div class="card-body">
+                <?php if (empty($preferences) && $today < $session->getDateFinChoix()) : ?>
+                    <div class="alert alert-info">
+                        Aucune préférence n'as encore été définie.
+                    </div>
+                <?php elseif (empty($preferences)) : ?>
+                    <div class="alert alert-warning">
+                        <strong><?= $etudiant->getDisplayName() ?> n'as pas définie de préférence.</strong>
+                    </div>
+                <?php else : ?>
+                    <div class="row">
+                        <?php foreach ($preferences as $pref): ?>
+                            <div class="col-md-7">
+                            <span class="mx-3 badge <?= ($pref->isSat()) ? "badge-success" : "badge-muted" ?>">
+                                    <?= $pref->getRang() ?>
+                            </span>
+                                <?= $pref->getTerrainStage()->getLibelle() ?>
+                                (<?= $pref->getTerrainStage()->getCategorieStage()->getLibelle() ?>)
+                            </div>
+                            <div class="col-md-5">
+                                <?php if ($pref->getTerrainStageSecondaire()) : ?>
+
+                                    <?php if (isset($terrainSecondaire) && $terrainSecondaire->getId() == $pref->getTerrainStageSecondaire()->getId()) : ?>
+                                        <span class="mx-3 badge badge-success"> <?= $pref->getRang() ?> </span>
+                                    <?php else:?>
+                                        <span class="mx-3 badge badge-muted"> <?= $pref->getRang() ?> </span>
+                                    <?php endif; ?>
+
+                                    <?= $pref->getTerrainStageSecondaire()->getLibelle() ?>
+                                    (<?= $pref->getTerrainStageSecondaire()->getCategorieStage()->getLibelle() ?>)
+                                <?php endif; ?>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</div>

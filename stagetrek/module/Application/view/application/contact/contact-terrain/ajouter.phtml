@@ -1,0 +1,35 @@
+<?php
+
+use Application\Controller\Contact\ContactTerrainController;
+use Application\Form\Contacts\ContactTerrainForm;
+use Application\View\Helper\Contacts\ContactTerrainViewHelper;
+
+
+/**
+ * @see ContactTerrainController::ajouterAction()
+ * @var String $title
+ * @var ContactTerrainForm $form
+ */
+
+
+/** @var ContactTerrainViewHelper $vh */
+$vh = $this->contactTerrain();
+?>
+
+<div class="card card-success">
+    <h1 class="page-header card-header">
+        <span class="icon icon-ajouter"></span>
+        <?= $title ?>
+    </h1>
+    <div class="card-body">
+        <?= $vh->renderForm($form); ?>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        let body = $("body");
+        body.off("<?= ContactTerrainController::EVENT_AJOUTER?>", closeModal)
+            .one("<?= ContactTerrainController::EVENT_AJOUTER?>", closeModal);
+    })
+</script>

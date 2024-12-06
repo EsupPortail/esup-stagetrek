@@ -1,0 +1,189 @@
+<?php
+
+use Application\Controller\Contact\ContactController;
+use Application\Controller\Contact\ContactStageController;
+use Application\Controller\Contact\ContactTerrainController;
+use Application\Entity\Db\Contact;
+use Application\Provider\Privilege\ContactPrivileges;
+use Application\View\Helper\Contacts\ContactViewHelper;
+use Laminas\View\Renderer\PhpRenderer;
+
+/**
+ * @see ContactController::afficherAction()
+ * @var String $title
+ * @var Contact $contact
+ */
+
+/** @var ContactViewHelper $vh */
+$vh = $this->contact($contact);
+
+$canEdit = $vh->hasPrivilege(ContactPrivileges::CONTACT_MODIFIER);
+$canDelete = $vh->hasPrivilege(ContactPrivileges::CONTACT_SUPPRIMER);
+
+$canSeeCT = $vh->hasPrivilege(ContactPrivileges::CONTACT_TERRAIN_AFFICHER);
+$canSeeCS = $vh->hasPrivilege(ContactPrivileges::CONTACT_STAGE_AFFICHER);
+?>
+
+<h1 class="page-header">
+    <span class="icon">
+        <i class="fas fa-user-doctor"></i>
+    </span>
+    Fiche du contact <?= $contact->getCode() ?>
+</h1>
+
+<nav>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <button class="nav-link active" id="nav-infos" data-bs-toggle="tab" data-bs-target="#infos" type="button"
+                role="tab" aria-controls="infos" aria-selected="true">Informations
+        </button>
+        <?php if($canSeeCT) :?>
+        <button class="nav-link" id="nav-contacts-terrains" data-bs-toggle="tab" data-bs-target="#contacts-terrains" type="button"
+                role="tab" aria-controls="contacts-terrains" aria-selected="false">Terrains
+        </button>
+        <?php endif; ?>
+
+        <?php if($canSeeCS) :?>
+        <button class="nav-link" id="nav-contacts-stages" data-bs-toggle="tab" data-bs-target="#contacts-stages" type="button"
+                role="tab" aria-controls="contacts-stages" aria-selected="false">Stages
+        </button>
+        <?php endif; ?>
+    </div>
+</nav>
+
+<div class="card tab-content" id="nav-tabContent">
+    <div class="tab-pane fade show active" id="infos" role="tabpanel" aria-labelledby="nav-infos">
+        <?php if($canEdit || $canDelete) :?>
+        <div class="card-header card-sub-header text-end">
+            <?= $vh->lienModifier() ?>
+            <?= $vh->lienSupprimer() ?>
+        </div>
+        <?php endif; ?>
+
+        <?php
+        /** @see ContactController::afficherInfosAction() */
+        $url = $this->url(ContactController::ROUTE_AFFICHER_INFOS, ['contact' => $contact->getId()], [], true);
+        ?>
+        <div id="infos-content" class="card-body" data-url="<?= $url ?>">
+            <?= $vh->renderInfos() ?>
+        </div>
+        <div class="card-footer">
+            <?= $this->backButton("Liste des contacts")->backTo($this->url(ContactController::ROUTE_INDEX, [], [], true)) ?>
+        </div>
+    </div>
+
+    <?php if($canSeeCT) :?>
+    <div class="tab-pane fade" id="contacts-terrains" role="tabpanel" aria-labelledby="nav-contacts-terrains">
+        <div class="card-body">
+
+            <div class="card">
+                <div class="card-header">Informations</div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            Listes des terrains de stages auquels est rattaché le contact.
+                        </li>
+                        <li class="list-group-item">
+                            Lors d'une affectation à l'un de ces terrains, le contact sera automatiquement rattaché aux stages concernés
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <?php /** @see ContactTerrainController::listerAction() */
+            $url = $this->url(ContactTerrainController::ROUTE_LISTER, ['contact' => $contact->getId()], [], true);
+            ?>
+            <div class="mt-3" id="contacts-terrains-content"
+                 data-url="<?= $url ?>">
+                <div class="alert alert-info">Chargement des données en cours ...
+                    <div class="text-small text-muted">
+                        Celà peut prendre quelques minutes si le contact est associé à un grand nombre de terrains de stages
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
+
+    <?Php if($canSeeCS) :
+        ?>
+    <div class="tab-pane fade" id="contacts-stages" role="tabpanel" aria-labelledby="nav-contacts-stages">
+        <div class="card-body">
+
+            <div class="card">
+                <div class="card-header">Informations</div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            Listes des stages auquels est rattaché le contact, avec les propriétés correspondantes
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <?php
+            /** @see ContactStageController::listerAction() */
+//            $url= $this->url(ParametreController::ROUTE_LISTER, [], [], true);
+            $url = $this->url(ContactStageController::ROUTE_LISTER, ['contact' => $contact->getId()], [], true);
+            ?>
+            <div class="mt-3" id="contacts-stages-content" data-url="<?= $url ?>">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-info">Chargement des données en cours ...
+                            <div class="text-small text-muted">
+                                Celà peut prendre quelques minutes si le contact est associé à un grand nombre de stages
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
+
+</div>
+
+<script type="text/javascript">
+    //Rechargement de la page sur event
+    $(function () {
+        let body = $("body");
+
+        body.on("<?=ContactController::EVENT_MODIFIER?> "
+            , function (event) {
+                $("#infos-content").refresh();
+            });
+
+        <?php if($canSeeCT) :?>
+            $("#contacts-terrains-content").refresh();
+            body.on("<?=ContactTerrainController::EVENT_AJOUTER?> "+
+                "<?=ContactTerrainController::EVENT_MODIFIER?> "+
+                "<?=ContactTerrainController::EVENT_SUPPRIMER?> "
+                , function (event) {
+                    $("#infos-content").refresh();
+                    $("#contacts-terrains-content").refresh();
+                });
+        <?php endif; ?>
+
+        <?php if($canSeeCS) :?>
+            $("#contacts-stages-content").refresh();
+            body.on("<?=ContactStageController::EVENT_AJOUTER?> "+
+                "<?=ContactStageController::EVENT_MODIFIER?> "+
+                "<?=ContactStageController::EVENT_SUPPRIMER?> "+
+                "<?=ContactStageController::EVENT_SEND_LIEN_VALIDATION?> "
+                , function (event) {
+                    $("#infos-content").refresh();
+                    $("#contacts-stages-content").refresh();
+                });
+        <?php endif; ?>
+
+        body.on("<?=ContactController::EVENT_SUPPRIMER?> "
+            , function (event) {
+                $("#nav-tabContent > div").empty().append(
+                    "<div class='tab-pane show'><div class='m-3 alert alert-info'>" +
+                    "Le contact vient d'être supprimé, vous allez être rediriger dans quelques secondes." +
+                    "</div></div>"
+                );
+                setTimeout(function () {
+                    window.location.href = "<?= $this->url(ContactController::ROUTE_INDEX)?>";
+                }, 2000);
+            });
+    });
+</script>

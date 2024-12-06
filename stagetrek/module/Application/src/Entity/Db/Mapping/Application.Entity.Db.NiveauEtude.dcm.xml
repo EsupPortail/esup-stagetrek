@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Application\Entity\Db\NiveauEtude" table="niveau_etude">
+    <indexes>
+      <index name="IDX_F8B95B422F654F85" columns="niveau_etude_parent"/>
+    </indexes>
+    <id name="id" type="bigint" column="id">
+      <generator strategy="SEQUENCE"/>
+      <sequence-generator sequence-name="niveau_etude_id_seq" allocation-size="1" initial-value="1"/>
+    </id>
+    <field name="libelle" type="string" column="libelle" length="255" nullable="true">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="ordre" type="integer" column="ordre" nullable="false">
+      <options>
+        <option name="unsigned"/>
+        <option name="default">0</option>
+      </options>
+    </field>
+    <field name="nbStages" type="integer" column="nb_stages" nullable="true">
+      <options>
+        <option name="unsigned"/>
+        <option name="default">1</option>
+      </options>
+    </field>
+
+    <field name="active" type="boolean" column="active" nullable="true">
+      <options>
+        <option name="default">1</option>
+      </options>
+    </field>
+
+    <one-to-one field="niveauEtudeParent" target-entity="Application\Entity\Db\NiveauEtude" inversed-by="niveauEtudeSuivant">
+      <join-column name="niveau_etude_parent" referenced-column-name="id" />
+    </one-to-one>
+    <one-to-one field="niveauEtudeSuivant" target-entity="Application\Entity\Db\NiveauEtude" mapped-by="niveauEtudeParent" />
+
+    <one-to-many field="groupes" target-entity="Application\Entity\Db\Groupe" mapped-by="niveauEtude" />
+    <many-to-many field="terrainsContraints" target-entity="Application\Entity\Db\TerrainStage" mapped-by="niveauxEtudesContraints" fetch="LAZY"/>
+  </entity>
+</doctrine-mapping>

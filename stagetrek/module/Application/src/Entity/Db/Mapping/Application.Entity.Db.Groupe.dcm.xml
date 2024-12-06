@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Application\Entity\Db\Groupe" table="groupe">
+    <indexes>
+      <index name="IDX_E0DC2993FEAD13D1" columns="niveau_etude_id"/>
+      <index name="IDX_E0DC2993544BFD58" columns="annee_universitaire_id"/>
+    </indexes>
+    <unique-constraints>
+      <unique-constraint name="groupe_id_unique" columns="id"/>
+    </unique-constraints>
+    <id name="id" type="bigint" column="id">
+      <generator strategy="SEQUENCE"/>
+      <sequence-generator sequence-name="groupe_id_seq" allocation-size="1" initial-value="1"/>
+    </id>
+    <field name="libelle" type="string" column="libelle" length="255" nullable="true">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <many-to-one field="niveauEtude" target-entity="Application\Entity\Db\NiveauEtude" fetch="LAZY">
+      <join-columns>
+        <join-column name="niveau_etude_id" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="anneeUniversitaire" target-entity="Application\Entity\Db\AnneeUniversitaire" inversed-by="groupes" fetch="LAZY">
+      <join-columns>
+        <join-column name="annee_universitaire_id" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+
+    <one-to-one field="groupePrecedent" target-entity="Application\Entity\Db\Groupe">
+      <join-column name="groupe_precedent_id" referenced-column-name="id" />
+    </one-to-one>
+
+    <one-to-one field="groupeSuivant" target-entity="Application\Entity\Db\Groupe">
+      <join-column name="groupe_suivant_id" referenced-column-name="id" />
+    </one-to-one>
+
+    <one-to-many field="sessionsStages" target-entity="Application\Entity\Db\SessionStage" mapped-by="groupe" />
+
+    <many-to-many field="etudiants" target-entity="Application\Entity\Db\Etudiant" mapped-by="groupes" fetch="LAZY"/>
+  </entity>
+</doctrine-mapping>

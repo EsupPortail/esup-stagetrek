@@ -1,0 +1,77 @@
+<?php
+
+use Application\Form\Misc\ConfirmationForm;
+
+
+/**
+ * Template par défaut pour afficher une demande de confirmation
+ * @var ConfirmationForm $form
+ */
+$fr = $this->formrow();
+$fcg = $this->formControlGroup();
+?>
+
+<?php foreach ($form->getMessages() as $msg): ?>
+    <div class="row"><div class="col-md-12"><?= $msg ?></div></div>
+<?php endforeach; ?>
+
+<?php if($form->hasBeenConfirmed()){return;} ?>
+
+<div class="fieldset">
+
+    <?= $this->form()->openTag($form->prepare()) ?>
+
+    <?php if(!empty($form->getHiddenElements())) {
+        foreach ($form->getHiddenElements() as $hiddenElement) {
+            echo $fr($hiddenElement);
+        }
+    }?>
+
+   <?php if($form->getOthersInputs() && sizeof($form->getOthersInputs())>0) :
+    foreach ($form->getOthersInputs() as $input) :?>
+        <div class="row">
+            <div class="col-md-6">
+                <?=  $fcg($input) ?>
+            </div>
+        </div>
+    <?php endforeach;
+    endif;
+    ?>
+
+    <div class="messenger row my-3">
+        <div class="col-md-12">
+            <b><?= $form->getQuestionConfirmation() ?></b>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <?= $fr($form->get(ConfirmationForm::INPUT_RESPONSE)); ?>
+            <?= $fr($form->get(ConfirmationForm::INPUT_CONFIRM)); ?>
+            <span class="mr-5"></span>
+            <?= $fr($form->get(ConfirmationForm::INPUT_CANCEL)); ?>
+        </div>
+    </div>
+
+    <?= $this->formHidden($form->get(ConfirmationForm::CSRF)); ?>
+    <?= $this->form()->closeTag(); ?>
+</div>
+
+<script>
+    $(function () {
+        $('.form-reponse').click(function (){
+            reponse = $(this).val();
+            $('#<?=ConfirmationForm::INPUT_RESPONSE?>').val(reponse);
+        });
+        $("#<?=$form::INPUT_CANCEL?>").click(function (event) {
+            $('#<?=ConfirmationForm::INPUT_RESPONSE?>').val('<?=$form::CANCEL_VALUE?>');
+            if($('div.modal').length > 0){
+                $('div.modal').modal('hide');
+                event.preventDefault(event);
+                return false;
+            }
+            else{
+               $('body').trigger('<?= $form::CANCEL_EVENT?>');
+            }
+        });
+    });
+</script>

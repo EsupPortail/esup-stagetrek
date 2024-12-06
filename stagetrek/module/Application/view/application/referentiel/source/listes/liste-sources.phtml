@@ -1,0 +1,52 @@
+<?php
+/**
+ * @var \Application\Entity\Db\Source[] $sources
+ */
+
+use Application\Entity\Db\Source;
+use Application\Provider\Misc\Icone;
+use Application\Provider\Privilege\ReferentielPrivilege;
+
+/** @var \Application\View\Helper\Referentiel\SourceViewHelper $vh */
+$vh = $this->source();
+$canEdit = $vh->hasPrivilege(ReferentielPrivilege::REFERENTIEL_SOURCE_MODIFIER);
+$canDelete = $vh->hasPrivilege(ReferentielPrivilege::REFERENTIEL_SOURCE_SUPPRIMER);
+$actionMenu = $canEdit||$canDelete;
+
+?>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <table class="table table-hover table-condensed table-data"
+               data-table-order="1,asc,0,asc"
+        >
+            <thead>
+            <tr>
+                <th class="col-md-10">Source</th>
+                <th class="col-md-1 text-center" data-type="num">Ordre</th>
+                <?php if($actionMenu) :?>
+                    <th class="no-sort no-search col-md-1 text-end" data-priority="0">Actions</th>
+                <?php endif; ?>
+            </thead>
+            <tbody>
+            <?php /** @var Source $source */
+            foreach ($this->sources as $source) :
+                $vh->setSource($source);
+                ?>
+                <tr>
+                    <td><?= $vh ?></td>
+                    <td class="text-center"><?= $source->getOrdre() ?></td>
+
+                    <?php if($actionMenu) :?>
+                        <td class="text-end">
+                            <?= $vh->lienModifier(Icone::MODIFIER, ['class' => 'text-primary ajax-modal']) ?>
+                            <?=  $vh->lienSupprimer(Icone::SUPPRIMER, ['class' => 'text-danger ajax-modal']) ?>
+                        </td>
+                    <?php endif; ?>
+                </tr>
+            <?php endforeach; ?>
+            <tbody>
+        </table>
+    </div>
+</div>

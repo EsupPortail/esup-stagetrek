@@ -1,0 +1,80 @@
+<?php
+
+use Application\Entity\Db\Contact;
+use Application\View\Helper\Contacts\ContactViewHelper;
+
+
+/**
+ * @see ContactViewHelper::renderInfos()
+ * @var Contact $contact
+ */
+
+/** @var ContactViewHelper $vh */
+$vh = $this->contact($contact);
+?>
+
+
+<div class="row">
+    <div class="col-md-2">
+        <strong>Nom / Prénom</strong>
+    </div>
+    <div class="col-md-4">
+        <?= $contact->getDisplayName() ?>
+    </div>
+    <div class="col-md-2">
+        <strong>Code</strong>
+    </div>
+    <div class="col-md-4">
+        <?= $contact->getCode() ?>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-2">
+        <strong>Libellé / Fonction</strong>
+    </div>
+    <div class="col-md-4">
+        <?= $contact->getLibelle() ?>
+    </div>
+    <div class="col-md-2">
+        <strong>Etat</strong>
+    </div>
+    <div class="col-md-4">
+        <?= ($contact->isActif()) ? "<span class='badge badge-success'>Actif</span>" : "<span class='badge badge-danger'>Inactif</span>"  ?>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-2">
+        <strong>Mail</strong>
+    </div>
+    <div class="col-md-4">
+        <?= $contact->getEmail() ?>
+    </div>
+    <div class="col-md-2">
+        <strong>Téléphone</strong>
+    </div>
+    <div class="col-md-4">
+        <?= $contact->getTelephone() ?>
+    </div>
+</div>
+
+<?php
+if ($contact->isActif() && $contact->getContactsTerrains()->isEmpty()): ?>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-warning">
+                Le contact n'est associé à aucun terrain.
+            </div>
+        </div>
+    </div>
+<?php endif; ?>
+<?php
+if ($contact->getEmail() === null || $contact->getEmail() == ""): ?>
+<div class="row">
+    <div class="col-md-12">
+        <div class="alert alert-info">
+            L'adresse mail du contact n'est pas renseignée.
+            <br/>Aucun mail automatique ne peut lui être envoyé.
+        </div>
+    </div>
+</div>
+<?php endif; ?>

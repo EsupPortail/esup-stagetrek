@@ -1,0 +1,36 @@
+<?php
+
+use Application\Controller\Terrain\TerrainStageController;
+use Application\Form\TerrainStage\TerrainStageForm;
+use Application\View\Helper\Terrains\TerrainStageViewHelper;
+
+
+/**
+ * @see TerrainStageController::ajouterAction()
+ *
+ * @var PhpRenderer             $this
+ * @var String                  $title
+ * @var TerrainStageForm        $form
+ */
+
+/** @var TerrainStageViewHelper $vh */
+$vh = $this->terrainStage()
+?>
+
+<div class="card card-success">
+    <h1 class="page-header card-header">
+        <span class="icon icon-ajouter"></span>
+        <?= $title ?>
+    </h1>
+    <div class="card-body">
+        <?= $vh->renderForm($form); ?>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        let body = $("body");
+        body.off("<?= TerrainStageController::EVENT_AJOUTER?>", closeModal)
+            .one("<?= TerrainStageController::EVENT_AJOUTER?>", closeModal);
+    })
+</script>

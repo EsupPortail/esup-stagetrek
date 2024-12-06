@@ -1,0 +1,44 @@
+<?php
+
+use Application\Controller\Contact\ContactTerrainController;
+use Application\Entity\Db\ContactTerrain;
+use Application\Form\Misc\ConfirmationForm;
+use Application\View\Helper\Misc\ConfirmationFormViewHelper;
+
+
+/**
+ * @see ContactTerrainController::supprimerAction()
+ * @var string $title
+ * @var ConfirmationForm $form
+ * @var ContactTerrain $contactTerrain
+ */
+
+/** @var ConfirmationFormViewHelper $vh */
+$vh = $this->confirmation($form)
+?>
+
+<div class="card card-danger">
+    <h1 class="page-header card-header">
+        <span class="icon icon-supprimer"></span>
+        <?= $title ?>
+    </h1>
+    <div class="card-body">
+        <?php if(!$form->hasBeenConfirmed()) :?>
+            <div class='alert alert-info'>
+                Le contact restera associé aux stages déjà affectés sur ce terrain.
+                Il ne sera plus automatiquement ajouté lors des futur stages sur ce terrain.
+                <br/> <span class="text-small">Pour dissocier le contact des stages passés, il faut le faire depuis la liste des stages.</span>
+            </div>
+        <?php endif; ?>
+
+        <?= $vh->render(); ?>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        let body = $("body");
+        body.off("<?= ContactTerrainController::EVENT_SUPPRIMER?>", closeModal)
+            .one("<?= ContactTerrainController::EVENT_SUPPRIMER?>", closeModal);
+    });
+</script>

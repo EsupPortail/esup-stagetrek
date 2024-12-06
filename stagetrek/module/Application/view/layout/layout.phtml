@@ -1,0 +1,149 @@
+<?php
+
+use Application\Misc\Util;
+use Application\Misc\Version;
+use Application\Provider\Misc\EnvironnementProvider;
+use Application\View\Helper\Misc\FooterViewHelper;
+
+$navigationHelper = $this->navigation('navigation');
+$env = getenv('APPLICATION_ENV') ?:  EnvironnementProvider::TEST;
+echo $this->doctype();
+$version = getenv('APPLICATION_ENV') ?: EnvironnementProvider::TEST;
+?>
+<html lang="fr">
+
+<head>
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <?php echo $this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1.0')
+        ->appendName('description', '')
+        ->appendHttpEquiv("X-UA-Compatible", "IE=edge,chrome=1") ?>
+    <!-- Title -->
+    <?php echo $this->headTitle($this->appInfos()->nom)->setSeparator(' - ')->setAutoEscape(false) ?>
+    <!-- Links -->
+    <?php echo $this->headLink(array(
+        'rel'   => 'shortcut icon',
+        'type'  => 'image/vnd.microsoft.icon',
+        'href'  => '//www.unicaen.fr/favicon.ico')) ?>
+    <!-- Scripts -->
+    <script>
+        function generateAdresse(name, domaine) {
+            document.write("<a href=" + "mail" + "to:" + name + "@" + domaine + ">" + name + "@"+ domaine + "</a>");
+        }
+    </script>
+    <?php echo $this->headScript(); ?>
+</head>
+
+<body class="unistrap unistrap-th-stagetrek unistrap-bg-white unistrap-sticky-header flex-column">
+<!-- HEADER -------------------------------------->
+<header>
+    <nav id="navbar" class="navbar navbar-main navbar-lg navbar-shadow navbar-expand-lg navbar-dark bg-dark" role="navigation">
+        <div class="container-sm">
+            <?php echo $this->appLink($this->appInfos()->nom) ?>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipalNavbar" aria-controls="menuPrincipalNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="menuPrincipalNavbar">
+
+                <?php
+                echo $navigationHelper
+                    ->menu('navigation')
+                    ->setUlClass('navbar-nav mx-auto')
+                    ->setPartial('layout/menu-principal.phtml'); ?>
+
+                <div class="dropdown navbar-nav text-end me-4">
+                    <a href="#" class="nav-link d-block text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-question-circle-fill" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.496 6.033h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286a.237.237 0 0 0 .241.247zm2.325 6.443c.61 0 1.029-.394 1.029-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94 0 .533.425.927 1.01.927z"/></svg>
+                        Aide
+                    </a>
+                    <ul class="dropdown-menu rounded-0 p-3" style="min-width: 250px;">
+                        <li>
+                            <div class="text-decoration-none fw-bold mb-2">Paramètres d’accessibilité</div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input bt-access access-contrast" type="checkbox" role="switch" id="accessibilite-contrast">
+                                <label class="form-check-label bt-access" for="accessibilite-contrast">Plus de contraste</label>
+                            </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input bt-access access-dys-font" type="checkbox" role="switch" id="accessibilite-dys-font">
+                                <label class="form-check-label bt-access" for="accessibilite-dys-font">Police (dyslexie)</label>
+                            </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input bt-access access-dys-line" type="checkbox" role="switch" id="accessibilite-dys-line">
+                                <label class="form-check-label bt-access" for="accessibilite-dys-line">Interlignage</label>
+                            </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input bt-access access-justify" type="checkbox" role="switch" id="accessibilite-justify">
+                                <label class="form-check-label bt-access" for="accessibilite-justify">Pas de justification</label>
+                            </div>
+                            <div class="text-decoration-none mt-2">
+                                <a class="dropdown-item fw-bold p-0" href="/faq">  <span class="fas fa-question-circle"></span> FAQ</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="navbar-text text-end">
+                    <?php echo $this->appConnection(); ?>
+                </div>
+                <!--<p class="navbar-text navbar-right"><?php /*echo $this->languageSelector(); */?></p>-->
+            </div>
+        </div>
+    </nav>
+    <div class="navbar navbar-expand-lg navbar-ghost" aria-hidden="true"><div class="container-sm"><?php echo $this->appLink($this->appInfos()->nom) ?></div></div>
+
+    <?php if ($version !=  EnvironnementProvider::PRODUCTION): //Bandeau pour les versions non "prod"?>
+        <div class="version <?php echo $version; ?>-version">
+            <span title="environnement"><i class="fas fa-server"></i> <?php echo $version; ?></span> &nbsp;&nbsp;
+            <span title="branche Git"><i class="fas fa-code-branch"></i> <?php echo Version::getBranch(); ?></span>
+            &nbsp;&nbsp;
+            <span title="version">
+                <i class="fas fa-tag"></i>
+                <?php
+                echo sprintf('%s-r%s-%s (%s)',
+                    Version::getTag(),
+                    Version::getRevision(),
+                    Version::getLastCommitHash(),
+                    Util::formatIntlDateTime(Version::getLastCommitDate(), 'd MMM yyyy')
+                );
+                ?>
+            </span>
+        </div>
+    <?php endif; ?>
+
+    <div class="flash-message navbar-fixed-top" id="flash-message" style="opacity: 0" <?= sprintf('data-url="%s"',
+        $this->url('flash-message', [], [], true)); ?>>
+        <?= $this->flashMessageDisplay(); ?>
+    </div>
+
+</header>
+
+<main class="main-unistrap container-fluid position-relative d-flex p-0">
+    <div class="shape-divider shape-bottom shape-triangle shape-color-foot">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M1200 0L0 0 892.25 114.72 1200 0z" class="shape-fill"></path>
+        </svg>
+    </div>
+    <div id="contenu-principal" class="container bg-white px-4 pt-5 pb-6">
+        <?php echo $this->content; ?>
+    </div>
+</main>
+
+
+<?= $this->footer(); ?>
+
+<?php echo $this->inlineScript(); ?>
+
+<script>
+    $(function () {
+        $('[data-bs-toggle="popover"]').popover({ html: true});
+    });
+    $(function () {
+        $('[data-bs-toggle="tooltip"]').tooltip({});
+    });
+
+    $(function() {
+        // $('form select').selectpicker();
+    });
+</script>
+
+</body>
+</html>

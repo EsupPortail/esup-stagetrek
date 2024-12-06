@@ -1,0 +1,34 @@
+<?php
+
+use UnicaenStorage\Adapter\FilesystemStorageAdapter;
+use UnicaenStorage\Adapter\S3StorageAdapter;
+
+return [
+    'fichier' => [
+        'unicaen-storage' => [
+            /**
+             * Tous les adapters de stockage disponibles, et leur config.
+             */
+            'adapters' => [
+                FilesystemStorageAdapter::class => [
+                    'root_path' => '/tmp/upload',
+                ],
+                S3StorageAdapter::class => [
+                    'client' => [
+                        'end_point' => 'http://nginx:9000',
+                        'access_key' => 'FTHu3JhfsMxAZCBD',
+                        'secret_key' => 'F32cWcAJreGLXtVsgHOqmaPyARs8SUKu',
+                    ],
+                    'root_path' => 'sygal',
+                ],
+            ],
+
+            /**
+             * Adapter de stockage activé (unique).
+             */
+            'adapter' => FilesystemStorageAdapter::class,
+    //            'adapter' => S3StorageAdapter::class,
+        ],
+    ],
+
+];

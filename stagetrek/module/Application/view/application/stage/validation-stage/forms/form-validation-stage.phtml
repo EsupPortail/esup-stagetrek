@@ -1,0 +1,85 @@
+<?php
+
+use Application\Controller\Stage\StageController;
+use Application\Entity\Db\Stage;
+use Application\Form\Stages\Fieldset\ValidationStageFieldset;
+use Application\Form\Stages\ValidationStageForm;
+
+/**
+ * @see StageController::modifierValidationAction()
+ * @var ValidationStageForm $form
+ */
+/** @var Stage $stage */
+$stage = $form->getObject();
+/** @var ValidationStageFieldset $fieldset */
+$fieldset = $form->getEntityFieldset();
+$fe = $this->formErrors();
+$fcg = $this->formControlGroup();
+$fr = $this->formrow();
+$fct = $this->formControlText();
+?>
+
+<div class="fieldset">
+    <?= $this->form()->openTag($form->prepare()) ?>
+    <?= $fe($form->prepare(), $form::INVALIDE_ERROR_MESSAGE) ?>
+    <?= $fr($fieldset->get($fieldset::ID)); ?>
+    <?php if($fieldset->getModeAdmin()): ?>
+    <div class="row">
+        <div class="col-md-6">
+            <?= $fct($fieldset->get($fieldset::INPUT_VALIDATE_BY)); ?>
+        </div>
+    </div>
+    <?php else : ?>
+    <?= $fr($fieldset->get($fieldset::INPUT_VALIDATE_BY)); ?>
+    <?php endif; ?>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-check form-switch">
+                <?= $fcg($fieldset->get($fieldset::INPUT_ETAT_VALIDATION)); ?>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="d-flex">
+                <?php
+                $input = $form->get($fieldset::INPUT_WARNING);
+                $label = $this->formlabel($input);
+                ?>
+                <span class="form-check form-switch">
+                    <br/>
+                    <?= $fcg($input) ?>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <?= $fcg($fieldset->get($fieldset::INPUT_COMMENTAIRES)); ?>
+        </div>
+        <div class="col-md-6">
+            <?= $fcg($fieldset->get($fieldset::INPUT_COMMENTAIRES_CACHE)); ?>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <?= $fr($form->get($form::INPUT_SUBMIT)); ?>
+        </div>
+    </div>
+
+    <?= $this->formHidden($form->get($form::CSRF)); ?>
+    <?= $this->form()->closeTag(); ?>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $(':radio[name="<?=$fieldset->getName() ?>[<?=$fieldset::INPUT_ETAT_VALIDATION?>]"]').on("change", function () {
+            var val = $(this).filter(':checked').val();
+            if (val == null) {
+                return;
+            }
+        });
+
+        $(':radio[name="<?=$fieldset->getName() ?>[<?=$fieldset::INPUT_ETAT_VALIDATION?>]"]').trigger("change");
+    });
+</script>

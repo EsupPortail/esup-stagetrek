@@ -1,0 +1,105 @@
+<?php
+
+use Application\Entity\Db\Faq;
+use Application\Provider\Privilege\FaqPrivileges;
+use UnicaenUtilisateur\Entity\Db\User;
+
+/**
+ * @var Faq[] $questions
+ */
+
+$vh = $this->faq();
+
+?>
+
+<?php $tableId = "liste-faq-questions" ?>
+
+        <table id="<?= $tableId ?>" class="table table-hover table-condensed">
+            <thead>
+            <tr>
+                <th class="no-search hidden" data-type="num"></th> <?php //Ordre d'affichage de la catégorie ?>
+                <th class="no-search hidden" data-type="num"></th> <?php //Ordre d'affichage de la question ?>
+                <th class="no-sort hidden"></th> <?php //Libellé de la catégorie ?>
+                <th class="no-sort">Questions</th> <?php //Question / Réponse ?>
+            </thead>
+            <tbody>
+            <?php foreach ($questions as $question):
+                $vh->setQuestion($question);
+                $categorie = $question->getCategorie();
+                ?>
+                <tr class="no-hover">
+                    <td class="hidden" data-order="<?= $categorie->getOrdre() ?>">
+                        <?= $categorie->getOrdre() ?>
+                    </td>
+                    <td class="hidden" data-order="<?= $question->getOrdre() ?>">
+                        <?= $question->getOrdre() ?>
+                    </td>
+                    <td class="hidden">
+                        <?= $categorie->getLibelle() ?>
+                    </td>
+                    <td class="no-hover" data-filter="<?= $question->getQuestion() . " " . $question->getReponse() ?>">
+                        <?= $vh->render() ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+            <tbody>
+        </table>
+    </div>
+
+    <?php /** @var User $appUser */
+    $appUser = $this->app()->getAppUser();
+    if(isset($appUser)) :?>
+    <div class="card-footer text-end">
+        <div class="row">
+            <div class="col-md-12 text-small">
+                Si vous ne trouvez pas la réponse à votre question, vous pouvez la poser en envoyant un mail à
+                <a href="mailto:<?= $appUser->getEmail() ?>"><?= $appUser->getEmail() ?></a>
+            </div>
+        </div>
+    </div>
+    <?php endif?>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        let collapsedGroups = {};
+
+        let options = generateDataTableSetings({
+                order: [[0, 'asc'], [1, 'asc']],
+                rowGroup: {
+                    dataSrc: [2],
+                    startRender: function (rows, group) {
+                        //Par défaut on cache
+                        if (collapsedGroups[group] === undefined) {
+                            collapsedGroups[group] = true;
+                        }
+                        let collapsed = !!collapsedGroups[group];
+                        rows.nodes().each(function (r) {
+                            r.style.display = collapsed ? 'none' : '';
+                        });
+                        //TODO : remplacer par les même icone que responsive
+                        let collaspControl = collapsed ?
+                            "<i class=\"m-3 text-primary fas fa-chevron-circle-right \"></i>" :
+                            "<i class=\"m-3 text-primary fas fa-chevron-circle-down\"></i>";
+
+                        return $('<tr/>')
+                            .append('<td colspan="5" class="">' + collaspControl + group + ' (' + rows.count() + ')</td>')
+                            .attr('data-name', group)
+                            .toggleClass('collapsed', collapsed);
+                    }
+                }
+            }
+        );
+        let tableInstance = $("#<?= $tableId ?>").DataTable(options);
+        $('#<?= $tableId ?> tbody tr.group-start').each(function () {
+            let name = $(this).data('name');
+            collapsedGroups[name] = !collapsedGroups[name];
+        });
+        $('#<?= $tableId ?> tbody').on('click', 'tr.dtrg-start', function () {
+            let name = $(this).data('name');
+
+            collapsedGroups[name] = !collapsedGroups[name];
+            tableInstance.draw(false);
+        });
+    });
+</script>

@@ -1,0 +1,108 @@
+<?php
+
+use Application\Controller\Terrain\TerrainStageController;
+use Application\Entity\Db\ContactTerrain;
+use Application\Entity\Db\TerrainStage;
+
+
+/**
+ * @see TerrainStageController::afficherAction()
+ *
+
+ * @var TerrainStage $terrain
+ */
+
+$vh = $this->terrainStage($terrain);
+$modele = $terrain->getModeleConventionStage();
+?>
+
+
+<?php if (!isset($modele)) : ?>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">Modéle de convention</div>
+                <div class="card-body">
+                    Le terrain de stage n'est pas conventionné.
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php return; endif; ?>
+
+<div class="row row-cols-1 row-cols-md-2">
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-header">Modéle de convention</div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <strong>Code</strong>
+                    </div>
+                    <div class="col-md-8">
+                        <?= $this->modeleConvention($modele)->lienAfficher() ?>
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Libellé</strong>
+                    </div>
+                    <div class="col-md-8">
+                        <?= $modele->getLibelle() ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <?php
+        $signataires = $terrain->getContactsTerrains()->toArray();
+        $signataires = array_filter($signataires, function (ContactTerrain $ct){
+            return $ct->isActif() && $ct->isSignataireConvention();
+        });
+        usort($signataires, function (ContactTerrain $ct1, ContactTerrain $ct2) {
+            if($ct1->getPrioriteOrdreSignature() != $ct2->getPrioriteOrdreSignature()) {
+                return $ct1->getPrioriteOrdreSignature() - $ct2->getPrioriteOrdreSignature();
+            }
+            return strcmp(strtolower($ct1->getLibelle()), strtolower($ct2->getLibelle()));
+        });
+    ?>
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-header">
+                <strong>Signataires</strong>
+            </div>
+            <div class="card-body">
+                <?php if (!(empty($signataires))) : ?>
+                    <ul>
+                        <?php
+                        /** @var \Application\Entity\Db\ContactTerrain $ct */
+                        foreach ($signataires as $ct) {
+                            $libelle = $ct->getDisplayName();
+                            if(!isset($libelle) || $libelle==""){$libelle = $ct->getLibelle();}
+                            echo sprintf("<li>%s %s</li>",
+                                ($ct->getPrioriteOrdreSignature()) ? $ct->getPrioriteOrdreSignature()." - " : "",
+                                $libelle);
+                        }
+                        ?>
+                    </ul>
+                <?php else : ?>
+                    <div class="alert alert-warning">
+                        Aucun des contacts du terrain n'est définie comme signataire de la convention.
+                    </div>
+                <?php endif ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <strong>Contenu</strong>
+            </div>
+            <div class="card-body">
+                <?= $modele->getCorps() ?>
+            </div>
+        </div>
+    </div>
+</div>

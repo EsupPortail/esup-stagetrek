@@ -1,0 +1,55 @@
+<?php
+
+use Application\Entity\Db\Stage;
+use Application\Entity\Db\TerrainStage;
+use Application\View\Helper\Preferences\PreferenceViewHelper;
+
+
+/**
+ * @see PreferenceViewHelper::renderRecommandations()
+
+ * @var Stage $stage
+ */
+
+$etudiant = $stage->getEtudiant();
+
+/**
+ * CategorieStage[] $categorieRecommandees
+ */
+$categorieRecommandees = ($etudiant->getCategoriesRecommandees()) ?? [];
+
+$tableId = "contrainte_preferences_stage-" . $stage->getId();
+?>
+
+
+<div class="card">
+    <div class="card-header">Recommendations</div>
+    <div class="card-body">
+        <?php if(empty($categorieRecommandees)) :?>
+            <div class="alert alert-info">Aucun terrain de stage spécifique n'est recommandé.</div>
+        <?php else : ?>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><strong>Afin de compléter la maquette, il est requis d'effectuer encore au minimum :</strong></li>
+            <?php foreach ($categorieRecommandees as $c) :
+                $nbCat = $etudiant->getNbRecommandationForCategorie($c);
+                ?>
+            <li class="list-group-item">
+                <strong><?= $nbCat ?></strong> stage<?=($nbCat > 1)? 's' : ''?> en <?= $c->getLibelle()?>
+                <?php /** @var TerrainStage[] $terrainsRecommandes */
+                $terrainsRecommandes = ($etudiant->getTerrainsRecommandeesFor($c)) ?? [];
+                if(!empty($terrainsRecommandes)){
+                    echo " dont :<ul>";
+                    foreach ($terrainsRecommandes as $t){
+                        $nbTerrain = $etudiant->getNbRecommandationForTerrain($t);
+                        echo sprintf("<li><strong>%s</strong> en %s</li>", $nbTerrain, $t->getLibelle());
+                    }
+                    echo "</ul>";
+                }
+                ?>
+
+            </li>
+            <?php endforeach; ?>
+        </ul>
+        <?php endif; ?>
+    </div>
+</div>

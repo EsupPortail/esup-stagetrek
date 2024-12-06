@@ -1,0 +1,111 @@
+<?php
+
+use Application\Controller\Etudiant\EtudiantController;
+use Application\Entity\Db\Adresse;
+use Application\Entity\Db\Etudiant;
+
+/**
+     * @see EtudiantController::monProfilAction()
+     *
+
+     * @var Etudiant $etudiant
+     */
+
+    /** @var Adresse $adresse */
+    $adresse = $etudiant->getAdresse();
+?>
+
+    <div class="row row-cols-1 row-cols-md-2">
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-header">
+                    Identité
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <strong>Nom</strong>
+                        </div>
+                        <div class="col-md-8">
+                            <?= $etudiant->getNom() ?>
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Prénom</strong>
+                        </div>
+                        <div class="col-md-8">
+                            <?= $etudiant->getPrenom() ?>
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Date de naissance</strong>
+                        </div>
+                        <div class="col-md-8">
+                            <?= ($etudiant->getDateNaissance()) ? $etudiant->getDateNaissance()->format('d/m/Y') : "Information non renseignée" ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-header">
+                    Adresse
+                </div>
+                <div class="card-body">
+                    <?php if (isset($adresse) && !$adresse->adresseIsComplete()) : ?>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="alert alert-info">
+                                    Votre adresse est incompléte. <br/>Merci de transmettre ces informations à
+                                    la scolarité.
+                                </div>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <strong>Adresse</strong>
+                        </div>
+                        <div class="col-md-8">
+                            <?= (isset($adresse) && $adresse->getAdresse() != "")
+                                ? $adresse->getAdresse()
+                                : "<span class='text-muted text-small'>Non renseignée</span>" ?>
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Complément</strong>
+                        </div>
+                        <div class="col-md-8">
+                            <?= (isset($adresse) && $adresse->getComplement() != "")
+                                ? $adresse->getComplement()
+                                : "<span class='text-muted text-small'>Non renseigné</span>" ?>
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Code postal</strong>
+                        </div>
+                        <div class="col-md-8">
+                            <?= (isset($adresse) && $adresse->getCodePostal() != "")
+                                ? $adresse->getCodePostal()
+                                : "<span class='text-muted text-small'>Non renseigné</span>" ?>
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Ville</strong>
+                        </div>
+                        <div class="col-md-8">
+                            <?= (isset($adresse) && $adresse->getVille() != "")
+                                ? $adresse->getVille()
+                                : "<span class='text-muted text-small'>Non renseignée</span>" ?>
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Cedex</strong>
+                        </div>
+                        <div class="col-md-8">
+                            <?= (isset($adresse) && $adresse->getCedex() != "")
+                                ? $adresse->getCedex()
+                                : "<span class='text-muted text-small'>Non renseigné</span>" ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

@@ -1,0 +1,110 @@
+<?php
+
+use API\Controller\LocalisationController;
+use Application\Controller\Etudiant\EtudiantController;
+use Application\Form\Etudiant\EtudiantForm;
+use Application\Form\Etudiant\Fieldset\EtudiantFieldset;
+
+/**
+ * @see EtudiantController::ajouterAction()
+ * @see EtudiantController::modifierAction()
+ * @var EtudiantForm $form
+ * @var EtudiantFieldset $fieldset
+ */
+
+$fe = $this->formErrors();
+$fcg = $this->formControlGroup();
+$fr = $this->formrow();
+$fct = $this->formControlText();
+$fh = $this->formHidden();
+/** @var EtudiantFieldset $fieldset */
+$fieldset = $form->getEntityFieldset();
+$adresseFieldset = $fieldset->get($fieldset::ADRESSE);
+$formId = 'form-ajout-etudiant';
+$form->setAttribute('id', $formId);
+?>
+
+
+<?= $this->form()->openTag($form->prepare()) ?>
+<?= $fe($form->prepare(), $form::INVALIDE_ERROR_MESSAGE) ?>
+<?= $fh($fieldset->get($fieldset::ID)); ?>
+
+<div class="row">
+    <div class="col-md-4">
+        <?= $fcg($fieldset->get($fieldset::NOM)); ?>
+    </div>
+    <div class="col-md-4">
+        <?= $fcg($fieldset->get($fieldset::PRENOM)); ?>
+    </div>
+</div>
+<div class="row">
+<div class="col-md-4">
+    <?= $fcg($fieldset->get($fieldset::NUM_ETU)); ?>
+</div>
+    <div class="col-md-4">
+        <?= $fcg($fieldset->get($fieldset::DATE_NAISSANCE)); ?>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <?= $fcg($fieldset->get($fieldset::MAIL)); ?>
+    </div>
+</div>
+
+<hr/>
+<div class="row">
+    <div class="col-md-8">
+        <?= $fct($adresseFieldset->get($adresseFieldset::INPUT_ADRESSE)); ?>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-8">
+        <?= $fct($adresseFieldset->get($adresseFieldset::INPUT_COMPLEMENT)); ?>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-4">
+        <?= $fct($adresseFieldset->get($adresseFieldset::INPUT_VILLE)); ?>
+        <?= $fr($adresseFieldset->get($adresseFieldset::INPUT_VILLE_CODE)); ?>
+    </div>
+    <div class="col-md-2">
+        <?= $fct($adresseFieldset->get($adresseFieldset::INPUT_CP)); ?>
+    </div>
+    <div class="col-md-2">
+        <?= $fct($adresseFieldset->get($adresseFieldset::INPUT_CEDEX)); ?>
+    </div>
+</div>
+
+<div class="mt-3 row">
+    <div class="col-md-3">
+        <?= $fcg($form->get($form::INPUT_SUBMIT)); ?>
+    </div>
+</div>
+<?= $fh($form->get($form::CSRF)); ?>
+<?= $this->form()->closeTag(); ?>
+
+<script type="text/javascript">
+    $(function () {
+        let autocompAdresse = $("#<?=$adresseFieldset::INPUT_VILLE?>");
+        // ville de naissance
+        autocompAdresse.autocompleteUnicaen({
+            elementDomId: '<?= $adresseFieldset::INPUT_VILLE_CODE ?>',
+            source: '<?= $this->url(LocalisationController::RECHERCHER_VILLE_ROUTE, [], [], true)?>',
+            minLength: 2,
+            delay: 750,
+            select: function (event, ui) {
+                $('#<?= $formId ?> #<?= $adresseFieldset::INPUT_VILLE_CODE ?>').val(ui.item.id);
+                $('#<?= $formId ?> #<?= $adresseFieldset::INPUT_CP ?>').val(ui.item.codepostal);
+                $('#<?= $formId ?> #<?= $adresseFieldset::INPUT_CEDEX ?>').val("");
+            },
+        });
+        autocompAdresse.on('input propertychange', function () {
+            let code = $('#<?= $formId ?> #<?= $adresseFieldset::INPUT_VILLE_CODE ?>')
+            if (code.val() !== null) {
+                code.val(null);
+                $('#<?= $formId ?> #<?= $adresseFieldset::INPUT_CP ?>').val("");
+            }
+        });
+    });
+</script>

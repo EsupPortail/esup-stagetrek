@@ -1,0 +1,44 @@
+<?php
+
+use Application\Controller\Etudiant\EtudiantController;
+use Application\Form\Etudiant\EtudiantForm;
+use Application\View\Helper\Etudiant\EtudiantViewHelper;
+use Laminas\View\Renderer\PhpRenderer;
+
+/**
+ * @see EtudiantController::ajouterAction()
+ * @var string $title
+ * @var EtudiantForm $form
+ */
+
+/** @var EtudiantViewHelper $vh */
+$vh = $this->etudiant();
+
+?>
+
+<div class="card card-success">
+    <h1 class="page-header card-header">
+    <span class="icon icon-ajouter"></span>
+    <?= $title ?>
+</h1>
+    <div class="card-body">
+        <?= $vh->renderForm($form); ?>
+    </div>
+
+    <div class="card-footer">
+        <div class="row">
+            <div class="col-md-12">
+                <?= $this->backButton("Liste des étudiants")->backTo($this->url(EtudiantController::ROUTE_INDEX, [], [], true)) ?>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    $(function () {
+        let body = $("body");
+        body.off("<?= EtudiantController::EVENT_AJOUTER?>", closeModal)
+            .one("<?= EtudiantController::EVENT_AJOUTER?>", closeModal);
+    })
+</script>

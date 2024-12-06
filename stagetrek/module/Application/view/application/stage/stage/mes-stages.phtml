@@ -1,0 +1,25 @@
+<?php
+
+use Application\Controller\Stage\StageController;
+use Application\Entity\Db\Etudiant;
+use Application\View\Helper\Stages\StageViewHelper;
+use Laminas\View\Renderer\PhpRenderer;
+
+/**
+ * @see StageController::mesStagesAction()
+ * @var Etudiant $etudiant
+ * @var StageViewHelper $vh
+ */
+
+$vh = $this->stage();
+$vh->setEtudiant($etudiant);
+?>
+
+<h1 class="page-header">
+        <span class="icon">
+        <i class="fas fa-notes-medical"></i>
+    </span>
+    Mes stages
+</h1>
+
+<?= $vh->renderListeMesStages(); ?>

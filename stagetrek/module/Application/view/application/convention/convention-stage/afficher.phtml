@@ -1,0 +1,22 @@
+<?php
+
+use Application\Controller\Convention\ConventionStageController;
+use Application\View\Helper\Convention\ConventionViewHelper;
+
+/**
+ * @see ConventionStageController::afficherAction()
+ * @var \Application\Entity\Db\Stage $stage
+ */
+
+
+/** @var ConventionViewHelper $vh */
+$vh = $this->convention();
+$vh->setStage($stage);
+?>
+
+
+<?= $vh->render(); ?>
+<div class="my-3"></div>
+<?= $vh->renderSignataires(); ?>
+
+

@@ -1,0 +1,45 @@
+<?php
+
+use Application\Controller\AnneeUniversitaire\AnneeUniversitaireController;
+use Application\Entity\Db\AnneeUniversitaire;
+use Application\Form\Annees\AnneeUniversitaireForm;
+use Application\View\Helper\Annees\AnneeUniversitaireViewHelper;
+
+
+/**
+ *
+ * @see AnneeUniversitaireController::modifierAction()
+ * @var string $title
+ * @var AnneeUniversitaireForm $form
+ * @var AnneeUniversitaire $annee
+ */
+
+/** @var AnneeUniversitaireViewHelper $vh */
+$vh = $this->anneeUniversitaire();
+?>
+
+<div class="card card-primary">
+    <h1 class="page-header card-header">
+        <span class="icon icon-modifier"></span>
+        <?= $title ?>
+    </h1>
+    <div class="card-body">
+        <?= $vh->renderForm($form); ?>
+    </div>
+
+    <div class="card-footer">
+        <div class="row">
+            <div class="col-md-12">
+                <?= $this->backButton("Fiche de l'année")->backTo($this->url(AnneeUniversitaireController::ROUTE_AFFICHER, ['anneeUniversitaire' => $annee->getId()], [], true)) ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        let body = $("body");
+        body.off("<?= AnneeUniversitaireController::EVENT_MODIFIER?>", closeModal)
+            .one("<?= AnneeUniversitaireController::EVENT_MODIFIER?>", closeModal);
+    })
+</script>

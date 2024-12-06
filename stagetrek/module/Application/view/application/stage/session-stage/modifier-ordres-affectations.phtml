@@ -1,0 +1,239 @@
+<?php
+
+use Application\Controller\Stage\SessionStageController;
+use Application\Controller\Stage\StageController;
+use Application\Entity\Db\SessionStage;
+use Application\Entity\Db\Stage;
+use Application\View\Helper\SessionsStages\SessionStageViewHelper;
+use Application\View\Helper\Stages\StageViewHelper;
+
+/**
+ * @see StageController::modifierOrdresAffectationsAction()
+ * @var String $title
+ * @var SessionStage $session
+ * @var Stage[] $stages
+ */
+$tableId = "modifier-stages-" . $session->getId() . "-liste";
+$formId = "modifier-stages-" . $session->getId() . "-form";
+/** @var SessionStageViewHelper $vh */
+$vh = $this->sessionStage($session);
+/** @var StageViewHelper $stageVh */
+$stageVh = $this->stage();
+?>
+
+    <h1 class="page-header">
+        <span class="icon icon-ordre"></span> <?= $title ?>
+        <br/>
+        <small class="text-muted">
+            <?= $session->getAnneeUniversitaire()->getLibelle() ?> -
+            <?= $session->getGroupe()->getLibelle() ?> -
+            <?= $session->getLibelle() ?>
+        </small>
+    </h1>
+
+
+    <div class="card">
+        <div class="card-header">Informations</div>
+        <div class="card-body ">
+            <?php //Différent messages selon la dates
+            $today = new DateTime();
+            if ($session->getDateFinCommission() <= $today) : ?>
+                <div class="card-text alert alert-warning">
+                    <strong>La commission d'affectation de la session est terminée.</strong>
+                    <br/> Les modifications ne doivent servir qu'à corriger des erreurs.
+                </div>
+            <?php elseif ($session->getDateFinChoix() < $today && $today <= $session->getDateFinCommission()) : ?>
+                <div class="card-text alert alert-warning">
+                    <strong>Les étudiants ont déjà définit leurs préférences.</strong>
+                    <br/> Les modifications ne doivent servir qu'à corriger des erreurs.
+                </div>
+            <?php elseif ($session->getDateDebutChoix() < $today && $today <= $session->getDateFinChoix()) : ?>
+                <div class="card-text alert alert-warning">
+                    <strong>La phase de définition des préférences est en cours.</strong>
+                    <br/> Merci d'informer les étudiants des modifications.
+                </div>
+            <?php elseif ($session->getDateCalculOrdresAffectations() < $today) : ?>
+                <div class="card-text alert alert-info">
+                    Les ordres d'affectations seront calculer automatiquement le
+                    <strong><?= $session->getDateCalculOrdresAffectations()->format('d/m/Y') ?></strong>
+                </div>
+            <?php endif; ?>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">Le score de référence représente le score de l'étudiant avant l'affectation
+                    du stage.
+                </li>
+                <li class="list-group-item">Utiliser l'ordre d'affectation manuel pour forcer la position d'un stage.
+                </li>
+                <li class="list-group-item">L'ordre effectif est calculé en distinguant les cas d'égalités.</li>
+            </ul>
+        </div>
+        <div class="card-footer">
+            <div class="row">
+                <div class="col-md-12">
+                    <?= $this->backButton("Fiche de la session")->backTo($this->url(SessionStageController::ROUTE_AFFICHER, ['sessionStage' => $session->getId()], [], true)) ?>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<?php if (!empty($stages)):
+    ?>
+    <div class="card my-3">
+        <div class="card-header">Modifier les ordres d'affectations des stages</div>
+        <div class="card-header card-sub-header text-end">
+            <form id="<?= $formId ?>" method="post" class="loadingForm"
+                  action="<?= $this->url(SessionStageController::ROUTE_MODIFIER_ORDRES_AFFECTAIONS, ["sessionStage" => $session->getId()], [], true) ?>"
+            >
+                <button name=submit" id="submit" type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Valider les modifications
+            </form>
+        </div>
+        <div class="card-body">
+
+            <table id="<?= $tableId ?>" class="table table-hover table-condensed">
+                <thead>
+                <tr>
+                    <td class="no-sort no-search bg-white" colspan="3"></td>
+                    <th class="no-sort no-search" colspan="3">
+                        Ordre d'affectation
+                    </th>
+                </tr>
+                <tr>
+                    <th class="col-md-6">Etudiant</th>
+                    <th class="col-md-2 text-center no-search">Score de référence</th>
+                    <th class="col-md-1 no-search">Automatique</th>
+                    <th class="col-md-2 no-search">Manuel</th>
+                    <th class="col-md-1 no-search" data-type="num">Effectif</th>
+                </thead>
+                <tbody>
+                <?php /** @var Stage $stage */
+                foreach ($stages
+
+                as $stage) :
+                $etudiant = $stage->getEtudiant();
+                //                $vh->setStage($stage);
+                $vh->setEtudiant($etudiant);
+                $stageVh->setStage($stage);
+                $ordre = $stage->getOrdreAffectation();
+                $scorePreAffectation = $stage->getScorePreAffectation();
+                $ordreManuel = $stage->getOrdreAffectationManuel();
+                $ordreAutomatique = $stage->getOrdreAffectationAutomatique();
+                ?>
+                <tr class="" data-stage-id="<?= $stage->getId() ?>">
+                    <td data-order="<?= $etudiant->getDisplayName() ?><?= $etudiant->getNumEtu() ?>"
+                        data-filter="<?= $etudiant->getDisplayName() ?><?= $etudiant->getNumEtu() ?>"
+                    >
+                        <?= $etudiant->getDisplayName() ?> (<?= $etudiant->getNumEtu() ?>)
+                    </td>
+
+                    <td class="text-center" data-order="<?= ($scorePreAffectation) ?? PHP_INT_MAX ?>">
+                        <?= ($scorePreAffectation) ?? "<span class='text-muted'>Non calculé</span>" ?>
+                    </td>
+
+                    <td class="select-ordre pointer-hover" data-order="<?= ($ordreAutomatique) ?? PHP_INT_MAX ?>">
+                        <label for="type-ordre-auto-<?= $stage->getId() ?>"></label>
+                        <input class="select-ordre-auto form-check-input me-1" type="radio"
+                               data-stage-id="<?= $stage->getId() ?>" name="type-ordre-<?= $stage->getId() ?>"
+                               id="type-ordre-auto-<?= $stage->getId() ?>"
+                            <?= (!isset($ordreManuel)) ? 'checked="checked"' : '' ?>
+                        >
+                        <?= ($ordreAutomatique) ?? "<span class='text-muted'>Non calculé</span>" ?>
+                    </td>
+                    <td class="select-ordre pointer-hover" data-order="<?= ($ordreManuel) ?? PHP_INT_MAX ?>">
+                        <div class="form-check form-check-inline">
+                            <input class="select-ordre-manuel form-check-input" type="radio"
+                                   data-stage-id="<?= $stage->getId() ?>" name="type-ordre-<?= $stage->getId() ?>"
+                                   id="type-ordre-manuel-<?= $stage->getId() ?>"
+                                <?= (isset($ordreManuel)) ? 'checked="checked"' : '' ?>
+                            >
+                            <input class="setOrdreAffectation" data-stage-id="<?= $stage->getId() ?>"
+                                   type="number"
+                                   id="setOrdreAffectation-<?= $stage->getId() ?>"
+                                   value="<?= $ordreManuel ?>" <?= (!isset($ordreManuel)) ? 'disabled' : '' ?>
+                                   placeholder="Actuel :  <?= ($ordreManuel) ?? "Automatique" ?>"
+                                   min="1" tabindex="1">
+                            <label for="type-ordre-manuel-<?= $stage->getId() ?>"></label>
+                            <label for="setOrdreAffectation-<?= $stage->getId() ?>"></label>
+                        </div>
+                    </td>
+                    <td class="" data-order="<?= ($ordre >= 1) ? $ordre : PHP_INT_MAX ?>">
+                        <?= ($ordre >= 1) ? "<strong>" . $ordre . "</strong>" : "<span class='text-muted'>Non calculé</span>" ?>
+                    </td>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $(function () {
+            $('[data-bs-toggle="popover"]').popover({html: true});
+            if ($.fn.DataTable.isDataTable("#<?= $tableId ?>")) {
+                $('#<?= $tableId ?>').DataTable().destroy();
+            }
+
+            //Pour déclancher les changement sur la celullue
+            $('.select-ordre').on('click', function () {
+                $(this).find('.form-check-input').trigger('click');
+            });
+
+            let form = $("#<?=$formId?>");
+
+            $('.select-ordre-manuel').on('click', function (event) {
+                event.stopPropagation(); // pour ne pas déclencher celui du dessus
+                let stageId = $(this).data('stage-id');
+                $("#setOrdreAffectation-" + stageId).attr('disabled', false);
+            });
+
+            $('.select-ordre-auto').on('click', function (event) {
+                event.stopPropagation(); // pour ne pas déclencher celui du dessus
+                // Mise à 0 du rang manuel
+                let stageId = $(this).data('stage-id');
+                let input = form.find("#ordreAffectation-" + stageId);
+                if (input.length === 0) {
+                    form.append("<input id='ordreAffectation-" + stageId + "' type='hidden' name='ordresAffectations[" + stageId + "]'>");
+                    input = form.find("#ordreAffectation-" + stageId);
+                }
+                input.val(0);
+                $("#setOrdreAffectation-" + stageId).val(null).attr('disabled', 'disabled');
+            })
+
+            $(".setOrdreAffectation").on("change", function () {
+                let stageId = $(this).data('stage-id');
+                let rang = parseInt($(this).val());
+                if (isNaN(rang)) {
+                    rang = 0;
+                    $(this).val("");
+                } else if (rang <= 0) {
+                    rang = 0;
+                    $(this).val("");
+                }
+                let input = form.find("#ordreAffectation-" + stageId);
+                if (input.length === 0) {
+                    form.append("<input id='ordreAffectation-" + stageId + "' type='hidden' name='ordresAffectations[" + stageId + "]'>");
+                    input = form.find("#ordreAffectation-" + stageId);
+                }
+                input.val(rang);
+            });
+
+            let options = generateDataTableSetings({
+                deferRender: true,
+                "order": [[4, "asc"]],
+                "lengthMenu": [[10, 50, 100, 250, -1], [10, 50, 100, 250, "Tous"]],
+                columnDefs: [
+                    {targets: ['no-sort'], orderable: false},
+                    {targets: ['no-search'], searchable: false},
+                    {targets: ['hidden'], visible: false},
+                ],
+                stateSave: false,
+                retrieve: false,
+                'dom': "<'row'<'col-sm-12 col-md-6 'l><'col-sm-12 col-md-6' f>> " +
+                    "<'row' <'col-sm-12'tr> >" +
+                    "<'row' <'col-sm-12 col-md-5'i> <'col-sm-12 col-md-7'p> >",
+            })
+            $("#<?= $tableId ?>").on('draw.dt', function () {
+                $('[data-bs-toggle="popover"]').popover({html: true});
+            }).DataTable(options);
+        });
+    </script>
+<?php endif; ?>

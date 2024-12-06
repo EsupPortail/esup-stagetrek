@@ -1,0 +1,37 @@
+<?php
+
+use Application\Controller\AnneeUniversitaire\AnneeUniversitaireController;
+use Application\Entity\Db\AnneeUniversitaire;
+use Application\View\Helper\Annees\AnneeUniversitaireViewHelper;
+
+/**
+ * @see AnneeUniversitaireController::indexAction()
+ * @var AnneeUniversitaire[] $annees
+ */
+$title = "Les années universitaires";
+$this->headTitle($this->translate("Les années"));
+/** @var AnneeUniversitaireViewHelper $vh */
+$vh = $this->anneeUniversitaire();
+?>
+
+<h1 class="page-header">
+    <span class="icon">
+        <i class="fas fa-calendar-alt"></i>
+    <?= $title ?>
+    </span>
+</h1>
+
+<div id="annees-content" data-url="<?= $this->url(AnneeUniversitaireController::ROUTE_LISTER, [], [], true) ?>">
+<?= $vh->renderListe($annees); ?>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        let body = $("body");
+
+        body.on("<?=AnneeUniversitaireController::EVENT_AJOUTER?> "
+            , function () {
+                $("#annees-content").refresh();
+            });
+    })
+</script>

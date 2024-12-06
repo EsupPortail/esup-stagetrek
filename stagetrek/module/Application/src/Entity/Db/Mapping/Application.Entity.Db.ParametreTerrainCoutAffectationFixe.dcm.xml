@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Application\Entity\Db\ParametreTerrainCoutAffectationFixe" table="parametre_terrain_cout_affectation_fixe">
+    <indexes>
+      <index name="IDX_97C6D850FEF753E0" columns="terrain_stage_id"/>
+    </indexes>
+    <unique-constraints>
+      <unique-constraint name="parametre_terrain_cout_affectation_fixe_id_unique" columns="id"/>
+      <unique-constraint name="parametre_terrain_cout_affectation_fixe_terrain_unique" columns="terrain_stage_id"/>
+    </unique-constraints>
+    <id name="id" type="bigint" column="id">
+      <generator strategy="SEQUENCE"/>
+      <sequence-generator sequence-name="parametre_terrain_cout_affectation_fixe_id_seq" allocation-size="1" initial-value="1"/>
+    </id>
+    <field name="cout" type="integer" column="cout" nullable="false">
+      <options>
+        <option name="unsigned"/>
+        <option name="default">0</option>
+      </options>
+    </field>
+    <field name="useCoutMedian" type="boolean" column="use_cout_median" nullable="false">
+      <options>
+        <option name="default">false</option>
+      </options>
+    </field>
+
+    <one-to-one field="terrainStage" target-entity="Application\Entity\Db\TerrainStage">
+      <join-column name="terrain_stage_id" referenced-column-name="id" />
+    </one-to-one>
+  </entity>
+</doctrine-mapping>

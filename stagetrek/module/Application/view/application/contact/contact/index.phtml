@@ -1,0 +1,52 @@
+<?php
+
+use Application\Controller\Contact\ContactController;
+use Application\Controller\Contact\ContactTerrainController;
+use Application\Entity\Db\Contact;
+use Application\Form\Contacts\ContactRechercheForm;
+use Application\View\Helper\Contacts\ContactViewHelper;
+
+/**
+ * @see ContactController::indexAction()
+ * @var ContactRechercheForm $form
+ * @var Contact[] $contactsStages
+ * @var bool $codeVisible
+ */
+/** @var ContactViewHelper $vh */
+$vh = $this->contact();
+
+$title = "Encadrants pédagogiques et autres contacts";?>
+
+<h1 class="page-header">
+    <span class="icon">
+        <i class="fas fa-user-doctor"></i>
+    </span>
+    <?= $title ?>
+</h1>
+
+    <div class="my-3">
+        <?= $vh->renderRechercheForm($form); ?>
+    </div>
+
+<div id="liste-contacts-content" data-url="<?= $this->url(ContactController::ROUTE_LISTER, [], [], true) ?>">
+    <div class="my-3">
+    <?= $vh->renderListe($contactsStages ,['codeVisible' => $codeVisible]) ?>
+    </div>
+</div>
+
+<script type="text/javascript">
+    //Rechargement de la page sur event
+    $(function () {
+
+        let body = $("body");
+        body.on("<?=ContactController::EVENT_AJOUTER?> "
+            + "<?=ContactController::EVENT_MODIFIER?> "
+            + "<?=ContactController::EVENT_SUPPRIMER?> "
+            + "<?=ContactController::EVENT_IMPORTER?> "
+            + "<?=ContactTerrainController::EVENT_IMPORTER?> "
+            , function (event) {
+                $("#liste-contacts-content").refresh();
+            });
+    });
+</script>
+

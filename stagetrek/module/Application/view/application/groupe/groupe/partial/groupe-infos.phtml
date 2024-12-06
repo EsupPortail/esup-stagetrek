@@ -1,0 +1,96 @@
+<?php
+
+use Application\Controller\Groupe\GroupeController;
+use Application\Entity\Db\Groupe;
+use Application\View\Helper\Annees\AnneeUniversitaireViewHelper;
+use Application\View\Helper\Groupe\GroupeViewHelper;
+
+
+/**
+ * @see GroupeController::afficherAction()
+ *
+
+ * @var Groupe $groupe
+ */
+
+/** @var GroupeViewHelper $vh */
+$vh = $this->groupe($groupe);
+
+$annee = $groupe->getAnneeUniversitaire();
+/** @var AnneeUniversitaireViewHelper $anneeVh */
+$anneeVh = $this->anneeUniversitaire($annee);
+$anneeEtat = $annee->getEtatActif();
+?>
+
+<div class="row row-cols-1 row-cols-md-2">
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-header">
+                Description
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <strong>Libellé</strong>
+                    </div>
+                    <div class="col-md-8">
+                        <?= $groupe->getLibelle() ?>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <strong>Niveau</strong>
+                    </div>
+                    <div class="col-md-8">
+                        <?= $groupe->getNiveauEtude()->getLibelle() ?>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <b>Nombre d'étudiant(s)</b>
+                    </div>
+                    <div class="col-md-8">
+                        <?= $groupe->getEtudiants()->count() ?>
+                        <span class="fas fa-users"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-header">
+                Année universitaire
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <strong>Libellé</strong>
+                    </div>
+                    <div class="col-md-8">
+                        <?= $anneeVh->lienAfficher()?>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <strong>Dates</strong>
+                    </div>
+                    <div class="col-md-8">
+                        du <?= $annee->getDateDebut()->format('d/m/Y') ?>
+                        au <?= $annee->getDateFin()->format('d/m/Y') ?>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <strong>Etat</strong>
+                    </div>
+                    <div class="col-md-8">
+                        <?= $this->etatinstance($anneeEtat, ['display-categorie'=> false, 'display-libelle' => true]) ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

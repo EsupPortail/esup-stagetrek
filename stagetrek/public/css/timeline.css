@@ -1,0 +1,147 @@
+.timeline{
+    width: 100%;
+    text-align: center;
+    overflow-x: auto;
+    padding: 1rem;
+}
+
+.timeline ol {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* Police */
+.timeline .tl_row .tl_title {
+    color: black;
+    font-weight: bold;
+}
+
+/* Bordure, padding et backgroupnd*/
+.timeline .tl_header {
+    margin-left: 10em;
+    font-weight: bold;
+    margin-bottom: 0.25em;
+}
+
+.timeline .tl_header .tl_years .tl_year {
+    border-color: black;
+    border-style: solid;
+    border-width: 1px 1px 0 1px;
+    padding: 0.5em;
+}
+.timeline .tl_header .tl_years .tl_year:not(:first-child) {
+    border-left: 0;
+}
+
+.timeline .tl_header .tl_months .tl_month{
+    border-color: black;
+    border-style: solid;
+    border-width: 1px;
+    padding: 0.5em;
+    background-color: lightgray;
+}
+
+.timeline .tl_header .tl_months .tl_month:not(:first-child) {
+    border-left: 0;
+}
+
+.timeline .tl_row {
+    margin-bottom: 0.25em;
+}
+
+.timeline .tl_row .tl_title {
+    padding: 5px;
+    min-width: 10em;
+    width: 10em;
+}
+
+.timeline .tl_timeframes .tl_timeframe{
+    border: solid black 1px;
+    background-color: lightgray;
+}
+
+/* Positionnement et taille */
+
+.timeline .tl_row {
+    width: 100%;
+    min-height: 5em;
+    display: flex;
+}
+
+.timeline .tl_row .tl_title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.timeline .tl_timeframes .tl_timeframe{
+    min-height: 5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* Positionnement des frames ayant des dates
+    usage :
+     Lors de la définition des div tl_years, tl_months et tl_timeframes depuis le html, leurs rajouter 1 style :
+    - grid-templates-columns: repeat({Durée en jours}, 1fr); pour définir la durée de la timeline
+        i.e. grid-templates-columns: repeat(365, 1fr); permettra d'avoir une timeline d'1 an
+    Lors de la définition des div tl_year, tl_month et tl_timeframe depuis le html, leurs rajouter 2 styles :
+    - grid-column-start: {Jours de départ (par rapport au début de la timeline)};
+         i.e. grid-column-start:1; fera que la timeframe commencera au 1er jour
+    - grid-column-end: span {nombre de jours de la frame};
+    - i.e. grid-column-end: span 15; fera une timeframe durera 15 jours
+ */
+/* Années*/
+.timeline .tl_header .tl_years {
+    display: grid;
+    width:100%;
+}
+.timeline .tl_header .tl_years .tl_year{
+    grid-row: 1;
+    overflow: hidden;
+}
+/* Mois */
+.timeline .tl_header .tl_months {
+    display: grid;
+    width:100%;
+}
+.timeline .tl_header .tl_months .tl_month{
+     grid-row: 1;
+    overflow: hidden;
+ }
+/* timeframe */
+.timeline .tl_row .tl_timeframes {
+    display: grid;
+    width:100%;
+}
+.timeline .tl_row .tl_timeframes .tl_timeframe{
+    grid-row: 1;
+}
+
+/* Gestion des infos en over*/
+.timeline .tl_row .tl_timeframes {
+    position: relative;
+}
+.timeline .tl_row .tl_timeframes .tl_timeframe .tf_info {
+    display: none;
+    flex-shrink: 0;
+    position: absolute;
+    /*top:0;*/
+    width:25em;
+    min-height: 6em;
+    padding: 1em;
+    z-index: 1;
+    background: white;
+    border: solid black 1px ;
+    text-align: left;
+    cursor: zoom-in;
+    overflow: hidden;
+}
+
+.timeline .tl_row .tl_timeframes .tl_timeframe:hover .tf_info {
+    display: block;
+}

@@ -1,0 +1,138 @@
+<?php
+
+use Application\Controller\Contrainte\ContrainteCursusEtudiantController;
+use Application\Form\Contrainte\ContrainteCursusEtudiantForm;
+use Application\Form\Contrainte\Fieldset\ContrainteCursusEtudiantFieldset;
+
+
+/**
+ * @see ContrainteCursusEtudiantController::modifierAction();
+ *
+
+ * @var ContrainteCursusEtudiantForm $form
+ * @var ContrainteCursusEtudiantFieldset $fieldset
+ */
+
+$fe = $this->formErrors();
+$fcg = $this->formControlGroup();
+$fr = $this->formrow();
+$fct = $this->formControlText();
+$fel = $this->formelement();
+$fieldset = $form->getEntityFieldset();
+
+/** @var \Application\Entity\Db\ContrainteCursusEtudiant $contrainte */
+$contrainte = $fieldset->getContrainteCursusEtudiant();
+$etat = $contrainte->getEtatActif();
+?>
+
+<?php //Cas d'erreur
+if(!$contrainte): ?>
+    <div class="fieldset">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-danger">
+                    Impossible de déterminer la contrainte à modifier.
+                </div>
+            </div>
+        </div>
+    </div>
+<?php return; endif; ?>
+
+<div class="fieldset">
+    <?= $this->form()->openTag($form->prepare()) ?>
+    <?= $fe($form->prepare(), $form::INVALIDE_ERROR_MESSAGE) ?>
+    <?= $fr($fieldset->get($fieldset::ID)) ?>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-md-4"><strong>Étudiant</strong></div>
+                <div class="col-md-8"><?= $contrainte->getEtudiant()->getDisplayName(); ?></div>
+            </div>
+            <div class="row">
+                <div class="col-md-4"><strong>Contrainte</strong></div>
+                <div class="col-md-8"><?= $contrainte->getLibelle(); ?></div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-md-4"><strong>Portée</strong></div>
+                <div class="col-md-8"><?= $contrainte->getPortee()->getLibelle(); ?></div>
+            </div>
+            <?php if ($contrainte->hasPorteeCategorie() || $contrainte->hasPorteeTerrain()) : ?>
+                <div class="row">
+                    <div class="col-md-4"><strong>Catégorie</strong></div>
+                    <div class="col-md-8"><?= $contrainte->getCategorieStage()->getLibelle(); ?></div>
+                </div>
+            <?php endif; ?>
+            <?php if ($contrainte->hasPorteeTerrain()) : ?>
+                <div class="row">
+                    <div class="col-md-4"><strong>Terrain</strong></div>
+                    <div class="col-md-8"><?= $contrainte->getTerrainStage()->getLibelle(); ?></div>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <hr/>
+    <div class="row">
+        <div class="col-md-2">
+            <strong>Description</strong>
+        </div>
+        <div class="col-md-10">
+            <?= $contrainte->getDescription(); ?>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <strong>État actuel</strong>
+        </div>
+        <div class="col-md-4">
+            <?= $this->etatinstance($etat, ['display-categorie'=> false, 'display-libelle' => true, 'unknown-type-libelle' => "Indéterminé"]) ?>
+        </div>
+    </div>
+
+    <hr/>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-md-7"><strong>Nombre de stage(s) validant la contrainte</strong></div>
+                <div class="col-md-5"><?= $contrainte->getNbStagesValidant(); ?></div>
+            </div>
+            <div class="row">
+                <?php
+                $input = $fieldset->get($fieldset::NB_STAGE_VALIDE_EQUIVALENCE);
+                ?>
+                <div class="col-md-7"><strong>Nombre d'équivalence(s) accordée(s)</strong></div>
+                <div class="col-md-5"> <?= $fel($input); ?></div>
+            </div>
+            <div class="row">
+                <div class="col-md-7"><strong>Reste à satisfaire</strong></div>
+                <div class="col-md-5"><?= $contrainte->getResteASatisfaire(); ?></div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <?php
+            $min = ($contrainte->getMin() && $contrainte->getMin() > 0) ? $contrainte->getMin() : null;
+            $max = ($contrainte->getMax() && $contrainte->getMax() > 0) ? $contrainte->getMax() : null;
+            ?>
+            <div class="row">
+                <div class="col-md-4"><strong>Borne minimale</strong></div>
+                <div class="col-md-8 <?= ($min) ? "" : "text-muted" ?>"><?= ($min) ?? "Non" ?></div>
+            </div>
+            <div class="row">
+                <div class="col-md-4"><strong>Borne maximale</strong></div>
+                <div class="col-md-8 <?= ($max) ? "" : "text-muted" ?>"><?= ($max) ?? "Non" ?></div>
+            </div>
+        </div>
+    </div>
+
+    <hr />
+    <div class="row">
+        <div class="col-md-12">
+            <span class="mx-3"><?= $fr($form->get($form::INPUT_SUBMIT)); ?></span>
+        </div>
+    </div>
+
+    <?= $this->formHidden($form->get($form::CSRF)); ?>
+    <?= $this->form()->closeTag(); ?>
+</div>

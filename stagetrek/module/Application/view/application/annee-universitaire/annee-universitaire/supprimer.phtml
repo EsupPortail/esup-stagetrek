@@ -1,0 +1,41 @@
+<?php
+
+use Application\Controller\AnneeUniversitaire\AnneeUniversitaireController;
+use Application\Form\Misc\ConfirmationForm;
+use Application\View\Helper\Misc\ConfirmationFormViewHelper;
+
+
+/**
+ * @see AnneeUniversitaireController::supprimerAction()
+ * @var string $title
+ * @var ConfirmationForm $form
+ */
+
+/** @var ConfirmationFormViewHelper $vh */
+$vh = $this->confirmation($form)
+?>
+
+<div class="card card-danger">
+    <h1 class="page-header card-header">
+        <span class="icon icon-supprimer"></span>
+        <?= $title ?>
+    </h1>
+    <div class="card-body">
+            <div class='alert alert-warning'>
+                <strong>Cette action est irréversible</strong>
+                <div>Tout les groupes, les sessions de stages et les affectations liés à l'année seront <strong>définitivement supprimées</strong></div>
+            </div>
+        <?= $vh->render(); ?>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        let body = $("body");
+        body.one("<?= $form::CANCEL_EVENT ?>", function () {
+            window.location.href = "<?= $this->url(AnneeUniversitaireController::ROUTE_INDEX, [], [], true)?>";
+        });
+        body.off("<?= AnneeUniversitaireController::EVENT_SUPPRIMER?>", closeModal)
+            .one("<?= AnneeUniversitaireController::EVENT_SUPPRIMER?>", closeModal);
+    });
+</script>

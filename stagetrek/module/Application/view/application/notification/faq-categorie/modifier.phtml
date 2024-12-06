@@ -1,0 +1,39 @@
+<?php
+
+use Application\Controller\Notification\FaqCategorieController as Controller;
+use Application\Form\Notification\FaqCategorieQuestionForm;
+use Application\View\Helper\Notification\FAQCategorieQuestionViewHelper;
+
+/**
+ * @see FaqCategorieController::modifierAction()
+ * @var string $title
+ * @var FaqCategorieQuestionForm $form
+ */
+
+
+/** @var FAQCategorieQuestionViewHelper $vh */
+$vh = $this->categorieFaq();
+?>
+
+<div class="card card-primary">
+    <h1 class="page-header card-header">
+        <span class="icon icon-modifier"></span>
+        <?= $title ?>
+    </h1>
+    <div class="card-body">
+
+        <div class="fieldset">
+            <?= $vh->renderForm($form); ?>
+        </div>
+
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $(function () {
+        let body = $("body");
+        body.off("<?= Controller::EVENT_MODIFIER?>", closeModal)
+            .one("<?= Controller::EVENT_MODIFIER?>", closeModal);
+    });
+</script>

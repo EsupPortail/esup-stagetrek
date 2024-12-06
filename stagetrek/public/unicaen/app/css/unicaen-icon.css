@@ -1,0 +1,383 @@
+.icon:before {
+    font-family: "Font Awesome 5 Free";
+    display: inline-block;
+    vertical-align: middle;
+    font-weight: 900;
+}
+
+.icon {
+    padding-right: 3px;
+}
+.icon.iconly {
+    padding-right: 0;
+}
+
+.icon.icon-voir:before,
+.icon.icon-view:before {
+    content: "\f06e";
+}
+
+.icon.icon-masquer:before,
+.icon.icon-hide:before {
+    content: "\f070";
+}
+
+.icon.icon-ajouter:before {
+    content: "\f0fe";
+}
+
+.icon.icon-edit:before,
+.icon.icon-editer:before,
+.icon.icon-modifier:before {
+    content: "\f303";
+}
+
+.icon.icon-historiser:before {
+    content: "\f1f8";
+}
+
+.icon.icon-restaurer:before {
+    content: "\f829";
+}
+
+.icon.icon-monter:before {
+    content: "\f062";
+}
+
+.icon.icon-descendre:before {
+    content: "\f063";
+}
+.icon.icon-precedent:before {
+    content: "\f053";
+}
+.icon.icon-suivant:before {
+    content: "\f054";
+}
+
+.icon.icon-users:before,
+.icon.icon-utilisateurs:before {
+    content: "\f0c0";
+}
+
+.icon.icon-user:before,
+.icon.icon-utilisateur:before {
+    content: "\f007";
+}
+
+.icon.icon-user-add:before,
+.icon.icon-utilisateur-ajouter:before {
+    content: "\f234";
+}
+
+.icon.icon-user-delete:before,
+.icon.icon-utilisateur-supprimer:before {
+    content: "\f503";
+}
+
+.icon.icon-user-checked:before,
+.icon.icon-utilisateur-ok:before {
+    content: "\f4fc";
+}
+
+.icon.icon-listing:before,
+.icon.icon-lister:before
+{
+    content: "\f0ae";
+}
+
+.icon.icon-selectionner:before {
+    content: "\f65e";
+}
+
+.icon.icon-fichier:before,
+.icon.icon-file:before {
+    content: "\f15b";
+}
+
+.icon.icon-fichiers:before,
+.icon.icon-files:before {
+    content: "\f0c5";
+}
+
+.icon.icon-dossier:before {
+    content: "\f07c";
+}
+
+.icon.icon-power:before {
+    content: "\f011";
+}
+
+.icon.icon-plus:before {
+    content: "\f067";
+}
+
+.icon.icon-minus:before {
+    content: "\f068";
+}
+
+.icon.icon-retour:before {
+    content: "\f053";
+}
+
+.icon.icon-supprimer:before,
+.icon.icon-historiser:before,
+.icon.icon-delete:before {
+    content: "\f1f8";
+}
+
+.icon.icon-detruire:before,
+.icon.icon-destroy:before {
+    content: "\f1e2";
+}
+
+.icon.icon-importer:before,
+.icon.icon-import:before {
+    content: "\f56f";
+}
+
+.icon.icon-exporter:before,
+.icon.icon-export:before {
+    content: "\f56e";
+}
+
+.icon.icon-checked:before,
+.icon.icon-oui:before,
+.icon.icon-yes:before {
+    content: "\f00c";
+}
+.icon.icon-unchecked:before,
+.icon.icon-non:before,
+.icon.icon-no:before {
+    content: "\f00d";
+}
+
+.icon.icon-succes:before,
+.icon.icon-success:before,
+.icon.icon-ok:before {
+    content: "\f164";
+}
+.icon.icon-echec:before,
+.icon.icon-failure:before,
+.icon.icon-ko:before {
+    content: "\f165";
+}
+
+.icon.icon-info:before,
+.icon.icon-information:before {
+    content: "\f05a";
+}
+
+.icon.icon-warning:before,
+.icon.icon-attention:before,
+.icon.icon-avertissement:before {
+    content: "\f071";
+}
+
+.icon.icon-question:before {
+    content: "\f059";
+}
+
+.icon.icon-cloner:before {
+    content: "\f24d";
+}
+
+.icon.icon-toggle-on:before {
+    content: "\f205";
+}
+
+.icon.icon-toggle-off:before {
+    content: "\f204";
+}
+
+.icon.icon-text:before,
+.icon.icon-texte:before {
+    content: "\f039";
+}
+
+.icon.icon-mail:before, 
+.icon.icon-courrier:before{
+    content: "\f0e0";
+}
+
+.icon.icon-pdf:before {
+    content: "\f1c1";
+}
+
+.icon.icon-csv:before {
+    content: "\f6dd";
+}
+
+.icon.icon-code:before {
+    content: "\f1c9";
+}
+
+.icon.icon-valider:before {
+    content: "\f00c";
+}
+
+.icon.icon-recharger:before,
+.icon.icon-refresh:before {
+    content: "\f021";
+}
+
+.icon.icon-notify:before,
+.icon.icon-notifier:before {
+    content: "\f0e0";
+}
+
+.icon.icon-telecharger:before,
+.icon.icon-download:before  {
+    content: "\f019";
+}
+
+.icon.icon-televerser:before,
+.icon.icon-upload:before{
+    content: "\f093";
+}
+
+.icon.icon-euro:before {
+    content: "\f153";
+}
+
+.icon.icon-filtrer:before,
+.icon.icon-filter:before {
+    content: "\f0b0";
+}
+
+.icon.icon-clef:before {
+    content:"\f084";
+}
+
+.icon.icon-diagramme:before {
+    content:"\f080";
+}
+
+.icon.icon-star:before {
+    content: "\f005";
+}
+
+.icon.icon-calendrier:before {
+    content: "\f133";
+}
+
+.icon.icon-chercher:before,
+.icon.icon-search:before {
+    content: "\f002";
+}
+
+.icon.icon-compresser:before,
+.icon.icon-archive:before,
+.icon.icon-zip:before {
+    content: "\f1c6";
+}
+
+.icon.icon-play::before {
+    content: "\f04b";
+}
+.icon.icon-attente:before,
+.icon.icon-wait:before,
+.icon.icon-hourglass:before {
+    content: "\f252";
+}
+
+.icon.icon-asterisque:before,
+.icon.icon-asterisk:before,
+.icon.icon-obligatoire:before,
+.icon.icon-mandatory:before
+{
+    content: "\f069";
+}
+
+.icon.icon-sauvegarder:before,
+.icon.icon-save:before
+{
+    content: "\f0c7";
+}
+
+.icon.icon-valider:before,
+.icon.icon-validate:before
+{
+    content: "\f14a";
+}
+
+.icon.icon-lier:before,
+.icon.icon-link:before {
+    content: "\f0c1";
+}
+
+
+.icon.icon-delier:before,
+.icon.icon-unlink:before {
+    content: "\f127";
+}
+
+.icon.icon-trier:before,
+.icon.icon-sort:before {
+    content:"\f160";
+}
+
+.icon.icon-trier-alpha:before,
+.icon.icon-sort-alpha:before {
+    content:"\f15d";
+}
+
+.icon.icon-reduire:before,
+.icon.icon-shrink:before {
+    content: "\f78c";
+}
+
+.icon.icon-agrandir:before,
+.icon.icon-enlarge:before {
+    content: "\f31e";
+}
+
+.icon.icon-effacer:before,
+.icon.icon-gommer:before,
+.icon.icon-erase:before {
+    content:"\f12d";
+}
+
+.icon.icon-follow:before {
+    content: "\f0f3";
+}
+
+.icon.icon-unfollow:before {
+    content: "\f1f6";
+}
+
+.icon.icon-annuler:before,
+.icon.icon-cancel:before {
+    content:"\f410";
+}
+
+.icon.icon-gerer::before {
+    content:"\f013";
+}
+
+
+.icon.icon-vider::before,
+.icon.icon-nettoyer::before,
+.icon.icon-clear::before
+{
+    content:"\f51a";
+}
+
+
+.icon.icon-accessibilite::before,
+.icon.icon-accessibility::before,
+.icon.icon-rqth::before
+{
+    content:"\f193";
+}
+
+.icon.icon-commentaire::before,
+.icon.icon-comment::before
+{
+    content:"\f075";
+}
+
+.icon.icon-commentaires::before,
+.icon.icon-comments::before
+{
+    content:"\f086";
+}

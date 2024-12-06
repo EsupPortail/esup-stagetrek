@@ -1,0 +1,40 @@
+<?php
+
+use Application\Controller\Stage\SessionStageController;
+use Application\Entity\Db\SessionStage;
+use Application\Form\Etudiant\EtudiantRechercheForm;
+use Application\View\Helper\SessionsStages\SessionStageViewHelper;
+
+/**
+ * @see SessionStageController::indexAction()
+ * @var EtudiantRechercheForm $form
+ * @var SessionStage[] $sessionsStages
+ */
+
+$fct = $this->formControlText();
+$fcg = $this->formControlGroup();
+
+/** @var SessionStageViewHelper $vh */
+$vh = $this->sessionStage();
+
+$title = "Les sessions de stages";
+$this->headTitle($this->translate("Les sessions"));
+
+?>
+
+<h1 class="page-header">
+    <span class="icon">
+        <i class="fas fa-briefcase-medical"></i>
+    </span>
+    <?= $title ?>
+</h1>
+
+<div class="my-3">
+<?= $vh->renderRechercheForm($form); ?>
+</div>
+
+<?php if (isset($sessionsStages)): ?>
+<div class="my-3">
+    <?= $vh->renderListe($sessionsStages) ?>
+</div>
+<?php endif ?>

@@ -1,0 +1,141 @@
+<?php
+
+use Application\Entity\Db\ContactStage;
+use Application\Entity\Db\Etudiant;
+use Application\Entity\Db\Stage;
+use Application\Entity\Db\ValidationStage;
+use Application\Form\Stages\ValidationStageForm;
+use Application\View\Helper\Stages\ValidationStageViewHelper;
+
+/**
+ * @see ValidationStageController::validerAction()
+ * @var string $title
+ * @var ValidationStageForm $form
+ * @var Stage $stage
+ * @var ContactStage $contact
+ */
+
+
+/** @var Etudiant $etudiant */
+$etudiant = $stage->getEtudiant();
+/** @var ValidationStage $validationStage */
+$validationStage = $stage->getValidationStage();
+
+/** @var ValidationStageViewHelper $vh */
+$vh = $this->validation();
+$vh->setStage($stage);
+$today = new DateTime();
+
+$terrain = $stage->getTerrainStage();
+$categorie = $terrain->getCategorieStage();
+
+?>
+
+<?php $this->headTitle($this->translate($title)); ?>
+
+<div class="card card-primary">
+    <h1 class="page-header card-header">
+        <?= $title ?>
+    </h1>
+    <div class="card-body">
+
+        <div class="card">
+            <div class="card-header">Informations</div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <strong>Etudiant</strong>
+                            </div>
+                            <div class="col-md-8">
+                                <?= $etudiant->getDisplayName() ?>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <strong>Stage</strong>
+                            </div>
+                            <div class="col-md-8">
+                                <?= $terrain->getLibelle() ?>
+                                (<?= $categorie->getAcronyme() ?>)
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <strong>Dates</strong>
+                            </div>
+                            <div class="col-md-8">
+
+                                du <?= $stage->getDateDebutStage()->format('d/m/Y') ?>
+                                au <?= $stage->getDateFinStage()->format('d/m/Y') ?>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <strong>Etat actuel</strong>
+                            </div>
+                            <div class="col-md-8">
+                                <?php
+                                if ($validationStage->isValide()) {
+                                    echo "Validé";
+                                } elseif ($validationStage->isInvalide()) {
+                                    echo "Non validé";
+                                } else {
+                                    echo "Non définie";
+                                }
+                                ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <?php if ($today < $stage->getDateDebutValidation()) : // cas logiquement impossible ?>
+                    <hr/>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="alert alert-info">
+                                <span class="icon icon-info text-primary"></span>
+                                <?= sprintf("La phase de validation du stage commence le <b>%s</b>.",
+                                    $stage->getDateDebutValidation()->format('d/m/Y')
+                                ) ?>
+                            </div>
+                        </div>
+                    </div>
+
+                <?php elseif ($stage->getDateFinValidation() < $today) : ?>
+                    <hr/>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="alert alert-warning">
+                                <span class="icon icon-warning text-warning"></span>
+                                <?= sprintf("La phase de validation du stage est normalement terminée. <b>Votre choix est definitif.</b>") ?>
+                            </div>
+                        </div>
+                    </div>
+
+                <?php elseif ($contact->getTokenExpirationDate() && $today < $contact->getTokenExpirationDate()) : ?>
+                    <hr/>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="alert alert-info">
+                                <?= sprintf("Vous avez jusqu'au <b>%s</b> pour procéder à la validation du stage.",
+                                    $stage->getDateFinValidation()->format('d/m/Y')
+                                ) ?>
+                            </div>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <div class="card my-3">
+            <div class="card-header">Votre évaluation</div>
+            <div class="card-body">
+            <?= $vh->renderForm($form) ?>
+            </div>
+        </div>
+    </div>
+</div>

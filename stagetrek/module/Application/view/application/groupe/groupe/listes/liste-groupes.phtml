@@ -1,0 +1,97 @@
+<?php
+
+use Application\Controller\Groupe\GroupeController;
+use Application\Entity\Db\Groupe;
+use Application\Provider\EtatType\AnneeEtatTypeProvider;
+use Application\Provider\Privilege\EtudiantPrivileges;use Application\View\Helper\Annees\AnneeUniversitaireViewHelper;
+use Application\View\Helper\Groupe\GroupeViewHelper;
+
+
+/**
+
+ * @var Groupe[] $groupes
+ */
+
+/** @var GroupeViewHelper $vh */
+$vh = $this->groupe();
+
+$canSee = $vh->hasPrivilege(EtudiantPrivileges::GROUPE_AFFICHER);
+$tableId = "liste-groupes";
+?>
+
+<div class="card">
+    <div class="card-header">Liste des groupes</div>
+    <div class="card-body">
+        <table id="<?= $tableId ?>" class="table table-hover table-condensed">
+            <thead>
+            <tr>
+                <th class="hidden no-search no-sort">Année</th>
+                <th class="hidden" data-type="num">Année</th>
+                <th class="col-md-8">Libellé</th>
+                <th class="col-md-2" data-type="num">Niveau</th>
+                <th class="col-md-2 text-end" data-type="num">Nombre d'étudiant(s)</th>
+            </thead>
+            <tbody>
+            <?php foreach ($groupes as $groupe):
+                $vh->setGroupe($groupe);
+                $annee = $groupe->getAnneeUniversitaire();
+                $etat = $annee->getEtatActif();
+                $bg = match (true) {
+                    $annee->hasEtatNonValide() => "table-danger",
+                    $annee->hasEtatEnConstruction() => "table-info",
+                    $annee->hasEtatFuture() => "table-muted",
+                    $annee->hasEtatEnCours() => "table-primary",
+                    $annee->hasEtatTerminee() => "table-success",
+                    default => "table-danger",
+                }
+                ?>
+                <tr class="<?= $bg ?>">
+                    <td class="hidden">
+                        <div class="row my-0">
+                            <div class="col-md-8">
+                                Année <?= $annee->getLibelle() ?>
+                            </div>
+                            <div class="col-md-4 text-end"
+                                 style="color:<?=  (isset($etat)) ? $etat->getType()->getCouleur() : "" ?>"
+                            >
+                                <span class="<?= (isset($etat)) ? $etat->getType()->getIcone() : "fa fa-question" ?>"></span>
+                                <?= (isset($etat)) ? $etat->getTypeLibelle() : "Indéterminé" ?>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="hidden" data-filter="<?= $annee->getLibelle(); ?>"
+                        data-order="<?= $annee->getDateDebut()->getTimestamp() ?>">
+                    </td>
+                    <td data-order="<?= $groupe->getLibelle()?>"
+                        data-filter="<?= $groupe->getLibelle(); ?>">
+                        <?= ($canSee) ? $vh->lienAfficher() : $groupe->getLibelle() ?>
+                    </td>
+                    <td data-order="<?= $groupe->getNiveauEtude()->getOrdre() ?>">
+                        <?= $groupe->getNiveauEtude()->getLibelle() ?>
+                    </td>
+                    <td class="text-end" data-order="<?= $groupe->getEtudiants()->count() ?>">
+                        <?= $groupe->getEtudiants()->count() ?>
+                        <span class="mx-1 icon icon-users"></span>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+            <tbody>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        let options = generateDataTableSetings(
+        {
+            "order": [[3, "asc"], [2, "asc"], [4, "asc"]],
+            "orderFixed": {
+                "pre": [1, 'desc'],
+            },
+            rowGroup: {
+                dataSrc: 0
+            }
+        })
+        $("#<?= $tableId ?>").DataTable(options);
+    });
+</script>

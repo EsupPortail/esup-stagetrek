@@ -1,0 +1,69 @@
+<?php
+
+use Application\Controller\Notification\FaqQuestionController;
+use Application\Form\Notification\FaqQuestionForm;
+use Application\Form\Notification\Fieldset\FaqQuestionFieldset;
+
+/**
+ * @see FaqQuestionController::ajouterAction()
+ * @see FaqQuestionController::modifierAction()
+ *
+ * @var string $title
+ * @var FaqQuestionForm $form
+ */
+
+$fcg = $this->formControlGroup();
+$fe = $this->formErrors();
+$fr = $this->formrow();
+$fct = $this->formControlText();
+
+
+/** @var FaqQuestionFieldset $fieldset */
+$fieldset = $form->getEntityFieldset();
+?>
+
+<div class="fieldset">
+
+    <?= $this->form()->openTag($form->prepare()) ?>
+    <?= $fe($form->prepare(), $form::INVALIDE_ERROR_MESSAGE) ?>
+    <?= $fr($fieldset->get($fieldset::ID)); ?>
+    <div class="row">
+        <div class="col-md-6">
+            <?= $fcg($fieldset->get($fieldset::CATEGORIE)); ?>
+        </div>
+        <div class="col-md-6">
+            <?= $fcg($fieldset->get($fieldset::ORDRE)); ?>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <?= $fct($fieldset->get($fieldset::QUESTION)); ?>
+        </div>
+        <div class="col-md-6">
+            <?= $fcg($fieldset->get($fieldset::ROLES)); ?>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <?= $fcg($fieldset->get($fieldset::REPONSE)); ?>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-10">
+            <?= $fcg($form->get($form::SUBMIT)); ?>
+        </div>
+    </div>
+
+    <?= $this->formHidden($form->get($form::CSRF)); ?>
+    <?= $this->form()->closeTag(); ?>
+</div>
+
+
+<script type="text/javascript">
+    $(function () {
+        //Affichage des selectpicker des le départ
+        $('.selectpicker').selectpicker('render');
+    });
+</script>

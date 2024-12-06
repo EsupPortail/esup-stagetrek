@@ -1,0 +1,59 @@
+FROM nginx:1.24.0-bullseye-perl
+
+RUN if [ -f ./deploy_configuration/proxy/.env_proxy ]; then \
+    # Si le fichier source existe, copiez-le
+    COPY ./deploy_configuration/proxy/.env_proxy /; \
+fi
+COPY ./deploy_configuration/proxy/proxy.sh /
+RUN chmod +x /proxy.sh
+
+RUN sh /proxy.sh
+
+ARG HTTP_PROXY
+ENV http_proxy=$HTTP_PROXY
+ENV https_proxy=$HTTP_PRO
+ENV HTTP_PROXY=$HTTP_PROXY
+ENV HTTPS_PROXY=$HTTP_PROXY
+
+
+# Vérifiez si la variable d'environnement http_proxy est définie
+RUN if [ -n "$http_proxy" ]; then \
+    # Si elle est définie, exécutez les commandes pour configurer le proxy
+    touch /etc/apt/apt.conf.d/05proxy; \
+    echo 'Acquire::HTTP::Proxy "'$http_proxy'";' >> /etc/apt/apt.conf.d/05proxy; \
+    echo 'Acquire::HTTPS::Prox "'$http_proxy'";' >> /etc/apt/apt.conf.d/05proxy; \
+    echo 'Acquire::ftp::Proxy "'$http_proxy'";' >> /etc/apt/apt.conf.d/05proxy; \
+    echo "Proxy configuré dans le système de packages avec la valeur $http_proxy" && true; \
+fi
+
+
+RUN apt-get update -y
+
+# Installez les dépendances nécessaires pour Shibboleth
+# Installez le module Nginx Shibboleth
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    nginx-extras && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN apt-get install -y gettext-base
+
+
+#Clean the Proxy env
+ENV HTTP_PROXY ""
+ENV HTTPS_PROXY ""
+ENV http_proxy ""
+ENV https_proxy ""
+RUN rm -f /etc/apt/apt.conf.d/05proxy
+
+RUN mkdir /var/www/html/stagetrek
+WORKDIR /var/www/html/stagetrek/
+COPY ./stagetrek /var/www/html/stagetrek/
+WORKDIR /var/www/html/stagetrek/public
+
+COPY ./deploy_configuration/nginx/nginx.conf.template /etc/nginx/tmp/
+
+RUN ln -sf /dev/stdout /var/log/nginx/access.log && ln -sf /dev/stderr /var/log/nginx/error.log  
+
+# Commande d'exécution par défaut pour Nginx
+CMD ["nginx", "-g", "daemon off;"]

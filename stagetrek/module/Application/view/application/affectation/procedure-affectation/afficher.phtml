@@ -1,0 +1,63 @@
+<?php
+
+use Application\Controller\Affectation\ProcedureAffectationController;
+use Application\Entity\Db\ProcedureAffectation;
+use Application\View\Helper\Affectation\ProcedureAffectationViewHelper;
+
+/**
+ * @see ProcedureAffectationController::afficherAction()
+ * @var ProcedureAffectation $procedureAffectation
+ * @var string $title
+ */
+/** @var ProcedureAffectationViewHelper $vh */
+$vh = $this->procedureAffectation($procedureAffectation);
+$canEdit = $vh->actionAllowed(ProcedureAffectationController::ACTION_MODIFIER);
+?>
+
+<h1 class="page-header">
+        <span class="icon">
+        <i class="fas fa-cogs"></i>
+    </span>
+    <?= $title ?>
+</h1>
+
+<div class="card mt-3">
+    <?php if ($canEdit) : ?>
+        <div class="card-header card-sub-header text-end">
+            <?= $vh->lienModifier() ?>
+        </div>
+    <?php endif; ?>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-2"><strong>Code</strong></div>
+            <div class="col-md-4"><?= $procedureAffectation->getCode() ?></div>
+        </div>
+        <div class="row">
+            <div class="col-md-2"><strong>Libellé</strong></div>
+            <div class="col-md-4"><?= $procedureAffectation->getLibelle() ?></div>
+
+            <div class="col-md-2"><strong>Ordre d'affichage</strong></div>
+            <div class="col-md-4"><?= $procedureAffectation->getOrdre() ?></div>
+        </div>
+        <hr/>
+        <div class="row">
+            <div class="col-md-2"><strong>Description</strong></div>
+            <div class="col-md-10"><?= $procedureAffectation->getDescription() ?></div>
+        </div>
+    </div>
+    <div class="card-footer">
+        <?= $this->backButton("Liste des procédures")->backTo($this->url(ProcedureAffectationController::ROUTE_INDEX, [], [], true)) ?>
+    </div>
+</div>
+
+<script type="text/javascript">
+    //Rechargement de la page sur event
+    $(function () {
+        let body = $("body");
+        body.on("<?=ProcedureAffectationController::EVENT_MODIFIER?>",
+            function () {
+                window.location.reload();
+            }
+        );
+    })
+</script>

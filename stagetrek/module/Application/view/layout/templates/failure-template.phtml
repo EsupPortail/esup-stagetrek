@@ -1,0 +1,47 @@
+<?php
+/**
+ * @see AbstractActionController::failureAction()
+ * @var string $title
+ */
+
+use Application\Controller\Misc\Interfaces\AbstractActionController;
+
+
+/**
+ * @see AbstractActionController::failureAction()
+ * @var string $title
+ * @var string $message
+ * @var string $subtext
+ * @var string $priority
+ */
+?>
+<?php
+if(!isset($title)){
+    $title="Une erreur est survenue";
+}
+if (!isset($message)){
+    $message = "L'action demandée a échoué.";
+}
+if(!isset($subtext)){$subtext=null;}
+?>
+
+
+<div class="card card-<?=$priority?>">
+    <h1 class="page-header card-header">
+        <?= $title ?>
+    </h1>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+            <div class="alert alert-<?=$priority ?>">
+                <?= $message ?>
+            </div>
+            </div>
+        </div>
+    </div>
+    <?php if($subtext) : ?>
+        <div class="card-footer">
+            <?= $subtext ?>
+        </div>
+    <?php endif; ?>
+</div>

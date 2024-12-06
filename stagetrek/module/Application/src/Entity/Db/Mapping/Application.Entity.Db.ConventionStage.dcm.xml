@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Application\Entity\Db\ConventionStage" table="convention_stage">
+    <indexes>
+      <index name="IDX_2126626C20CD28E8" columns="modele_convention_stage_id"/>
+      <index name="IDX_2126626C2298D193" columns="stage_id"/>
+      <index name="IDX_2126626C2A7F8EB9" columns="rendu"/>
+    </indexes>
+    <id name="id" type="bigint" column="id">
+      <generator strategy="SEQUENCE"/>
+      <sequence-generator sequence-name="convention_stage_id_seq" allocation-size="1" initial-value="1"/>
+    </id>
+
+    <one-to-one field="fichier" target-entity="Fichier\Entity\Db\Fichier">
+      <join-column name="fichier_id" referenced-column-name="id"/>
+    </one-to-one>
+
+    <field name="dateUpdate" type="datetime" column="date_update" nullable="false"/>
+
+    <many-to-one field="modeleConventionStage" target-entity="Application\Entity\Db\ModeleConventionStage" fetch="LAZY">
+      <join-columns>
+        <join-column name="modele_convention_stage_id" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+
+    <one-to-one field="stage" target-entity="Application\Entity\Db\Stage" inversed-by="conventionStage">
+      <join-column name="stage_id" referenced-column-name="id"/>
+    </one-to-one>
+
+    <many-to-one field="rendu" target-entity="UnicaenRenderer\Entity\Db\Rendu" fetch="LAZY">
+      <cascade>
+        <cascade-all/>
+<!--        <cascade-persist/>-->
+      </cascade>
+      <join-columns>
+        <join-column name="rendu" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+
+    <one-to-many field="conventionStageSignataires" target-entity="Application\Entity\Db\ConventionStageSignataire" mapped-by="conventionStage" />
+
+  </entity>
+</doctrine-mapping>

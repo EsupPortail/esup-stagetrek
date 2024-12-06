@@ -1,0 +1,96 @@
+<?php
+
+use Application\Controller\Convention\ConventionStageController;
+use Application\Entity\Db\ConventionStage;
+use Application\Form\Convention\ConventionStageForm;
+use Application\Form\Convention\Fieldset\ConventionStageFieldset;
+use Application\View\Helper\Convention\ConventionViewHelper;
+use UnicaenApp\View\Helper\Messenger;
+
+/**
+ * @see ConventionStageController::genererAction()
+ *
+
+ * @var ConventionStageForm $form
+ * @var ConventionStageFieldset $fieldset
+ * @var ConventionStage $convention
+ */
+
+$fe = $this->formErrors();
+$fcg = $this->formControlGroup();
+$fr = $this->formrow();
+$fct = $this->formControlText();
+$fh = $this->formHidden();
+
+/** @var ConventionStageFieldset $fieldset */
+$fieldset = $form->getEntityFieldset();
+/** @var ConventionViewHelper $vh */
+$vh = $this->convention();
+$formId = uniqid('convention-form');
+$modele = $fieldset->getModeleConventionStage();
+?>
+
+<div class="fieldset">
+    <?= $this->form()->openTag($form->prepare()) ?>
+    <?= $fr($fieldset->get($fieldset::ID)) ?>
+    <?= $fh($form->get($fieldset::SUBMIT_ACTION)); ?>
+
+    <div class="row">
+        <div class="col-md-6">
+            <?= $fcg($fieldset->get($fieldset::MODELE_CONVENTION)); ?>
+        </div>
+        <div class="col-md-6 d-flex">
+            <div class="align-self-end">
+                <?= $fcg($form->get($form::PREVISUALISER)); ?>
+            </div>
+        </div>
+    </div>
+
+    <hr/>
+
+    <div class="row">
+        <div class="col-md-12">
+            <?= $fe($form->prepare(), $form::INVALIDE_ERROR_MESSAGE) ?>
+        </div>
+    </div>
+    <?php ?>
+    <?php if ($this->hasMacro) : ?>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-error">
+                    Le contenue de la convention contient des macros qui n'ont pas pu être remplacées
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <div class="row">
+        <div class="col-md-12">
+            <?= $fh($fieldset->get($fieldset::CORPS)); ?>
+            <?= $convention->getCorps() ?>
+        </div>
+    </div>
+
+    <?php if($form->canValidate()):?>
+        <div class="row">
+            <div class="col-md-12">
+                <?= $fcg($form->get($form::INPUT_SUBMIT)); ?>
+            </div>
+        </div>
+    <?php endif ?>
+
+    <?= $this->formHidden($form->get($form::CSRF)); ?>
+    <?= $this->form()->closeTag(); ?>
+</div>
+
+<script>
+    $(function () {
+        let actionSubmit = $('#<?= $fieldset::SUBMIT_ACTION ?>');
+        $('#<?= $form::PREVISUALISER ?>').on('click', function (){
+            actionSubmit.val('<?= $form::PREVISUALISER ?>');
+        });
+        $('#<?= $form::INPUT_SUBMIT ?>').on('click', function (){
+            actionSubmit.val('<?= $form::INPUT_SUBMIT ?>');
+        });
+    });
+</script>

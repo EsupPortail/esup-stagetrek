@@ -1,0 +1,57 @@
+<?php
+
+use Application\Entity\Db\ProcedureAffectation;
+use Application\Provider\Misc\Icone;
+use Application\Provider\Privilege\StagePrivileges;
+use Application\View\Helper\Affectation\ProcedureAffectationViewHelper;
+
+/**
+ * @see \Application\Controller\Affectation\ProcedureAffectationController::indexAction()
+ * @var ProcedureAffectation[] $proceduresAffectations
+ */
+
+/** @var ProcedureAffectationViewHelper $vh */
+$vh = $this->procedureAffectation();
+
+$canSee = $vh->hasPrivilege(StagePrivileges::PROCEDURE_AFFICHER);
+?>
+
+<?php $tableId = "liste-procédure-affectation" ?>
+
+<div class="row">
+    <div class="col-md-12">
+        <table id="<?= $tableId ?>" class="table table-hover table-condensed table-data">
+            <thead>
+            <tr>
+                <th class="col-md-1 no-search text-center" data-type="num">Ordre</th>
+                <th class="col-md-1">Code</th>
+                <th class="col-md-10">Libellé</th>
+                <?php if ($canSee) : ?>
+                <th class="col-md-1 no-sort no-search text-end">Actions</th>
+                <?php endif; ?>
+            </thead>
+            <tbody>
+            <?php foreach ($proceduresAffectations as $procedure):
+                $vh->setProcedureAffectation($procedure);
+                ?>
+                <tr>
+                    <td class='text-center' data-order="<?= $procedure->getOrdre() ?>">
+                        <?= $procedure->getOrdre() ?>
+                    </td>
+                    <td>
+                        <?= $procedure->getCode() ?>
+                    </td>
+                    <td>
+                        <?= $procedure->getLibelle() ?>
+                    </td>
+                    <?php if ($canSee) : ?>
+                        <td class="text-end">
+                            <?= $vh->lienAfficher(Icone::AFFICHER, ['class' => 'text-primary ajax-modal']) ?>
+                        </td>
+                    <?php endif; ?>
+                </tr>
+            <?php endforeach; ?>
+            <tbody>
+        </table>
+    </div>
+</div>

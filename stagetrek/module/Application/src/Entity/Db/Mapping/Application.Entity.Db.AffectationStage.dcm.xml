@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="Application\Entity\Db\AffectationStage" table="affectation_stage">
+        <indexes>
+            <index name="IDX_1E4FF5C1A934B1FB" columns="session_stage_id"/>
+            <index name="IDX_1E4FF5C12298D193" columns="stage_id"/>
+            <index name="IDX_1E4FF5C1DDEAB1A3" columns="etudiant_id"/>
+            <index name="IDX_1E4FF5C1FEF753E0" columns="terrain_stage_id"/>
+        </indexes>
+        <unique-constraints>
+            <unique-constraint name="affectation_stage_etudiant_stage_unique" columns="etudiant_id,stage_id"/>
+            <unique-constraint name="affectation_stage_etudiant_session_unique" columns="etudiant_id,session_stage_id"/>
+            <unique-constraint name="affectation_stage_id_unique" columns="id"/>
+        </unique-constraints>
+        <id name="id" type="bigint" column="id">
+            <generator strategy="SEQUENCE"/>
+            <sequence-generator sequence-name="affectation_stage_id_seq" allocation-size="1" initial-value="1"/>
+        </id>
+        <field name="cout" type="float" column="cout" precision="10" scale="0" nullable="true">
+            <options>
+                <option name="default">0</option>
+            </options>
+        </field>
+
+        <field name="coutTerrain" type="float" column="cout_terrain" precision="10" scale="0" nullable="true">
+            <options>
+                <option name="default">0</option>
+            </options>
+        </field>
+        <field name="bonusMalus" type="float" column="bonus_malus" precision="10" scale="0" nullable="true">
+            <options>
+                <option name="default">0</option>
+            </options>
+        </field>
+
+        <field name="rangPreference" type="integer" column="rang_preference" nullable="true">
+            <options>
+                <option name="default"/>
+            </options>
+        </field>
+
+        <field name="informationsComplementaires" type="text" column="informations_complementaires" nullable="true">
+            <options>
+                <option name="fixed"/>
+            </options>
+        </field>
+
+
+        <field name="preValidee" type="boolean" column="pre_validee" nullable="false">
+            <options>
+                <option name="default"/>
+            </options>
+        </field>
+
+
+        <field name="validee" type="boolean" column="validee" nullable="false">
+            <options>
+                <option name="default"/>
+            </options>
+        </field>
+
+        <many-to-many field="etats" target-entity="UnicaenEtat\Entity\Db\EtatInstance" fetch="LAZY">
+            <join-table name="affectation_stage_etat_linker">
+                <join-columns>
+                    <join-column name="affectation_stage_id" referenced-column-name="id"/>
+                </join-columns>
+                <inverse-join-columns>
+                    <join-column name="etat_instance_id" referenced-column-name="id"/>
+                </inverse-join-columns>
+            </join-table>
+        </many-to-many>
+
+
+        <one-to-one field="stage" target-entity="Application\Entity\Db\Stage" inversed-by="affectationStage">
+            <join-column name="stage_id" referenced-column-name="id"/>
+        </one-to-one>
+
+        <many-to-one field="terrainStage" target-entity="Application\Entity\Db\TerrainStage" fetch="LAZY">
+            <join-columns>
+                <join-column name="terrain_stage_id" referenced-column-name="id"/>
+            </join-columns>
+        </many-to-one>
+
+        <many-to-one field="terrainStageSecondaire" target-entity="Application\Entity\Db\TerrainStage" fetch="LAZY">
+            <join-columns>
+                <join-column name="terrain_stage_secondaire_id" referenced-column-name="id"/>
+            </join-columns>
+        </many-to-one>
+    </entity>
+</doctrine-mapping>

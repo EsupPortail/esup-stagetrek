@@ -1,0 +1,47 @@
+<?php
+
+use Application\Controller\Notification\FaqQuestionController as Controller;
+use Application\Form\Notification\FaqQuestionForm;
+use Application\Form\Notification\Fieldset\FaqQuestionFieldset;
+use Application\View\Helper\Notification\FAQViewHelper;
+
+/**
+ * @see FaqQuestionController::ajouterAction()
+ * @see FaqQuestionController::modifierAction()
+ *
+ * @var string $title
+ * @var FaqQuestionForm $form
+ */
+
+$fe = $this->formErrors();
+$fcg = $this->formControlGroup();
+$fr = $this->formrow();
+$fct = $this->formControlText();
+
+/** @var FaqQuestionFieldset $fieldset */
+$fieldset = $form->getEntityFieldset();
+
+/** @var FAQViewHelper $vh */
+$vh = $this->faq();
+?>
+
+
+<div class="card card-primary">
+    <h1 class="page-header card-header">
+        <span class="icon icon-modifier"></span>
+        <?= $title ?>
+    </h1>
+    <div class="card-body">
+        <?= $vh->renderForm($form); ?>
+    </div>
+</div>
+
+
+
+<script type="text/javascript">
+    $(function () {
+        let body = $("body");
+        body.off("<?= Controller::EVENT_MODIFIER?>", closeModal)
+            .one("<?= Controller::EVENT_MODIFIER?>", closeModal);
+    });
+</script>
