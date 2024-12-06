@@ -1,5 +1,4 @@
 *.env
-
 data/conventions/
 data/cache/
 data/cache-apache/

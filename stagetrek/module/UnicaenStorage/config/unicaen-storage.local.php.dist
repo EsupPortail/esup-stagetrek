@@ -15,9 +15,9 @@ return [
                 ],
                 S3StorageAdapter::class => [
                     'client' => [
-                        'end_point' => 'http://nginx:9000',
-                        'access_key' => 'FTHu3JhfsMxAZCBD',
-                        'secret_key' => 'F32cWcAJreGLXtVsgHOqmaPyARs8SUKu',
+                        'end_point' => 'XXXXXXX',
+                        'access_key' => 'XXXXXXX',
+                        'secret_key' => 'XXXXXXX',
                     ],
                     'root_path' => 'sygal',
                 ],
