@@ -3,10 +3,9 @@
 namespace Application\Service\Affectation\Algorithmes;
 
 use Application\Entity\Db\AffectationStage;
+use Application\Entity\Db\Parametre;
 use Application\Entity\Db\SessionStage;
 use Application\Entity\Db\TerrainStage;
-use Application\Exceptions\ProcedureAffectationException;
-use Application\Provider\Parametre\ParametreProvider;
 use Application\Service\Affectation\Traits\AffectationStageServiceAwareTrait;
 use Application\Service\Parametre\Traits\ParametreServiceAwareTrait;
 use Application\Service\TerrainStage\Traits\TerrainStageServiceAwareTrait;
@@ -25,11 +24,17 @@ class AlgoAleatoire extends AbstractAlgorithmeAffectation implements ObjectManag
     use AffectationStageServiceAwareTrait;
     use ParametreServiceAwareTrait;
 
+    CONST CODE_ALGO = 'algo_aleatoire';
+    public static function getCodeAlgo() : string
+    {
+        return self::CODE_ALGO;
+    }
+
     public function run(SessionStage $sessionStage) : static
     {
         $coutTerrainMin = -10; //TODO : un paramètre ?
-        $coutTerrainMax = $this->getParametreService()->getParametreValue(ParametreProvider::AFFECTATION_COUT_TERRAIN_MAX);
-        $coutTotalMax = $this->getParametreService()->getParametreValue(ParametreProvider::AFFECTATION_COUT_TOTAL_MAX);
+        $coutTerrainMax = $this->getParametreService()->getParametreValue(Parametre::AFFECTATION_COUT_TERRAIN_MAX);
+        $coutTotalMax = $this->getParametreService()->getParametreValue(Parametre::AFFECTATION_COUT_TOTAL_MAX);
         $bonusMin = -10;
         $bonusMax = ($coutTotalMax-$coutTerrainMax);
 

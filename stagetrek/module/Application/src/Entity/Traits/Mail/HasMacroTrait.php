@@ -24,7 +24,7 @@ trait HasMacroTrait
 
     /**
      * @param \UnicaenRenderer\Entity\Db\Macro|null $macro
-     * @return \Application\Entity\Traits\HasMacroTrait
+     * @return HasMacroTrait
      */
     public function setMacro(?Macro $macro): static
     {

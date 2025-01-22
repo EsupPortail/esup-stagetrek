@@ -12,10 +12,12 @@ use Application\Form\Etudiant\EtudiantRechercheForm;
 
 $fct = $this->formControlText();
 $fcg = $this->formControlGroup();
+$fe = $this->formErrors();
 ?>
 
 
 <?php echo $this->form()->openTag($form->prepare()); ?>
+<?= $fe($form->prepare(), $form::INVALIDE_ERROR_MESSAGE) ?>
     <div class="card">
         <div class="card-header">
             <span class="fa fa-search"></span>
@@ -55,4 +57,6 @@ $fcg = $this->formControlGroup();
             </div>
         </div>
     </div>
+
+<?= $this->formHidden($form->get($form::CSRF)); ?>
 <?php echo $this->form()->closeTag(); ?>

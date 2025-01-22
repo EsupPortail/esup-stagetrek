@@ -2,8 +2,6 @@
 
 namespace Application\Entity\Db;
 
-use Application\Entity\Interfaces\CodeEntityInterface;
-use Application\Entity\Interfaces\LibelleEntityInterface;
 use Application\Entity\Traits\InterfaceImplementation\CodeEntityTrait;
 use Application\Entity\Traits\InterfaceImplementation\IdEntityTrait;
 use Application\Entity\Traits\InterfaceImplementation\LibelleEntityTrait;
@@ -20,7 +18,9 @@ class AdresseType implements ResourceInterface //, CodeEntityInterface, LibelleE
 
     const RESOURCE_ID = 'AdresseType';
 
-
+    CONST TYPE_INCONNU = 'n/a';
+    CONST TYPE_ETUDIANT = 'etu';
+    CONST TYPE_TERRAIN_STAGE = 'terrain';
     /**
      * @return string
      */

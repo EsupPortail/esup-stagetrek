@@ -45,7 +45,6 @@ $tableId = "signataires-convention-" . $stage->getId();
 
 <script type="text/javascript">
     $(function () {
-        $('[data-bs-toggle="popover"]').popover({html: true});
         let options = generateDataTableSetings(
             {
                 stateSave: true,
@@ -56,9 +55,6 @@ $tableId = "signataires-convention-" . $stage->getId();
                     "<'row' <'col-sm-12 col-md-12'i>>",
             }
         );
-        //options = {};
-        let tableInstance = $("#<?= $tableId ?>").on('draw.dt', function () {
-            $('[data-bs-toggle="popover"]').popover({html: true});
-        }).DataTable(options);
+        $("#<?= $tableId ?>").DataTable(options);
     });
 </script>

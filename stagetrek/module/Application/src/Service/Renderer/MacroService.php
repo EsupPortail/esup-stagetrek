@@ -13,6 +13,7 @@ use Application\Service\Renderer\Traits\UrlServiceAwareTrait;
 /** Surcouche du MacroService de UnicaenRender */
 class MacroService extends \UnicaenRenderer\Service\Macro\MacroService
 {
+//    A revoir pour se baser sur le templateEngine
     //TODO : amélioration a apporter : gestion des macros qui peuvent être vide ou non selon le context
 
     // Accés aux différents service de remplacement pour le contenue des macros
@@ -29,7 +30,7 @@ class MacroService extends \UnicaenRenderer\Service\Macro\MacroService
     const CLASS_MACRO_NOT_NOT_DEFIND = 'macro-not-defind';
 
     /**
-     * @desc Syrcharg mais avec modifications des textes en cas d'erreur en utilisant les messages d'erreur
+     * @desc Surcharge mais avec modifications des textes en cas d'erreur en utilisant les messages d'erreur
      * @param string|null $code
      * @param array $variables
      * @return string
@@ -93,6 +94,8 @@ class MacroService extends \UnicaenRenderer\Service\Macro\MacroService
     }
 
     //Détermine si du text contient une macro qui n'as pas été remplacé (ou qui n'as pas pu l'être)
+    /** @deprecated TODO : a supprimer quand la gestions des macros dans les conventions sera revue
+     */
     public function textContainsMacro(?string $text): bool
     {
         if(!isset($text)){return false;}

@@ -140,9 +140,6 @@ class ConventionStageController extends AbstractActionController
 
         //On pré-génére le contenue
         $convention = $this->getConventionStageService()->pregenererConventionRendu($convention, $modele);
-        /** @var MacroService $macrosService */
-        $macrosService = $this->getMacroService();
-        $hasMacro = $macrosService->textContainsMacro($convention->getRendu()->getCorps());
         $form = $this->getConfirmationForm();
         $question = "Voulez-vous vraiment générer la convention de stage ?";
         $form->setConfirmationQuestion($question);
@@ -157,7 +154,7 @@ class ConventionStageController extends AbstractActionController
                 return $this->failureAction($title, null, $e);
             }
         }
-        return new ViewModel(['title' => $title, 'form' => $form, 'stage' => $stage, 'modele' => $modele, 'convention' => $convention, 'hasMacro' => $hasMacro]);
+        return new ViewModel(['title' => $title, 'form' => $form, 'stage' => $stage, 'modele' => $modele, 'convention' => $convention]);
     }
 
 

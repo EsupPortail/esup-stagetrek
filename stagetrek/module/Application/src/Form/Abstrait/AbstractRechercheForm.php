@@ -6,6 +6,7 @@ namespace Application\Form\Abstrait;
 
 use Application\Form\Abstrait\Traits\FormElementTrait;
 use Laminas\Form\Element\Button;
+use Laminas\Form\Element\Csrf;
 use Laminas\Form\Form;
 use Laminas\InputFilter\InputFilterProviderInterface;
 
@@ -43,19 +44,23 @@ abstract class AbstractRechercheForm extends Form
     public function __construct($name = null, $options = [])
     {
         parent::__construct($name, $options);
-        $this->setAttribute('method', 'get');
+        $this->setAttribute('method', 'post');
         $this->title = ($name) ?: "";
     }
 
     const INPUT_EFFACER='effacer';
     const INPUT_RECHERCHER='rechercher';
+    const CSRF='csrf';
 
     public function init(): void
     {
         parent::init();
         $this->setAttribute("action", $this->getCurrentUrl());
-        $this->setAttribute('method', 'get');
+        $this->setAttribute('method', 'post');
         $this->setAttribute('class', 'rechercherForm');
+
+
+        $this->add(new Csrf(self::CSRF));
 
         $this->add([
             'type' => Button::class,

@@ -4,7 +4,7 @@
 namespace Application\Service\Referentiel\RechercheEtudiant\Entity;
 
 
-use Application\Provider\Source\SourceProvider;
+use Application\Entity\Db\Source;
 use Application\Service\Referentiel\RechercheEtudiant\Interfaces\RechercheEtudiantResultatInterface;
 use DateTime;
 use UnicaenLdap\Entity\People;
@@ -25,7 +25,7 @@ class LdapEtudiantResult implements RechercheEtudiantResultatInterface
 
     public function getSource(): string
     {
-        return SourceProvider::LDAP;
+        return Source::LDAP;
     }
 
     /**

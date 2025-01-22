@@ -75,19 +75,20 @@ class GroupeController extends AbstractActionController
     public function indexAction(): ViewModel
     {
         $form = $this->getGroupeRechercheForm();
-        if ($data = $this->params()->fromQuery()) {
+        $criteria = [];
+        if ($data = $this->params()->fromPost()) {
             $form->setData($data);
-            $criteria = array_filter($data, function ($v) {
-                return !empty($v);
-            });
-            if (!empty($criteria)) {
-                $groupes = $this->getGroupeService()->search($criteria);
-            } else {
-                $groupes = $this->getGroupeService()->findAll();
+            if($form->isValid()){
+                $criteria = array_filter($data, function ($v) {
+                    return !empty($v);
+                });
             }
         }
-        else {
-                $groupes = $this->getGroupeService()->findAll();
+
+        if (!empty($criteria)) {
+            $groupes = $this->getGroupeService()->search($criteria);
+        } else {
+            $groupes = $this->getGroupeService()->findAll();
         }
         return new ViewModel(['form' => $form, 'groupes' => $groupes]);
     }

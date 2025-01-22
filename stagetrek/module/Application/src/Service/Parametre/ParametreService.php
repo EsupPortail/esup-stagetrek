@@ -5,11 +5,8 @@ namespace Application\Service\Parametre;
 
 use Application\Entity\Db\Parametre;
 use Application\Entity\Db\ParametreCategorie;
-use Application\Provider\Parametre\ParametreProvider;
 use Application\Service\Misc\CommonEntityService;
 use Exception;
-use RuntimeException;
-
 class ParametreService extends CommonEntityService
 {
 

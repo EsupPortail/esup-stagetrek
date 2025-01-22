@@ -9,7 +9,6 @@ use Application\Entity\Db\Parametre;
 use Application\Entity\Db\Preference;
 use Application\Entity\Db\Stage;
 use Application\Misc\ArrayRessource;
-use Application\Provider\Parametre\ParametreProvider;
 use Application\Provider\Privilege\EtudiantPrivileges;
 use Application\Provider\Roles\RolesProvider;
 use Application\Service\Etudiant\EtudiantService;
@@ -261,7 +260,7 @@ class PreferenceAssertion extends AbstractAssertion
     public function getRangMaxPreference() : ?int
     {
         /** @var Parametre $param */
-        $param = $this->getObjectManager()->getRepository(Parametre::class)->findOneBy(['code' => ParametreProvider::NB_PREFERENCES]);
+        $param = $this->getObjectManager()->getRepository(Parametre::class)->findOneBy(['code' => Parametre::NB_PREFERENCES]);
         return ($param) ? intval($param->getValue()) : 0;
     }
 

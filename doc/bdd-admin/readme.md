@@ -11,9 +11,6 @@ Créer le fichier ddl de la base
     $ ./vendor/bin/laminas update-bdd
 Utile les fichier ddl pour mettre la base données
 
-    $ ./vendor/bin/laminas update-data
-Utile les fichier ddl pour mettre a jours les données à partir de celles fournis dans bdd-admin
-
 !!! creer les tables manquantes, remplace les vue ...
 Par défaut ne supprime pas des tables qui n'existerais plus
 

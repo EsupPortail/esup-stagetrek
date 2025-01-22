@@ -167,9 +167,7 @@ $appVh = $this->app();
                 "order": [[0, "desc"], [1, "desc"]],
             })
 
-            let $("#<?= $tableId ?>").on('draw.dt', function () {
-                $('[data-bs-toggle="popover"]').popover({html: true});
-            }).DataTable(options);
+            $("#<?= $tableId ?>").DataTable(options);
 
         });
     </script>

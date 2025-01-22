@@ -1,7 +1,7 @@
 <?php
 
 namespace Application\Service\Referentiel\Factory;
-use Application\Provider\Source\SourceProvider;
+use Application\Entity\Db\Source;
 use Application\Service\Referentiel\RechercheEtudiant\Interfaces\RechercheEtudiantServiceInterface;
 use Application\Service\Referentiel\RechercheEtudiant\RechercheEtudiantLdapService;
 use Application\Service\Referentiel\RechercheEtudiant\RechercheEtudiantLocalService;
@@ -22,11 +22,11 @@ class ReferentielServiceFactory
 
         /** @var RechercheEtudiantServiceInterface $local */
         $local = $container->get(RechercheEtudiantLocalService::class);
-        $service->addReferentielSourceService(SourceProvider::STAGETREK, $local);
+        $service->addReferentielSourceService(Source::STAGETREK, $local);
 
         /** @var RechercheEtudiantServiceInterface $ldap */
         $ldap = $container->get(RechercheEtudiantLdapService::class);
-        $service->addReferentielSourceService(SourceProvider::LDAP, $ldap);
+        $service->addReferentielSourceService(Source::LDAP, $ldap);
 
         return $service;
     }

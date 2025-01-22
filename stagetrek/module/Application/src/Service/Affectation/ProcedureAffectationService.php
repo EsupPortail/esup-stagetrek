@@ -2,15 +2,14 @@
 
 namespace Application\Service\Affectation;
 
+use Application\Entity\Db\Parametre;
 use Application\Entity\Db\ProcedureAffectation;
 use Application\Entity\Db\SessionStage;
 use Application\Exceptions\ProcedureAffectationException;
-use Application\Provider\Parametre\ParametreProvider;
 use Application\Service\Affectation\Algorithmes\AlgorithmeAffectationInterface;
 use Application\Service\Affectation\Traits\AffectationStageServiceAwareTrait;
 use Application\Service\Misc\CommonEntityService;
 use Application\Service\Parametre\Traits\ParametreServiceAwareTrait;
-use Application\Service\Stage\Traits\SessionStageServiceAwareTrait;
 
 /**
  * Class PreferenceService
@@ -39,7 +38,7 @@ class ProcedureAffectationService extends CommonEntityService
      */
     public function getProcedureCourante(): ?ProcedureAffectation
     {
-        $code = $this->getParametreService()->getParametreValue(ParametreProvider::PROCEDURE_AFFECTATION);
+        $code = $this->getParametreService()->getParametreValue(Parametre::PROCEDURE_AFFECTATION);
         if(!isset($code)){return null;}
         return $this->findOneBy(['code' => $code]);
     }

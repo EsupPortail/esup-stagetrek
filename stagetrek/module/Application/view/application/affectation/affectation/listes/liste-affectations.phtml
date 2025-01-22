@@ -25,8 +25,8 @@ $today = new DateTime();
         <table id="<?= $tableId ?>" class="table table-hover table-condensed">
             <thead>
             <tr>
+                <th class="col-md-1 no-search" data-type="num">Ordre</th>
                 <th class="col-md-3">Etudiant</th>
-                <th class="col-md-1 text-center no-search" data-type="num">Ordre</th>
                 <th class="col-md-3">Terrain</th>
                 <th class="col-md-4 no-search" data-type="num">État</th>
                 <?php if($canSeeAffectation): ?>
@@ -71,13 +71,13 @@ $today = new DateTime();
                 };
             ?>
                 <tr class="<?= $bg ?>">
+                    <td class="" data-order="<?=($stage->getOrdreAffectation()) ?? PHP_INT_MAX ?>">
+                        <?= ($stage->getOrdreAffectation()) ?? "<span class='text-muted'>-</span>" ?>
+                    </td>
                     <td data-order="<?= $etudiant->getDisplayName() ?> <?= $etudiant->getNumEtu() ?>"
                         data-filter="<?= $etudiant->getDisplayName() ?> <?= $etudiant->getNumEtu() ?>"
                     >
                         <?= $etudiant->getDisplayName() ?> (<?= $evh->lienAfficher()?>)
-                    </td>
-                    <td class="text-center" data-order="<?=($stage->getOrdreAffectation()) ?? PHP_INT_MAX ?>">
-                        <?= ($stage->getOrdreAffectation()) ?? "<span class='text-muted'>-</span>" ?>
                     </td>
                     <td data-order="<?= ($terrain) ? $categorie->getLibelle()." ".$terrain->getLibelle() :
                         (($terrainSecondaire) ? $categorieSecondaire->getLibelle()." ".$terrainSecondaire->getLibelle() : '')
@@ -124,17 +124,14 @@ $today = new DateTime();
 
 <script type="text/javascript">
     $(function () {
-        $('[data-bs-toggle="popover"]').popover({html: true});
         let options = generateDataTableSetings(
             {
                 stateSave: true,
                 retrieve: true,
-                "order": [[2, "asc"]],
+                "order": [[0, "asc"]],
                 "lengthMenu": [[50, 100, 250, -1], [50, 100, 250, "Tous"]],
             }
         );
-        let tableInstance = $("#<?= $tableId ?>").on('draw.dt', function() {
-            $('[data-bs-toggle="popover"]').popover({html: true});
-        }).DataTable(options);
+        let tableInstance = $("#<?= $tableId ?>").DataTable(options);
     });
 </script>

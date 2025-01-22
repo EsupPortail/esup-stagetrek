@@ -4,13 +4,9 @@ namespace Application\Service\Stage;
 
 use Application\Entity\Db\AnneeUniversitaire;
 use Application\Entity\Db\Groupe;
-use Application\Entity\Db\ParametreCoutAffectation;
 use Application\Entity\Db\SessionStage;
-use Application\Entity\Db\SessionStageTerrainLinker;
 use Application\Entity\Db\Stage;
-use Application\Entity\Db\TerrainStageNiveauDemande;
 use Application\Form\Stages\SessionStageRechercheForm as FormRecherche;
-use Application\Provider\DegreDemande\TerrainStageNiveauDemandeProvider;
 use Application\Provider\EtatType\SessionEtatTypeProvider;
 use Application\Service\Affectation\Traits\AffectationStageServiceAwareTrait;
 use Application\Service\Etudiant\Traits\EtudiantServiceAwareTrait;
@@ -359,14 +355,14 @@ class SessionStageService extends CommonEntityService
 //            $nbPlaces = $tl->getNbPlacesOuvertes();
 //            // pas de places ouvertes
 //            if($nbPlaces == 0){
-//                $n = $niveaux[TerrainStageNiveauDemandeProvider::FERME];
+//                $n = $niveaux[TerrainStageNiveauDemande::FERME];
 //                $tl->setNiveauDemande($n);
 //                $this->getObjectManager()->flush($tl);
 //                continue;
 //            }
 ////            Pas de demande
 //            if(!isset($demandes[$terrain->getId()]) || $demandes[$terrain->getId()][0] == 0){
-//                $n = $niveaux[TerrainStageNiveauDemandeProvider::NO_DEMANDE];
+//                $n = $niveaux[TerrainStageNiveauDemande::NO_DEMANDE];
 //                $tl->setNiveauDemande($n);
 //                $this->getObjectManager()->flush($tl);
 //                continue;
@@ -422,12 +418,12 @@ class SessionStageService extends CommonEntityService
 //            $degres = intval(ceil($cpt/$nbTerrainsDemandes*5));
 //            $cpt--;
 //            $n = match($degres){
-//                1 =>  TerrainStageNiveauDemandeProvider::RANG_1,
-//                2 =>  TerrainStageNiveauDemandeProvider::RANG_2,
-//                3 =>  TerrainStageNiveauDemandeProvider::RANG_3,
-//                4 =>  TerrainStageNiveauDemandeProvider::RANG_4,
-//                5 =>  TerrainStageNiveauDemandeProvider::RANG_5,
-//                default => TerrainStageNiveauDemandeProvider::INDETERMINE
+//                1 =>  TerrainStageNiveauDemande::RANG_1,
+//                2 =>  TerrainStageNiveauDemande::RANG_2,
+//                3 =>  TerrainStageNiveauDemande::RANG_3,
+//                4 =>  TerrainStageNiveauDemande::RANG_4,
+//                5 =>  TerrainStageNiveauDemande::RANG_5,
+//                default => TerrainStageNiveauDemande::INDETERMINE
 //            };
 //            $tl->setNiveauDemande($niveaux[$n]);
 //            $this->getObjectManager()->flush($tl);
@@ -439,12 +435,12 @@ class SessionStageService extends CommonEntityService
 //            $degres = intval(ceil($cpt/$nbTerrainsDemandes*5));
 //            $cpt--;
 //            $n = match($degres){
-//                1 =>  TerrainStageNiveauDemandeProvider::RANG_1,
-//                2 =>  TerrainStageNiveauDemandeProvider::RANG_2,
-//                3 =>  TerrainStageNiveauDemandeProvider::RANG_3,
-//                4 =>  TerrainStageNiveauDemandeProvider::RANG_4,
-//                5 =>  TerrainStageNiveauDemandeProvider::RANG_5,
-//                default => TerrainStageNiveauDemandeProvider::INDETERMINE
+//                1 =>  TerrainStageNiveauDemande::RANG_1,
+//                2 =>  TerrainStageNiveauDemande::RANG_2,
+//                3 =>  TerrainStageNiveauDemande::RANG_3,
+//                4 =>  TerrainStageNiveauDemande::RANG_4,
+//                5 =>  TerrainStageNiveauDemande::RANG_5,
+//                default => TerrainStageNiveauDemande::INDETERMINE
 //            };
 //            $tl->setNiveauDemande($niveaux[$n]);
 //            $this->getObjectManager()->flush($tl);

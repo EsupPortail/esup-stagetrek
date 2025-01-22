@@ -131,7 +131,6 @@ $msg = $this->messenger()->addCurrentMessagesFromFlashMessengerWithNamespace($na
 
     <script type="text/javascript">
         $(function () {
-            $('[data-bs-toggle="popover"]').popover({html: true});
             if ($.fn.DataTable.isDataTable("#<?= $tableId ?>")) {
                 $('#<?= $tableId ?>').DataTable().destroy();
             }
@@ -161,9 +160,7 @@ $msg = $this->messenger()->addCurrentMessagesFromFlashMessengerWithNamespace($na
                     "<'row' <'col-sm-12 col-md-5'i> <'col-sm-12 col-md-7'p> >",
             });
 
-            let tableInstance = $("#<?= $tableId ?>").on('draw.dt', function () {
-                $('[data-bs-toggle="popover"]').popover({html: true});
-            }).DataTable(options);
+            let tableInstance = $("#<?= $tableId ?>").DataTable(options);
 
             $("#selectAll").on('click', function () {
                 tableInstance.rows().select();

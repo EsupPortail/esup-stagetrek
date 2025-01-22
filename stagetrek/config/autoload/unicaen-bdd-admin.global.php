@@ -100,12 +100,12 @@ return [
                 'unicaen_privilege_categorie'               => [
                     'actions' => ['install', 'update'],
                     'key'     => 'code',
-                    'options' => ['update' => true, 'soft_delete' => true, 'delete' => true],
+                    'options' => ['update' => false, 'soft_delete' => true, 'delete' => true],
                 ],
                 'unicaen_privilege_privilege'               => [
                     'actions' => ['install', 'update'],
                     'key'     => 'code',
-                    'options' => ['update' => true, 'soft_delete' => true, 'delete' => true,
+                    'options' => ['update' => false, 'soft_delete' => true, 'delete' => true,
                         'columns' => [ //Permet de faire les jointures des données
                             'categorie_id'      => ['transformer' => 'select id from unicaen_privilege_categorie where code = %s'],
                     ],],
@@ -113,7 +113,7 @@ return [
                 'unicaen_privilege_privilege_role_linker' => [
                     'actions'                 => ['install', 'update'],
                     'key'                     => ['role_id', 'privilege_id'],
-                    'options'                 => ['update'  => true, 'soft_delete' => true, 'delete' => true,
+                    'options'                 => ['update'  => false, 'soft_delete' => true, 'delete' => true,
                         'columns' => [ //Permet de faire les jointures des données
                             'role_id'      => ['transformer' => 'select id from unicaen_utilisateur_role where role_id = %s'],
                             'privilege_id' => ['transformer' => 'select id from unicaen_privilege_privilege where code = %s'],
@@ -129,12 +129,12 @@ return [
                 'unicaen_etat_categorie'                    => [
                     'actions' => ['install', 'update'],
                     'key'     => 'code',
-                    'options' => ['update' => true, 'soft_delete' => false, 'delete' => false],
+                    'options' => ['update' => false, 'soft_delete' => false, 'delete' => false],
                 ],
                 'unicaen_etat_type'                         => [
                     'actions' => ['install', 'update'],
                     'key'     => 'code',
-                    'options' => ['update'  => true, 'soft_delete' => false, 'delete' => false,
+                    'options' => ['update'  => false, 'soft_delete' => false, 'delete' => false,
                         'columns' => ['categorie_id' => ['transformer' => 'select id from unicaen_etat_categorie where code = %s'],
                     ]]
                 ],
@@ -164,14 +164,14 @@ return [
                 'contact' => [
                     'actions' => ['install', 'update'],
                     'key'     => 'code',
-                    'options' => ['update' => true, 'soft_delete' => false, 'delete' => false],
+                    'options' => ['update' => false, 'soft_delete' => false, 'delete' => false],
                 ],
                 //Contraitnes de formations
 //                TODO : rajouter un champs code
                 'contrainte_cursus_portee' => [
                     'actions' => ['install', 'update'],
                     'key'     => 'code',
-                    'options' => ['update' => true, 'soft_delete' => false, 'delete' => false],
+                    'options' => ['update' => false, 'soft_delete' => false, 'delete' => false],
                 ],
 //                paramètres
                 'parametre_categorie' => [
@@ -182,12 +182,12 @@ return [
                 'parametre_type' => [
                     'actions' => ['install', 'update'],
                     'key'     => 'code',
-                    'options' => ['update' => true, 'soft_delete' => false, 'delete' => false],
+                    'options' => ['update' => false, 'soft_delete' => false, 'delete' => false],
                 ],
                 'parametre' => [
                     'actions' => ['install', 'update'],
                     'key'     => 'code',
-                    'options' => ['update' => true, 'soft_delete' => false, 'delete' => false,
+                    'options' => ['update' => false, 'soft_delete' => false, 'delete' => false,
                         'columns' => [
                             'categorie_id' => ['transformer' => 'select id from parametre_categorie where code = %s'],
                             'parametre_type_id' => ['transformer' => 'select id from parametre_type where code = %s'],
@@ -195,7 +195,7 @@ return [
                     ],
                 ],
                 'parametre_cout_affectation' => [
-                    'actions' => ['install'],
+                    'actions' => ['install', 'update'],
                     'key'     => 'rang',
                     'options' => ['update' => false, 'soft_delete' => false, 'delete' => false],
                 ],
@@ -203,14 +203,14 @@ return [
                 'procedure_affectation' => [
                     'actions' => ['install', 'update'],
                     'key'     => 'code',
-                    'options' => ['update' => true, 'delete' => true],
+                    'options' => ['update' => false, 'delete' => true],
                 ],
 
                 // Misc
                 'adresse_type' => [
                     'actions' => ['install', 'update'],
                     'key'     => 'code',
-                    'options' => ['update' => true, 'soft_delete' => false, 'delete' => false],
+                    'options' => ['update' => false, 'soft_delete' => false, 'delete' => false],
                 ],
                 'source' => [
                     'actions' => ['install', 'update'],

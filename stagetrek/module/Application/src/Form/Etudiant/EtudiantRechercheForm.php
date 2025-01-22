@@ -167,6 +167,15 @@ class EtudiantRechercheForm extends AbstractRechercheForm
                     ['name' => StringTrim::class],
                 ],
             ],
+
+            self::INPUT_ANNEE => [
+                "name" => self::INPUT_ANNEE,
+                'required' => false,
+                'filters' => [
+                    ['name' => ToInt::class],
+                ],
+            ],
+
             self::INPUT_GROUPE => [
                 "name" => self::INPUT_GROUPE,
                 'required' => false,

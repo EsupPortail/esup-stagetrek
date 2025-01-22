@@ -23,6 +23,8 @@ class CategorieStage implements ResourceInterface,
 
     const RESOURCE_ID = 'CategorieStage';
 
+    const TYPE_CATEGORIE_PRINCIPALE = 'Principale';
+    const TYPE_CATEGORIE_SECONDAIRE = 'Secondaire';
     /**
      * @return string
      */

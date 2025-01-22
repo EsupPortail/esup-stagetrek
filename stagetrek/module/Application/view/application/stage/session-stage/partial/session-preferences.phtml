@@ -89,9 +89,10 @@ $canSeeStage = $this->isAllowed(StagePrivileges::getResourceId(StagePrivileges::
         <table id="<?= $tableId ?>" class="table table-hover table-condensed table-data">
             <thead>
             <tr>
-                <th class="col-md-6">Etudiant</th>
+                <th class="col-md-1 no-search" data-type="num">Ordre</th>
+                <th class="col-md-3">Etudiant</th>
+                <th class="col-md-3">Terrain</th>
                 <th class="none no-search no-sort">Préférences</th>
-                <th class="col-md-1 no-search text-center" data-type="num">Ordre</th>
                 <th class="col-md-2 no-search text-center" data-type="num">Nombre de choix</th>
                 <th class="col-md-2 no-search text-center" data-type="num">Rang satisfait</th>
                 <?php if ($canSeeStage) : ?>
@@ -179,17 +180,43 @@ $canSeeStage = $this->isAllowed(StagePrivileges::getResourceId(StagePrivileges::
                     $bg= "table-warning";
                 break;
             }
+
+            $affectation = $stage->getAffectationStage();
+            $terrain = ($affectation) ? $affectation->getTerrainStage() : null;
+            $terrainSecondaire = (isset($affectation)) ?  $affectation->getTerrainStageSecondaire() : null;
+            $categorie = ($terrain) ? $terrain->getCategorieStage() : null;
+            $categorieSecondaire = ($terrainSecondaire) ? $terrainSecondaire->getCategorieStage() : null;
+
             ?>
             <tr class="<?= $bg ?>">
+                <td class="" data-order="<?= ($stage->getOrdreAffectation()) ?? PHP_INT_MAX ?>">
+                    <?= ($stage->getOrdreAffectation()) ?? "<span class='text-muted'>-</span>" ?>
+                </td>
                 <td data-order="<?= $etudiant->getDisplayName() ?><?= $etudiant->getNumEtu() ?>"
                         data-filter="<?= $etudiant->getDisplayName() ?><?= $etudiant->getNumEtu() ?>"
                 >
                     <?= $etudiant->getDisplayName() ?> (<?= $evh->lienAfficher($etudiant->getNumEtu()) ?>)
                 </td>
-                <td class="none"> <?= $prefText ?></td>
-                <td class="text-center" data-order="<?= ($stage->getOrdreAffectation()) ?? PHP_INT_MAX ?>">
-                    <?= ($stage->getOrdreAffectation()) ?? "<span class='text-muted'>-</span>" ?>
+                <td data-order="<?= ($terrain) ? $categorie->getLibelle()." ".$terrain->getLibelle() :
+                    (($terrainSecondaire) ? $categorieSecondaire->getLibelle()." ".$terrainSecondaire->getLibelle() : '')
+                ?>"
+                    data-filter="
+                        <?= isset($terrain) ? $terrain->getLibelle() : ""?>
+                        <?= isset($terrainSecondaire) ? $terrainSecondaire->getLibelle() : ""?>
+                        <?= isset($categorie) ? $categorie->getAcronyme() : ""?>
+                        <?= isset($categorieSecondaire) ? $categorieSecondaire->getAcronyme() : ""?>
+                    " >
+                    <?php if(!isset($terrain)) : ?>
+                        <span class="text-muted">Non défini</span>
+                    <?php  else : ?>
+                        <div><?= $terrain->getLibelle()?> (<?=$categorie->getAcronyme()?>)</div>
+                    <?php endif; ?>
+                    <?php if($terrainSecondaire) :?>
+                        <div class="px-3 text-small"> et <?= $terrainSecondaire->getLibelle()?> (<?=$categorieSecondaire->getAcronyme()?>)</div>
+                    <?php endif ?>
                 </td>
+
+                <td class="none"> <?= $prefText ?></td>
                 <td class="text-center"> <?= $nbChoix ?></td>
                 <td class="text-center" data-order="<?= $rangSat ?>">
                     <?= $icone ?>

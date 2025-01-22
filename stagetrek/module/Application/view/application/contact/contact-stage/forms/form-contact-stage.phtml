@@ -2,9 +2,9 @@
 
 use Application\Controller\Contact\ContactStageController;
 use Application\Controller\Referentiel\ReferentielController;
+use Application\Entity\Db\Source;
 use Application\Form\Contacts\ContactStageForm;
 use Application\Form\Contacts\Fieldset\ContactStageFieldset;
-use Application\Provider\Source\SourceProvider;
 
 /**
  * @see ContactStageController::ajouterAction()
@@ -138,7 +138,7 @@ $etudiant = $fieldset->getEtudiant();
             autocomp.autocomplete({
                 elementDomId: '<?=$fieldset::ETUDIANT ?>',
                 // source: '/etudiants/rechercherEtudiant',// donner ici en dure car on ne passe pas par la fonction url (ne marche pas dans le javascript)
-                source: '<?= $this->url(ReferentielController::ROUTE_RECHERCHER_ETUDIANT, ['source' => SourceProvider::STAGETREK], [], true)?>',
+                source: '<?= $this->url(ReferentielController::ROUTE_RECHERCHER_ETUDIANT, ['source' => Source::STAGETREK], [], true)?>',
                 minLength: 2,
                 delay: 750,
                 select: function (event, ui) {

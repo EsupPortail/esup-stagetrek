@@ -8,7 +8,6 @@ use Application\Entity\Db\MessageInfo;
 use Application\Entity\Traits\Notification\HasMessageInfoTrait;
 use Application\Provider\Misc\Icone;
 use Application\Provider\Misc\Label;
-use Application\Provider\Notification\MessageInfoProvider;
 use Application\Provider\Privilege\MessagePrivilege;
 use Application\View\Helper\Interfaces\AbstractEntityActionViewHelper;
 use Laminas\Form\Form;
@@ -70,10 +69,10 @@ class MessageInfoViewHelper extends AbstractEntityActionViewHelper
             return "<span class='icon icon-times-circle text-muted'></span>";
         }
         return match ($this->messageInfo->getPriority()) {
-            MessageInfoProvider::INFO => "<span class='icon icon-info text-info'></span>",
-            MessageInfoProvider::SUCCESS => "<span class='icon icon-check-circle text-success'></span>",
-            MessageInfoProvider::WARNING => "<span class='icon icon-warning text-warning'></span>",
-            MessageInfoProvider::ERROR => "<span class='icon icon-warning text-danger'></span>",
+            MessageInfo::INFO => "<span class='icon icon-info text-info'></span>",
+            MessageInfo::SUCCESS => "<span class='icon icon-check-circle text-success'></span>",
+            MessageInfo::WARNING => "<span class='icon icon-warning text-warning'></span>",
+            MessageInfo::ERROR => "<span class='icon icon-warning text-danger'></span>",
             default => "<span class='icon icon-times-circle text-muted'></span>",
         };
     }

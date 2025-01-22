@@ -21,95 +21,97 @@ class EvenementConsoleController extends \UnicaenEvenement\Controller\EvenementC
     const ACTION_TRAITER_EVENEMENTS = "traiter-evenements";
 
     public function traiterEvenementsAction(): void
-    {
-        try {
-            $this->useConsoleUri();
-        } catch (RuntimeException $e) {
-            $this->getConsole()->writeLine("-------------------", ColorInterface::RED);
-            $this->getConsole()->writeLine($e->getMessage(), ColorInterface::RED);
-            $this->getConsole()->writeLine("-------------------", ColorInterface::RED);
-            exit(0);
-        }
-        //On remplace le code UnicaenEvenement pour le momment afin d'intégrer l'id des évements au besoins
-        $request = $this->getRequest();
-        $texte = "";
-        if (!$request instanceof ConsoleRequest) {
-            throw new \RuntimeException('Cette action doit être appelée depuis une console !');
-        }
-        $this->cleartOldEventEntry();
-        $this->assertNoActionIsRunning();
-        $evenements = $this->getEvenementService()->getEvenementsByEtat(Etat::EN_ATTENTE);
-        if (empty($evenements)) { //Pour ne pas sauvegarder des logs inutiles, on vérifie avant
-            $this->getConsole()->writeLine("\nAucun événements à trairer", ColorInterface::BLUE);
-            $this->getConsole()->writeLine("\n-------------------", ColorInterface::GREEN);
-            $this->getConsole()->writeLine("Fin du traitement", ColorInterface::GREEN);
-            exit(0);
-        }
-//        On trie les événements par date de planification pour faire en priorité les plus ancien
-        usort($evenements, function (Evenement $e1, Evenement $e2) {
-            return $e1->getDatePlanification() < $e2->getDatePlanification();
-        });
-
-
-        $journal = new Journal();
-        $journal->setDate(new DateTime());
-        $journal->setEtat($this->getEtatEvenementService()->findByCode(Etat::EN_COURS));
-        $this->getJournalService()->create($journal);
-        $start = new DateTime();
-        $this->getConsole()->writeLine("\n* " . ($titre = "Traitement des événements en attente") . " *\n", ColorInterface::LIGHT_GREEN);
-        $this->getConsole()->writeLine("Debut du traitement", ColorInterface::GREEN);
-        $this->getConsole()->writeLine("-------------------\n", ColorInterface::GREEN);
-        $texte .= "Traitement des événements en attente <br/>";
-        $texte .= "Début du traitement : " . (new DateTime())->format('d/m/Y H:i:s') . "<br/>";
-        $journal->setLog($texte);
-        $this->getJournalService()->update($journal);
-        $nbOp = 0;
-        $nbError = 0;
-        foreach ($evenements as $evenement) {
-            // calcul du temps d'exécution
-            $executionTime = (new DateTime())->getTimestamp() - $start->getTimestamp();
-            if ($executionTime >= $this->maxExecutionTime) {
-                // si le temps d'exécution maximal est dépassé on quitte la procédure
-                break;
-            }
-            try {
-                if ($evenement !== null) {
-                    $this->getConsole()->writeLine(sprintf("- Début du traitement de l'événement #%s", $evenement->getId()));
-                    $texte .= "Début du traitement  de l'événement #" . $evenement->getId() . " <br/>";
-                    $evenement = $this->evenementGestionService->traiterEvent($evenement);
-                    if ($evenement->getEtat()->getCode() == Etat::SUCCES) {
-                        $this->getConsole()->writeLine(sprintf("- Evenement #%s - %s", $evenement->getId(), $evenement->getEtat()->getCode()), ColorInterface::GREEN);
-                        $texte .= sprintf("Evenement #%s - %s <br/>", $evenement->getId(), $evenement->getEtat()->getCode());
-                    } else {
-                        $this->getConsole()->writeLine(sprintf("- Echec de traitement de l'événement #%s", $evenement->getId()), ColorInterface::RED);
-                        $texte .= sprintf("Evenement #%s - %s <br/>", $evenement->getId(), $evenement->getEtat()->getCode());
-                        $nbError++;
-                    }
-                    $nbOp++;
-                }
-            } catch (Exception $e) {
-                $this->getConsole()->writeLine(sprintf("- échec du traitement de l'événement #%s", $evenement->getId()), ColorInterface::RED);
-                $texte .= "<strong> Échec du traitement </strong> <br/>";
-            }
-        }
-        $this->getConsole()->writeLine("\n-------------------", ColorInterface::GREEN);
-        $this->getConsole()->writeLine("Fin du traitement", ColorInterface::GREEN);
-        $texte .= "Fin du traitement : " . (new DateTime())->format('d/m/Y H:i:s') . "";
-        $this->getConsole()->writeLine("\nRapport", ColorInterface::CYAN);
-        $this->getConsole()->writeLine("-------", ColorInterface::CYAN);
-        $this->getConsole()->writeLine(sprintf("* Nombre d'opérations : %s", $nbOp), ColorInterface::CYAN);
-        if($nbError>0){
-           $this->getConsole()->writeLine(sprintf("* Nombre d'opérations échouées : %s", $nbOp), ColorInterface::RED);
-        }
-        $this->getConsole()->writeLine(sprintf("* Temps estimé : %s", $diff = $start->diff(new DateTime())->format('%Hh %Im %Ss')), ColorInterface::CYAN);
-        $journal->setLog($texte);
-        if($nbError==0){
-            $journal->setEtat($this->getEtatEvenementService()->findByCode(Etat::SUCCES));
-        }
-        else{
-            $journal->setEtat($this->getEtatEvenementService()->findByCode(Etat::ECHEC));
-        }
-        $this->getJournalService()->update($journal);
+    {//Cg Concole/TraiterEvenementCommande
+        Throw new \Exception("Usage : changement de méthode, passer par Symphonie console a la place.");
+        exit(0);
+//        try {
+//            $this->useConsoleUri();
+//        } catch (RuntimeException $e) {
+//            $this->getConsole()->writeLine("-------------------", ColorInterface::RED);
+//            $this->getConsole()->writeLine($e->getMessage(), ColorInterface::RED);
+//            $this->getConsole()->writeLine("-------------------", ColorInterface::RED);
+//            exit(0);
+//        }
+//        //On remplace le code UnicaenEvenement pour le momment afin d'intégrer l'id des évements au besoins
+//        $request = $this->getRequest();
+//        $texte = "";
+//        if (!$request instanceof ConsoleRequest) {
+//            throw new \RuntimeException('Cette action doit être appelée depuis une console !');
+//        }
+//        $this->cleartOldEventEntry();
+//        $this->assertNoActionIsRunning();
+//        $evenements = $this->getEvenementService()->getEvenementsByEtat(Etat::EN_ATTENTE);
+//        if (empty($evenements)) { //Pour ne pas sauvegarder des logs inutiles, on vérifie avant
+//            $this->getConsole()->writeLine("\nAucun événements à trairer", ColorInterface::BLUE);
+//            $this->getConsole()->writeLine("\n-------------------", ColorInterface::GREEN);
+//            $this->getConsole()->writeLine("Fin du traitement", ColorInterface::GREEN);
+//            exit(0);
+//        }
+////        On trie les événements par date de planification pour faire en priorité les plus ancien
+//        usort($evenements, function (Evenement $e1, Evenement $e2) {
+//            return $e1->getDatePlanification() < $e2->getDatePlanification();
+//        });
+//
+//
+//        $journal = new Journal();
+//        $journal->setDate(new DateTime());
+//        $journal->setEtat($this->getEtatEvenementService()->findByCode(Etat::EN_COURS));
+//        $this->getJournalService()->create($journal);
+//        $start = new DateTime();
+//        $this->getConsole()->writeLine("\n* " . ($titre = "Traitement des événements en attente") . " *\n", ColorInterface::LIGHT_GREEN);
+//        $this->getConsole()->writeLine("Debut du traitement", ColorInterface::GREEN);
+//        $this->getConsole()->writeLine("-------------------\n", ColorInterface::GREEN);
+//        $texte .= "Traitement des événements en attente <br/>";
+//        $texte .= "Début du traitement : " . (new DateTime())->format('d/m/Y H:i:s') . "<br/>";
+//        $journal->setLog($texte);
+//        $this->getJournalService()->update($journal);
+//        $nbOp = 0;
+//        $nbError = 0;
+//        foreach ($evenements as $evenement) {
+//            // calcul du temps d'exécution
+//            $executionTime = (new DateTime())->getTimestamp() - $start->getTimestamp();
+//            if ($executionTime >= $this->maxExecutionTime) {
+//                // si le temps d'exécution maximal est dépassé on quitte la procédure
+//                break;
+//            }
+//            try {
+//                if ($evenement !== null) {
+//                    $this->getConsole()->writeLine(sprintf("- Début du traitement de l'événement #%s", $evenement->getId()));
+//                    $texte .= "Début du traitement  de l'événement #" . $evenement->getId() . " <br/>";
+//                    $evenement = $this->evenementGestionService->traiterEvent($evenement);
+//                    if ($evenement->getEtat()->getCode() == Etat::SUCCES) {
+//                        $this->getConsole()->writeLine(sprintf("- Evenement #%s - %s", $evenement->getId(), $evenement->getEtat()->getCode()), ColorInterface::GREEN);
+//                        $texte .= sprintf("Evenement #%s - %s <br/>", $evenement->getId(), $evenement->getEtat()->getCode());
+//                    } else {
+//                        $this->getConsole()->writeLine(sprintf("- Echec de traitement de l'événement #%s", $evenement->getId()), ColorInterface::RED);
+//                        $texte .= sprintf("Evenement #%s - %s <br/>", $evenement->getId(), $evenement->getEtat()->getCode());
+//                        $nbError++;
+//                    }
+//                    $nbOp++;
+//                }
+//            } catch (Exception $e) {
+//                $this->getConsole()->writeLine(sprintf("- échec du traitement de l'événement #%s", $evenement->getId()), ColorInterface::RED);
+//                $texte .= "<strong> Échec du traitement </strong> <br/>";
+//            }
+//        }
+//        $this->getConsole()->writeLine("\n-------------------", ColorInterface::GREEN);
+//        $this->getConsole()->writeLine("Fin du traitement", ColorInterface::GREEN);
+//        $texte .= "Fin du traitement : " . (new DateTime())->format('d/m/Y H:i:s') . "";
+//        $this->getConsole()->writeLine("\nRapport", ColorInterface::CYAN);
+//        $this->getConsole()->writeLine("-------", ColorInterface::CYAN);
+//        $this->getConsole()->writeLine(sprintf("* Nombre d'opérations : %s", $nbOp), ColorInterface::CYAN);
+//        if($nbError>0){
+//           $this->getConsole()->writeLine(sprintf("* Nombre d'opérations échouées : %s", $nbOp), ColorInterface::RED);
+//        }
+//        $this->getConsole()->writeLine(sprintf("* Temps estimé : %s", $diff = $start->diff(new DateTime())->format('%Hh %Im %Ss')), ColorInterface::CYAN);
+//        $journal->setLog($texte);
+//        if($nbError==0){
+//            $journal->setEtat($this->getEtatEvenementService()->findByCode(Etat::SUCCES));
+//        }
+//        else{
+//            $journal->setEtat($this->getEtatEvenementService()->findByCode(Etat::ECHEC));
+//        }
+//        $this->getJournalService()->update($journal);
     }
 
     protected function isConsoleAction(): bool

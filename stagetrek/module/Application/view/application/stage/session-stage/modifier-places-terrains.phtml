@@ -294,7 +294,6 @@ $nbStages = sizeof($stages);
 <script type="text/javascript">
     $(function () {
         let allInputSetNbPlaces =  $('.setNbPlaces');
-        $('[data-bs-toggle="popover"]').popover({html: true});
         if ($.fn.DataTable.isDataTable("#<?= $tableId ?>")) {
             $('#<?= $tableId ?>').DataTable().destroy();
         }
@@ -352,9 +351,7 @@ $nbStages = sizeof($stages);
                 "<'row' <'col-sm-12'tr> >" +
                 "<'row' <'col-sm-12 col-md-5'i> <'col-sm-12 col-md-7'p> >",
         })
-        $("#<?= $tableId ?>").on('draw.dt', function () {
-            $('[data-bs-toggle="popover"]').popover({html: true});
-        }).DataTable(options);
+        $("#<?= $tableId ?>").DataTable(options);
     });
 </script>
 

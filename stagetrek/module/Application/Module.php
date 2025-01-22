@@ -30,6 +30,7 @@ class Module
             }
         );
 
+
         // The following line instantiates the SessionManager and automatically
         // makes the SessionManager the 'default' one.
 //        $serviceManager->get(SessionManager::class);

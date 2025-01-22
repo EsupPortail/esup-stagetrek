@@ -9,6 +9,7 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ObjectRepository;
 use DoctrineModule\Persistence\ObjectManagerAwareInterface;
 use DoctrineModule\Persistence\ProvidesObjectManager;
+use Exception;
 use RuntimeException;
 
 abstract class CommonEntityService
@@ -35,7 +36,6 @@ abstract class CommonEntityService
      * Retourne le repository de l'entité courante
      *
      * @return ObjectRepository|null
-     * @throws \Doctrine\ORM\Exception\NotSupported
      */
     public function getObjectRepository(): ?ObjectRepository
     {
@@ -63,7 +63,6 @@ abstract class CommonEntityService
      *
      * @param string $alias Alias d'entité
      * @return QueryBuilder
-     * @throws \Doctrine\ORM\Exception\NotSupported
      */
     public function initQueryBuilder(string $alias): QueryBuilder
     {
@@ -113,18 +112,22 @@ abstract class CommonEntityService
         return $this->getObjectManager()->getConnection()->executeQuery($sql, $this->prepareParams($params));
     }
 
-
-    protected function execProcedure($procedure, $params=[]){
+    /**
+     * @throws \Exception
+     */
+    protected function execProcedure($procedure, $params=[]): self
+    {
         try {
             $this->beginTransaction(); // suspend auto-commit
             $plsql = sprintf("call %s(%s);", $procedure, implode($params));
             $stmt = $this->getObjectManager()->getConnection()->prepare($plsql);
             $stmt->executeStatement();
             $this->commit();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->rollBack();
             throw $e;
         }
+        return $this;
     }
 
     /**
@@ -150,7 +153,6 @@ abstract class CommonEntityService
      *
      * @param int $id identifiant de l'entité
      * @return null|mixed
-     * @throws \Doctrine\ORM\Exception\NotSupported
      */
     public function find(int $id): mixed
     {
@@ -163,7 +165,6 @@ abstract class CommonEntityService
      * Cherche toutes les instances de l'entité
      *
      * @return array
-     * @throws \Doctrine\ORM\Exception\NotSupported
      */
     public function findAll(): array
     {
@@ -175,7 +176,6 @@ abstract class CommonEntityService
      * @param array $criteria
      * @param array $orderBy
      * @return array
-     * @throws \Doctrine\ORM\Exception\NotSupported
      */
     public function findAllBy(array $criteria = [], array $orderBy = []): array
     {
@@ -187,7 +187,6 @@ abstract class CommonEntityService
      * @param array $criteria
      * @param array $orderBy
      * @return null|mixed
-     * @throws \Doctrine\ORM\Exception\NotSupported
      */
     public function findOneBy(array $criteria = [], array $orderBy = []): mixed
     {
@@ -201,7 +200,7 @@ abstract class CommonEntityService
      * @param mixed $value valeur de l'attribut
      * @param bool $caseSensitive sensibilité à la casse
      * @return mixed|null
-     * @throws \Doctrine\ORM\NonUniqueResultException|\Doctrine\ORM\Exception\NotSupported
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function findByAttribute(mixed $value, $attribute, bool $caseSensitive = false): mixed
     {
@@ -225,7 +224,6 @@ abstract class CommonEntityService
      *
      * @param $attr
      * @return array
-     * @throws \Doctrine\ORM\Exception\NotSupported
      */
     public function getAttributeValues($attr): array
     {
@@ -350,8 +348,6 @@ abstract class CommonEntityService
      * @param mixed $entity
      * @param string|null $serviceEntityClass classe de l'entité
      * @return $this
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function delete(mixed $entity, string $serviceEntityClass = null) : static
     {

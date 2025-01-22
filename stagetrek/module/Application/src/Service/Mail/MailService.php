@@ -17,13 +17,14 @@ use DateTime;
 use Exception;
 use UnicaenMail\Entity\Db\Mail;
 use UnicaenRenderer\Service\Macro\MacroServiceAwareTrait;
+use UnicaenRenderer\Service\Rendu\RenduServiceAwareTrait;
 use UnicaenRenderer\Service\Template\TemplateServiceAwareTrait;
 
 /** Surcouche du module MailService pour gerer les cas spécifique de l'application */
 class MailService extends \UnicaenMail\Service\Mail\MailService
 {
-    //Liens vers les templates
     use TemplateServiceAwareTrait;
+    use RenduServiceAwareTrait;
     use MacroServiceAwareTrait;
 
     /*************************************************
@@ -37,23 +38,14 @@ class MailService extends \UnicaenMail\Service\Mail\MailService
      */
     public function sendMailType(string $codeMail, array $data = []): Mail
     {
-        $templateService = $this->getTemplateService();
-        /** @var \Application\Service\Renderer\MacroService $macroService */
-        $macroService = $this->getMacroService();
-        //Securité : on vérifie que l'on peut bien envoyer le mail type demandé (action a effectuer logiquement en amont mais mise également ici par sécurité pour ne pas faire d'erreur)
-        $this->canSendMailType($codeMail, $data);
+        $renduService = $this->getRenduService();
 
-        $template = $templateService->getTemplateByCode($codeMail);
         $macroData = $this->getMailTypeMacroVariables($codeMail, $data);
+        $rendu = $renduService->generateRenduByTemplateCode($codeMail, $macroData, false);
         $to = $this->getMailTypeDestinataires($codeMail, $data);
-        $sujet = $template->getSujet();
-        $corps = $template->getCorps();
-        $sujet = $macroService->replaceMacros($sujet, $macroData);
-        $corps = $macroService->replaceMacros($corps, $macroData);
+        $sujet = $rendu->getSujet();
+        $corps = $rendu->getCorps();
 
-        if ($macroService->textContainsMacro($sujet) || $macroService->textContainsMacro($corps)) {
-            throw new Exception(sprintf("Impossible d'envoyer le mail type %s, toutes les macros n'ont pas été remplacées.", $codeMail));
-        }
         $mail = $this->sendMail($to, $sujet, $corps);
         $motsClef = $this->getMailTypeKeyWords($codeMail, $data);
         $mail->setMotsClefs($motsClef);
@@ -205,8 +197,8 @@ class MailService extends \UnicaenMail\Service\Mail\MailService
     {
         $keywordList = $this->getMailTypeKeyWords($codeMail, $data);
         $motsClef = implode(Mail::MOTCLEF_SEPARATEUR, $keywordList);
-        $mailValidationSend = $this->getObjectManager()->getRepository(Mail::class)->findOneBy(['motsClefs' => $motsClef]);
-        return isset($mailValidationSend);
+        $mails = $this->getObjectManager()->getRepository(Mail::class)->findOneBy(['motsClefs' => $motsClef]);
+        return isset($mails);
     }
 
     /**

@@ -200,7 +200,7 @@ class AffectationController extends AbstractActionController
         $title = "Exporter les affectations";
         /** @var SessionStage $sessionStage */
         $sessionStage = $this->getSessionStageFromRoute();
-        return new ViewModel(['title' => $title, 'sessionstage' => $sessionStage]);
+        return new ViewModel(['title' => $title, 'sessionStage' => $sessionStage]);
     }
 
     /**

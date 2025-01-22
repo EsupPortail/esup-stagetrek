@@ -1,7 +1,7 @@
 <?php
 
 namespace Application\View\Helper\Misc;
-use Application\Provider\Parametre\ParametreProvider;
+use Application\Entity\Db\Parametre;
 use Application\Service\Parametre\Traits\ParametreServiceAwareTrait;
 use Exception;
 use Laminas\View\Helper\AbstractHelper;
@@ -36,17 +36,17 @@ class FooterViewHelper extends AbstractHelper
     {
         $service = $this->getParametreService();
         try{
-        $name = $service->getParametreValue(ParametreProvider::FOOTER_UNIV_NAME);        }
+        $name = $service->getParametreValue(Parametre::FOOTER_UNIV_NAME);        }
         catch (Exception){
             $name =null;
         }
         try{
-            $url =  $service->getParametreValue(ParametreProvider::FOOTER_UNIV_URL);        }
+            $url =  $service->getParametreValue(Parametre::FOOTER_UNIV_URL);        }
         catch (Exception){
             $url =null;
         }
         try{
-            $logo = $service->getParametreValue(ParametreProvider::FOOTER_UNIV_LOGO);        }
+            $logo = $service->getParametreValue(Parametre::FOOTER_UNIV_LOGO);        }
         catch (Exception){
             $logo =null;
         }
@@ -68,31 +68,31 @@ class FooterViewHelper extends AbstractHelper
     {
         $service = $this->getParametreService();
         try{
-            $univName = $service->getParametreValue(ParametreProvider::FOOTER_UNIV_NAME);
+            $univName = $service->getParametreValue(Parametre::FOOTER_UNIV_NAME);
         }
         catch (Exception){
             $univName =null;
         }
         try{
-            $univURl =  $service->getParametreValue(ParametreProvider::FOOTER_UNIV_URL);
+            $univURl =  $service->getParametreValue(Parametre::FOOTER_UNIV_URL);
         }
         catch (Exception){
             $univURl =null;
         }
         try{
-            $contactUrl =  $service->getParametreValue(ParametreProvider::FOOTER_UNIV_CONTACT);
+            $contactUrl =  $service->getParametreValue(Parametre::FOOTER_UNIV_CONTACT);
         }
         catch (Exception){
             $contactUrl =null;
         }
         try{
-            $viePrivee =  $service->getParametreValue(ParametreProvider::FOOTER_UNIV_VIE_PRIVEE);
+            $viePrivee =  $service->getParametreValue(Parametre::FOOTER_UNIV_VIE_PRIVEE);
         }
         catch (Exception){
             $viePrivee =null;
         }
         try{
-            $mentionsLegales =  $service->getParametreValue(ParametreProvider::FOOTER_UNIV_MENTIONS_LEGALS);
+            $mentionsLegales =  $service->getParametreValue(Parametre::FOOTER_UNIV_MENTIONS_LEGALS);
         } catch (Exception) {
             $mentionsLegales = null;
         }

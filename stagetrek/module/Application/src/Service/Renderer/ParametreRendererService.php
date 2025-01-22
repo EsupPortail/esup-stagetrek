@@ -2,8 +2,7 @@
 
 namespace Application\Service\Renderer;
 
-use Application\Entity\Db\Etudiant;
-use Application\Provider\Parametre\ParametreProvider;
+use Application\Entity\Db\Parametre;
 use Application\Service\Parametre\Traits\ParametreServiceAwareTrait;
 
 class ParametreRendererService
@@ -35,49 +34,49 @@ class ParametreRendererService
 
     public function getDirecteurCHU(): ?string
     {
-        return sprintf("%s", $this->getParametreService()->getParametreValue(ParametreProvider::DIRECTEUR_CHU));
+        return sprintf("%s", $this->getParametreService()->getParametreValue(Parametre::DIRECTEUR_CHU));
     }
 
     public function getDoyenUFR(): ?string
     {
-        return sprintf("%s", $this->getParametreService()->getParametreValue(ParametreProvider::DOYEN_UFR_SANTE));
+        return sprintf("%s", $this->getParametreService()->getParametreValue(Parametre::DOYEN_UFR_SANTE));
     }
 
     public function getNomCHU(): ?string
     {
-        return sprintf("%s", $this->getParametreService()->getParametreValue(ParametreProvider::NOM_CHU));
+        return sprintf("%s", $this->getParametreService()->getParametreValue(Parametre::NOM_CHU));
     }
 
     public function getNbChoixPossible(): ?string
     {
-        return sprintf("%s", $this->getParametreService()->getParametreValue(ParametreProvider::NB_PREFERENCES));
+        return sprintf("%s", $this->getParametreService()->getParametreValue(Parametre::NB_PREFERENCES));
     }
 
     public function getAdresseUFR(): ?string
     {
-        return sprintf("%s", $this->getParametreService()->getParametreValue(ParametreProvider::ADRESSE_UFR_SANTE));
+        return sprintf("%s", $this->getParametreService()->getParametreValue(Parametre::ADRESSE_UFR_SANTE));
     }
 
 
     public function getFaxUFR(): ?string
     {
-        return sprintf("%s", $this->getParametreService()->getParametreValue(ParametreProvider::FAX_UFR_SANTE));
+        return sprintf("%s", $this->getParametreService()->getParametreValue(Parametre::FAX_UFR_SANTE));
     }
 
 
     public function getMailUFR(): ?string
     {
-        return sprintf("%s", $this->getParametreService()->getParametreValue(ParametreProvider::MAIL_UFR_SANTE));
+        return sprintf("%s", $this->getParametreService()->getParametreValue(Parametre::MAIL_UFR_SANTE));
     }
 
     public function getNomUFR(): ?string
     {
-        return sprintf("%s", $this->getParametreService()->getParametreValue(ParametreProvider::NOM_UFR_SANTE));
+        return sprintf("%s", $this->getParametreService()->getParametreValue(Parametre::NOM_UFR_SANTE));
     }
 
     public function getTelUFR(): ?string
     {
-        return sprintf("%s", $this->getParametreService()->getParametreValue(ParametreProvider::TELEPHONE_UFR_SANTE));
+        return sprintf("%s", $this->getParametreService()->getParametreValue(Parametre::TELEPHONE_UFR_SANTE));
     }
 
 

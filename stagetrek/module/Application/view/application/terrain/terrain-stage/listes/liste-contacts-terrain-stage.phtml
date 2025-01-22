@@ -126,8 +126,6 @@ $canDelete = $vh->hasPrivilege(ContactPrivileges::CONTACT_TERRAIN_SUPPRIMER);
                     "<'row' <'col-sm-12 col-md-5'i> <'col-sm-12 col-md-7'p>>",
             }
         );
-        $("#<?= $tableId ?>").on('draw.dt', function () {
-            $('[data-bs-toggle="popover"]').popover({html: true});
-        }).DataTable(options);
+        $("#<?= $tableId ?>").DataTable(options);
     });
 </script>

@@ -221,7 +221,7 @@ class StageService extends CommonEntityService
         $stage = $entity;
         $affectation = $stage->getAffectationStage();
         if (isset($affectation) && $affectation->hasEtatValidee()) {
-            throw new Exception("Le stage %s a une affectation validé et ne peux donc pas être supprimé", $stage->getLibelle());
+            throw new Exception(sprintf("Le stage %s a une affectation validé et ne peux donc pas être supprimé", $stage->getLibelle()));
         }
         // Retrait du lien entre l'étudiant et la session de stage nécessaire
         $stage->getEtudiant()->removeSessionStage($stage->getSessionStage());
@@ -256,7 +256,7 @@ class StageService extends CommonEntityService
         foreach ($entities as $stage){
             $affectation = $stage->getAffectationStage();
             if (isset($affectation) && $affectation->hasEtatValidee()) {
-                throw new Exception("Le stage %s de %s a une affectation validée par la commission et ne peux donc pas être supprimé", $stage->getLibelle(), $stage->getEtudiant()->getDisplayName());
+                throw new Exception(sprintf("Le stage %s de %s a une affectation validée par la commission et ne peux donc pas être supprimé", $stage->getLibelle(), $stage->getEtudiant()->getDisplayName()));
             }
             $etudiant = $stage->getEtudiant();
             $etudiants[] = $etudiant;

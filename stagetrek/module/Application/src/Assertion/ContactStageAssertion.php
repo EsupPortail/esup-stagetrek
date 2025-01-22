@@ -94,8 +94,8 @@ class ContactStageAssertion extends AbstractAssertion
 
         $stage = $contactStage->getStage();
         if(!isset($stage)){return false;}
-
-        if(!$stage->hasEtatPhaseValidation() && !$stage->hasEtatValidationEnRetard()){return false;}
+        //Désactivé car on peux vouloir envoyer un liens même en dehors de la phase de validation
+      //  if(!$stage->hasEtatPhaseValidation() && !$stage->hasEtatValidationEnRetard()){return false;}
 
         $affectation = $stage->getAffectationStage();
         if(!$affectation || !$affectation->hasEtatValidee()){return false;}

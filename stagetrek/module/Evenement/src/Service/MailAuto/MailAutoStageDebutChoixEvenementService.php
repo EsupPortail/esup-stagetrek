@@ -2,10 +2,10 @@
 
 namespace Evenement\Service\MailAuto;
 
+use Application\Entity\Db\Parametre;
 use Application\Entity\Db\SessionStage;
 use Application\Entity\Db\Stage;
 use Application\Provider\Mailing\CodesMailsProvider;
-use Application\Provider\Parametre\ParametreProvider;
 use Application\Service\Mail\MailService;
 use DateInterval;
 use DateTime;
@@ -24,7 +24,7 @@ class MailAutoStageDebutChoixEvenementService extends AbstractMailAutoEvenementS
      */
     public function findEntitiesForNewEvent(): array
     {
-        $parametrePlanification = $this->getParametreService()->getParametreValue(ParametreProvider::DATE_PLANIFICATIONS_MAILS);
+        $parametrePlanification = $this->getParametreService()->getParametreValue(Parametre::DATE_PLANIFICATIONS_MAILS);
 
         //Sessions dont les dates sont proches du début de la phase de validation
         $sessions = $this->getObjectManager()->getRepository(SessionStage::class)->findAll();

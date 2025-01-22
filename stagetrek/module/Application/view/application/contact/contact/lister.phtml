@@ -7,8 +7,9 @@ use Application\View\Helper\Contacts\ContactViewHelper;
 /**
  * @see ContactController::listerAction()
  * @var Contact[] $contacts
+ * @var bool $codeVisible
  */
 
 /** @var ContactViewHelper $vh */
 $vh = $this->contact();
-echo $vh->renderListe($contacts);
+echo $vh->renderListe($contacts, ['codeVisible' => $codeVisible]);

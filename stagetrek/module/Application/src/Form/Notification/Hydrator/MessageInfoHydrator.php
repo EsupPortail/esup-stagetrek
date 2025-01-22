@@ -5,7 +5,6 @@ namespace Application\Form\Notification\Hydrator;
 
 use Application\Entity\Db\MessageInfo;
 use Application\Form\Notification\Fieldset\MessageInfoFieldset;
-use Application\Provider\Notification\MessageInfoProvider;
 use DateTime;
 use DoctrineModule\Persistence\ObjectManagerAwareInterface;
 use DoctrineModule\Persistence\ProvidesObjectManager;
@@ -33,7 +32,7 @@ class MessageInfoHydrator extends AbstractHydrator implements HydratorInterface,
 
         $data[MessageInfoFieldset::INPUT_TITLE] = ($message->getTitle()) ?? null;
         $data[MessageInfoFieldset::INPUT_MESSAGE] = ($message->getMessage()) ?? null;
-        $data[MessageInfoFieldset::INPUT_PRIORITY] = ($message->getPriority()) ?? MessageInfoProvider::INFO;
+        $data[MessageInfoFieldset::INPUT_PRIORITY] = ($message->getPriority()) ?? MessageInfo::INFO;
         $data[MessageInfoFieldset::INPUT_ACTIF] = ($message->isActif()) ? 1 : 0;
         $today = new DateTime();
         $data[MessageInfoFieldset::INPUT_DATE] = ($message->getDateMessage()) ? $message->getDateMessage()->format('Y-m-d') : $today->format('Y-m-d');

@@ -31,10 +31,6 @@ class ModeleConventionStageServiceFactory implements FactoryInterface
         $entityManager = $container->get(EntityManager::class);
         $serviceProvider->setObjectManager($entityManager);
 
-        /** @var MacroService $macroService */
-        $macroService = $container->get(ServiceManager::class)->get(MacroService::class);
-        $serviceProvider->setMacroService($macroService);
-
         return $serviceProvider;
     }
 }

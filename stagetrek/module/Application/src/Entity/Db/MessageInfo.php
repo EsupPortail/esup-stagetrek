@@ -3,11 +3,11 @@
 namespace Application\Entity\Db;
 
 use Application\Entity\Traits\InterfaceImplementation\IdEntityTrait;
-use Application\Provider\Notification\MessageInfoProvider;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
+use UnicaenApp\Traits\MessageAwareInterface;
 use UnicaenUtilisateur\Entity\Db\Role;
 
 /**
@@ -19,6 +19,11 @@ class MessageInfo implements ResourceInterface
      *
      */
     const RESOURCE_ID = 'MessageInfo';
+
+    const INFO = MessageAwareInterface::INFO;
+    const SUCCESS = MessageAwareInterface::SUCCESS;
+    const WARNING = MessageAwareInterface::WARNING;
+    const ERROR =  MessageAwareInterface::ERROR;
     /**
      * Returns the string identifier of the Resource
      *
@@ -175,10 +180,10 @@ class MessageInfo implements ResourceInterface
     public function getPriorityOrder() : int
     {
         return match ($this->getPriority()) {
-            MessageInfoProvider::ERROR => 0,
-            MessageInfoProvider::WARNING => 1,
-            MessageInfoProvider::SUCCESS => 2,
-            MessageInfoProvider::INFO => 3,
+            MessageInfo::ERROR => 0,
+            MessageInfo::WARNING => 1,
+            MessageInfo::SUCCESS => 2,
+            MessageInfo::INFO => 3,
             default => -1,
         };
     }

@@ -18,6 +18,7 @@ class Contact implements ResourceInterface
     , CodeEntityInterface, LibelleEntityInterface
 {
     const RESOURCE_ID = 'Contact';
+    const CODE_ASSISTANCE = 'assistance';
 
     /**
      * @return string

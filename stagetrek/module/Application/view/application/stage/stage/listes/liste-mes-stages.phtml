@@ -148,7 +148,6 @@ $today = new DateTime();
 
 <script type="text/javascript">
     $(function () {
-        $('[data-bs-toggle="popover"]').popover({html: true});
         let options = generateDataTableSetings(
             {
                 stateSave: true,
@@ -164,9 +163,7 @@ $today = new DateTime();
             }
         );
         //options = {};
-        let tableInstance = $("#<?= $tableId ?>").on('draw.dt', function () {
-            $('[data-bs-toggle="popover"]').popover({html: true});
-        }).DataTable(options);
+        let tableInstance = $("#<?= $tableId ?>").DataTable(options);
         $("#<?= $tableId ?>").removeClass('hidden');
     });
 </script>

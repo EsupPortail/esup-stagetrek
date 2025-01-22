@@ -2,9 +2,8 @@
 
 namespace Console\Service\Update;
 
-use Application\Entity\Db\ConventionStage;
+use Application\Entity\Db\Parametre;
 use Application\Provider\Fichier\NatureFichierProvider;
-use Application\Provider\Parametre\ParametreProvider;
 use Application\Service\ConventionStage\ConventionStageService;
 use Application\Service\Parametre\ParametreService;
 use Console\Service\Update\Interfaces\AbstractUpdateEntityCommand;
@@ -70,7 +69,7 @@ class UpdateConventionStageCommand extends AbstractUpdateEntityCommand
         $io->section("Nettoyage des fichiers");
 
         $date = new DateTime();
-        $duree = $this->getParametreService()->getParametreValue(ParametreProvider::DUREE_CONSERVCATION);
+        $duree = $this->getParametreService()->getParametreValue(Parametre::DUREE_CONSERVCATION);
         $date->sub(new DateInterval('P'.$duree.'D'));
         /** @var FichierService $service */
         $fileService = $this->getFileService();

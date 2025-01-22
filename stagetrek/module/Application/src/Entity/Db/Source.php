@@ -15,6 +15,9 @@ class Source implements ResourceInterface,
     CodeEntityInterface, LibelleEntityInterface, OrderEntityInterface
 {
     const RESOURCE_ID = 'Source';
+
+    const STAGETREK = 'stagetrek';
+    const LDAP = 'ldap';
     /**
      * Returns the string identifier of the Resource
      *

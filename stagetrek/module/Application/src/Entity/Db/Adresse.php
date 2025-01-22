@@ -5,7 +5,6 @@ namespace Application\Entity\Db;
 use Application\Entity\Traits\Adresse\HasAdresseTypeTrait;
 use Application\Entity\Traits\InterfaceImplementation\IdEntityTrait;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
-
 /**
  * Adresse
  */

@@ -49,6 +49,19 @@ class ContactTerrain implements ResourceInterface,
     }
 
     use LibelleEntityTrait;
+    /**
+     * Get libelle.
+     *
+     * @return string|null
+     */
+    public function getLibelle(): ?string
+    {
+        if (!isset($this->contact)) {
+            return null;
+        }
+        return $this->contact->getLibelle();
+    }
+
     use HasContactTrait;
     use HasTerrainStageTrait;
 

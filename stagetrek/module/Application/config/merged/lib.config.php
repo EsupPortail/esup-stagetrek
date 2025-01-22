@@ -10,6 +10,8 @@ return [
             //Jquery
             '015_jquery' => 'unistrap-1.0.0/js/jquery-3.6.1.min.js',
             '020_jqueryui' => 'unistrap-1.0.0/lib/jquery-ui-1.13.2/jquery-ui.min.js',
+            '050_select2' => "/lib/select2-4.0.13/dist/js/select2.min.js",
+            '050_select2_fr' => "/lib/select2-4.0.13/dist/js/i18n/fr.js",
             //Bootstrap
             '040_bootstrap' => '',
         ],
@@ -27,7 +29,7 @@ return [
             '120_bootstrap-select-fr' => '/lib/bootstrap-select-1.14.0-beta3/js/i18n/defaults-fr_FR.js',
 
             /** Datatable */
-            '100_moment' => '/lib/moment-2.8.4/moment-with-locales.min.js',
+            '100_moment' => '/lib/moment-2.30.1/moment-with-locales.js',
             '130_datatables' => '/lib/DataTables/datatables.js',
             '131_datatables' => '/lib/DataTables/datetime-moment.js',
             '133_datatables' => '/lib/DataTables/Buttons-2.2.3/js/dataTables.buttons.min.js',
@@ -42,9 +44,9 @@ return [
             '149_datatables' => '/lib/DataTables/StateRestore-1.1.1/js/dataTables.stateRestore.min.js',
             '150_dataTableConfig' => 'js/stageTrek.dataTableConfig.js',
 
-            /** Tinymce */
-            '151_tinymce' => 'js/tinymce/js/tinymce/tinymce.js',
-            '152_tinymce2' => 'js/form_fiche.js',
+            /** Tinymce TODO :  a voir qu'elle version utiliser, 7.6 recommandé car corrige la faille de sécu mais il faut revoir les dépendance avec template (cf UnicaenRenderer)*/
+            '151_tinymce' => 'lib/tinymce_7.6.0/js/tinymce/tinymce.min.js',
+            '152_tinymce2' => 'lib/form_fiche.js',
         ],
         'stylesheets' => [
             '010_jquery-ui' => '/lib/jquery-ui-1.12.1/jquery-ui.min.css',
@@ -68,6 +70,11 @@ return [
             '075_logos'        => 'css/logos.css',
 
             '101_' => 'css/timeline.css',
+
+            '500_select2' => "lib/select2-4.0.13/dist/css/select2.min.css",
+            '10000_etat' => 'unicaen/etat/css/unicaen-etat.css',
+            '10000_evenement' => 'unicaen/evenement/css/unicaen-evenement.css',
+            '11000_mail' => 'unicaen/mail/css/unicaen-mail.css',
 
             '0129_datatables' => '/css/stagetrek.dataTables.css',
             '0130_datatables' => '/lib/DataTables/datatables.min.css',

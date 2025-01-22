@@ -20,6 +20,7 @@ CREATE TABLE unicaen_renderer_template (
 	code varchar(256) NOT NULL,
 	description text,
 	namespace varchar(1024),
+	engine varchar(64) default 'default' not null,
 	document_type varchar(256) NOT NULL,
 	document_sujet text NOT NULL,
 	document_corps text NOT NULL,

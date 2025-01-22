@@ -5,7 +5,6 @@ namespace Application\Form\TerrainStage\Element;
 
 use Application\Entity\Db\CategorieStage;
 use Application\Form\Abstrait\Element\AbstractSelectPicker;
-use Application\Provider\TypeStage\TypeCategorieStageProvider;
 use Exception;
 
 class CategorieStageSelectPicker extends AbstractSelectPicker
@@ -20,7 +19,7 @@ class CategorieStageSelectPicker extends AbstractSelectPicker
         /** @var CategorieStage $c */
         foreach ($categories as $c){
             $this->setCategorieStageAttribute($c, 'data-type-categorie', ($c->isCategoriePrincipale()) ?
-                TypeCategorieStageProvider::CATEGORIE_PRINCIPALE :  TypeCategorieStageProvider::CATEGORIE_SECONDAIRE
+                CategorieStage::TYPE_CATEGORIE_PRINCIPALE :  CategorieStage::TYPE_CATEGORIE_SECONDAIRE
             );
         }
         return $this;
@@ -32,8 +31,8 @@ class CategorieStageSelectPicker extends AbstractSelectPicker
     public function useTypeCategorieData(string $type) : static
     {
         $filter = match ($type) {
-            TypeCategorieStageProvider::CATEGORIE_PRINCIPALE => true,
-            TypeCategorieStageProvider::CATEGORIE_SECONDAIRE => false,
+            CategorieStage::TYPE_CATEGORIE_PRINCIPALE => true,
+            CategorieStage::TYPE_CATEGORIE_SECONDAIRE => false,
             default => throw new Exception("Type de catégorie de terrain indéterminée"),
         };
         //TODO : voir comment distinguer les catégorie principale et secondaire
@@ -185,6 +184,6 @@ class CategorieStageSelectPicker extends AbstractSelectPicker
 
     protected function getTypeCategorieStage(CategorieStage $categorieStage) : string
     {
-       return ($categorieStage->isCategoriePrincipale())  ? TypeCategorieStageProvider::CATEGORIE_PRINCIPALE : TypeCategorieStageProvider::CATEGORIE_SECONDAIRE ;
+       return ($categorieStage->isCategoriePrincipale())  ? CategorieStage::TYPE_CATEGORIE_PRINCIPALE : CategorieStage::TYPE_CATEGORIE_SECONDAIRE ;
     }
 }

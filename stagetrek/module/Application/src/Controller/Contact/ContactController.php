@@ -64,14 +64,17 @@ class ContactController extends AbstractActionController
     {
         $form = $this->getContactRechercheForm();
         $codeVisible = false;
-        if ($data = $this->params()->fromQuery()) {
+        if ($data = $this->params()->fromPost()) {
             if(isset($data[$form::INPUT_AFFICHER_CODE])){
                 $codeVisible = ($data[$form::INPUT_AFFICHER_CODE] == 1);
             }
             $form->setData($data);
-            $criteria = array_filter($data, function ($v) {
-                return !empty($v);
-            });
+            $criteria = [];
+            if($form->isValid()) {
+                $criteria = array_filter($data, function ($v) {
+                    return !empty($v);
+                });
+            }
             if (!empty($criteria)) {
                 $contacts = $this->getContactService()->search($criteria);
             } else {
@@ -91,7 +94,8 @@ class ContactController extends AbstractActionController
     public function listerAction() : ViewModel
     {
         $contacts = $this->getContactService()->findAll();
-        return new ViewModel(['contacts' => $contacts]);
+        $codeVisible = false;
+        return new ViewModel(['contacts' => $contacts, 'codeVisible' => $codeVisible]);
     }
 
     public function ajouterAction() : ViewModel

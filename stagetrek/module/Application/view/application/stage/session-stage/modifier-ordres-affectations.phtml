@@ -167,7 +167,6 @@ $stageVh = $this->stage();
 
     <script type="text/javascript">
         $(function () {
-            $('[data-bs-toggle="popover"]').popover({html: true});
             if ($.fn.DataTable.isDataTable("#<?= $tableId ?>")) {
                 $('#<?= $tableId ?>').DataTable().destroy();
             }
@@ -231,9 +230,7 @@ $stageVh = $this->stage();
                     "<'row' <'col-sm-12'tr> >" +
                     "<'row' <'col-sm-12 col-md-5'i> <'col-sm-12 col-md-7'p> >",
             })
-            $("#<?= $tableId ?>").on('draw.dt', function () {
-                $('[data-bs-toggle="popover"]').popover({html: true});
-            }).DataTable(options);
+            $("#<?= $tableId ?>").DataTable(options);
         });
     </script>
 <?php endif; ?>

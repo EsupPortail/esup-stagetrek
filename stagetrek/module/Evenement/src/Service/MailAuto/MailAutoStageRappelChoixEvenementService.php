@@ -2,10 +2,10 @@
 
 namespace Evenement\Service\MailAuto;
 
+use Application\Entity\Db\Parametre;
 use Application\Entity\Db\SessionStage;
 use Application\Entity\Db\Stage;
 use Application\Provider\Mailing\CodesMailsProvider;
-use Application\Provider\Parametre\ParametreProvider;
 use Application\Service\Mail\MailService;
 use DateInterval;
 use DateTime;
@@ -24,7 +24,7 @@ class MailAutoStageRappelChoixEvenementService extends AbstractMailAutoEvenement
      */
     public function findEntitiesForNewEvent(): array
     {
-        $parametreNbJourRappel = $this->getParametreService()->getParametreValue(ParametreProvider::DELAI_RAPPELS);
+        $parametreNbJourRappel = $this->getParametreService()->getParametreValue(Parametre::DELAI_RAPPELS);
 
         //Sessions dont les dates sont proches du début de la phase de validation
         $sessions = $this->getObjectManager()->getRepository(SessionStage::class)->findAll();
@@ -81,7 +81,7 @@ class MailAutoStageRappelChoixEvenementService extends AbstractMailAutoEvenement
 
         //Calcul d'une date de traitement adaptès selon la situation
         $datePlanification = clone($stage->getDateFinChoix());
-        $parametreNbJourRappel = $this->getParametreService()->getParametreValue(ParametreProvider::DELAI_RAPPELS);
+        $parametreNbJourRappel = $this->getParametreService()->getParametreValue(Parametre::DELAI_RAPPELS);
         $datePlanification->sub(new DateInterval('P' . $parametreNbJourRappel . 'D'));
         $datePlanification->setTime(8, 0);
 

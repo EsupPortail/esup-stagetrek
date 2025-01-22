@@ -14,6 +14,7 @@ use Laminas\ServiceManager\Factory\FactoryInterface;
 use Laminas\ServiceManager\ServiceManager;
 use Laminas\View\Renderer\PhpRenderer;
 use UnicaenPdf\Exporter\PdfExporter;
+use UnicaenRenderer\Service\Rendu\RenduService;
 
 /**
  * Class ConventionStageServiceFactory
@@ -32,16 +33,16 @@ class ConventionStageServiceFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null): ConventionStageService
     {
-        $serviceProvider = new ConventionStageService();
+        $service = new ConventionStageService();
 
         /** @var EntityManager $entityManager */
         $entityManager = $container->get(EntityManager::class);
-        $serviceProvider->setObjectManager($entityManager);
+        $service->setObjectManager($entityManager);
 
         try{
             /** @var FichierService $fileServcie */
             $fileServcie = $container->get(ServiceManager::class)->get(FichierService::class);
-            $serviceProvider->setFileService($fileServcie);
+            $service->setFileService($fileServcie);
 
             /** @var FileNameFormatterInterface $fileNameFormatter */
             $fileNameFormatter = $container->get(ServiceManager::class)->get(ConventionStageFileNameFormatter::class);
@@ -52,12 +53,16 @@ class ConventionStageServiceFactory implements FactoryInterface
         }
         /** @var MacroService $macroService */
         $macroService = $container->get(ServiceManager::class)->get(MacroService::class);
-        $serviceProvider->setMacroService($macroService);
+        $service->setMacroService($macroService);
         $pdfExporter = new PdfExporter();
         $pdfExporter->setRenderer($container->get(PhpRenderer::class));
-        $serviceProvider->setPdfExporter($pdfExporter);
+        $service->setPdfExporter($pdfExporter);
+
+        /** @var RenduService $renduService */
+        $renduService = $container->get(ServiceManager::class)->get(RenduService::class);
+        $service->setRenduService($renduService);
 
 
-        return $serviceProvider;
+        return $service;
     }
 }

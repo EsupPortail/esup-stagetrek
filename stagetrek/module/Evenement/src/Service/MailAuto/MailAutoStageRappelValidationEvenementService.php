@@ -3,10 +3,10 @@
 namespace Evenement\Service\MailAuto;
 
 use Application\Entity\Db\ContactStage;
+use Application\Entity\Db\Parametre;
 use Application\Entity\Db\SessionStage;
 use Application\Entity\Db\Stage;
 use Application\Provider\Mailing\CodesMailsProvider;
-use Application\Provider\Parametre\ParametreProvider;
 use Application\Service\Contact\ContactStageService;
 use Application\Service\Mail\MailService;
 use DateInterval;
@@ -30,8 +30,8 @@ class MailAutoStageRappelValidationEvenementService extends AbstractMailAutoEven
     public function findEntitiesForNewEvent(): array
     {
         /** @var int $parametrePlanification */
-        $parametreNbJourRappel = $this->getParametreService()->getParametreValue(ParametreProvider::DELAI_RAPPELS);
-        $parametreProlonguationToken = $this->getParametreService()->getParametreValue(ParametreProvider::DUREE_TOKEN_VALDATION_STAGE);
+        $parametreNbJourRappel = $this->getParametreService()->getParametreValue(Parametre::DELAI_RAPPELS);
+        $parametreProlonguationToken = $this->getParametreService()->getParametreValue(Parametre::DUREE_TOKEN_VALDATION_STAGE);
         //Sessions dont les dates sont proches du début de la phase de validation
         $sessions = $this->getObjectManager()->getRepository(SessionStage::class)->findAll();
         $sessions = array_filter($sessions, function (SessionStage $session) use($parametreNbJourRappel, $parametreProlonguationToken){
@@ -125,7 +125,7 @@ class MailAutoStageRappelValidationEvenementService extends AbstractMailAutoEven
 
         //Calcul d'une date de traitement adaptès selon la situation
         $datePlanification = clone($stage->getDateFinValidation());
-        $parametreNbJourRappel = $this->getParametreService()->getParametreValue(ParametreProvider::DELAI_RAPPELS);
+        $parametreNbJourRappel = $this->getParametreService()->getParametreValue(Parametre::DELAI_RAPPELS);
         $datePlanification->sub(new DateInterval('P' . $parametreNbJourRappel . 'D'));
         $datePlanification->setTime(8, 0);
         $today = new DateTime();
@@ -145,7 +145,7 @@ class MailAutoStageRappelValidationEvenementService extends AbstractMailAutoEven
 
         //Mise en erreur automatique d'événement selon certaines situations
         $dateFinValidatioProlongee = clone($stage->getDateFinValidation());
-        $parametreProlonguationToken = $this->getParametreService()->getParametreValue(ParametreProvider::DUREE_TOKEN_VALDATION_STAGE);
+        $parametreProlonguationToken = $this->getParametreService()->getParametreValue(Parametre::DUREE_TOKEN_VALDATION_STAGE);
         $dateFinValidatioProlongee->add(new DateInterval('P'.$parametreProlonguationToken.'D'));
         if ($dateFinValidatioProlongee < $today) {
             $evenement->setLog("Impossible d'envoyer automatiquement le mail rappel plus de ".$parametreProlonguationToken." jours après la date de fin de la phase de validation");
@@ -203,7 +203,7 @@ class MailAutoStageRappelValidationEvenementService extends AbstractMailAutoEven
         //Quelques vérification avant pour éviter des erreurs
         $today = new DateTime();
         $dateFinValidatioProlongee = clone($stage->getDateFinValidation());
-        $parametreProlonguationToken = $this->getParametreService()->getParametreValue(ParametreProvider::DUREE_TOKEN_VALDATION_STAGE);
+        $parametreProlonguationToken = $this->getParametreService()->getParametreValue(Parametre::DUREE_TOKEN_VALDATION_STAGE);
         $dateFinValidatioProlongee->add(new DateInterval('P'.$parametreProlonguationToken.'D'));
         if ($dateFinValidatioProlongee < $today) {
             $evenement->setLog("Impossible d'envoyer automatiquement le mail rappel plus de ".$parametreProlonguationToken." jours après la date de fin de la phase de validation");

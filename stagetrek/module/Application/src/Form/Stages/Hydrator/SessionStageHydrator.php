@@ -4,9 +4,9 @@
 namespace Application\Form\Stages\Hydrator;
 
 use Application\Entity\Db\Groupe;
+use Application\Entity\Db\Parametre;
 use Application\Entity\Db\SessionStage;
 use Application\Form\Stages\Fieldset\SessionStageFieldset;
-use Application\Provider\Parametre\ParametreProvider;
 use Application\Service\AnneeUniversitaire\Traits\AnneeUniversitaireServiceAwareTrait;
 use Application\Service\Groupe\Traits\GroupeServiceAwareTrait;
 use Application\Service\Parametre\Traits\ParametreServiceAwareTrait;
@@ -90,46 +90,46 @@ class SessionStageHydrator extends AbstractHydrator implements HydratorInterface
         $defaultDates = [];
 
         $date = clone $startDate;
-        $delta = $this->getParametreService()->getParametreValue(ParametreProvider::DATE_CALCUL_ORDRES_AFFECTATIONS);
+        $delta = $this->getParametreService()->getParametreValue(Parametre::DATE_CALCUL_ORDRES_AFFECTATIONS);
         $date->sub(new DateInterval('P' . $delta . 'D'));
         $defaultDates[SessionStageFieldset::DATE_CALCUL_ORDRES_AFFECTACTIONS] = $date;
 
         $date = clone $startDate;
-        $delta = $this->getParametreService()->getParametreValue(ParametreProvider::DATE_PHASE_CHOIX);
+        $delta = $this->getParametreService()->getParametreValue(Parametre::DATE_PHASE_CHOIX);
         $date->sub(new DateInterval('P' . $delta . 'D'));
         $defaultDates[SessionStageFieldset::DATE_DEBUT_CHOIX] = $date;
 
-        $delta = $this->getParametreService()->getParametreValue(ParametreProvider::DUREE_PHASE_CHOIX);
+        $delta = $this->getParametreService()->getParametreValue(Parametre::DUREE_PHASE_CHOIX);
         $date->add(new DateInterval('P' . $delta . 'D'));
         $defaultDates[SessionStageFieldset::DATE_FIN_CHOIX] = $date;
 
         $date = clone $startDate;
-        $delta = $this->getParametreService()->getParametreValue(ParametreProvider::DATE_PHASE_AFFECTATION);
+        $delta = $this->getParametreService()->getParametreValue(Parametre::DATE_PHASE_AFFECTATION);
         $date->sub(new DateInterval('P' . $delta . 'D'));
         $defaultDates[SessionStageFieldset::DATE_COMMISSION] = $date;
 
         $date = clone $startDate;
         $defaultDates[SessionStageFieldset::DATE_DEBUT_STAGE] = $date;
-        $delta = $this->getParametreService()->getParametreValue(ParametreProvider::DUREE_STAGE);
+        $delta = $this->getParametreService()->getParametreValue(Parametre::DUREE_STAGE);
         $date->sub(new DateInterval('P' . $delta . 'D'));
         $defaultDates[SessionStageFieldset::DATE_FIN_STAGE] = $date;
         $endDate = $date;
 
         $date = clone $endDate;
-        $delta = $this->getParametreService()->getParametreValue(ParametreProvider::DATE_PHASE_VALIDATION);
+        $delta = $this->getParametreService()->getParametreValue(Parametre::DATE_PHASE_VALIDATION);
         $date->add(new DateInterval('P' . $delta . 'D'));
         $defaultDates[SessionStageFieldset::DATE_DEBUT_VALIDATION] = $date;
 
-        $delta = $this->getParametreService()->getParametreValue(ParametreProvider::DUREE_PHASE_VALIDATION);
+        $delta = $this->getParametreService()->getParametreValue(Parametre::DUREE_PHASE_VALIDATION);
         $date->add(new DateInterval('P' . $delta . 'D'));
         $defaultDates[SessionStageFieldset::DATE_FIN_VALIDATION] = $date;
 
         $date = clone $endDate;
-        $delta = $this->getParametreService()->getParametreValue(ParametreProvider::DATES_PHASE_EVALUATION);
+        $delta = $this->getParametreService()->getParametreValue(Parametre::DATES_PHASE_EVALUATION);
         $date->add(new DateInterval('P' . $delta . 'D'));
         $defaultDates[SessionStageFieldset::DATE_DEBUT_EVALUATION] = $date;
 
-        $delta = $this->getParametreService()->getParametreValue(ParametreProvider::DUREE_PHASE_VALIDATION);
+        $delta = $this->getParametreService()->getParametreValue(Parametre::DUREE_PHASE_VALIDATION);
         $date->add(new DateInterval('P' . $delta . 'D'));
         $defaultDates[SessionStageFieldset::DATE_FIN_EVALUATION] = $date;
 
