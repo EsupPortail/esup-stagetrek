@@ -120,8 +120,9 @@ $fieldset = $form->getEntityFieldset();
 <?= $this->form()->closeTag(); ?>
 
 
+
+<?php echo $this->macroInsert() ?>
 <script type="text/javascript">
-    <?php echo $form->getMacros(); ?>
 
     $(function () {
         $('.selectpicker').selectpicker('render');
@@ -133,7 +134,6 @@ $fieldset = $form->getEntityFieldset();
             return false;
         })
 
-        console.log($('input#<?= $fieldset::DESCRIPTION ?>'))
         $('input#<?= $fieldset::DESCRIPTION ?>').addClass('descriptionArea');
         $('input#<?= $fieldset::CORPS ?>').addClass('contenuArea');
         $('input#<?= $fieldset::CSS ?>').addClass('cssArea');
@@ -145,11 +145,11 @@ $fieldset = $form->getEntityFieldset();
             resize: true,
             language: 'fr_FR',
             entity_encoding: "raw",
-            plugins: 'lists template',
+            plugins: 'lists',
             statusbar: true,
             browser_spellcheck: true,
             branding: false,
-            menu: {},
+            menubar: false,
             body_id: '<?= $fieldset::DESCRIPTION ?>',
             setup: function (editor) {
                 editor.on("initEditor", function () {
@@ -159,20 +159,19 @@ $fieldset = $form->getEntityFieldset();
         });
         tinymce.init({
             selector: '.contenuArea',
-            toolbar: 'newdocument undo redo | bold italic underline | bullist | alignleft  aligncenter alignright alignjustify | formatselect | link image | template | code',
+            toolbar: 'newdocument undo redo | bold italic underline | bullist | alignleft  aligncenter alignright alignjustify | formatselect | link image  | code',
             block_formats: 'Normal=p;Titre 1=h1;Titre 2=h2;Titre 3=h3',
             resize: true,
             height: "500",
             language: 'fr_FR',
             entity_encoding: "raw",
             forced_root_block: "",
-            plugins: 'lists template paste link code',
-            templates: macros,
+            plugins: 'lists link code',
             paste_as_text: true,
             statusbar: true,
             browser_spellcheck: true,
             branding: false,
-            menu: {},
+            menubar: false,
             body_id: '<?= $fieldset::CORPS ?>',
             setup: function (editor) {
                 editor.on("initEditor", function () {
@@ -180,5 +179,10 @@ $fieldset = $form->getEntityFieldset();
                 });
             }
         });
+    });
+
+    const macros = <?php echo $form->generateMacrosJsonValue() ?>;
+    $(function () {
+        installMacrosWidgets(macros);
     });
 </script>

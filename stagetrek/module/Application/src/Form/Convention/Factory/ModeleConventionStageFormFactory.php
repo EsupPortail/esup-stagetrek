@@ -13,6 +13,7 @@ use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Laminas\ServiceManager\ServiceManager;
 use Laminas\View\HelperPluginManager;
+use UnicaenRenderer\Service\TemplateEngineManager\TemplateEngineManager;
 
 class ModeleConventionStageFormFactory implements FactoryInterface
 {
@@ -44,6 +45,10 @@ class ModeleConventionStageFormFactory implements FactoryInterface
         $hydrator = $container->get('HydratorManager')->get(ModeleConventionStageHydrator::class);
         $form->setHydrator($hydrator);
         $form->setObject(new ModeleConventionStage());
+
+        /** @var TemplateEngineManager $templateEngineManager */
+        $templateEngineManager = $container->get(TemplateEngineManager::class);
+        $form->setTemplateEngineManager($templateEngineManager);
 
         return $form;
     }

@@ -116,7 +116,6 @@ $vh->setContact($contact);
         </table>
     </div>
 </div>
-
 <script type="text/javascript">
     $(function () {
         let options = generateDataTableSetings({
@@ -136,8 +135,6 @@ $vh->setContact($contact);
                 }
             },
         });
-        $("#<?= $tableId ?>").on('draw.dt', function() {
-            $('[data-bs-toggle="popover"]').popover({html: true});
-        }).DataTable(options);
+        $("#<?= $tableId ?>").DataTable(options);
     });
 </script>

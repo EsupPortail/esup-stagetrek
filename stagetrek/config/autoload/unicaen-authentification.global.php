@@ -38,6 +38,9 @@ else{
     $defaultUsers=[];
 }
 
+
+
+
 $config = [
     // Module [Unicaen]Auth
     'unicaen-auth' => [
@@ -71,6 +74,7 @@ $config = [
             ],
             'ldap' => [
                 'enabled' => ($authServicesAllowed['ldap']),
+                'log_failures' => false,
                 'username' => "supannaliaslogin",
             ],
 

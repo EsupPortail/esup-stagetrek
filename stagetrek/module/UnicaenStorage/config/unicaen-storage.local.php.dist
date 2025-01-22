@@ -15,11 +15,11 @@ return [
                 ],
                 S3StorageAdapter::class => [
                     'client' => [
-                        'end_point' => 'XXXXXXX',
-                        'access_key' => 'XXXXXXX',
-                        'secret_key' => 'XXXXXXX',
+                        'end_point' => 'XXXXXX',
+                        'access_key' => 'XXXXXX',
+                        'secret_key' => 'XXXXXX',
                     ],
-                    'root_path' => 'sygal',
+                    'root_path' => 'XXXXXX',
                 ],
             ],
 

@@ -63,18 +63,19 @@ class IdentityProvider extends AbstractIdentityProvider
                 }
             }
 
-            //Accés au defaultUsers
-            foreach ($this->defaultUsers as $default) {
-//            var_dump($user->getUsername());
-//            var_dump($default);
-                if ($default == $user->getUsername()) {
-                    $roles[] = $roleTech;
-                    break;
+            if($roleTech->getUsers()->isEmpty()){
+//                Si aucun utilisateur n'as le role Administrateur Technique
+//              et que l'utilisateur connecté fait partie des utilisateur par défaut, on lui attribue le role
+                foreach ($this->defaultUsers as $default) {
+                    if ($default == $user->getUsername()) {
+                        $user->addRole($roleTech);
+                        $user->setLastRole($roleTech);
+                        $this->getUserService()->update($user);
+                        break;
+                    }
                 }
             }
         }
-//        var_dump($roles);
-//        die();
         return $roles;
     }
 

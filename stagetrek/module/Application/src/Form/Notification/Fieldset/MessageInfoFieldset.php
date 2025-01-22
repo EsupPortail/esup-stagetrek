@@ -3,9 +3,9 @@
 
 namespace Application\Form\Notification\Fieldset;
 
+use Application\Entity\Db\MessageInfo;
 use Application\Form\Abstrait\Traits\FormElementTrait;
 use Application\Form\Misc\Element\RoleSelectPicker;
-use Application\Provider\Notification\MessageInfoProvider;
 use Laminas\Filter\StringTrim;
 use Laminas\Filter\StripTags;
 use Laminas\Filter\ToInt;
@@ -84,30 +84,30 @@ class MessageInfoFieldset extends Fieldset
             'options' => [
                 'label' => self::LABEL_PRIORITY,
                 'value_options' => [
-                    MessageInfoProvider::INFO => [
+                    MessageInfo::INFO => [
                         'label' => "Information",
-                        'value' =>  MessageInfoProvider::INFO,
+                        'value' =>  MessageInfo::INFO,
                         'attributes' => [
                             'data-icon' => "fas fa-exclamation-circle text-primary",
                         ]
                     ],
-                    MessageInfoProvider::SUCCESS => [
+                    MessageInfo::SUCCESS => [
                         'label' => "Succés",
-                        'value' =>  MessageInfoProvider::SUCCESS,
+                        'value' =>  MessageInfo::SUCCESS,
                         'attributes' => [
                             'data-icon' => "fas fa-check-circle text-success",
                         ]
                     ],
-                    MessageInfoProvider::WARNING => [
+                    MessageInfo::WARNING => [
                         'label' => "Attention",
-                        'value' =>  MessageInfoProvider::WARNING,
+                        'value' =>  MessageInfo::WARNING,
                         'attributes' => [
                             'data-icon' => "fas fa-exclamation-triangle text-warning",
                         ]
                     ],
-                    MessageInfoProvider::ERROR => [
+                    MessageInfo::ERROR => [
                         'label' => "Erreur",
-                        'value' =>  MessageInfoProvider::ERROR,
+                        'value' =>  MessageInfo::ERROR,
                         'attributes' => [
                             'data-icon' => "fas fa-exclamation-triangle text-danger",
                         ]

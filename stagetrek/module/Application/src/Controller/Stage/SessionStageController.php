@@ -66,11 +66,15 @@ class SessionStageController extends AbstractActionController
     public function indexAction() : ViewModel
     {
         $form = $this->getSessionStageRechercheForm();
-        if ($data = $this->params()->fromQuery()) {
+        if ($data = $this->params()->fromPost()) {
             $form->setData($data);
-            $criteria = array_filter($data, function ($v) {
-                return !empty($v);
-            });
+            $criteria = [];
+            if($form->isValid()) {
+                $criteria = array_filter($data, function ($v) {
+                    return !empty($v);
+                });
+            }
+
             if(!empty($criteria)) {
                 $sessionsStages = $this->getSessionStageService()->search($criteria);
             }

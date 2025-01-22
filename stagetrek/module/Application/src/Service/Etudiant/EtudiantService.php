@@ -7,20 +7,17 @@ use Application\Entity\Db\AdresseType;
 use Application\Entity\Db\Etudiant;
 use Application\Entity\Db\Stage;
 use Application\Form\Etudiant\EtudiantRechercheForm as FormRecherche;
-use Application\Provider\Adresse\AdresseTypeProvider;
 use Application\Provider\EtatType\ContrainteCursusEtudiantEtatTypeProvider;
 use Application\Provider\EtatType\EtudiantEtatTypeProvider;
 use Application\Provider\Roles\RolesProvider;
 use Application\Service\Misc\CommonEntityService;
 use Application\Service\Misc\Traits\CSVServiceAwareTrait;
 use Application\Service\Misc\Traits\EntityEtatServiceAwareTrait;
-use Application\Validator\Import\EtudiantCsvImportValidator;
 use DateTime;
 use Exception;
 use RuntimeException;
 use UnicaenEtat\Entity\Db\HasEtatsInterface;
 use UnicaenUtilisateur\Entity\Db\RoleInterface;
-use UnicaenUtilisateur\Entity\Db\User;
 use UnicaenUtilisateur\Service\Role\RoleServiceAwareTrait;
 use UnicaenUtilisateur\Service\User\UserServiceAwareTrait;
 
@@ -114,8 +111,8 @@ class EtudiantService extends CommonEntityService
             $etudiant->setAdresse($adresse);
         }
         $adresse = $etudiant->getAdresse();
-        if (!$adresse->isType(AdresseTypeProvider::TYPE_ETUDIANT)) {
-            $adresseType = $this->getObjectManager()->getRepository(AdresseType::class)->findOneBy(['code' => AdresseTypeProvider::TYPE_ETUDIANT]);
+        if (!$adresse->isType(AdresseType::TYPE_ETUDIANT)) {
+            $adresseType = $this->getObjectManager()->getRepository(AdresseType::class)->findOneBy(['code' => AdresseType::TYPE_ETUDIANT]);
             $adresse->setAdresseType($adresseType);
         }
         $this->getObjectManager()->persist($etudiant);

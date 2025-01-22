@@ -10,7 +10,6 @@ $(function ()
     var l = window.location;
     var base_url = l.protocol + "//" + l.host + "/" + l.pathname.split('/')[0];
 
-    WidgetInitializer.add('longItemList', 'longItemList');
     WidgetInitializer.add('table-data', 'tableData');
 
 });
@@ -63,6 +62,10 @@ function generateDataTableSetings(newOptions){
         },
         "createdRow": function (row, data, index) {
             $('.pop-ajax', row).popAjax();
+        },
+        // maj éventuel des popover qui serait contenue dans le table
+        "drawCallback": function (settings) {
+            $(this).find('[data-bs-toggle="popover"]').popover({html: true, sanitize: false});
         },
     };
     if(newOptions) {

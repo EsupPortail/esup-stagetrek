@@ -100,9 +100,7 @@ foreach ($preferences as $preference){
                     }
                 }
             );
-            let tableInstance = $("#<?= $tableId ?>").on('draw.dt', function () {
-                $('[data-bs-toggle="popover"]').popover({html: true});
-            }).DataTable(options);
+          $("#<?= $tableId ?>").DataTable(options);
         });
     </script>
 

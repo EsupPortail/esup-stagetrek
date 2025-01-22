@@ -15,4 +15,6 @@ Interface AlgorithmeAffectationInterface
      * @throws ProcedureAffectationException
      */
     public function run(SessionStage $sessionStage) : static;
+
+    public static function getCodeAlgo() : string;
 }

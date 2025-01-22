@@ -4,6 +4,7 @@ namespace Application\Service\ConventionStage;
 
 use Application\Entity\Db\ModeleConventionStage;
 use Application\Service\Misc\CommonEntityService;
+use UnicaenRenderer\Service\Macro\MacroService;
 use UnicaenRenderer\Service\Macro\MacroServiceAwareTrait;
 
 /**
@@ -18,11 +19,6 @@ class ModeleConventionStageService extends CommonEntityService
     {
         return ModeleConventionStage::class;
     }
-
-
-    //TODO : a vérifier mais probablement inutile
-    /** Gestion des macros */
-    use MacroServiceAwareTrait;
 }
 
 

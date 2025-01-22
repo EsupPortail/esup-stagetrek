@@ -6,7 +6,6 @@ use Application\Entity\Db\ConventionStage;
 use Application\Entity\Db\ModeleConventionStage;
 use Application\Entity\Db\Stage;
 use Application\Provider\Fichier\NatureFichierProvider;
-use Application\Provider\Renderer\TemplateProvider;
 use Application\Service\Misc\CommonEntityService;
 use Application\Service\Renderer\MacroService;
 use DateTime;
@@ -18,6 +17,7 @@ use UnicaenPdf\Exporter\PdfExporter;
 use UnicaenRenderer\Entity\Db\Rendu;
 use UnicaenRenderer\Entity\Db\Template;
 use UnicaenRenderer\Service\Macro\MacroServiceAwareTrait;
+use UnicaenRenderer\Service\Rendu\RenduServiceAwareTrait;
 
 /**
  * Class ConventionStageService
@@ -216,6 +216,11 @@ class ConventionStageService extends CommonEntityService
             $this->getFileService()->historise($oldFile);
         }
         try{
+            if($convention->getId() == null){//Permet de s'assurer que l'objet convention existe et donc le liens avec les signataires
+                $this->add($convention);
+                $this->getObjectManager()->refresh($convention);
+            }
+
             $nature = $this->getObjectManager()->getRepository(Nature::class)->findOneBy(['code' => NatureFichierProvider::CONVENTION]);
             /** @var ConventionStageFileNameFormatter $fileNameFormatter */
             $fileNameFormatter = $this->getFileService()->getFileNameFormatter();
@@ -225,12 +230,7 @@ class ConventionStageService extends CommonEntityService
             $fichier = $this->getFileService()->createFichierFromFile($tmpName, $nature);
             $fichier->setNomOriginal($originalName); //Pour ne pas conserver un nom tmp fictif
             $convention->setFichier($fichier);
-            if($convention->getId() == null){
-                $this->add($convention);
-            }
-            else{
-                $this->update($convention);
-            }
+            $this->update($convention);
             $this->getObjectManager()->flush($fichier);
         }
         catch (Exception $e){
@@ -251,6 +251,8 @@ class ConventionStageService extends CommonEntityService
     /**
      * Génération des conventions a partir d'un template et d'un rendu
      */
+    use RenduServiceAwareTrait;
+
 
     /**
      * @param \Application\Entity\Db\ConventionStage $convention
@@ -260,26 +262,15 @@ class ConventionStageService extends CommonEntityService
      */
     public function pregenererConventionRendu(ConventionStage $convention, ?ModeleConventionStage $modele): ConventionStage
     {
-        $corps = "";
-        $rendu = $convention->getRendu();
-        if(isset($modele)){
-            /** @var MacroService $macrosService */
-            $macrosService = $this->getMacroService();
-            $variables = $this->getMacroVariablesForConvention($convention);
-            $convention->setModeleConventionStage($modele);
-            $corps = $macrosService->replaceMacros($modele->getCorps(), $variables);
-        }
-        if($rendu ===null){
-            $rendu = new Rendu();
-            $convention->setRendu($rendu);
-            $rendu->setDate(new DateTime());
-            $rendu->setSujet(sprintf("Convention du stage %s de %s",
-                $convention->getStage()->getNumero(),
-                $convention->getStage()->getEtudiant()->getDisplayName(),
-            ));
-        }
-        $rendu->setCorps($corps);
-        $convention->setCorps($corps);
+        $template = $modele->getCorpsTemplate();
+        $variables = $this->getMacroVariablesForConvention($convention);
+        $rendu = $this->getRenduService()->generateRenduByTemplate($template, $variables, false);
+        $convention->setRendu($rendu);
+        $rendu->setSujet(sprintf("Convention du stage %s de %s",
+            $convention->getStage()->getNumero(),
+            $convention->getStage()->getEtudiant()->getDisplayName(),
+        ));
+        $convention->setCorps($rendu->getCorps());
         return $convention;
     }
 
@@ -334,6 +325,12 @@ class ConventionStageService extends CommonEntityService
         return $macrosService->textContainsMacro($convention->getCorps());
     }
 
+
+
+    //Code
+    const TEMPLATE_HEADER_CONVENTION = 'Convention-header';
+    const TEMPLATE_FOOTER_CONVENTION = 'Convention-footer';
+
     /**
      * @param ConventionStage $convention
      * @return ConventionStage.
@@ -360,23 +357,44 @@ class ConventionStageService extends CommonEntityService
             throw new Exception("Le modéle de référence n'est pas défini");
         }
 
-        $corps = $convention->getCorps();
-        $corps = $this->formatText($convention, $corps);
+        $corps = html_entity_decode($convention->getCorps());
+        $variables = $this->getMacroVariablesForConvention($convention);
 
         /** @var Template $headerTemplate */
-        $headerTemplate = $this->getObjectManager()->getRepository(Template::class)->findOneBy(['code' => TemplateProvider::HEADER_CONVENTION]);
-        $header = ($headerTemplate) ? $headerTemplate->getCorps() : null;
-        $header = $this->formatText($convention, $header);
-
+        $headerTemplate = $this->getObjectManager()->getRepository(Template::class)->findOneBy(['code' => self::TEMPLATE_HEADER_CONVENTION]);
         /** @var Template $footerTemplate */
-        $footerTemplate = $this->getObjectManager()->getRepository(Template::class)->findOneBy(['code' => TemplateProvider::FOOTER_CONVENTION]);
-        $footer = ($footerTemplate) ? $footerTemplate->getCorps() : null;
-        $footer = $this->formatText($convention, $footer);
+        $footerTemplate = $this->getObjectManager()->getRepository(Template::class)->findOneBy(['code' => self::TEMPLATE_FOOTER_CONVENTION]);
 
         $css = $modele->getCss().PHP_EOL;
         $css .= (isset($headerTemplate)) ? $headerTemplate->getCss().PHP_EOL : "";
         $css .= (isset($footerTemplate)) ? $footerTemplate->getCss().PHP_EOL : "";
         if($css==""){$css = null;}
+
+        $header = null;
+        /** @var Template $headerTemplate */
+        if(isset($headerTemplate) && $headerTemplate->getCorps() != ""){
+            //GenerateRenduByTemplate intégre le css dans le contenue qui ne sera pas correctement gerer par mpdf, on le retire donc fictivement
+            $saveCSS = $headerTemplate->getCss();
+            $headerTemplate->setCss(null);
+            $templateRendu = $this->getRenduService()->generateRenduByTemplate($headerTemplate, $variables, false);
+            $header = html_entity_decode($templateRendu->getCorps());
+            $header = str_replace("<style>", "", $header);
+            $header = str_replace("</style>", "", $header);
+            $header = trim($header);
+            $headerTemplate->setCss($saveCSS);
+        }
+
+        $footer = null;
+        if(isset($footerTemplate) && $footerTemplate->getCorps() != ""){
+            $saveCSS = $footerTemplate->getCss();
+            $footerTemplate->setCss(null);
+            $footerRendu = $this->getRenduService()->generateRenduByTemplate($footerTemplate, $variables, false);
+            $footer = html_entity_decode($footerRendu->getCorps());
+            $footer = str_replace("<style>", "", $footer);
+            $footer = str_replace("</style>", "", $footer);
+            $footer = trim($footer);
+            $footerTemplate->setCss($saveCSS);
+        }
 
         //Script de génération
         $cssScript = sprintf("%s/%s", $this->scriptDirectory, 'css.phtml');
@@ -386,6 +404,7 @@ class ConventionStageService extends CommonEntityService
         $signaturesScript = sprintf("%s/%s", $this->scriptDirectory, 'signatures.phtml');
         $footerScript = sprintf("%s/%s", $this->scriptDirectory, 'footer.phtml');
 
+
         $this->pdfExporter->setHeaderScript($headerScript, null,  ['content' => $header]);
         //Choix fait : de mettre le header en tant que titleScript pour ne le faire que sur la premiére page
         $this->pdfExporter->addBodyScript($cssScript, false, ['css' => $css], false);
@@ -394,29 +413,11 @@ class ConventionStageService extends CommonEntityService
         $this->pdfExporter->addBodyScript($signaturesScript, false, ['convention' => $convention], false);
         $this->pdfExporter->setFooterScript($footerScript, null, ['content' => $footer]);
         $this->pdfExporter->setExportDirectoryPath("/tmp");
+
         $this->pdfExporter->export($fileName, PdfExporter::DESTINATION_FILE);//
         if(!file_exists("/tmp/".$fileName)){
             throw new Exception("Une erreur c'est produite, le fichier de la convention n'as pas pu être remplacé.");
         }
         return "/tmp/".$fileName;
-    }
-
-    /**
-     * @throws \Exception
-     */
-    protected function formatText(ConventionStage $convention, ?string $content = null) : ?string
-    {
-        if(!isset($content)){return null;}
-        /** @var MacroService $macrosService */
-        $macrosService = $this->getMacroService();
-        $variables = $this->getMacroVariablesForConvention($convention);
-        //Remplacement des variables si possibles
-        $content = $macrosService->replaceMacros($content, $variables);
-
-        if($macrosService->textContainsMacro($content)){
-            throw new Exception("Toutes les macros n'ont pas été remplacées.");
-        }
-//       Permet au besoins de s'assurer que des div n'ont pas été encodé en bdd
-        return html_entity_decode($content);
     }
 }

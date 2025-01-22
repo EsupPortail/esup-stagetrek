@@ -9,8 +9,8 @@
 
 echo "============  $(date +"%d-%m-%Y %T") ============="
 GEOWAYFDIR=$(dirname $0)
-PATHtoWAYF=$GEOWAYFDIR/..
-TMPDIR=$(sed -n 's/$tmpDir = "\(.*\)";/\1/p' < $PATHtoWAYF/config.php)
+PATHtoWAYF="/var/www/html/switchwayf"
+TMPDIR="/var/www/html/switchwayf/tmp"
 
 
 if [ $# -ne 1 ]
@@ -22,21 +22,21 @@ fi
 
 case $1 in
     "renater")
-	url="https://metadata.federation.renater.fr/renater/main/main-all-renater-metadata.xml.gz";;
+	url="https://metadata.federation.renater.fr/fer/all.xml.gz";;
     "renater-test")
-	url="https://metadata.federation.renater.fr/test/preview/preview-all-renater-test-metadata.xml.gz";;
+	url="https://metadata.federation.renater.fr/test/all.xml.gz";;
     "edugain")
-	url="https://metadata.federation.renater.fr/edugain/main/main-all-edugain-metadata.xml.gz";;
+	url="https://metadata.federation.renater.fr/edugain/all.xml.gz";;
     "renater-edugain")
-	url="https://metadata.federation.renater.fr/edugain/main/main-all-edugain-metadata.xml.gz https://metadata.federation.renater.fr/renater/main/main-all-renater-metadata.xml.gz";;
+	url="https://metadata.federation.renater.fr/edugain/all.xml.gz https://metadata.federation.renater.fr/fer/all.xml.gz";;
     "renater-edugain-idp")
 	url="https://pub.federation.renater.fr/metadata/edugain/main/main-idps-edugain-metadata.xml.gz https://pub.federation.renater.fr/metadata/renater/main/main-idps-renater-metadata.xml.gz";;
     "renater-test-and-edugain")
 	url="https://metadata.federation.renater.fr/test/preview/preview-all-renater-test-metadata.xml.gz https://metadata.federation.renater.fr/edugain/main/main-all-edugain-metadata.xml.gz";;
     *)
 	echo "Error"
-        echo "Unknown federation, please update this script"
-        exit 1;;
+    echo "Unknown federation, please update this script"
+    exit 1;;
 esac
 
 if [[ $TMPDIR =~ ^// ]] || [ "x"$TMPDIR == 'x' ]
@@ -55,7 +55,9 @@ fi
 echo "Downloading metadata $1..."
 count=0
 for link in $url; do
+    echo $url
     if [[ $link == *gz ]]; then
+        echo "Décompression de $link"
         wget --quiet --no-check-certificate $link -O - | gunzip > $TMPDIR/$count.xml
     else
         wget --quiet --no-check-certificate $link -O $TMPDIR/$count.xml
@@ -104,6 +106,10 @@ php $PATHtoWAYF/readMetadata.php
 echo "Updating icones and sprite sheet... braces yourself, it may take a while."
 $GEOWAYFDIR/favicon-fetcher/update-sprite-sheet.sh $TMPDIR/metadata.xml
 
+
+# Keep a copy of yesterday's metadata in case of failure
+test -f /var/cache/shibboleth/metadata-yesterday.xml && rm /var/cache/shibboleth/metadata-yesterday.xml
+test -f /var/cache/shibboleth/metadata.xml && cp /var/cache/shibboleth/metadata.xml /var/cache/shibboleth/metadata-yesterday.xml
 cp $TMPDIR/metadata.xml /var/cache/shibboleth/metadata.xml
 echo "Successfully add metadata into /var/cache/shibboleth/metadata.xml for shibd process."
 

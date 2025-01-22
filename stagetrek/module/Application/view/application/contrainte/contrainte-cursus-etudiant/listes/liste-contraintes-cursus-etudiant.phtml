@@ -100,10 +100,8 @@ $hasAction = $canSee||$canEdit||$canActiver||$canDesactiver||$canValider||$canIn
         </table>
     </div>
 </div>
-
 <script type="text/javascript">
     $(function () {
-        $('[data-bs-toggle="popover"]').popover({html: true});
         let options = generateDataTableSetings({
             stateSave: true,
             retrieve: true,
@@ -118,8 +116,6 @@ $hasAction = $canSee||$canEdit||$canActiver||$canDesactiver||$canValider||$canIn
                 "dataSrc": 0
             }
         });
-        $("#<?= $tableId ?>").on('draw.dt', function() {
-            $('[data-bs-toggle="popover"]').popover({html: true});
-        }).DataTable(options);
+        $("#<?= $tableId ?>").DataTable(options);
     });
 </script>

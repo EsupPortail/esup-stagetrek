@@ -8,21 +8,21 @@
         }
     ],
     "require": {
-        "unicaen/app": "^6.0",
+        "unicaen/app": "^7.0",
         "unicaen/ldap": "^6.0",
-        "unicaen/authentification": "^6.0",
-        "unicaen/privilege": "^6.0",
+        "unicaen/authentification": "^6.4.1",
+        "unicaen/utilisateur": "^7.0",
+        "unicaen/privilege": "^6.2",
         "unicaen/bjy-authorize": "^6.1",
-        "unicaen/utilisateur": "^6.0",
         "unicaen/utilisateur-ldap-adapter" : "^2.0",
 
         "unicaen/console": "^6.0",
 
-        "unicaen/mail": "^6.0",
-        "unicaen/renderer": "^6.0",
-        "unicaen/pdf": "^6.0",
-        "unicaen/evenement": "^6.0",
-        "unicaen/etat": "^6.0",
+        "unicaen/mail": "^7.0",
+        "unicaen/renderer": "^7.0.3",
+        "unicaen/pdf": "^6.1",
+        "unicaen/evenement": "^6.0.",
+        "unicaen/etat": "^6.1",
         "unicaen/bddadmin": "dev-modernisation-gestion-donnees",
 
         "doctrine/doctrine-orm-module": "^5.0",
@@ -46,11 +46,16 @@
     "scripts": {
         "post-install-cmd": [
             "cp -r vendor/unicaen/app/public/unicaen public/",
+            "mkdir -p public/unicaen/etat && cp -r vendor/unicaen/etat/public/css public/unicaen/etat",
+            "mkdir -p public/unicaen/mail/css/ && cp -r vendor/unicaen/mail/public/unicaen-mail.css public/unicaen/mail/css/unicaen-mail.css",
+            "mkdir -p public/unicaen && cp -r vendor/unicaen/renderer/public/unicaen public",
             "mkdir -p vendor/mpdf/mpdf/ttfontdata && chmod -R 777 vendor/mpdf/mpdf/ttfontdata"
+
         ],
         "post-update-cmd": [
-            "cp -r vendor/unicaen/mail/public/unicaen-mail.css public/css/unicaen-mail.css",
-            "cp -r vendor/unicaen/etat/public/css public/"
+            "mkdir -p public/unicaen/etat && cp -r vendor/unicaen/etat/public/css public/unicaen/etat",
+            "mkdir -p public/unicaen/mail/css/ && cp -r vendor/unicaen/mail/public/unicaen-mail.css public/unicaen/mail/css/unicaen-mail.css",
+            "mkdir -p public/unicaen && cp -r vendor/unicaen/renderer/public/unicaen public"
         ]
     },
     "autoload": {

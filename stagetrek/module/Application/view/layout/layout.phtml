@@ -132,18 +132,6 @@ $version = getenv('APPLICATION_ENV') ?: EnvironnementProvider::TEST;
 
 <?php echo $this->inlineScript(); ?>
 
-<script>
-    $(function () {
-        $('[data-bs-toggle="popover"]').popover({ html: true});
-    });
-    $(function () {
-        $('[data-bs-toggle="tooltip"]').tooltip({});
-    });
-
-    $(function() {
-        // $('form select').selectpicker();
-    });
-</script>
 
 </body>
 </html>

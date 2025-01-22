@@ -403,9 +403,9 @@ class ContactStageFieldset extends AbstractEntityFieldset
                 $badge =  "<span class='badge badge-light-success'>T</span>";
                 $dataContent = sprintf("
                 <span class='flex'>
-               <span class='w-90 normal-white-space'>%s - %s</span>
+               <span class='w-90 normal-white-space'>%s (%s)</span>
                <span class='w-10  text-center'>%s</span>
-               </span>", $ct->getCode(), $ct->getLibelle(), $badge
+               </span>", $ct->getDisplayName(), $ct->getEmail(), $badge
                 );
                 $selectContact->setContactAttribute($ct->getContact(),  'title', $ct->getCode()." - ".$ct->getLibelle());
                 $selectContact->setContactAttribute($ct->getContact(),  'data-content', $dataContent);

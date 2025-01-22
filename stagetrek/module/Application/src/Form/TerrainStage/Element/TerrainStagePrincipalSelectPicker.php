@@ -4,14 +4,13 @@
 namespace Application\Form\TerrainStage\Element;
 
 use Application\Entity\Db\TerrainStage;
-use Application\Provider\TypeStage\TypeTerrainStageProvider;
 use Exception;
 
 class TerrainStagePrincipalSelectPicker extends TerrainStageSelectPicker
 {
     public function setDefaultData() : static
     {
-        $this->useTypeTerrainStageData(TypeTerrainStageProvider::TERRAIN_PRINCIPAL);
+        $this->useTypeTerrainStageData(TerrainStage::TYPE_TERRAIN_PRINCIPAL);
         return $this;
     }
 

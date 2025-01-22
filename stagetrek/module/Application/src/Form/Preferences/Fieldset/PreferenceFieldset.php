@@ -4,6 +4,7 @@
 namespace Application\Form\Preferences\Fieldset;
 
 use Application\Entity\Db\ContrainteCursusEtudiant;
+use Application\Entity\Db\Parametre;
 use Application\Entity\Db\Preference;
 use Application\Entity\Db\TerrainStage;
 use Application\Entity\Traits\Preference\HasPreferenceTrait;
@@ -13,7 +14,6 @@ use Application\Form\Preferences\Validator\PreferenceValidator;
 use Application\Form\TerrainStage\Element\TerrainStagePrincipalSelectPicker;
 use Application\Form\TerrainStage\Element\TerrainStageSecondaireSelectPicker;
 use Application\Form\TerrainStage\Element\TerrainStageSelectPicker;
-use Application\Provider\Parametre\ParametreProvider;
 use Application\Service\Parametre\Traits\ParametreServiceAwareTrait;
 use Application\Service\Preference\Traits\PreferenceServiceAwareTrait;
 use DateTime;
@@ -133,7 +133,7 @@ class PreferenceFieldset extends AbstractEntityFieldset
      */
     private function initRangInput() : void
     {
-        $rangMax = $this->getParametreService()->getParametreValue(ParametreProvider::NB_PREFERENCES);
+        $rangMax = $this->getParametreService()->getParametreValue(Parametre::NB_PREFERENCES);
         $this->add([
             'name' => self::RANG,
             'type' => Number::class,

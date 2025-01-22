@@ -53,6 +53,7 @@ class ModeleConventionStageFieldset extends AbstractEntityFieldset
                 'id' => self::CORPS,
                 'placeholder' => 'Saisir le corps du modéle de convention',
                 "rows" => 50,
+                'class' => "macro-compatible"
             ],
         ]);
 

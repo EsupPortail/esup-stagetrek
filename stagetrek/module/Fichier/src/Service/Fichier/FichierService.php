@@ -11,6 +11,7 @@ use Fichier\Entity\Db\Nature;
 use Fichier\Filter\FileName\FileNameFormatterInterface;
 use Laminas\Mvc\Controller\AbstractActionController;
 use UnicaenApp\Exception\RuntimeException;
+use UnicaenStorage\Adapter\Exception\FileNotFoundInStorageException;
 use UnicaenStorage\Adapter\StorageAdapterInterface;
 use UnicaenUtilisateur\Service\User\UserServiceAwareTrait;
 
@@ -20,8 +21,8 @@ class FichierService
     use ProvidesObjectManager;
     use UserServiceAwareTrait;
 
-    protected StorageAdapterInterface $storageAdapter;
-    public function getStorageAdapter(): StorageAdapterInterface
+    protected ?StorageAdapterInterface $storageAdapter = null;
+    public function getStorageAdapter(): ?StorageAdapterInterface
     {
         return $this->storageAdapter;
     }
@@ -126,15 +127,18 @@ class FichierService
     /**
      * @param Fichier $fichier
      * @return FichierService
+     * @throws \Exception
      */
     public function delete(Fichier $fichier, bool $deleteFromStorage=true) : static
     {
         try {
-            if($deleteFromStorage){$this->removeFromStorage($fichier);}
+            if($deleteFromStorage){
+                $this->removeFromStorage($fichier);
+            }
             $this->getObjectManager()->remove($fichier);
             $this->getObjectManager()->flush();
         } catch (Exception $e) {
-            throw new Exception("Un problème s'est produit lors de la suppression d'un Fichier.", $e);
+            throw new Exception(sprintf("Un problème s'est produit lors de la suppression d'un Fichier : %s", $e->getMessage()));
         }
         return $this;
     }
@@ -221,7 +225,10 @@ class FichierService
         $fichier->setNomStockage($nomStockage);
         return $this->create($fichier);
     }
-    /** ajoute au storage */
+
+    /** ajoute au storage
+     * @throws \UnicaenStorage\Adapter\Exception\StorageAdapterException
+     */
     public function addToStorage(Fichier $fichier, string $fileContent) : static
     {
         $storage = $this->getStorageAdapter();
@@ -241,6 +248,7 @@ class FichierService
      *
      * @param Fichier $fichier
      * @return string
+     * @throws \UnicaenStorage\Adapter\Exception\StorageAdapterException
      */
     public function getStorageFileContent(Fichier $fichier) : string
     {
@@ -263,7 +271,11 @@ class FichierService
 
         $filename = $fichier->getNomStockage();
         $path = $storage->computeDirectoryPath();
-        $storage->deleteFile($path,$filename);
+        try{
+            $storage->deleteFile($path,$filename);
+        }
+//        Fichier non trouvable = bug mais non bloquant puisque l'on cherche justement a le supprimer
+        catch (FileNotFoundInStorageException $exception){}
         return $this;
     }
 

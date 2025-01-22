@@ -2,7 +2,7 @@
 
 namespace Console\Service\Update;
 
-use Application\Provider\Parametre\ParametreProvider;
+use Application\Entity\Db\Parametre;
 use Application\Service\AnneeUniversitaire\Traits\AnneeUniversitaireServiceAwareTrait;
 use Application\Service\Contrainte\Traits\ContrainteCursusEtudiantServiceAwareTrait;
 use Application\Service\Contrainte\Traits\ContrainteCursusServiceAwareTrait;
@@ -140,7 +140,7 @@ class UpdateEntitiesCommand extends AbstractUpdateEntityCommand
     protected function clearMails() : void
     {
         $this->io->section("Nettoyages des mails");
-        $delay = $this->getParametreService()->getParametreValue(ParametreProvider::CONSERVATION_MAIL);
+        $delay = $this->getParametreService()->getParametreValue(Parametre::CONSERVATION_MAIL);
         $dateSup = new DateTime();
         $dateSup->sub(new DateInterval('P' . $delay . 'D'));
         $mails = $this->getObjectManager()->getRepository(Mail::class)->findAll();
@@ -157,7 +157,7 @@ class UpdateEntitiesCommand extends AbstractUpdateEntityCommand
     protected function clearEtatsLogs() : void
     {
         $this->io->section("Nettoyages des logs des états");
-        $delay = $this->getParametreService()->getParametreValue(ParametreProvider::CONSERVATION_LOG);
+        $delay = $this->getParametreService()->getParametreValue(Parametre::CONSERVATION_LOG);
         $dateSup = new DateTime();
         $dateSup->sub(new DateInterval('P' . $delay . 'D'));
         $etatInstances = $this->getObjectManager()->getRepository(EtatInstance::class)->findAll();
@@ -174,7 +174,7 @@ class UpdateEntitiesCommand extends AbstractUpdateEntityCommand
     protected function clearEventsLogs() : void
     {
         $this->io->section("Nettoyages des logs des événements");
-        $delay = $this->getParametreService()->getParametreValue(ParametreProvider::CONSERVATION_EVENEMENT);
+        $delay = $this->getParametreService()->getParametreValue(Parametre::CONSERVATION_EVENEMENT);
         $dateSup = new DateTime();
         $dateSup->sub(new DateInterval('P' . $delay . 'D'));
         $events = $this->getObjectManager()->getRepository(Evenement::class)->findAll();

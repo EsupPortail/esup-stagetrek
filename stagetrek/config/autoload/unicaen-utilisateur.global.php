@@ -86,6 +86,7 @@ return [
         'identity-provider' => [ //Requis ici pour avoir les roles automatiques
             IdentityProvider::class,  // Applicatifs
         ],
+        'display-user-info' => false,
         'default-user' => UserProvider::APP_USER_ID,
     ],
 ];

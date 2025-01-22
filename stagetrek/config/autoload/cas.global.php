@@ -1,5 +1,16 @@
 <?php
 
+$authService = ($_ENV['AUTH_SERVICE'] && $_ENV['AUTH_SERVICE'] != "") ? $_ENV['AUTH_SERVICE']  : 'db';
+
+$authService = str_replace(' ', '', $authService);
+$authService = explode(",", $authService);
+
+foreach ($authService as $authKey){
+    $authServicesAllowed[$authKey] = true;
+}
+//Permet de ne pas charger la configuration cas si ce n'est pas nécessaire
+if(!isset($authServicesAllowed['cas'])){return [];}
+
 return [
     // Module [Unicaen]Auth
     'unicaen-auth' => [

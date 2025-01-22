@@ -2,7 +2,6 @@
 
 namespace Application\Service\Affectation\Factory;
 
-use Application\Provider\ProcedureAffectation\ProcedureAffectationProvider;
 use Application\Service\Affectation\AffectationStageService;
 use Application\Service\Affectation\Algorithmes\AlgoAleatoire;
 use Application\Service\Affectation\Algorithmes\AlgoScoreV1;
@@ -45,10 +44,11 @@ class ProcedureAffectationServiceFactory implements FactoryInterface
         $serviceProvider->setAffectationStageService($affectationStageService);
 
 //        TODO : déplacer la définition en configuration
+//        Transformer en un adaptater dans un module a part
         $algoConf = [
-            ProcedureAffectationProvider::ALGO_SCORE_V1 => AlgoScoreV1::class,
-            ProcedureAffectationProvider::ALGO_SCORE_V2 => AlgoScoreV2::class,
-            ProcedureAffectationProvider::ALGO_ALEATOIRE => AlgoAleatoire::class,
+            AlgoScoreV1::getCodeAlgo() => AlgoScoreV1::class,
+            AlgoScoreV2::getCodeAlgo() => AlgoScoreV2::class,
+            AlgoAleatoire::getCodeAlgo() => AlgoAleatoire::class,
         ];
         $algorithmes = [];
         foreach ($algoConf as $codeProcedure => $algoClass) {

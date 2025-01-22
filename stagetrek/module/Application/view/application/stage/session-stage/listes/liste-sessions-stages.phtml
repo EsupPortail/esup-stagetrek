@@ -109,8 +109,6 @@ $groupeVh = $this->groupe();
                 },
             }
         );
-        $("#<?= $tableId ?>").on('draw.dt', function() {
-            $('[data-bs-toggle="popover"]').popover({html: true});
-        }).DataTable(options);
+        $("#<?= $tableId ?>").DataTable(options);
     });
 </script>

@@ -4,7 +4,6 @@
 namespace Application\Form\TerrainStage\Element;
 
 use Application\Entity\Db\TerrainStage;
-use Application\Provider\TypeStage\TypeTerrainStageProvider;
 use Exception;
 
 class TerrainStageSecondaireSelectPicker extends TerrainStageSelectPicker
@@ -14,7 +13,7 @@ class TerrainStageSecondaireSelectPicker extends TerrainStageSelectPicker
      */
     public function setDefaultData() : static
     {
-        $this->useTypeTerrainStageData(TypeTerrainStageProvider::TERRAIN_SECONDAIRE);
+        $this->useTypeTerrainStageData(TerrainStage::TYPE_TERRAIN_SECONDAIRE);
         return $this;
     }
 

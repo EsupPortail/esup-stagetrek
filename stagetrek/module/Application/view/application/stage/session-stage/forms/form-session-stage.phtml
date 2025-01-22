@@ -1,9 +1,9 @@
 <?php
 
 use Application\Controller\Stage\SessionStageController;
+use Application\Entity\Db\Parametre;
 use Application\Form\Stages\Fieldset\SessionStageFieldset;
 use Application\Form\Stages\SessionStageForm;
-use Application\Provider\Parametre\ParametreProvider;
 use Application\View\Helper\Parametres\ParametreViewHelper;
 use Application\View\Helper\SessionsStages\SessionStageViewHelper;
 
@@ -26,15 +26,15 @@ $fieldset = $form->getEntityFieldset();
 
 /** @var ParametreViewHelper $parametreVh */
 $parametreVh = $this->parametre();
-$dateCalculOrdreAuto = $parametreVh->getParametreService()->getParametreValue(ParametreProvider::DATE_CALCUL_ORDRES_AFFECTATIONS);
-$dateChoix = $parametreVh->getParametreService()->getParametreValue(ParametreProvider::DATE_PHASE_CHOIX);
-$dateAffectation = $parametreVh->getParametreService()->getParametreValue(ParametreProvider::DATE_PHASE_AFFECTATION);
-$dateValidation = $parametreVh->getParametreService()->getParametreValue(ParametreProvider::DATE_PHASE_VALIDATION);
-$dateEvaluation = $parametreVh->getParametreService()->getParametreValue(ParametreProvider::DATES_PHASE_EVALUATION);
-$dureeChoix = $parametreVh->getParametreService()->getParametreValue(ParametreProvider::DUREE_PHASE_CHOIX);
-$dureeStage = $parametreVh->getParametreService()->getParametreValue(ParametreProvider::DUREE_STAGE);
-$dureeValidation = $parametreVh->getParametreService()->getParametreValue(ParametreProvider::DUREE_PHASE_VALIDATION);
-$dureeEvaluation = $parametreVh->getParametreService()->getParametreValue(ParametreProvider::DUREE_PHASE_EVALUATION);
+$dateCalculOrdreAuto = $parametreVh->getParametreService()->getParametreValue(Parametre::DATE_CALCUL_ORDRES_AFFECTATIONS);
+$dateChoix = $parametreVh->getParametreService()->getParametreValue(Parametre::DATE_PHASE_CHOIX);
+$dateAffectation = $parametreVh->getParametreService()->getParametreValue(Parametre::DATE_PHASE_AFFECTATION);
+$dateValidation = $parametreVh->getParametreService()->getParametreValue(Parametre::DATE_PHASE_VALIDATION);
+$dateEvaluation = $parametreVh->getParametreService()->getParametreValue(Parametre::DATES_PHASE_EVALUATION);
+$dureeChoix = $parametreVh->getParametreService()->getParametreValue(Parametre::DUREE_PHASE_CHOIX);
+$dureeStage = $parametreVh->getParametreService()->getParametreValue(Parametre::DUREE_STAGE);
+$dureeValidation = $parametreVh->getParametreService()->getParametreValue(Parametre::DUREE_PHASE_VALIDATION);
+$dureeEvaluation = $parametreVh->getParametreService()->getParametreValue(Parametre::DUREE_PHASE_EVALUATION);
 
 
 ?>

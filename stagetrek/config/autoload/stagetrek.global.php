@@ -78,8 +78,8 @@ return [
 
 //    Layout de base
     'view_manager' => [
-        'display_not_found_reason' => true,
-        'display_exceptions'       => true,
+        'display_not_found_reason' => false,
+        'display_exceptions'       => false,
         'template_map' => [
             'layout/layout' => realpath('./module/Application/view/layout/layout.phtml'),
         ],
@@ -97,8 +97,13 @@ return [
     'session_config' => [
         // Session cookie will expire in 8 hour.
         'cookie_lifetime' => 60*60*8,
-        // Session data will be stored on server maximum for 30 days.
-        'gc_maxlifetime'     => 60*60*24*30,
+        // Durée de vie max des variables de session (mis arbitrairement a 5min)
+        'gc_maxlifetime'     => 60*5,
+
+        'cookie_httponly' => 1,
+        'use_only_cookies' => 1,
+        'cookie_secure' => 1,
+
     ],
     //
     // Session manager configuration.

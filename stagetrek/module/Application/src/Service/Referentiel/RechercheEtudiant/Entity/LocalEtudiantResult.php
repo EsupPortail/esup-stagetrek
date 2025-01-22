@@ -5,7 +5,7 @@ namespace Application\Service\Referentiel\RechercheEtudiant\Entity;
 
 
 use Application\Entity\Db\Etudiant;
-use Application\Provider\Source\SourceProvider;
+use Application\Entity\Db\Source;
 use Application\Service\Referentiel\RechercheEtudiant\Interfaces\RechercheEtudiantResultatInterface;
 use DateTime;
 
@@ -32,7 +32,7 @@ class LocalEtudiantResult implements RechercheEtudiantResultatInterface
      */
     public function getSource(): string
     {
-        return SourceProvider::STAGETREK;
+        return Source::STAGETREK;
     }
 
     /**

@@ -26,6 +26,11 @@ class TerrainStage implements ResourceInterface,
     HasAdresseInterface
 {
     const RESOURCE_ID = 'TerrainStage';
+
+    const TYPE_TERRAIN_PRINCIPAL = 'Principal';
+    const TYPE_TERRAIN_SECONDAIRE = 'Secondaire';
+
+
     public function getResourceId(): string
     {
         return self::RESOURCE_ID;

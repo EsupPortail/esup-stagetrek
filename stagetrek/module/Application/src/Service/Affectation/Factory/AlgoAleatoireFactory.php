@@ -2,11 +2,8 @@
 
 namespace Application\Service\Affectation\Factory;
 
-use Application\Provider\ProcedureAffectation\ProcedureAffectationProvider;
 use Application\Service\Affectation\AffectationStageService;
 use Application\Service\Affectation\Algorithmes\AlgoAleatoire;
-use Application\Service\Affectation\Algorithmes\AlgoScoreV1;
-use Application\Service\Affectation\Algorithmes\AlgoScoreV2;
 use Application\Service\Affectation\ProcedureAffectationService;
 use Application\Service\Parametre\ParametreService;
 use Application\Service\TerrainStage\TerrainStageService;
@@ -25,7 +22,7 @@ class AlgoAleatoireFactory implements FactoryInterface
      * @param ContainerInterface $container
      * @param string $requestedName
      * @param array|null $options
-     * @return ProcedureAffectationService
+     * @return AlgoAleatoire
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */

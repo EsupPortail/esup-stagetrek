@@ -1,0 +1,21 @@
+
+
+#macro-insert-widget-content{
+  display: none;
+}
+.macro-popover{
+  display: none;
+}
+.macro-insert-widget {
+  position: relative;
+  top: 32px;
+  left: -5px;
+  margin-left: 15px;
+}
+
+.macro-select {
+  width: 15rem;
+}
+.macro-selection-placeholder{
+  display: none;
+}

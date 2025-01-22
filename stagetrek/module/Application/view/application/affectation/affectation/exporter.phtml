@@ -126,7 +126,6 @@ $today = new DateTime();
         <table id="<?= $tableId ?>" class="table table-hover table-condensed">
             <thead>
             <tr>
-                <th class="col-md-1 no-export">Id</th>
                 <th class="col-md-1 no-search no-export" data-type="num">Ordre</th>
                 <th class="col-md-3 no-export">Etudiant</th>
                 <th class="col-md-4 no-export">Terrain</th>
@@ -182,10 +181,6 @@ $today = new DateTime();
                 };
                 ?>
                 <tr class="<?= $bg ?>">
-
-                    <td data-order="<?= $affectation->getId() ?>">
-                        <?= $vh->lienAfficher() ?>
-                    </td>
                     <td class="" data-order="<?=($stage->getOrdreAffectation()) ?? PHP_INT_MAX ?>">
                         <?= ($stage->getOrdreAffectation()) ?? "<span class='text-muted'>-</span>" ?>
                     </td>
@@ -240,13 +235,12 @@ $today = new DateTime();
 
 <script type="text/javascript">
     $(function () {
-        $('[data-bs-toggle="popover"]').popover({html: true});
         let options = generateDataTableSetings(
             {
                 stateSave: true,
                 retrieve: true,
                 responsive: false,
-                "order": [[2, "asc"]],
+                "order": [[0, "asc"]],
                 "lengthMenu": [[50, 100, 250, -1], [50, 100, 250, "Tous"]],
                 columnDefs: [
                     {targets: ['no-sort'], orderable: false},
@@ -262,9 +256,7 @@ $today = new DateTime();
                 ),
             }
         );
-        let tableInstance = $("#<?= $tableId ?>").on('draw.dt', function() {
-            $('[data-bs-toggle="popover"]').popover({html: true});
-        }).DataTable(options);
+        let tableInstance = $("#<?= $tableId ?>").DataTable(options);
 
         $('.form-check-input').on('change', function (){
             let col = $(this).data('col');

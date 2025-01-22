@@ -4,17 +4,17 @@
 namespace Application\View\Helper\Preferences;
 
 use Application\Controller\Preference\PreferenceController as Controller;
+use Application\Entity\Db\Parametre;
 use Application\Entity\Db\Preference;
 use Application\Entity\Db\Stage;
 use Application\Entity\Db\TerrainStage;
+use Application\Entity\Db\TerrainStageNiveauDemande;
 use Application\Entity\Traits\Preference\HasPreferenceTrait;
 use Application\Entity\Traits\Stage\HasStageTrait;
 use Application\Entity\Traits\Stage\HasValidationStageTrait;
 use Application\Misc\ArrayRessource;
-use Application\Provider\DegreDemande\TerrainStageNiveauDemandeProvider;
 use Application\Provider\Misc\Icone;
 use Application\Provider\Misc\Label;
-use Application\Provider\Parametre\ParametreProvider;
 use Application\Provider\Privilege\EtudiantPrivileges;
 use Application\Service\Contrainte\Traits\ContrainteCursusEtudiantServiceAwareTrait;
 use Application\Service\Parametre\Traits\ParametreServiceAwareTrait;
@@ -190,18 +190,20 @@ class PreferenceViewHelper  extends AbstractEntityActionViewHelper
         $libelleDemande = (isset($niveauDemande)) ? $niveauDemande->getLibelle() : "Indéterminée";
         $badgeClass = (! isset($niveauDemande)) ? "text-muted text-small" :
             match ($niveauDemande->getCode()) {
-                TerrainStageNiveauDemandeProvider::INDETERMINE, "text-muted text-small",
-                TerrainStageNiveauDemandeProvider::FERME => "badge badge-muted",
-                TerrainStageNiveauDemandeProvider::NO_DEMANDE => "badge badge-success",
-                TerrainStageNiveauDemandeProvider::RANG_5 => "badge badge-light-success",
-                TerrainStageNiveauDemandeProvider::RANG_4 => "badge badge-light-primary",
-                TerrainStageNiveauDemandeProvider::RANG_3 => "badge badge-primary",
-                TerrainStageNiveauDemandeProvider::RANG_2 => "badge badge-warning",
-                TerrainStageNiveauDemandeProvider::RANG_1 => "badge badge-danger"
+                TerrainStageNiveauDemande::INDETERMINE, "text-muted text-small",
+                TerrainStageNiveauDemande::FERME => "badge badge-muted",
+                TerrainStageNiveauDemande::NO_DEMANDE => "badge badge-success",
+                TerrainStageNiveauDemande::RANG_5 => "badge badge-light-success",
+                TerrainStageNiveauDemande::RANG_4 => "badge badge-light-primary",
+                TerrainStageNiveauDemande::RANG_3 => "badge badge-primary",
+                TerrainStageNiveauDemande::RANG_2 => "badge badge-warning",
+                TerrainStageNiveauDemande::RANG_1 => "badge badge-danger"
         };
 
         $libelle = sprintf("<span class='mx-1 %s'>%s</span>", $badgeClass, $libelleDemande);
-        $html = $libelle;
+        if($this->vueEtudianteActive){return $libelle;}
+
+
 
         $max = 0;
         $total = 0;
@@ -259,7 +261,7 @@ class PreferenceViewHelper  extends AbstractEntityActionViewHelper
     public function getRangMaxPreference() : int
     {
         try {
-            return $this->getParametreService()->getParametreValue(ParametreProvider::NB_PREFERENCES);
+            return $this->getParametreService()->getParametreValue(Parametre::NB_PREFERENCES);
         } catch (NotSupported) {
             return 0;
         }

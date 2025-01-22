@@ -19,9 +19,9 @@ class AdresseServiceFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null) : AdresseService
     {
-        $sercice = new AdresseService();
+        $service = new AdresseService();
         $entityManager = $container->get(EntityManager::class);
-        $sercice->setObjectManager($entityManager);
-        return $sercice;
+        $service->setObjectManager($entityManager);
+        return $service;
     }
 }

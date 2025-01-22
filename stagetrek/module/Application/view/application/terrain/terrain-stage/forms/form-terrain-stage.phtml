@@ -2,10 +2,10 @@
 
 use API\Controller\LocalisationController;
 use Application\Controller\Terrain\TerrainStageController;
+use Application\Entity\Db\CategorieStage;
 use Application\Form\Adresse\Fieldset\AdresseFieldset;
 use Application\Form\TerrainStage\Fieldset\TerrainStageFieldset;
 use Application\Form\TerrainStage\TerrainStageForm;
-use Application\Provider\TypeStage\TypeCategorieStageProvider;
 use Application\View\Helper\Terrains\TerrainStageViewHelper;
 
 /**
@@ -173,10 +173,10 @@ $adresseFieldset = $fieldset->get($fieldset::ADRESSE);
 
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="hidden select-terrains-associes" data-type-categorie="<?=TypeCategorieStageProvider::CATEGORIE_PRINCIPALE?>">
+                        <div class="hidden select-terrains-associes" data-type-categorie="<?=CategorieStage::TYPE_CATEGORIE_PRINCIPALE?>">
                             <?= $fcg($fieldset->get(TerrainStageFieldset::TERRAINS_PRINCIPAUX_ASSOCIES)) ?>
                         </div>
-                        <div class="hidden select-terrains-associes" data-type-categorie="<?=TypeCategorieStageProvider::CATEGORIE_SECONDAIRE?>">
+                        <div class="hidden select-terrains-associes" data-type-categorie="<?=CategorieStage::TYPE_CATEGORIE_SECONDAIRE?>">
                             <?= $fcg($fieldset->get(TerrainStageFieldset::TERRAINS_SECONDAIRES_ASSOCIES)) ?>
                         </div>
                     </div>

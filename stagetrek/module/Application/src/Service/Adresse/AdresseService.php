@@ -7,7 +7,6 @@ use Application\Entity\Db\AdresseType;
 use Application\Entity\Db\Etudiant;
 use Application\Entity\Db\TerrainStage;
 use Application\Entity\Interfaces\HasAdresseInterface;
-use Application\Provider\Adresse\AdresseTypeProvider;
 use Application\Service\Misc\CommonEntityService;
 
 class AdresseService extends CommonEntityService
@@ -45,13 +44,13 @@ class AdresseService extends CommonEntityService
         if(!isset($adresse)){
             $adresse = new Adresse();
         }
-        $typeCode = AdresseTypeProvider::TYPE_INCONNU;
+        $typeCode = AdresseType::TYPE_INCONNU;
         switch(true) {
             case $entity instanceof Etudiant:
-                $typeCode = AdresseTypeProvider::TYPE_ETUDIANT;
+                $typeCode = AdresseType::TYPE_ETUDIANT;
             break;
             case $entity instanceof TerrainStage:
-                $typeCode = AdresseTypeProvider::TYPE_TERRAIN_STAGE;
+                $typeCode = AdresseType::TYPE_TERRAIN_STAGE;
             break;
         }
         if(!$adresse->isType($typeCode)){

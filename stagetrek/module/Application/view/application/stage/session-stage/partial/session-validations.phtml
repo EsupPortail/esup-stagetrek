@@ -33,6 +33,7 @@ $contactVh = $this->contactStage();
         <th style="width: 1px;" class="no-search no-sort"></th>
         <th class="hidden"></th>
         <th class="col-md-3">Etudiant</th>
+        <th class="col-md-3">Terrain</th>
         <th class="no-search col-md" data-type="num">État</th>
         <th class="no-search col-md-1 text-center" data-type="num">Alerte</th>
         <th class="no-search col-md-1 text-center" data-type="num">Contacts</th>
@@ -48,6 +49,14 @@ $contactVh = $this->contactStage();
         $etudiant = $stage->getEtudiant();
         $evh->setEtudiant($etudiant);
         $stageVh->setStage($stage);
+
+        $affectation = $stage->getAffectationStage();
+        $terrain = ($affectation) ? $affectation->getTerrainStage() : null;
+        if($stage->isStageSecondaire() && isset($affectation)) {
+            $terrain = $affectation->getTerrainStageSecondaire();
+        }
+        $categorie = ($terrain) ? $terrain->getCategorieStage() : null;
+
         $validation = $stage->getValidationStage();
         $contactsStages = $stage->getContactsStages()->toArray();
         $contactsStages = array_filter($contactsStages, function (ContactStage $cs) {
@@ -73,6 +82,20 @@ $contactVh = $this->contactStage();
             >
                 <?= $etudiant->getDisplayName() ?> (<?= $evh->lienAfficher($etudiant->getNumEtu()) ?>)
             </td>
+
+            <td data-order="<?= ($terrain) ? $categorie->getLibelle()." ".$terrain->getLibelle() : null ?>"
+                data-filter="
+                        <?= isset($terrain) ? $terrain->getLibelle() : ""?>
+                        <?= isset($categorie) ? $categorie->getAcronyme() : ""?>
+                    " >
+                <?php if(!isset($terrain)) : ?>
+                    <span class="text-muted">Non défini</span>
+                <?php  else : ?>
+                    <div><?= $terrain->getLibelle()?> (<?=$categorie->getAcronyme()?>)</div>
+                <?php endif; ?>
+            </td>
+
+
             <td class="" data-order="<?= ($etat) ? ($etat->getType()->getOrdre()) : PHP_INT_MIN ?>"
                 style="color:<?= (isset($etat)) ? $etat->getType()->getCouleur() : "" ?>"
             >
@@ -139,7 +162,6 @@ $contactVh = $this->contactStage();
 
 <script type="text/javascript">
     $(function () {
-        $('[data-bs-toggle="popover"]').popover({html: true});
         let options = generateDataTableSetings(
             {
                 stateSave: true,
@@ -155,9 +177,7 @@ $contactVh = $this->contactStage();
             }
         );
         //options = {};
-        $("#<?= $tableId ?>").on('draw.dt', function () {
-            $('[data-bs-toggle="popover"]').popover({html: true});
-        }).DataTable(options);
+        $("#<?= $tableId ?>").DataTable(options);
     });
 </script>
 <style>

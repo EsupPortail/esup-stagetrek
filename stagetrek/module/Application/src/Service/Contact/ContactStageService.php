@@ -3,10 +3,7 @@
 namespace Application\Service\Contact;
 
 use Application\Entity\Db\ContactStage;
-use Application\Entity\Db\ContactTerrain;
-use Application\Entity\Db\Stage;
-use Application\Entity\Db\ValidationStage;
-use Application\Provider\Parametre\ParametreProvider;
+use Application\Entity\Db\Parametre;
 use Application\Service\Misc\CommonEntityService;
 use Application\Service\Parametre\Traits\ParametreServiceAwareTrait;
 use Application\Service\Stage\Traits\ValidationStageServiceAwareTrait;
@@ -122,7 +119,7 @@ class ContactStageService extends CommonEntityService
         if ($today < $stage->getDateFinValidation()) {
             $dateFinToken = $stage->getDateFinValidation();
         } else {
-            $delay = $this->getParametreService()->getParametreValue(ParametreProvider::DUREE_TOKEN_VALDATION_STAGE);
+            $delay = $this->getParametreService()->getParametreValue(Parametre::DUREE_TOKEN_VALDATION_STAGE);
             $dateFinToken->add(new DateInterval('P' . $delay . 'D'));
         }
         $dateFinToken->setTime(23,59);

@@ -46,11 +46,9 @@ class GroupeService extends CommonEntityService
         if (isset($criteria[FormRecherche::INPUT_NIVEAU])) {
             $qb->leftJoin("$alias.niveauEtude", 'n');
         }
-        if (isset($criteria[FormRecherche::INPUT_ANNEE])) {
+        if (isset($criteria[FormRecherche::INPUT_ANNEE]) || isset($criteria[FormRecherche::INPUT_ETAT])) {
             $qb->leftJoin("$alias.anneeUniversitaire", 'a');
         }
-//
-
         if (!empty($criteria[FormRecherche::INPUT_LIBELLE])) {
             $qb->andWhere($qb->expr()->like($qb->expr()->upper("$alias.libelle"), $qb->expr()->upper(':libelle')));
             $qb->setParameter('libelle', "{$criteria[FormRecherche::INPUT_LIBELLE]}%");
@@ -169,7 +167,7 @@ class GroupeService extends CommonEntityService
                 if ($stage) {
                     $affectation = $stage->getAffectationStage();
                     if (isset($affectation) && $affectation->hasEtatValidee()) {
-                        throw new Exception("Le stage %s de %s a une affectation validée par la commission et ne peux donc pas être supprimé", $stage->getLibelle(), $stage->getEtudiant()->getDisplayName());
+                        throw new Exception( sprintf("Le stage %s de %s a une affectation validée par la commission et ne peux donc pas être supprimé", $stage->getLibelle(), $stage->getEtudiant()->getDisplayName()));
                     }
                     $this->getObjectManager()->remove($stage);
                 }
@@ -205,7 +203,7 @@ class GroupeService extends CommonEntityService
             foreach ($session->getStages() as $stage) {
                 $affectation = $stage->getAffectationStage();
                 if (isset($affectation) && $affectation->hasEtatValidee()) {
-                    throw new Exception("Le stage %s de %s a une affectation validée par la commission et ne peux donc pas être supprimé", $stage->getLibelle(), $stage->getEtudiant()->getDisplayName());
+                    throw new Exception(sprintf("Le stage %s de %s a une affectation validée par la commission et ne peux donc pas être supprimé", $stage->getLibelle(), $stage->getEtudiant()->getDisplayName()));
                 }
             }
         }

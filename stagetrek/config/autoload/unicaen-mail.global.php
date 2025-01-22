@@ -33,8 +33,6 @@ return [
          * Options concernant l'envoi de mail par l'application
          */
         'transport_options' =>  $transportOptions,
-
-        'server_url' => ($_ENV['SERVER_URL']) ?? "",
         /**
          * Configuration de l'expéditeur
          */

@@ -78,13 +78,13 @@ $canImportCT = $ctVh->actionAllowed(ContactTerrainController::ACTION_IMPORTER);
                     <td class="<?=(!$codeVisible) ? "hidden" : "" ?>">
                         <?= $contact->getCode() ?>
                     </td>
+                    <td><?= $contact->getDisplayName() ?></td>
                     <td>
                         <?= $contact->getLibelle() ?>
                         <?php if (!$contact->isActif()) : ?>
                         <div class="text-muted text-small">(Inactif)</div>
                         <?php endif; ?>
                     </td>
-                    <td><?= $contact->getDisplayName() ?></td>
                     <td><?= $contact->getEmail() ?></td>
                     <td><?= $contact->getTelephone() ?></td>
                     <td class="text-end">
@@ -105,6 +105,6 @@ $canImportCT = $ctVh->actionAllowed(ContactTerrainController::ACTION_IMPORTER);
             "lengthMenu": [[50, 100, 250, -1], [50, 100, 250, "Tous"]],
             "order": [[1, "asc"], [2, "asc"], [3, "asc"]],
         })
-        let $("#<?= $tableId ?>").DataTable(options);
+        $("#<?= $tableId ?>").DataTable(options);
     });
 </script>

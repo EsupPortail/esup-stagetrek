@@ -157,7 +157,6 @@ $canAdd = $vh->hasPrivilege(EtudiantPrivileges::ETUDIANT_AJOUTER);
 
 <script type="text/javascript">
     $(function () {
-        $('[data-bs-toggle="popover"]').popover({html: true});
         let options = generateDataTableSetings(
             {
                 stateSave: false,
@@ -170,9 +169,7 @@ $canAdd = $vh->hasPrivilege(EtudiantPrivileges::ETUDIANT_AJOUTER);
                 buttons: getExportButtonSetings("Les étudiants"),
             }
         );
-        $("#<?= $tableId ?>").on('draw.dt', function() {
-            $('[data-bs-toggle="popover"]').popover({html: true});
-        }).DataTable(options);
+        $("#<?= $tableId ?>").DataTable(options);
         //Rajout d'écouteur pour les exports
         $("#<?= $tableId ?>_wrapper .export-btn").appendTo("#exports-menu").addClass("dropdown-item");
 

@@ -12,6 +12,12 @@ use Exception;
  */
 class AlgoScoreV2 extends AbstractAlgorithmeAffectation
 {
+    const CODE_ALGO='algo_score_v2';
+    public static function getCodeAlgo() : string
+    {
+        return self::CODE_ALGO;
+    }
+
 
     /**
      * Concervé au cas ou

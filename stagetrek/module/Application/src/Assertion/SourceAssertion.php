@@ -8,7 +8,6 @@ use Application\Entity\Db\ReferentielPromo;
 use Application\Entity\Db\Source;
 use Application\Misc\ArrayRessource;
 use Application\Provider\Privilege\ReferentielPrivilege;
-use Application\Provider\Source\SourceProvider;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 use Laminas\Permissions\Acl\Role\RoleInterface;
 
@@ -66,7 +65,7 @@ class SourceAssertion extends AbstractAssertion
     private function assertSupprimer(?Source $source) : bool
     {
         if(!isset($source)) return false;
-        if($source->getCode() == SourceProvider::STAGETREK) return false;
+        if($source->getCode() == Source::STAGETREK) return false;
 
         $ref = $this->getObjectManager()->getRepository(ReferentielPromo::class)->findOneBy(['source' => $source]);
         if(isset($ref)){return false;} //on ne peut pas supprimé une source utilisé

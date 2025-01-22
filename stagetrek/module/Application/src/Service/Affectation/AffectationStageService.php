@@ -4,8 +4,8 @@ namespace Application\Service\Affectation;
 
 use Application\Entity\Db\AffectationStage;
 use Application\Entity\Db\Disponibilite;
+use Application\Entity\Db\Parametre;
 use Application\Provider\EtatType\AffectationEtatTypeProvider;
-use Application\Provider\Parametre\ParametreProvider;
 use Application\Service\Contact\Traits\ContactStageServiceAwareTrait;
 use Application\Service\Etudiant\Traits\EtudiantServiceAwareTrait;
 use Application\Service\Misc\CommonEntityService;
@@ -74,7 +74,7 @@ class AffectationStageService extends CommonEntityService
         /** @var AffectationStage $affectation */
         $affectation = $entity;
         //Maj du cout de l'affectation
-        $max = $this->getParametreService()->getParametreValue(ParametreProvider::AFFECTATION_COUT_TOTAL_MAX);
+        $max = $this->getParametreService()->getParametreValue(Parametre::AFFECTATION_COUT_TOTAL_MAX);
         $cout = min($max, $affectation->getCoutTerrain() +
             $affectation->getBonusMalus());
         $affectation->setCout($cout);
@@ -113,7 +113,7 @@ class AffectationStageService extends CommonEntityService
         $etudiants = [];
         foreach ($affectationsStages as $affectation) {
             //Maj du cout de l'affectationStage
-            $max = $this->getParametreService()->getParametreValue(ParametreProvider::AFFECTATION_COUT_TOTAL_MAX);
+            $max = $this->getParametreService()->getParametreValue(Parametre::AFFECTATION_COUT_TOTAL_MAX);
             $cout = min($max, $affectation->getCoutTerrain() +
                 $affectation->getBonusMalus());
             $affectation->setCout($cout);

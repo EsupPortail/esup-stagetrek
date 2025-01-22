@@ -1,5 +1,14 @@
 <?php
 
+$authService = ($_ENV['AUTH_SERVICE'] && $_ENV['AUTH_SERVICE'] != "") ? $_ENV['AUTH_SERVICE']  : 'db';
+
+$authService = str_replace(' ', '', $authService);
+$authService = explode(",", $authService);
+
+foreach ($authService as $authKey){
+    $authServicesAllowed[$authKey] = true;
+}
+
 return [
     // Module [Unicaen]Ldap
     'unicaen-ldap' => [
@@ -58,12 +67,5 @@ return [
                 'FILTER_STRUCTURE_CODE_ENTITE_PARENT'   => '(supannCodeEntiteParent=%s)',
             ],
         ],
-    ],
-
-    /**
-     * Attribut LDAP utilisé pour le username des utilisateurs
-     */
-    'unicaen-auth' => [
-       'ldap_username' => 'supannaliaslogin',
     ],
 ];

@@ -6,7 +6,6 @@ namespace Application\Form\TerrainStage\Element;
 use Application\Entity\Db\CategorieStage;
 use Application\Entity\Db\TerrainStage;
 use Application\Form\Abstrait\Element\AbstractSelectPicker;
-use Application\Provider\TypeStage\TypeTerrainStageProvider;
 use Exception;
 
 class TerrainStageSelectPicker extends AbstractSelectPicker
@@ -26,8 +25,8 @@ class TerrainStageSelectPicker extends AbstractSelectPicker
     public function useTypeTerrainStageData(string $type) : static
     {
         $filter = match ($type) {
-            TypeTerrainStageProvider::TERRAIN_PRINCIPAL => true,
-            TypeTerrainStageProvider::TERRAIN_SECONDAIRE => false,
+            TerrainStage::TYPE_TERRAIN_PRINCIPAL => true,
+            TerrainStage::TYPE_TERRAIN_SECONDAIRE => false,
             default => throw new Exception("Type de terrain indéterminé"),
         };
         //TODO : voir comment distinguer les catégorie principale et secondaire

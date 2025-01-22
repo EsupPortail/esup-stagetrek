@@ -85,7 +85,7 @@ $fieldset = $form->getEntityFieldset();
             height: "500",
             language: 'fr_FR',
             entity_encoding: "raw",
-            plugins: 'lists paste textcolor colorpicker',
+            plugins: 'lists',
             color_picker_callback: function (callback) {
                 callback('#000000');
             },
@@ -93,7 +93,7 @@ $fieldset = $form->getEntityFieldset();
             statusbar: true,
             browser_spellcheck: true,
             branding: false,
-            menu: {},
+            menubar: false,
             body_id: '<?= MessageInfoFieldset::INPUT_MESSAGE ?>',
             setup: function (editor) {
                 editor.on("initEditor", function () {

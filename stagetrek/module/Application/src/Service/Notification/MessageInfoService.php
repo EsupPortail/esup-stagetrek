@@ -5,7 +5,6 @@ namespace Application\Service\Notification;
 use Application\Entity\Db\Etudiant;
 use Application\Entity\Db\MessageInfo;
 use Application\Entity\Db\Stage;
-use Application\Provider\Notification\MessageInfoProvider;
 use Application\Provider\Roles\RolesProvider;
 use Application\Service\Misc\CommonEntityService;
 use BjyAuthorize\Service\Authorize;
@@ -42,7 +41,7 @@ class MessageInfoService extends CommonEntityService
     {
         usort($messages, function (MessageInfo $m1, MessageInfo $m2) {
             $severityOrder = [// severity   => order
-                MessageInfoProvider::ERROR => 1, MessageInfoProvider::WARNING => 2, MessageInfoProvider::SUCCESS => 3, MessageInfoProvider::INFO => 4,];
+                MessageInfo::ERROR => 1, MessageInfo::WARNING => 2, MessageInfo::SUCCESS => 3, MessageInfo::INFO => 4,];
             $m1Serverity = (isset($severityOrder[$m1->getPriority()])) ? $severityOrder[$m1->getPriority()] : 5;
             $m2Serverity = (isset($severityOrder[$m2->getPriority()])) ? $severityOrder[$m2->getPriority()] : 5;
             if ($m1Serverity != $m2Serverity) {
@@ -93,7 +92,7 @@ class MessageInfoService extends CommonEntityService
                         $message = new MessageInfo();
                         $message->setTitle($title);
                         $message->setMessage($msg);
-                        $message->setPriority(MessageInfoProvider::INFO);
+                        $message->setPriority(MessageInfo::INFO);
                         $message->setDateMessage($stage->getDateDebutChoix());
                         $messages[] = $message;
                     }
@@ -109,7 +108,7 @@ class MessageInfoService extends CommonEntityService
                         $message = new MessageInfo();
                         $message->setTitle($title);
                         $message->setMessage($msg);
-                        $message->setPriority(MessageInfoProvider::WARNING);
+                        $message->setPriority(MessageInfo::WARNING);
                         $message->setDateMessage($stage->getDateFinValidation());
                         $messages[] = $message;
                     }

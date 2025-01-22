@@ -4,7 +4,6 @@
 namespace Application\Form\TerrainStage\Element;
 
 use Application\Entity\Db\CategorieStage;
-use Application\Provider\TypeStage\TypeCategorieStageProvider;
 use Exception;
 
 class CategorieStageSecondaireSelectPicker extends CategorieStageSelectPicker
@@ -14,7 +13,7 @@ class CategorieStageSecondaireSelectPicker extends CategorieStageSelectPicker
      */
     public function setDefaultData() : static
     {
-       $this->useTypeCategorieData(TypeCategorieStageProvider::CATEGORIE_SECONDAIRE);
+       $this->useTypeCategorieData(CategorieStage::TYPE_CATEGORIE_SECONDAIRE);
        return $this;
     }
 

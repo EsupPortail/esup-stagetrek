@@ -10,7 +10,7 @@ $modules = [
     'Laminas\I18n',
     'Laminas\InputFilter',
     'Laminas\Log',
-    'Laminas\Mail',
+//    'Laminas\Mail',
     'Laminas\Mvc\I18n',
     'Laminas\Mvc\Plugin\FlashMessenger',
     'Laminas\Mvc\Plugin\Prg',
@@ -65,6 +65,7 @@ $moduleListenerOptions = [
         './vendor',
     ],
 ];
+
 
 return [
     'modules' => $modules,
