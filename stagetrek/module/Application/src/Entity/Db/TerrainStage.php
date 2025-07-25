@@ -12,7 +12,6 @@ use Application\Entity\Traits\Convention\HasModeleConventionStageTrait;
 use Application\Entity\Traits\InterfaceImplementation\CodeEntityTrait;
 use Application\Entity\Traits\InterfaceImplementation\IdEntityTrait;
 use Application\Entity\Traits\InterfaceImplementation\LibelleEntityTrait;
-use Application\Entity\Traits\Stage\HasTerrainStageTrait;
 use Application\Entity\Traits\Terrain\HasCategorieStageTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -42,7 +41,9 @@ class TerrainStage implements ResourceInterface,
         if($uid == null){$uid = uniqid();}
         if(isset($param['prefixe'])){$prefixe = $param['prefixe'];}
         elseif(!$this->hasCategorieStage() || $this->getCategorieStage() === null || $this->getCategorieStage()==""){$prefixe = 'T';}
-        else{$prefixe = strtolower(substr(trim($this->getCategorieStage()->getAcronyme()), 0,10));}
+        else{$prefixe = strtolower(substr(trim($this->getCategorieStage()->getAcronyme()), 0,10));
+            $prefixe = str_replace(" ", "_", $prefixe);
+        }
         $separateur = ($param['sep']) ?? '-';
         return substr(sprintf("%s%s%s", $prefixe, $separateur, $uid), 0, 25);
     }

@@ -4,19 +4,21 @@ namespace Application\Form\Contrainte\Validator;
 
 use Application\Entity\Db\ContrainteCursusPortee;
 use Application\Form\Contrainte\Fieldset\ContrainteCursusFieldset;
+use Application\Service\Contrainte\Traits\ContrainteCursusServiceAwareTrait;
+use DoctrineModule\Persistence\ObjectManagerAwareInterface;
+use DoctrineModule\Persistence\ProvidesObjectManager;
 use Laminas\Validator\AbstractValidator;
 
 /**
  * Class ContrainteCursusValidator
  * @package Application\Form\ContraintesCursus\Validator
  */
-class ContrainteCursusValidator extends AbstractValidator
+class ContrainteCursusValidator extends AbstractValidator implements ObjectManagerAwareInterface
 {
+    use ProvidesObjectManager;
 
     //Fonction de callback
     const ASSERT_PORTEE = "assertPortee";
-    const ASSERT_CATEGORIE_TERRAIN = "assertCategorieTerrain";
-    const ASSERT_TERRAIN = "assertTerrain";
    const ASSERT_NB_STAGE = "assertNbStage";
 
     const CALLBACK_FUNCTION_NOT_DEFIND_ERROR = 'CALLBACK_FUNCTION_NOT_DEFIND_ERROR';
@@ -27,6 +29,7 @@ class ContrainteCursusValidator extends AbstractValidator
    const TERRAIN_SHOULD_BE_EMPTY  = 'TERRAIN_SHOULD_BE_EMPTY';
     const NB_STAGE_MIN_SUP_NB_STAGE_MAX  = 'NB_STAGE_MIN_SUP_NB_STAGE_MAX';
     const NO_CONTRAINTE_STAGE_ERROR  = 'NO_CONTRAINTE_STAGE_ERROR';
+    const NO_PORTEE_ERROR  = 'NO_PORTEE_ERROR';
 
     /**
      * Validation failure message templates definitions
@@ -42,6 +45,7 @@ class ContrainteCursusValidator extends AbstractValidator
         self::TERRAIN_SHOULD_BE_EMPTY => "La contrainte ne porte pas sur les terrains de stages.  Aucun terrain de stage ne doit être sélectionné.",
         self::NB_STAGE_MIN_SUP_NB_STAGE_MAX => "Le nombre de stage(s) minimum doit être inférieur au nombre de stage(s) maximum.",
         self::NO_CONTRAINTE_STAGE_ERROR => "Un nombre de stage(s) minimum ou maximum doit être défini.",
+        self::NO_PORTEE_ERROR => "La portée de la contrainte n'as pas été définie",
     ];
 
     /**
@@ -88,25 +92,32 @@ class ContrainteCursusValidator extends AbstractValidator
         return $this->$callback($value, $context);
     }
 
+    protected ?ContrainteCursusPortee $portee = null;
     /**
      * @param mixed $value
      * @param array $context
      * @return bool
      */
     public function assertPortee($value, $context =[]){
-        $portee = (isset($context[ContrainteCursusFieldset::PORTEE])) ?
-            intval($context[ContrainteCursusFieldset::PORTEE]) : null;
+        $porteeId = (isset($context[ContrainteCursusFieldset::PORTEE])) ?
+            intval($context[ContrainteCursusFieldset::PORTEE]) : 0;
+        $portee = $this->getObjectManager()->getRepository(ContrainteCursusPortee::class)->find($porteeId);
+        if(!isset($portee)){
+            $this->error(self::NO_PORTEE_ERROR);
+            return false;
+        }
+        $this->portee = $portee;
         $noError=true;
-        switch ($portee){
-            case ContrainteCursusPortee::ID_PORTEE_GENERAL:
+        switch ($portee->getCode()){
+            case ContrainteCursusPortee::GENERALE:
                 $noError &= $this->categorieIsEmpty($context);
                 $noError &= $this->terrainIsEmpty($context);
             break;
-            case ContrainteCursusPortee::ID_PORTEE_CATEGORIE:
+            case ContrainteCursusPortee::CATEGORIE:
                 $noError &= $this->categorieIsNotEmpty($context);
                 $noError &= $this->terrainIsEmpty($context);
             break;
-            case ContrainteCursusPortee::ID_PORTEE_TERRAIN:
+            case ContrainteCursusPortee::TERRAIN:
                 $noError &= $this->categorieIsEmpty($context);
                 $noError &= $this->terrainIsNotEmpty($context);
             break;
@@ -114,37 +125,6 @@ class ContrainteCursusValidator extends AbstractValidator
         return $noError;
     }
 
-    /**
-     * @param mixed $value
-     * @param array $context
-     * @return bool
-     */
-    public function assertCategorieTerrain($value, $context =[]){
-        $portee = (isset($context[ContrainteCursusFieldset::PORTEE])) ?
-            intval($context[ContrainteCursusFieldset::PORTEE]) : null;
-        if($portee == ContrainteCursusPortee::ID_PORTEE_CATEGORIE){
-            return $this->categorieIsNotEmpty($context);
-        }
-        else{
-            return $this->categorieIsEmpty($context);
-        }
-    }
-
-    /**
-     * @param mixed $value
-     * @param array $context
-     * @return bool
-     */
-    public function assertTerrain($value, $context =[]){
-        $portee = (isset($context[ContrainteCursusFieldset::PORTEE])) ?
-            intval($context[ContrainteCursusFieldset::PORTEE]) : null;
-        if($portee == ContrainteCursusPortee::ID_PORTEE_TERRAIN){
-            return $this->terrainIsNotEmpty($context);
-        }
-        else{
-            return $this->terrainIsEmpty($context);
-        }
-    }
 
     public function assertNbStage($value, $context =[]){
         $nbStageMin = $context[ContrainteCursusFieldset::NB_STAGE_MIN];

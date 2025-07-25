@@ -39,7 +39,6 @@ class UpdateStageCommand extends AbstractUpdateEntityCommand
             $io->title("Maj des stages");
             $this->updateListesStages();
             $this->updateEtat();
-            $this->updateOrdresAffectations();
             $io->success("Maj terminée");
 
         }catch (Exception $e){
@@ -79,47 +78,6 @@ class UpdateStageCommand extends AbstractUpdateEntityCommand
                 $this->getAffectationStageService()->updateEtat($affectation);
             }
 
-            $io->progressAdvance();
-        }
-        $io->progressFinish();
-        $this->renderLog();
-    }
-
-    /**
-     * @throws Exception
-     */
-    protected function updateOrdresAffectations() : void
-    {
-        $io = $this->getInputOutPut();
-        $this->clearLog();
-        $io->section("Ordres d'affectations");
-        $sessions = $this->getObjectManager()->getRepository(SessionStage::class)->findAll();
-        //On ne met a jours automatiquements les ordres d'affectations que pour les sessions dans la bonne périodes
-        $today = new DateTime();
-        $sessions = array_filter($sessions, function (SessionStage $session) use ($today) {
-            if($today < $session->getDateCalculOrdresAffectations()){return false;}
-            if($session->getDateDebutChoix() < $today){return false;}
-//          on ne lance le calcul que s'il existe un stage n'ayant pas d'ordre définit. Sinon, on se basera sur une modification manuel de l'ordre d'affectation
-            $stage = $session->getStages();
-            /** @var Stage $s */
-            foreach ($stage as $s){
-                if($s->getOrdreAffectationAutomatique() == null){
-                    return true;
-                }
-            }
-            return false;
-        });
-        if(sizeof($sessions) == 0) {
-            $io->info("Pas de calcul d'ordres d'affectations automatiques requis");
-            $this->renderLog();
-            return;
-        }
-        $io->progressStart(sizeof($sessions));
-        /** @var StageService $service */
-        $service = $this->getEntityService();
-        foreach ($sessions as $session){
-            $service->updateOrdresAffectationsAuto($session);
-            $service->updateOrdresAffectations($session);
             $io->progressAdvance();
         }
         $io->progressFinish();

@@ -4,6 +4,7 @@ use Application\Controller\Terrain\CategorieStageController;
 use Application\Entity\Db\CategorieStage;
 use Application\Provider\Misc\Icone;
 use Application\Provider\Privilege\TerrainPrivileges;
+use Application\View\Helper\Terrains\CategorieStageViewHelper;
 
 /**
  * @see CategorieStageController::listerAction()
@@ -11,6 +12,7 @@ use Application\Provider\Privilege\TerrainPrivileges;
  * @var CategorieStage[] $categoriesStages
  */
 $tableId = "liste-categories-stages";
+/** @var CategorieStageViewHelper $vh */
 $vh = $this->categorieStage();
 $canEdit = $vh->hasPrivilege(TerrainPrivileges::CATEGORIE_STAGE_MODIFIER);
 $canDelete = $vh->hasPrivilege(TerrainPrivileges::CATEGORIE_STAGE_SUPPRIMER);
@@ -22,7 +24,7 @@ $canDelete = $vh->hasPrivilege(TerrainPrivileges::CATEGORIE_STAGE_SUPPRIMER);
             <thead>
             <tr>
                 <th class="hidden"></th>
-                <th class="col-md-2 no-search hidden col-code">Code</th>
+                <th class="col-md-2 no-search">Code</th>
                 <th class="col-md-2">Acronyme</th>
                 <th class="col-md-5">Libellé</th>
                 <th class="col-md-2 text-center" data-type="num">Ordre d'affichage</th>
@@ -37,20 +39,19 @@ $canDelete = $vh->hasPrivilege(TerrainPrivileges::CATEGORIE_STAGE_SUPPRIMER);
                 <tr class="<?=($categorie->isCategoriePrincipale()) ? "cat-principale" : "cat-secondaire" ?>">
                     <td class="hidden">
                         Catégories <?= ($categorie->isCategoriePrincipale()) ? "Principales" : "Secondaires" ?></td>
-                    <td class="hidden col-code">
+                    <td class="">
                         <?= $categorie->getCode(); ?>
                     </td>
                     <td data-filter="<?= $categorie->getAcronyme(); ?>">
-                        <?= $categorie->getAcronyme(); ?>
+                        <?= $categorie->getAcronyme() ?>
                     </td>
                     <td data-filter="<?= $categorie->getLibelle(); ?>">
-                        <?= $categorie->getLibelle(); ?>
+                        <?= $categorie->getLibelle() ?>
                     </td>
                     <td class="text-center"><?= $categorie->getOrdre() ?></td>
                     <?php if ($canEdit || $canDelete) : ?>
                         <td class="text-end">
-                            <?= $vh->lienModifier(Icone::MODIFIER, ['class' => 'text-primary ajax-modal']) ?>
-                            <?= $vh->lienSupprimer(Icone::SUPPRIMER, ['class' => 'text-danger ajax-modal']) ?>
+                            <?= $vh->lienAfficher(Icone::AFFICHER, ['class' => 'text-primary']) ?>
                         </td>
                     <?php endif; ?>
                 </tr>
@@ -64,9 +65,6 @@ $canDelete = $vh->hasPrivilege(TerrainPrivileges::CATEGORIE_STAGE_SUPPRIMER);
     $(function () {
         // TODO : bug a corriger : ne marche pas en cas de refresh
         let body = $("body");
-        body.on("toggle-code", function (){
-            $("#<?= $tableId ?> .col-code").toggleClass("hidden");
-        });
 
         body.on("toggle-cat-principale", function (){
             $("#<?= $tableId ?> .cat-principale").toggleClass("hidden");
@@ -79,7 +77,7 @@ $canDelete = $vh->hasPrivilege(TerrainPrivileges::CATEGORIE_STAGE_SUPPRIMER);
             {
                 paging: false,
                 info: false,
-                "order": [[3, "asc"], [1, "asc"], [2, "asc"]],
+                "order": [[4, "asc"], [2, "asc"], [3, "asc"]],
                 "orderFixed": {
                     "pre": [0, 'asc'],
                 },

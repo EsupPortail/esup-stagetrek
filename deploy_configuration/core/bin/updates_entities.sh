@@ -13,9 +13,14 @@ consoleAction update-annees
 consoleAction update-sessions
 consoleAction update-affectations
 consoleAction update-stages
+consoleAction update-ordres-affectations
 consoleAction update-etudiants
 consoleAction update-preferences
 consoleAction update-contacts
 consoleAction update-validations-stages
 consoleAction update-conventions-stages
-consoleAction generer-evenements
+consoleAction mail:purge
+consoleAction evenement:purger-journal
+consoleAction evenement:purger-evenement
+consoleAction evenement:generer
+

@@ -96,6 +96,7 @@ trait EvenementEntitiesLinkerServiceAwareTrait
      * @throws \Doctrine\DBAL\Exception
      * @throws \Doctrine\ORM\Exception\NotSupported
      */
+    /** @deprecated !!! todo : trouver un meilleurs système pour gerer les événements qui ont déjà été généré */
     public function findEvenementsWithParametres(array $parametres) : array
     {
         $sql = "SELECT evenement_id FROM v_evenement_entities_linker where evenement_id is not null";

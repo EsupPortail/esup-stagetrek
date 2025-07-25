@@ -36,7 +36,6 @@ class UpdateAffectationCommand extends AbstractUpdateEntityCommand
         $io->title("Maj des affectations");
         try{
 
-
             $this->updatePreferenceSat();
             $this->updateEtat();
 

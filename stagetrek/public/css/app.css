@@ -35,10 +35,9 @@ a.disabled {
 .unistrap.unistrap-th-stagetrek {
   --unistrap-color-main: rgb(0, 50, 100);
   --unistrap-color-dark: rgb(0, 50, 100);
+  --unistrap-color-table: rgba(0, 50, 100, 0.8);
   --unistrap-color-light: Beige;
   --bs-link-color: rgba(6, 68, 184, 0.75);
-  /** Couleur des tableaux **/
-  --unistrap-color-table: rgba(0, 50, 100, 0.8);
   --bs-success: rgb(95, 160, 66);
   --bs-success-rgb: 95, 160, 66;
   --bs-danger: rgb(200, 0, 0);
@@ -51,6 +50,16 @@ a.disabled {
   --bs-primary-rgb: 51, 129, 197;
   --bs-secondary: #6c757d;
   --bs-secondary-rgb: 108, 117, 125;
+}
+.unistrap.unistrap-th-stagetrek.unistrap-env-development {
+  --unistrap-color-main:	rgb(30, 102, 47);
+  --unistrap-color-dark:	rgb(30, 102, 47);
+  --unistrap-color-table:	rgba(30, 102, 47, 0.6);
+}
+.unistrap.unistrap-th-stagetrek.unistrap-env-test {
+  --unistrap-color-main:	rgb(0, 0, 0);
+  --unistrap-color-dark:	rgb(0, 0, 0);
+  --unistrap-color-table: rgba(0, 0, 0, 0.6);
 }
 
 .unistrap-th-stagetrek table thead tr th {
@@ -189,6 +198,65 @@ dd {
 
 .modal .btn-back {
   display: none;
+}
+
+/** badge des demandes de terrains en fonction des déciles */
+.badge.bnd {
+  color: black;
+}
+.badge.bnd.bnd-na {
+  color: white;
+  font-size: 12px !important;
+  background-color: rgba(var(--bs-danger-rgb));
+}
+.badge.bnd.bnd-ferme {
+  color: #f8f9fa;
+  background-color: #6c757d;
+}
+.badge.bnd.bnd-0 {
+  color: #f8f9fa;
+  background-color: rgba(var(--bs-success-rgb));
+}
+.badge.bnd.bnd-1 {
+  --bs-bg-opacity: 0.5;
+  background-color: rgba(var(--bs-danger-rgb), var(--bs-bg-opacity)) !important;
+}
+.badge.bnd.bnd-2 {
+  --bs-bg-opacity: 0.25;
+  background-color: rgba(var(--bs-danger-rgb), var(--bs-bg-opacity)) !important;
+}
+.badge.bnd.bnd-3 {
+  --bs-bg-opacity: 0.5;
+  background-color: rgba(var(--bs-warning-rgb), var(--bs-bg-opacity)) !important;
+}
+.badge.bnd.bnd-4 {
+  --bs-bg-opacity: 0.25;
+  background-color: rgba(var(--bs-warning-rgb), var(--bs-bg-opacity)) !important;
+}
+.badge.bnd.bnd-5 {
+  color: #f8f9fa;
+  --bs-bg-opacity: 0.5;
+  background-color: rgba(var(--bs-info-rgb), var(--bs-bg-opacity)) !important;
+}
+.badge.bnd.bnd-6 {
+  --bs-bg-opacity: 0.25;
+  background-color: rgba(var(--bs-info-rgb), var(--bs-bg-opacity)) !important;
+}
+.badge.bnd.bnd-7 {
+  --bs-bg-opacity: 0.5;
+  background-color: rgba(var(--bs-primary-rgb), var(--bs-bg-opacity)) !important;
+}
+.badge.bnd.bnd-8 {
+  --bs-bg-opacity: 0.25;
+  background-color: rgba(var(--bs-primary-rgb), var(--bs-bg-opacity)) !important;
+}
+.badge.bnd.bnd-9 {
+  --bs-bg-opacity: 0.25;
+  background-color: rgba(var(--bs-success-rgb), var(--bs-bg-opacity)) !important;
+}
+.badge.bnd.bnd-10 {
+  --bs-bg-opacity: 0.5;
+  background-color: rgba(var(--bs-success-rgb), var(--bs-bg-opacity)) !important;
 }
 
 /*# sourceMappingURL=app.css.map */

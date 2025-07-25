@@ -80,7 +80,7 @@ class ContactTerrainCsvImportValidator extends AbstractCsvImportValidator
     protected array $contacts;
     protected function getContacts() : array
     {
-        if(!isset($this->contacts)){
+        if(!isset($this->contacts)|| empty($this->contacts)){
             $this->contacts = $this->getObjectManager()->getRepository(Contact::class)->findAll();
         }
         return $this->contacts;
@@ -104,7 +104,7 @@ class ContactTerrainCsvImportValidator extends AbstractCsvImportValidator
     protected array $terrains = [];
     protected function getTerrains() : array
     {
-        if(!isset($this->terrains)){
+        if(!isset($this->terrains)|| empty($this->terrains)){
             $this->terrains = $this->getObjectManager()->getRepository(TerrainStage::class)->findAll();
         }
         return $this->terrains;

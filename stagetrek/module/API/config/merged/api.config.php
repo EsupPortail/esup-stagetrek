@@ -62,7 +62,7 @@ return [
                     'etudiants' => [
                         'type' => Segment::class,
                         'options' => [
-                            'route' => '/etudiants[/:token]',
+                            'route' => '/etudiants',
                             'defaults' => [
                                 'controller' => ReferentielEtudiantController::class,
                                 'action' => ReferentielEtudiantController::GET_ETUDIANTS_ACTION,

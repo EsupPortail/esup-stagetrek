@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * @var string $title
+ * @var string $text
+ * @var string $alert
+ */
+
+?>
+
+<div class="card">
+    <?php if ($title) : ?>
+        <h1 class="card-header page-header">
+            <?= $title ?>
+        </h1>
+    <?php endif; ?>
+
+    <div class="card-body">
+        <div class="alert <?=$alert?> lead card-text">
+            <?= $text; ?>
+        </div>
+    </div>
+</div>
+

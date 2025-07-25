@@ -26,7 +26,6 @@ class ConventionStageTeleversementFieldset extends AbstractEntityFieldset
             ],
         ]);
 
-        $validators = [];
         $config = $this->fileConfig;
         $maxSize = (isset($config['maxSize']) && $config['maxSize'] != "") ? $config['maxSize'] : "2MB";
         $extentions = ['pdf']; //indépendament de la config, les conventions sont obligatoriement des pdf

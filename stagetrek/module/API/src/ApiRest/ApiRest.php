@@ -39,7 +39,6 @@ class ApiRest
     public function setOptions(array $options = []): static
     {
         $this->httpClient->getAdapter()->setOptions($options);
-
         return $this;
     }
 
@@ -160,7 +159,6 @@ class ApiRest
             }
             $request->setFiles(new Parameters($formatFiles));
         }
-
         /** @var Response $response */
         $response = $this->httpClient->dispatch($request);
         if (!$response->isSuccess()) {

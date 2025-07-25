@@ -4,6 +4,7 @@ namespace Application\Entity\Db;
 
 use Application\Entity\Interfaces\LibelleEntityInterface;
 use Application\Entity\Interfaces\OrderEntityInterface;
+use Application\Entity\Traits\InterfaceImplementation\CodeEntityTrait;
 use Application\Entity\Traits\InterfaceImplementation\IdEntityTrait;
 use Application\Entity\Traits\InterfaceImplementation\LibelleEntityTrait;
 use Application\Entity\Traits\InterfaceImplementation\OrderEntityTrait;
@@ -26,17 +27,17 @@ class ContrainteCursusPortee implements ResourceInterface,
         return self::RESOURCE_ID;
     }
 
-    //TODO : remplacer par des codes dans un provider
-    const ID_PORTEE_GENERAL = 1;
-    const ID_PORTEE_CATEGORIE = 2;
-    const ID_PORTEE_TERRAIN = 3;
+    const GENERALE = 'general';
+    const CATEGORIE = 'categorie';
+    const TERRAIN = 'terrain';
 
-    public function isType(int $typeId): bool
+    public function isType(string $code): bool
     {
-        return $this->getId() === $typeId;
+        return $this->getCode() == $code;
     }
 
     use IdEntityTrait;
+    use CodeEntityTrait;
     use LibelleEntityTrait;
     use OrderEntityTrait;
 }

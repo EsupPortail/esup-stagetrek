@@ -1,4 +1,5 @@
 FROM ubuntu:20.04
+#TODO : passer sur une image alpine plus légere (mais requiere de remplacer les apt-get par apk
 
 # Set timezone
 ENV TZ=Europe/Paris
@@ -35,20 +36,21 @@ RUN apt-get update && \
 COPY ./deploy_configuration/shibconf/shibboleth/packages.sh /
 RUN chmod u+x /packages.sh
 RUN apt-get install -y expect
-
 RUN sh /packages.sh
+
 RUN apt-get install -y apache2
 RUN apt-get install -y libapache2-mod-shib2
 RUN apt-get install -y supervisor
+RUN apt-get install -y nano
 
-
-COPY ./deploy_configuration/apache/template-000-default.conf /
-COPY ./deploy_configuration/apache/template-default-ssl.conf /
+#
+#COPY ./deploy_configuration/apache/template-000-default.conf /
+#COPY ./deploy_configuration/apache/template-default-ssl.conf /
 
 ### Configuration d'un certificat ssl auto--généré
 RUN set -eux; \
     apt-get update; \
-    apt-get install ssl-cert; \
+    apt-get install -y ssl-cert; \
     a2enmod ssl; \
     a2ensite default-ssl
 
@@ -74,7 +76,6 @@ COPY ./deploy_configuration/shibconf/files_conf/security.conf /etc/apache2/conf-
 COPY ./deploy_configuration/shibconf/files_conf/shib.conf /etc/apache2/conf-available
 COPY ./deploy_configuration/shibconf/files_conf/wayf.conf /etc/apache2/conf-available
 COPY ./deploy_configuration/shibconf/files_conf/ports.conf /etc/apache2
-
 
 RUN a2enmod shib
 RUN a2enmod rewrite actions proxy proxy_fcgi setenvif

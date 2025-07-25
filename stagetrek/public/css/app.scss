@@ -38,21 +38,23 @@ a.disabled {
 
 .unistrap.unistrap-th-stagetrek {
 
-  //Version bleu écossais
-  //
-  //--unistrap-color-main: rgb(60, 47,126);
   --unistrap-color-main: rgb(0, 50, 100);
-  //--unistrap-color-main: rgb(0, 98, 183);
   --unistrap-color-dark: rgb(0, 50, 100);
-  //--unistrap-color-dark: rgb(0, 98, 183);
-  //--unistrap-color-light: rgba(122,29,76,1.0);
-  --unistrap-color-light: Beige;
-  //Couleurs des liens
-  --bs-link-color: rgba(6, 68, 184, 0.75);
-
-  /** Couleur des tableaux **/
   --unistrap-color-table: rgba(0, 50, 100, 0.8);
-  //--unistrap-color-table: rgba(0, 98, 183, 0.8);
+
+  &.unistrap-env-development{
+    --unistrap-color-main: 	rgb(30, 102, 47);
+    --unistrap-color-dark: 	rgb(30, 102, 47);
+    --unistrap-color-table: 	rgba(30, 102, 47, 0.6);;
+  }
+  &.unistrap-env-test{
+    --unistrap-color-main: 	rgb(0, 0, 0);
+    --unistrap-color-dark: 	rgb(0, 0, 0);
+    --unistrap-color-table: rgba(0, 0, 0, 0.6);
+  }
+
+  --unistrap-color-light: Beige;
+  --bs-link-color: rgba(6, 68, 184, 0.75);
 
   ///** Couleur des tableaux **/
   //--unistrap-color-table: rgba(70, 130, 180, 1);
@@ -238,5 +240,78 @@ dd {
   display: none;
 }
 
+/** badge des demandes de terrains en fonction des déciles */
+.badge{
+  &.bnd {
+    color: black;
 
+    &.bnd-na { //indéterminée
+      color: white;
+      font-size: 12px !important;
+      background-color: rgba(var(--bs-danger-rgb));
+    }
 
+    &.bnd-ferme { //terrains fermé : 0 places
+      color: #f8f9fa;
+      background-color: #6c757d;
+    }
+
+    //1er décile = trés-demandé
+    &.bnd-0 {
+      color: #f8f9fa;
+      background-color: rgba(var(--bs-success-rgb));
+    }
+
+    &.bnd-1 {
+      --bs-bg-opacity: 0.5;
+      background-color: rgba(var(--bs-danger-rgb), var(--bs-bg-opacity)) !important;
+    }
+
+    &.bnd-2 {
+      --bs-bg-opacity: 0.25;
+      background-color: rgba(var(--bs-danger-rgb), var(--bs-bg-opacity)) !important;
+    }
+
+    &.bnd-3 {
+      --bs-bg-opacity: 0.5;
+      background-color: rgba(var(--bs-warning-rgb), var(--bs-bg-opacity)) !important;
+    }
+
+    &.bnd-4 {
+      --bs-bg-opacity: 0.25;
+      background-color: rgba(var(--bs-warning-rgb), var(--bs-bg-opacity)) !important;
+    }
+
+    &.bnd-5 {
+      color: #f8f9fa;
+      --bs-bg-opacity: 0.5;
+      background-color: rgba(var(--bs-info-rgb), var(--bs-bg-opacity)) !important;
+    }
+
+    &.bnd-6 {
+      --bs-bg-opacity: 0.25;
+      background-color: rgba(var(--bs-info-rgb), var(--bs-bg-opacity)) !important;
+    }
+
+    &.bnd-7 {
+      --bs-bg-opacity: 0.5;
+      background-color: rgba(var(--bs-primary-rgb), var(--bs-bg-opacity)) !important;
+    }
+
+    &.bnd-8 {
+      --bs-bg-opacity: 0.25;
+      background-color: rgba(var(--bs-primary-rgb), var(--bs-bg-opacity)) !important;
+    }
+
+    &.bnd-9 {
+      --bs-bg-opacity: 0.25;
+      background-color: rgba(var(--bs-success-rgb), var(--bs-bg-opacity)) !important;
+    }
+
+    //Peu ou pas demandé
+    &.bnd-10 {
+      --bs-bg-opacity: 0.5;
+      background-color: rgba(var(--bs-success-rgb), var(--bs-bg-opacity)) !important;
+    }
+  }
+}

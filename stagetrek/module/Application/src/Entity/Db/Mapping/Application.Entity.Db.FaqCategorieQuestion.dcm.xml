@@ -8,6 +8,12 @@
       <generator strategy="SEQUENCE"/>
       <sequence-generator sequence-name="faq_categorie_question_id_seq" allocation-size="1" initial-value="1"/>
     </id>
+
+    <field name="code" type="string" column="code" length="25" nullable="false">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
     <field name="libelle" type="string" column="libelle" length="255" nullable="false">
       <options>
         <option name="fixed"/>

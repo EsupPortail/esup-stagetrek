@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Application\Controller\Misc\Traits;
 
 use Application\Provider\Roles\RolesProvider;
@@ -124,7 +123,7 @@ trait ActionsMessagesToolsTrait
      * @return \Laminas\View\Model\ViewModel
      */
     protected function successAction(string $title = null, string $msg = null, string $subtext = null, string $priority = Messenger::SUCCESS): ViewModel
-    {
+    { //TODO : a revoir l'usage
         if (!isset($msg)) {
             $msg = "L'action a été effectuée";
         }
@@ -151,7 +150,7 @@ trait ActionsMessagesToolsTrait
      * @return \Laminas\View\Model\ViewModel
      */
     protected function failureAction($title = null, $msg = null, Exception $exception = null, $subtext = null, string $priority=Messenger::ERROR): ViewModel
-    {
+    { /** TODO : a remplacer par renderError */
         if($priority==Messenger::ERROR){$priority='danger';}//Pour avoir les bon type de template
         if (!isset($msg) || $msg == "") {
             $msg = "Une erreur est survenue.";
@@ -186,14 +185,14 @@ trait ActionsMessagesToolsTrait
      * A priori si l'on n'a pas de "user" on aura d'autres erreur avant
      */
     protected function canSeeException(): bool
-    {
+    { //TODO : a revoir car déjà présent dans la conf
         $user = $this->getUser();
         if (!$user) {
             return false;
         }
         /** @var Role $role */
         foreach ($this->getUser()->getRoles() as $role) {
-            if ($role->getRoleId() == RolesProvider::ROLE_ADMINISTATEUR) {
+            if ($role->getRoleId() == RolesProvider::ADMIN_TECH) {
                 return true;
             }
         }

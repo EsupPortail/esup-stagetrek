@@ -22,11 +22,17 @@ implements LibelleEntityInterface, OrderEntityInterface
     {
         return self::RESOURCE_ID;
     }
-    //TODO : ajouter un code, un provider, un champs isNumeric (pour que gérer le type d'input dans le formulaire
+
+    const NO_TYPE = 'n/a';
+    const STRING = 'string';
+    const INT = 'int';
+    const FLOAT = 'float';
+    const BOOL = 'bool';
 
     use IdEntityTrait;
     use LibelleEntityTrait;
     use OrderEntityTrait;
+
 
     /**
      * @var string|null

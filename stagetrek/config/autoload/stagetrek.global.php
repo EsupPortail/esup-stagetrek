@@ -59,13 +59,13 @@ return [
 
 //    API
     'StageTrek' => [
-        'application_env' => ($_ENV['APPLICATION_ENV']) ?? EnvironnementProvider::TEST,
+        'application_env' => ($_ENV['APP_ENV']) ?? EnvironnementProvider::TEST,
 
         'http_client' => [
             'uri_host' => ($_ENV['URI_HOST']) ?? "",
             'uri_scheme' => ($_ENV['URI_SCHEMA']) ?? "",
-            'proxyhost' => ($_ENV['PROXY_HOST']) ?? "",
-            'proxyport' => ($_ENV['PROXY_PORT']) ?? "",
+//            'proxyhost' => ($_ENV['PROXY_HOST']) ?? "",
+//            'proxyport' => ($_ENV['PROXY_PORT']) ?? "",
 
             'api' => [
                 'geo_gouv' => [
@@ -78,8 +78,8 @@ return [
 
 //    Layout de base
     'view_manager' => [
-        'display_not_found_reason' => false,
-        'display_exceptions'       => false,
+        'display_not_found_reason' =>  (isset($_ENV['APP_ENV']) && $_ENV['APP_ENV'] == EnvironnementProvider::DEVELOPPEMENT) ? true : false,
+        'display_exceptions'       =>  (isset($_ENV['APP_ENV']) && $_ENV['APP_ENV'] == EnvironnementProvider::DEVELOPPEMENT) ? true : false,
         'template_map' => [
             'layout/layout' => realpath('./module/Application/view/layout/layout.phtml'),
         ],

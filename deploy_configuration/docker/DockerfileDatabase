@@ -1,4 +1,5 @@
 FROM postgres:13.14
+#FROM postgres:17.4
 
 RUN if [ -f ./deploy_configuration/proxy/.env_proxy ]; then \
     COPY ./deploy_configuration/proxy/.env_proxy /; \
@@ -13,7 +14,6 @@ ENV http_proxy=$HTTP_PROXY
 ENV https_proxy=$HTTP_PROXY
 ENV HTTP_PROXY=$HTTP_PROXY
 ENV HTTPS_PROXY=$HTTP_PROXY
-
 
 # Vérifiez si la variable d'environnement http_proxy est définie
 RUN if [ -n "$http_proxy" ]; then \
@@ -37,14 +37,25 @@ RUN chmod -R 700 /stagetrek-db
 #COPY ./deploy_configuration/db/autoload.sh /docker-entrypoint-initdb.d/
 #RUN chmod u+x /docker-entrypoint-initdb.d/autoload.sh
 
-RUN apt-get update && apt-get install -y unzip
+###Install d'outils utiles (fait ici pour ne pas le refaire a cheaque build si pas de modif
+RUN apt-get update && apt-get install -y \
+  unzip \
+  python3-full \
+  python3-pip \
+  python3-boto3 \
+  && rm -rf /var/lib/apt/lists/*
 
 #Clean the Proxy env
 ENV HTTP_PROXY ""
 ENV HTTPS_PROXY ""
 ENV http_proxy ""
 ENV https_proxy ""
-RUN rm -f /etc/apt/apt.conf.d/05proxy
+RUN rm -rf /etc/apt/apt.conf.d/05proxy \
+   /tmp/* \
+   /var/tmp/* \
+   /var/lib/apt/lists/*
+
+RUN apt-get autoremove -y && apt-get clean
 
 EXPOSE 8432
 EXPOSE 5432

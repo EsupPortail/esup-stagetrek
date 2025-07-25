@@ -27,10 +27,13 @@ $fieldset = $form->getEntityFieldset();
     <?= $fe($form->prepare(), $form::INVALIDE_ERROR_MESSAGE) ?>
     <?= $fr($fieldset->get($fieldset::ID)); ?>
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-4">
+            <?= $fct($fieldset->get($fieldset::CODE)); ?>
+        </div>
+        <div class="col-md-4">
             <?= $fct($fieldset->get($fieldset::LIBELLE)); ?>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
             <?= $fcg($fieldset->get($fieldset::ORDRE)); ?>
         </div>
     </div>

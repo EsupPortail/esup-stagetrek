@@ -87,7 +87,7 @@ class ProcedureAffectationController extends AbstractActionController
                     /** @var ProcedureAffectation $procedure */
                     $procedure = $form->getData();
                     $procedureService->update($procedure);
-                    $msg = sprintf("La procédure d'affectation %s a été modifé.", $procedure->getLibelle());
+                    $msg = sprintf("La procédure d'affectation %s a été modifiée.", $procedure->getLibelle());
                     $this->sendSuccessMessage($msg);
                     return $this->successAction($title, $msg);
                 } catch (Exception $e) {

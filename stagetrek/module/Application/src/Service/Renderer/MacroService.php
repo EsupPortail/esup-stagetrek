@@ -2,7 +2,6 @@
 
 namespace Application\Service\Renderer;
 
-use Application\Service\Parametre\Traits\ParametreServiceAwareTrait;
 use Application\Service\Renderer\Traits\AdresseRendererServiceAwareTrait;
 use Application\Service\Renderer\Traits\ContactRendererServiceAwareTrait;
 use Application\Service\Renderer\Traits\ParametreRendererServiceAwareTrait;
@@ -13,7 +12,6 @@ use Application\Service\Renderer\Traits\UrlServiceAwareTrait;
 /** Surcouche du MacroService de UnicaenRender */
 class MacroService extends \UnicaenRenderer\Service\Macro\MacroService
 {
-//    A revoir pour se baser sur le templateEngine
     //TODO : amélioration a apporter : gestion des macros qui peuvent être vide ou non selon le context
 
     // Accés aux différents service de remplacement pour le contenue des macros

@@ -55,10 +55,10 @@ $etudiant = $stage->getEtudiant();
     <hr/>
     <div class="row">
         <div class="col-md-2">
-            <strong>Etudiant</strong>
+            <strong>Étudiant</strong>
         </div>
         <div class="col-md-4">
-            <?= $etudiant->getDisplayName() ?>
+            <?= $etudiant->getNom() ?> <?= $etudiant->getPrenom() ?>
         </div>
         <div class="col-md-2">
             <strong>Stage</strong>

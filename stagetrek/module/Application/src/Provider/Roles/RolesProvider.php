@@ -6,6 +6,10 @@ namespace Application\Provider\Roles;
 
 class RolesProvider
 {
-    const ROLE_ADMINISTATEUR = 'Admin_tech';
-    const ROLE_ETUDIANT = 'Etudiant';
+    const ADMIN_TECH = 'Admin_tech';
+    const ADMIN_FONC = 'Admin_fonc';
+    const ETUDIANT = 'Etudiant';
+    const GARDE = 'Garde';
+    const SCOLARTIE = 'Scolarite';
+    const OBSERVATEUR = 'Observateur';
 }

@@ -32,7 +32,7 @@ $contactVh = $this->contactStage();
     <tr>
         <th style="width: 1px;" class="no-search no-sort"></th>
         <th class="hidden"></th>
-        <th class="col-md-3">Etudiant</th>
+        <th class="col-md-3">Étudiant</th>
         <th class="col-md-3">Terrain</th>
         <th class="no-search col-md" data-type="num">État</th>
         <th class="no-search col-md-1 text-center" data-type="num">Alerte</th>
@@ -62,8 +62,9 @@ $contactVh = $this->contactStage();
         $contactsStages = array_filter($contactsStages, function (ContactStage $cs) {
             return $cs->canValiderStage();
         });
-        $etat = $validation->getEtatActif();
+        $etat = ($validation) ? $validation->getEtatActif() : null;
         $bg = match (true) {
+            (!isset($validation)),
             $validation->hasEtatEnErreur() => "table-danger",
             $validation->hasEtatEnAlerte(), $validation->hasEtatEnRetard() => "table-warning",
             $validation->getWarning() => "table-warning",
@@ -77,10 +78,10 @@ $contactVh = $this->contactStage();
         <tr class="<?= $bg ?>">
             <td></td>
             <td class="hidden">Stage <?= ($stage->isStagePrincipal()) ? "Principaux" : "Secondaires" ?></td>
-            <td data-order="<?= $etudiant->getDisplayName() ?><?= $etudiant->getNumEtu() ?>"
-                data-filter="<?= $etudiant->getDisplayName() ?><?= $etudiant->getNumEtu() ?>"
+            <td data-order="<?= $etudiant->getNom() ?> <?= $etudiant->getPrenom() ?><?= $etudiant->getNumEtu() ?>"
+                data-filter="<?= $etudiant->getNom() ?> <?= $etudiant->getPrenom() ?><?= $etudiant->getNumEtu() ?>"
             >
-                <?= $etudiant->getDisplayName() ?> (<?= $evh->lienAfficher($etudiant->getNumEtu()) ?>)
+                <?= $etudiant->getNom() ?> <?= $etudiant->getPrenom() ?> (<?= $evh->lienAfficher($etudiant->getNumEtu()) ?>)
             </td>
 
             <td data-order="<?= ($terrain) ? $categorie->getLibelle()." ".$terrain->getLibelle() : null ?>"

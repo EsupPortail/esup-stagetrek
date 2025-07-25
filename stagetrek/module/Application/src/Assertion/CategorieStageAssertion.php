@@ -25,6 +25,7 @@ class CategorieStageAssertion extends AbstractAssertion
                 => true,
             Controller::ACTION_AJOUTER,  Controller::ACTION_IMPORTER
                 => $this->assertAjouter(),
+            Controller::ACTION_AFFICHER => $this->assertAfficher($categorieStage),
             Controller::ACTION_MODIFIER => $this->assertModifier($categorieStage),
             Controller::ACTION_SUPPRIMER => $this->assertSupprimer($categorieStage),
             default => false,
@@ -45,7 +46,7 @@ class CategorieStageAssertion extends AbstractAssertion
             $categorieStage = $entity->get(CategorieStage::RESOURCE_ID);
         }
         return match ($privilege) {
-            Privilege::CATEGORIE_STAGE_AFFICHER => true,
+            Privilege::CATEGORIE_STAGE_AFFICHER => $this->assertAfficher($categorieStage),
             Privilege::CATEGORIE_STAGE_AJOUTER => $this->assertAjouter(),
             Privilege::CATEGORIE_STAGE_MODIFIER => $this->assertModifier($categorieStage),
             Privilege::CATEGORIE_STAGE_SUPPRIMER => $this->assertSupprimer($categorieStage),
@@ -56,6 +57,11 @@ class CategorieStageAssertion extends AbstractAssertion
     private function assertAjouter() : bool
     {
         return true;
+    }
+
+    private function assertAfficher(?CategorieStage $categorieStage) : bool
+    {
+        return isset($categorieStage);
     }
 
     private function assertModifier(?CategorieStage $categorieStage) : bool

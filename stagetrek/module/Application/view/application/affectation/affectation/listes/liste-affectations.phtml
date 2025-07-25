@@ -26,7 +26,7 @@ $today = new DateTime();
             <thead>
             <tr>
                 <th class="col-md-1 no-search" data-type="num">Ordre</th>
-                <th class="col-md-3">Etudiant</th>
+                <th class="col-md-3">Étudiant</th>
                 <th class="col-md-3">Terrain</th>
                 <th class="col-md-4 no-search" data-type="num">État</th>
                 <?php if($canSeeAffectation): ?>
@@ -74,10 +74,10 @@ $today = new DateTime();
                     <td class="" data-order="<?=($stage->getOrdreAffectation()) ?? PHP_INT_MAX ?>">
                         <?= ($stage->getOrdreAffectation()) ?? "<span class='text-muted'>-</span>" ?>
                     </td>
-                    <td data-order="<?= $etudiant->getDisplayName() ?> <?= $etudiant->getNumEtu() ?>"
-                        data-filter="<?= $etudiant->getDisplayName() ?> <?= $etudiant->getNumEtu() ?>"
+                    <td data-order="<?= $etudiant->getNom() ?> <?= $etudiant->getPrenom() ?> <?= $etudiant->getNumEtu() ?>"
+                        data-filter="<?= $etudiant->getNom() ?> <?= $etudiant->getPrenom() ?> <?= $etudiant->getNumEtu() ?>"
                     >
-                        <?= $etudiant->getDisplayName() ?> (<?= $evh->lienAfficher()?>)
+                        <?= $etudiant->getNom() ?> <?= $etudiant->getPrenom() ?> (<?= $evh->lienAfficher()?>)
                     </td>
                     <td data-order="<?= ($terrain) ? $categorie->getLibelle()." ".$terrain->getLibelle() :
                         (($terrainSecondaire) ? $categorieSecondaire->getLibelle()." ".$terrainSecondaire->getLibelle() : '')

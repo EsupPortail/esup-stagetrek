@@ -6,6 +6,7 @@ namespace Application\Form\Etudiant;
 use Application\Entity\Db\Groupe;
 use Application\Form\Abstrait\AbstractEntityForm;
 use Application\Form\Abstrait\Interfaces\AbstractFormConstantesInterface;
+use Application\Form\Annees\Element\AnneeUniversitaireSelectPicker;
 use Application\Form\Groupe\Element\GroupeSelectPicker;
 use Application\Form\Referentiel\Element\ReferentielPromoSelectPicker;
 use Laminas\Filter\File\RenameUpload;
@@ -30,6 +31,7 @@ class ImportEtudiantForm extends AbstractEntityForm implements AbstractFormConst
     // Liste des input
     const INPUT_DATA_PROVIDED = "data-provided";
     const INPUT_IMPORT_REFERENTIEL = "referentiel";
+    const INPUT_IMPORT_REFERENTIEL_ANNEE = "annee";
     const INPUT_IMPORT_FILE = "import_file";
     const INPUT_IMPORT_GROUPE = "import_groupe";
     const INPUT_ADD_IN_GROUPE = "add_in_groupe";
@@ -87,6 +89,19 @@ class ImportEtudiantForm extends AbstractEntityForm implements AbstractFormConst
                 'id' => self::INPUT_IMPORT_REFERENTIEL,
             ],
         ]);
+
+        $this->add([
+            'type' => AnneeUniversitaireSelectPicker::class,
+            'name' => self::INPUT_IMPORT_REFERENTIEL_ANNEE,
+            'options' => [
+                'label' => "Année d'inscription",
+                'empty_option' => "Selectionnez une année universitaire",
+            ],
+            'attributes' => [
+                'id' => self::INPUT_IMPORT_REFERENTIEL_ANNEE,
+            ],
+        ]);
+
 
         $this->add([
             'type' => File::class,
@@ -196,6 +211,38 @@ class ImportEtudiantForm extends AbstractEntityForm implements AbstractFormConst
                             && isset($context[self::INPUT_IMPORT_FILE]['name'])
                             && strlen($context[self::INPUT_IMPORT_FILE]['name']) > 0);
                         return !$referentiel || !$csv;
+                    },
+                    'break_chain_on_failure' => true,
+                ],
+            ],
+            [
+            'name' => Callback::class,
+                'options' => [
+                    'messages' => [
+                        Callback::INVALID_VALUE => "Vous devez préciser l'année d'inscription des étudiants",
+                    ],
+                    'callback' => function ($value, $context = []) {
+                        $annee = (isset($context[self::INPUT_IMPORT_REFERENTIEL_ANNEE]) && strlen($context[self::INPUT_IMPORT_REFERENTIEL_ANNEE]) > 0);
+                        return $annee;
+                    },
+                    'break_chain_on_failure' => true,
+                ],
+            ]
+            ],
+        ]);
+
+        $inputFilter->add([
+            'name' => self::INPUT_IMPORT_REFERENTIEL_ANNEE,
+            'required' => false,
+            'validators' => [[
+                'name' => Callback::class,
+                'options' => [
+                    'messages' => [
+                        Callback::INVALID_VALUE => "Vous devez selectionner le référentiel d'import",
+                    ],
+                    'callback' => function ($value, $context = []) {
+                        $referentiel = (isset($context[self::INPUT_IMPORT_REFERENTIEL]) && strlen($context[self::INPUT_IMPORT_REFERENTIEL]) > 0);
+                        return $referentiel;
                     },
                     'break_chain_on_failure' => true,
                 ],

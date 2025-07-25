@@ -1188,3 +1188,9 @@ body.unistrap {
 .shape-wave svg { height: 55px; }
 .shape-line svg { height: 50px; }
 .shape-triangle svg { height: 50px; }
+
+/* Nav bar si necessaire dans le menu*/
+.unistrap .navbar.navbar-main .dropdown-menu {
+    max-height: 90vh;
+    overflow: auto;
+}

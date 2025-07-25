@@ -48,7 +48,7 @@ $categorieSecondaire = ($terrainSecondaire) ? $terrainSecondaire->getCategorieSt
         <div class="card-body">
             <div class="row">
                 <div class="col-md-2">
-                    <strong>Etudiant</strong>
+                    <strong>Étudiant</strong>
                 </div>
                 <div class="col-md-4">
                     <?= $etudiant->getDisplayName(); ?>
@@ -188,7 +188,7 @@ $categorieSecondaire = ($terrainSecondaire) ? $terrainSecondaire->getCategorieSt
                 </div>
             <?php elseif (empty($preferences)) : ?>
                 <div class="alert alert-warning">
-                    <strong><?= $etudiant->getDisplayName() ?> n'as pas définie de préférence.</strong>
+                    <strong><?= $etudiant->getNom() ?> <?= $etudiant->getPrenom() ?> n'as pas définie de préférence.</strong>
                 </div>
             <?php else : ?>
                 <div class="row">

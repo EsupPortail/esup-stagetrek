@@ -15,7 +15,7 @@ class Module
     {
         $application = $e->getApplication();
         $serviceManager = $application->getServiceManager();
-        $serviceManager->get('translator');
+        $translator = $serviceManager->get('translator');
         $eventManager = $application->getEventManager();
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);

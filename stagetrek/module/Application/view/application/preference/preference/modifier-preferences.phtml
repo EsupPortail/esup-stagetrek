@@ -40,7 +40,7 @@ $canSeeSat = (!$vueEtudiante && isset($affectation) && $affectation->hasEtatVali
 ?>
 <h1 class="page-header">
     <span class="fas fa-list-check"></span> Modifier les préférences de
-    <?= $etudiant->getDisplayName() ?> - Stage n°<?= $stage->getNumero() ?>
+    <?= $etudiant->getNom() ?> <?= $etudiant->getPrenom() ?> - Stage n°<?= $stage->getNumero() ?>
     <br/>
     <small class="text-muted">
         Stage du <?= $stage->getDateDebutStage()->format('d/m/Y') ?>

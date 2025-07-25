@@ -6,9 +6,9 @@ use Application\Entity\Db\Stage;
 use Application\Entity\Traits\Convention\HasConventionStageTrait;
 use DateTime;
 use Exception;
-use Fichier\Entity\Db\Fichier;
-use Fichier\Filter\FileName\AbstractFileNameFormatter;
-use Fichier\Filter\FileName\FileNameFormatterInterface;
+use UnicaenFichier\Entity\Db\Fichier;
+use UnicaenFichier\Filter\FileName\AbstractFileNameFormatter;
+use UnicaenFichier\Filter\FileName\FileNameFormatterInterface;
 
 /**
  * @desc Met mes fichiers dans un sous-répertoire au format du code de la nature

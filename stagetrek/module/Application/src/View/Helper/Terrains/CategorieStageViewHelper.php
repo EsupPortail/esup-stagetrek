@@ -59,6 +59,7 @@ class CategorieStageViewHelper extends AbstractEntityActionViewHelper
         return match ($action) {
             Controller::ACTION_INDEX, Controller::ACTION_LISTER => $this->hasPrivilege(TerrainPrivileges::CATEGORIE_STAGE_AFFICHER),
             Controller::ACTION_AJOUTER, Controller::ACTION_IMPORTER => $this->hasPrivilege(TerrainPrivileges::CATEGORIE_STAGE_AJOUTER),
+            Controller::ACTION_AFFICHER => $this->hasCategorieStage() && $this->hasPrivilege(TerrainPrivileges::CATEGORIE_STAGE_AFFICHER),
             Controller::ACTION_MODIFIER => $this->hasCategorieStage() && $this->hasPrivilege(TerrainPrivileges::CATEGORIE_STAGE_MODIFIER),
             Controller::ACTION_SUPPRIMER => $this->hasCategorieStage() && $this->callAssertion($ressources, TerrainPrivileges::CATEGORIE_STAGE_SUPPRIMER),
             default => false,
@@ -74,6 +75,18 @@ class CategorieStageViewHelper extends AbstractEntityActionViewHelper
         $url = $this->getUrl(Controller::ROUTE_INDEX, [], [], true);
         $attributes['title'] = ($attributes['title']) ??  "Listes des catégories de stages";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-secondary";
+        return $this->generateActionLink($url, $libelle, $attributes);
+    }
+
+    public function lienAfficher(?string $libelle = null, ?array $attributes = []): string
+    {
+        if (!$this->actionAllowed(Controller::ACTION_AFFICHER)) {
+            return "";
+        }
+        $url = $this->getUrl(Controller::ROUTE_AFFICHER,  ['categorieStage' => $this->getCategorieStage()->getId()], [], true);
+        $libelle = ($libelle) ?? sprintf("%s %s", Icone::AFFICHER, Label::AFFICHER);
+        $attributes['title'] = ($attributes['title']) ??"Afficher la catégorie de stage";
+        $attributes['class'] = ($attributes['class']) ?? "btn btn-primary";
         return $this->generateActionLink($url, $libelle, $attributes);
     }
 

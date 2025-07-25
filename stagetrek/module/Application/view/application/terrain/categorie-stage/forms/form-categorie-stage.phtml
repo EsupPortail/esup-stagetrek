@@ -24,11 +24,16 @@ $fieldset = $form->getEntityFieldset();
     <?= $this->form()->openTag($form->prepare()) ?>
     <?= $fe($form->prepare(), $form::INVALIDE_ERROR_MESSAGE) ?>
     <?= $fr($fieldset->get($form::INPUT_ID)); ?>
-    <?= $fr($fieldset->get($fieldset::CODE)); ?>
 
     <div class="row">
         <div class="col-md-6">
             <?= $fct($fieldset->get($fieldset::LIBELLE)); ?>
+        </div>
+        <div class="col-md-6">
+            <?= $fct($fieldset->get($fieldset::CODE)); ?>
+            <div class="text-small text-muted">
+                Laisser ce champ vide pour generer automatiquement le code
+            </div>
         </div>
     </div>
 

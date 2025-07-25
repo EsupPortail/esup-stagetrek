@@ -41,7 +41,7 @@ $vh->setContact($contact);
             <tr>
                 <th class="hidden no-search no-sort"></th>
                 <th class="hidden no-search"></th> <!-- Pour le trie-->
-                <th class="col-md-3">Etudiant</th>
+                <th class="col-md-3">Étudiant</th>
                 <th class="no-search"></th>
                 <th class="no-search"></th>
                 <th class="no-search"></th>
@@ -81,7 +81,7 @@ $vh->setContact($contact);
                     <td data-order="<?= $etudiant->getDisplayName()." ".$etudiant->getNumEtu() ?>"
                         data-filter="<?= $etudiant->getDisplayName()." ".$etudiant->getNumEtu() ?>"
                     >
-                       <?= $etudiant->getDisplayName() ?> (<?= $etudiantVh->lienAfficher() ?>)
+                       <?= $etudiant->getNom() ?> <?= $etudiant->getPrenom() ?> (<?= $etudiantVh->lienAfficher() ?>)
                     </td>
                     <td class="text-center"><span class="icon
                         <?= ($cs->isVisibleParEtudiant()) ? "icon-checked text-success" : "icon-unchecked text-danger" ?>

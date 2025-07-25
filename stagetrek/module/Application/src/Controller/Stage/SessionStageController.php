@@ -160,7 +160,7 @@ class SessionStageController extends AbstractActionController
                     /** @var SessionStage $session */
                     $session = $form->getData();
                     $sessionService->update($session);
-                    $msg = sprintf("La session de stage %s a été modifé.",  $session->getLibelle() );
+                    $msg = sprintf("La session de stage %s a été modifiée.",  $session->getLibelle() );
                     $this->sendSuccessMessage($msg);
 //                    return $this->successAction($title, $msg);
                     $form->bind($session);

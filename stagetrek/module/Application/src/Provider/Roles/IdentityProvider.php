@@ -20,7 +20,7 @@ class IdentityProvider extends AbstractIdentityProvider
     public function computeUsersAutomatiques(string $code): ?array
     {
         switch ($code) {
-            case  RolesProvider::ROLE_ETUDIANT :
+            case  RolesProvider::ETUDIANT :
                 $etudiants = $this->getEtudiantService()->findAll();
                 $etudiants = array_filter($etudiants, function (Etudiant $e){
                     return ($e->getUser() != null);});
@@ -44,8 +44,8 @@ class IdentityProvider extends AbstractIdentityProvider
         if ($user === null) {
             $user = $this->getUserService()->getConnectedUser();
         }
-        $roleEtudiant = $this->getRoleService()->findByRoleId(RolesProvider::ROLE_ETUDIANT);
-        $roleTech = $this->getRoleService()->findByRoleId(RolesProvider::ROLE_ADMINISTATEUR);
+        $roleEtudiant = $this->getRoleService()->findByRoleId(RolesProvider::ETUDIANT);
+        $roleTech = $this->getRoleService()->findByRoleId(RolesProvider::ADMIN_TECH);
 
         if ($user !== null) {
             $isEtudiant = $this->getEtudiantService()->findOneBy(['user' => $user]);
@@ -63,7 +63,7 @@ class IdentityProvider extends AbstractIdentityProvider
                 }
             }
 
-            if($roleTech->getUsers()->isEmpty()){
+//            if($roleTech->getUsers()->isEmpty()){
 //                Si aucun utilisateur n'as le role Administrateur Technique
 //              et que l'utilisateur connecté fait partie des utilisateur par défaut, on lui attribue le role
                 foreach ($this->defaultUsers as $default) {
@@ -74,7 +74,7 @@ class IdentityProvider extends AbstractIdentityProvider
                         break;
                     }
                 }
-            }
+//            }
         }
         return $roles;
     }

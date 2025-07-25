@@ -58,6 +58,7 @@ class TerrainStageCsvImportValidator extends AbstractCsvImportValidator
     protected ?string $codeCategorie = null;
     protected ?string $codeTerrain = null;
     protected ?string $libelle = null;
+    protected ?string $service = null;
     protected ?int $min = null;
     protected ?int $ideal = null;
     protected ?int $max = null;
@@ -72,21 +73,21 @@ class TerrainStageCsvImportValidator extends AbstractCsvImportValidator
 
     public function readData($rowData=[]) : static
     { //Transforme les données au bon types
-        $this->codeCategorie = trim(($rowData[self::HEADER_CODE_CATEGORIE]) ?? "");
-        $this->codeTerrain = trim(($rowData[self::HEADER_CODE_TERRAIN]) ?? "");
-        $this->modeEdit = ($this->codeTerrain != "");
-        $this->libelle = trim(($rowData[self::HEADER_LIBELLE]) ?? "");
-        $this->min = CSVService::textToInt($rowData[self::HEADER_CAPA_MIN] ?? 0);
-        $this->ideal = CSVService::textToInt($rowData[self::HEADER_CAPA_IDEAL] ?? 0);
-        $this->max = CSVService::textToInt($rowData[self::HEADER_CAPA_MAX] ?? 0);
-        $this->horsSubdivision =  CSVService::yesNoValueToBoolean($rowData[self::HEADER_HORS_SUBDIVISION] ?? "", false);
-        $this->allowPreferences =  CSVService::yesNoValueToBoolean($rowData[self::HEADER_PREFERENCES] ?? "", true);
-        $this->lien = trim(($rowData[self::HEADER_LIEN]) ?? "");
-        $this->adresse = trim(($rowData[self::HEADER_ADRESSE]) ?? "");
-        $this->adresseComplement = trim(($rowData[self::HEADER_ADRESSE_COMPLEMENT]) ?? "");
-        $this->cp = trim(($rowData[self::HEADER_CP]) ?? "");
-        $this->ville = trim(($rowData[self::HEADER_VILLE]) ?? "");
-        $this->cedex = trim(($rowData[self::HEADER_CEDEX]) ?? "");
+        $this->codeCategorie = trim($this->getCsvService()->readDataAt(self::HEADER_CODE_CATEGORIE, $rowData, ""));
+        $this->codeTerrain = trim($this->getCsvService()->readDataAt(self::HEADER_CODE_TERRAIN, $rowData, ""));
+        $this->libelle = trim($this->getCsvService()->readDataAt(self::HEADER_LIBELLE, $rowData, ""));
+        $this->service = trim($this->getCsvService()->readDataAt(self::HEADER_SERVICE, $rowData, ""));
+        $this->min = CSVService::textToInt($this->getCsvService()->readDataAt(self::HEADER_CAPA_MIN, $rowData, 0));
+        $this->ideal = CSVService::textToInt($this->getCsvService()->readDataAt(self::HEADER_CAPA_IDEAL, $rowData, 0));
+        $this->max = CSVService::textToInt($this->getCsvService()->readDataAt(self::HEADER_CAPA_MAX, $rowData, 0));
+        $this->horsSubdivision = CSVService::yesNoValueToBoolean($this->getCsvService()->readDataAt(self::HEADER_HORS_SUBDIVISION, $rowData, ""), false);
+        $this->allowPreferences = CSVService::yesNoValueToBoolean($this->getCsvService()->readDataAt(self::HEADER_PREFERENCES, $rowData, ""), true);
+        $this->lien = trim($this->getCsvService()->readDataAt(self::HEADER_LIEN, $rowData, ""));
+        $this->adresse = trim($this->getCsvService()->readDataAt(self::HEADER_ADRESSE, $rowData, ""));
+        $this->adresseComplement = trim($this->getCsvService()->readDataAt(self::HEADER_ADRESSE_COMPLEMENT, $rowData, ""));
+        $this->cp = trim($this->getCsvService()->readDataAt(self::HEADER_CP, $rowData, ""));
+        $this->ville = trim($this->getCsvService()->readDataAt(self::HEADER_VILLE, $rowData, ""));
+        $this->cedex = trim($this->getCsvService()->readDataAt(self::HEADER_CEDEX, $rowData, ""));
         return $this;
     }
 
@@ -113,7 +114,7 @@ class TerrainStageCsvImportValidator extends AbstractCsvImportValidator
     protected array $categoriesStages = [];
     protected function getCategoriesStages(): array
     {
-        if(!isset($this->categoriesStages)){
+        if(!isset($this->categoriesStages) || empty($this->categoriesStages)){
             $this->categoriesStages = $this->getObjectManager()->getRepository(CategorieStage::class)->findAll();
         }
         return $this->categoriesStages;
@@ -147,13 +148,14 @@ class TerrainStageCsvImportValidator extends AbstractCsvImportValidator
      * @param string $code
      * @return TerrainStage|boolean
      */
-    protected function findTerrainWithCode(string $code): bool|TerrainStage
+    protected function findTerrainWithCode(string $code): ?TerrainStage
     {
         $terrains = $this->getTerrainsStages();
         //En pratique il ne devrait y en avoir qu'une mais array_filter retourne un tableau
         $terrain = array_filter($terrains, function (TerrainStage $t) use ($code) {
             return strcmp($t->getCode(), $code) == 0;
         });
+        if(empty($terrain)){return null;}
         return current($terrain);
     }
 
@@ -197,16 +199,16 @@ class TerrainStageCsvImportValidator extends AbstractCsvImportValidator
      */
     private function assertTerrain() : bool
     {
-        if(!$this->modeEdit){return true;}
         $code = $this->codeTerrain;
+        if($code==""){return true;}
         $codeCategorie = $this->codeCategorie;
         $terrain = $this->findTerrainWithCode($code);
-        if (!$terrain) {
-            $msg = sprintf("Le terrain de code %s n'existe pas.", $code);
-            throw new ImportException($msg);
-        }
+//        if (!$terrain) {
+//            $msg = sprintf("Le terrain de code %s n'existe pas.", $code);
+//            throw new ImportException($msg);
+//        }
 
-        if($terrain->getCategorieStage()->getCode() != $codeCategorie){
+        if(isset($terrain) && $terrain->getCategorieStage()->getCode() != $codeCategorie){
             $msg = sprintf("Le terrain de stage avec le code %s existe déjà mais est défini pour la catégorie de stage de code %s (%s)",
                 $code, $terrain->getCategorieStage()->getCode(), $terrain->getCategorieStage()->getLibelle());
             throw new ImportException($msg);

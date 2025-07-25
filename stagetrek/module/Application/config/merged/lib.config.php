@@ -44,7 +44,7 @@ return [
             '149_datatables' => '/lib/DataTables/StateRestore-1.1.1/js/dataTables.stateRestore.min.js',
             '150_dataTableConfig' => 'js/stageTrek.dataTableConfig.js',
 
-            /** Tinymce TODO :  a voir qu'elle version utiliser, 7.6 recommandé car corrige la faille de sécu mais il faut revoir les dépendance avec template (cf UnicaenRenderer)*/
+
             '151_tinymce' => 'lib/tinymce_7.6.0/js/tinymce/tinymce.min.js',
             '152_tinymce2' => 'lib/form_fiche.js',
         ],

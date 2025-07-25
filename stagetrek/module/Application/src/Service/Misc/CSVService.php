@@ -5,6 +5,7 @@ namespace Application\Service\Misc;
 
 
 use Application\Exceptions\ImportException;
+use Application\Misc\Util;
 use DateTime;
 use Exception;
 use UnicaenApp\View\Model\CsvModel;
@@ -182,8 +183,14 @@ class CSVService
         }
         //Vérification du header et récupération de la colonne pour chaque entête
         $headerPosition = [];
+        $headers = [];
+        foreach($this->getHeaders() as $h){
+            $h = $this::formatHeader($h);
+            $headers[$h] = $h;
+        }
         foreach (array_shift($csv) as $col => $h){
-            if(in_array(trim($h), $this->headers)) {
+            $h = $this::formatHeader($h);
+            if(in_array($h, $headers)) {
                 $headerPosition[$h] = $col;
             }
         }
@@ -200,6 +207,7 @@ class CSVService
             if(implode("", $row) == "") continue; //Ligne vide, on l'ignore
             $item =[];
             foreach($headerPosition as $key => $col){
+                $key = $this::formatHeader($key);
                 if(key_exists($col, $row)){
                     $item[$key] = $row[$col];
                 }
@@ -210,6 +218,23 @@ class CSVService
             $this->data[$ligne]=$item;
         }
         return $this;
+    }
+
+    public static function formatHeader(string $key): string
+    { //Pour ne pas avoir de pb d'espace/maj et autres
+        $key = trim(strtolower($key));
+        $key = Util::removeAccents($key);
+        $key = str_replace(" ", '', $key);
+        $key = str_replace("'", '', $key);
+        $key = str_replace("\"", '', $key);
+        return $key;
+    }
+
+    /** Retourne la valeur d'une ligne à une clé précise */
+    public function readDataAt(string $key, array $row, mixed $default=null): mixed
+    {
+        $key = self::formatHeader($key);
+        return (isset($row[$key])) ? $row[$key] : $default;
     }
 
     /** Fonction qui convertie une donnée de type Yes/No/ NON ... en boolean */

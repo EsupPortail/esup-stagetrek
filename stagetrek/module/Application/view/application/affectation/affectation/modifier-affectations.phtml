@@ -148,7 +148,7 @@ $formId = "modifier-affectations-" . $sessionStage->getId() . "-form";
             <tr>
                 <th></th>
                 <th class="" data-type="num">Ordre</th>
-                <th class="col-md">Etudiant</th>
+                <th class="col-md">Étudiant</th>
                 <th class="col-md">Affectation</th>
                 <th class="col-md-1 no-search">Préférences</th>
                 <th class="col-md-1 no-search">Coût</th>
@@ -199,10 +199,10 @@ $formId = "modifier-affectations-" . $sessionStage->getId() . "-form";
                     <td class="" data-order="<?= ($stage->getOrdreAffectation()) ?? PHP_INT_MAX ?>">
                         <?= ($stage->getOrdreAffectation()) ?? "<span class='text-muted'>-</span>" ?>
                     </td>
-                    <td data-order="<?= $etudiant->getDisplayName() ?><?= $etudiant->getNumEtu() ?>"
-                        data-filter="<?= $etudiant->getDisplayName() ?><?= $etudiant->getNumEtu() ?>"
+                    <td data-order="<?= $etudiant->getNom() ?> <?= $etudiant->getPrenom() ?><?= $etudiant->getNumEtu() ?>"
+                        data-filter="<?= $etudiant->getNom() ?> <?= $etudiant->getPrenom() ?><?= $etudiant->getNumEtu() ?>"
                     >
-                        <?= $etudiant->getDisplayName() ?> (<?= $evh->lienAfficher() ?>)
+                        <?= $etudiant->getNom() ?> <?= $etudiant->getPrenom() ?> (<?= $evh->lienAfficher() ?>)
                     </td>
                     <td data-order="<?= ($terrain) ? $categorie->getLibelle() . " " . $terrain->getLibelle() :
                         (($terrainSecondaire) ? $categorieSecondaire->getLibelle() . " " . $terrainSecondaire->getLibelle() : 'ZZZZ')

@@ -130,21 +130,24 @@ class TerrainStageService extends CommonEntityService
      */
     private function getTerrainFromData(mixed $rowData) : TerrainStage
     {
-        $codeCategorie = trim(($rowData[TerrainStageCsvImportValidator::HEADER_CODE_CATEGORIE]) ?? "");
-        $codeTerrain = trim(($rowData[TerrainStageCsvImportValidator::HEADER_CODE_TERRAIN]) ?? "");
-        $libelle = trim(($rowData[TerrainStageCsvImportValidator::HEADER_LIBELLE])  ?? "");
-        $service = trim(($rowData[TerrainStageCsvImportValidator::HEADER_SERVICE])  ?? "");
-        $min = CSVService::textToInt(($rowData[TerrainStageCsvImportValidator::HEADER_CAPA_MIN]) ?? 0, 0);
-        $ideal = CSVService::textToInt(($rowData[TerrainStageCsvImportValidator::HEADER_CAPA_IDEAL]) ?? 0, 0);
-        $max = CSVService::textToInt(($rowData[TerrainStageCsvImportValidator::HEADER_CAPA_MAX]) ?? 0, 0);
-        $horsSubdivision =  CSVService::yesNoValueToBoolean(($rowData[TerrainStageCsvImportValidator::HEADER_HORS_SUBDIVISION])  ?? "", false);
-        $preferences =  CSVService::yesNoValueToBoolean(($rowData[TerrainStageCsvImportValidator::HEADER_PREFERENCES])  ?? "", true);
-        $lien = trim(($rowData[TerrainStageCsvImportValidator::HEADER_LIEN])  ?? "");
-        $adresse = trim(($rowData[TerrainStageCsvImportValidator::HEADER_ADRESSE])  ?? "");
-        $complement = trim(($rowData[TerrainStageCsvImportValidator::HEADER_ADRESSE_COMPLEMENT])  ?? "");
-        $cp = trim(($rowData[TerrainStageCsvImportValidator::HEADER_CP])  ?? "");
-        $ville = trim(($rowData[TerrainStageCsvImportValidator::HEADER_VILLE])  ?? "");
-        $cedex = trim(($rowData[TerrainStageCsvImportValidator::HEADER_CEDEX])  ?? "");
+        $codeCategorie = trim($this->getCsvService()->readDataAt(TerrainStageCsvImportValidator::HEADER_CODE_CATEGORIE, $rowData, ""));
+        $codeTerrain = trim($this->getCsvService()->readDataAt(TerrainStageCsvImportValidator::HEADER_CODE_TERRAIN, $rowData, ""));
+        $libelle = trim($this->getCsvService()->readDataAt(TerrainStageCsvImportValidator::HEADER_LIBELLE, $rowData, ""));
+        $service = trim($this->getCsvService()->readDataAt(TerrainStageCsvImportValidator::HEADER_SERVICE, $rowData, ""));
+        $min = CSVService::textToInt($this->getCsvService()->readDataAt(TerrainStageCsvImportValidator::HEADER_CAPA_MIN, $rowData, 0));
+        $ideal = CSVService::textToInt($this->getCsvService()->readDataAt(TerrainStageCsvImportValidator::HEADER_CAPA_IDEAL, $rowData, 0));
+        $max = CSVService::textToInt($this->getCsvService()->readDataAt(TerrainStageCsvImportValidator::HEADER_CAPA_MAX, $rowData, 0));
+        $horsSubdivision = CSVService::yesNoValueToBoolean($this->getCsvService()->readDataAt(TerrainStageCsvImportValidator::HEADER_HORS_SUBDIVISION, $rowData, ""), false);
+        $preferences = CSVService::yesNoValueToBoolean($this->getCsvService()->readDataAt(TerrainStageCsvImportValidator::HEADER_PREFERENCES, $rowData, ""), true);
+        $lien = trim($this->getCsvService()->readDataAt(TerrainStageCsvImportValidator::HEADER_LIEN, $rowData, ""));
+        $adresse = trim($this->getCsvService()->readDataAt(TerrainStageCsvImportValidator::HEADER_ADRESSE, $rowData, ""));
+        $complement = trim($this->getCsvService()->readDataAt(TerrainStageCsvImportValidator::HEADER_ADRESSE_COMPLEMENT, $rowData, ""));
+        $cp = trim($this->getCsvService()->readDataAt(TerrainStageCsvImportValidator::HEADER_CP, $rowData, ""));
+        $ville = trim($this->getCsvService()->readDataAt(TerrainStageCsvImportValidator::HEADER_VILLE, $rowData, ""));
+        $cedex = trim($this->getCsvService()->readDataAt(TerrainStageCsvImportValidator::HEADER_CEDEX, $rowData, ""));
+
+
+
 
         /** @var CategorieStage $categorie */
         $categorie = $this->getObjectManager()->getRepository(CategorieStage::class)->findOneBy(['code' => $codeCategorie]);

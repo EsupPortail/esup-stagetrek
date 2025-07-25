@@ -6,9 +6,8 @@ use Application\Provider\Misc\EnvironnementProvider;
 use Application\View\Helper\Misc\FooterViewHelper;
 
 $navigationHelper = $this->navigation('navigation');
-$env = getenv('APPLICATION_ENV') ?:  EnvironnementProvider::TEST;
+$env = ($_ENV['APP_ENV']) ?: EnvironnementProvider::TEST;
 echo $this->doctype();
-$version = getenv('APPLICATION_ENV') ?: EnvironnementProvider::TEST;
 ?>
 <html lang="fr">
 
@@ -34,7 +33,11 @@ $version = getenv('APPLICATION_ENV') ?: EnvironnementProvider::TEST;
     <?php echo $this->headScript(); ?>
 </head>
 
-<body class="unistrap unistrap-th-stagetrek unistrap-bg-white unistrap-sticky-header flex-column">
+<?php
+$unistrapEnv = "unistrap-env-".$env;
+?>
+
+<body class="unistrap <?=$unistrapEnv?> unistrap-th-stagetrek unistrap-bg-white unistrap-sticky-header flex-column">
 <!-- HEADER -------------------------------------->
 <header>
     <nav id="navbar" class="navbar navbar-main navbar-lg navbar-shadow navbar-expand-lg navbar-dark bg-dark" role="navigation">
@@ -90,9 +93,9 @@ $version = getenv('APPLICATION_ENV') ?: EnvironnementProvider::TEST;
     </nav>
     <div class="navbar navbar-expand-lg navbar-ghost" aria-hidden="true"><div class="container-sm"><?php echo $this->appLink($this->appInfos()->nom) ?></div></div>
 
-    <?php if ($version !=  EnvironnementProvider::PRODUCTION): //Bandeau pour les versions non "prod"?>
-        <div class="version <?php echo $version; ?>-version">
-            <span title="environnement"><i class="fas fa-server"></i> <?php echo $version; ?></span> &nbsp;&nbsp;
+    <?php if ($env !=  EnvironnementProvider::PRODUCTION): //Bandeau pour les versions non "prod"?>
+        <div class="version <?php echo $env; ?>-version">
+            <span title="environnement"><i class="fas fa-server"></i> <?php echo $env; ?></span> &nbsp;&nbsp;
             <span title="branche Git"><i class="fas fa-code-branch"></i> <?php echo Version::getBranch(); ?></span>
             &nbsp;&nbsp;
             <span title="version">

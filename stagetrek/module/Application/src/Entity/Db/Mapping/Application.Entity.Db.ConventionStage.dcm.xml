@@ -11,7 +11,7 @@
       <sequence-generator sequence-name="convention_stage_id_seq" allocation-size="1" initial-value="1"/>
     </id>
 
-    <one-to-one field="fichier" target-entity="Fichier\Entity\Db\Fichier">
+    <one-to-one field="fichier" target-entity="UnicaenFichier\Entity\Db\Fichier">
       <join-column name="fichier_id" referenced-column-name="id"/>
     </one-to-one>
 

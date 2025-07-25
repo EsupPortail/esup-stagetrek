@@ -145,7 +145,7 @@ class StageService extends CommonEntityService
      */
     public function updateOrdresAffectationsAuto(SessionStage $sessionStage) : static
     {
-        $this->execProcedure("recompute_ordre_affectation",[$sessionStage->getId()]);
+        $this->execProcedure("recompute_ordre_affectation_auto",[$sessionStage->getId()]);
         return $this;
     }
 

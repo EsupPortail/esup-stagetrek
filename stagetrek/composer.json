@@ -8,36 +8,39 @@
         }
     ],
     "require": {
-        "unicaen/app": "^7.0",
-        "unicaen/ldap": "^6.0",
-        "unicaen/authentification": "^6.4.1",
-        "unicaen/utilisateur": "^7.0",
-        "unicaen/privilege": "^6.2",
-        "unicaen/bjy-authorize": "^6.1",
-        "unicaen/utilisateur-ldap-adapter" : "^2.0",
+        "unicaen/app": "7.2.1",
+        "unicaen/ldap": "6.0.6",
+        "unicaen/authentification": "6.4.6",
+        "unicaen/utilisateur": "7.0.4",
+        "unicaen/privilege": "6.2.1",
+        "unicaen/bjy-authorize": "6.1.4",
+        "unicaen/utilisateur-ldap-adapter" : "2.0.7",
 
-        "unicaen/console": "^6.0",
+        "unicaen/console": "6.1.1",
 
-        "unicaen/mail": "^7.0",
-        "unicaen/renderer": "^7.0.3",
-        "unicaen/pdf": "^6.1",
-        "unicaen/evenement": "^6.0.",
-        "unicaen/etat": "^6.1",
-        "unicaen/bddadmin": "dev-modernisation-gestion-donnees",
+        "unicaen/mail": "7.2.9",
+        "unicaen/renderer": "^7.1.0",
+        "unicaen/pdf": "6.1.1",
+        "unicaen/evenement": "6.0.15",
+        "unicaen/etat": "6.1.6",
+        "unicaen/bddadmin": "1.5.0",
+        "unicaen/fichier": "1.0.1",
+        "unicaen/storage": "1.0.0",
 
-        "doctrine/doctrine-orm-module": "^5.0",
-        "doctrine/doctrine-laminas-hydrator": "^3.0",
+        "doctrine/doctrine-orm-module": "5.3.0",
+        "doctrine/doctrine-laminas-hydrator": "^3.4.0",
         "laminas/laminas-cli": "1.10.0",
-        "laminas/laminas-config-aggregator": "^1.7.0",
-        "laminas/laminas-feed":  "^2.17.0",
+        "laminas/laminas-config-aggregator": "1.18.0",
+        "laminas/laminas-feed":  "2.23.0",
+        "fakerphp/faker":  "^1.24",
         "ext-intl": "*",
         "ext-json": "*",
         "ext-mbstring": "*",
         "ext-ldap": "*",
-        "vlucas/phpdotenv": "^5.6",
+        "vlucas/phpdotenv": "5.6.1",
         "ext-zip": "*",
         "ext-fileinfo": "*",
-        "aws/aws-sdk-php" : " ^3.307"
+        "aws/aws-sdk-php" : " 3.351.5"
     },
     "require-dev": {
         "phpunit/phpunit": ">=3.7",
@@ -50,7 +53,6 @@
             "mkdir -p public/unicaen/mail/css/ && cp -r vendor/unicaen/mail/public/unicaen-mail.css public/unicaen/mail/css/unicaen-mail.css",
             "mkdir -p public/unicaen && cp -r vendor/unicaen/renderer/public/unicaen public",
             "mkdir -p vendor/mpdf/mpdf/ttfontdata && chmod -R 777 vendor/mpdf/mpdf/ttfontdata"
-
         ],
         "post-update-cmd": [
             "mkdir -p public/unicaen/etat && cp -r vendor/unicaen/etat/public/css public/unicaen/etat",
@@ -64,16 +66,14 @@
             "Console\\": "module/Console/src",
             "Evenement\\": "module/Evenement/src",
             "API\\": "module/API/src",
-            "Fichier\\": "module/Fichier/src",
-            "UnicaenStorage\\": "module/UnicaenStorage/src/UnicaenStorage"
+            "BddAdmin\\": "module/BddAdmin/src"
         },
         "files": [
             "module/Application/Module.php",
             "module/Console/Module.php",
             "module/Evenement/Module.php",
             "module/API/Module.php",
-            "module/Fichier/Module.php",
-            "module/UnicaenStorage/Module.php"
+            "module/BddAdmin/Module.php"
         ]
     },
     "autoload-dev": {

@@ -14,7 +14,7 @@ use UnicaenUtilisateur\Entity\Db\User;
  */
 class EtudiantCsvImportValidator extends AbstractCsvImportValidator
 {
-    const HEADER_NUM_ETUDIANT = "Numéro étudiant";
+    const HEADER_NUM_ETUDIANT = 'Numéro étudiant';
     const HEADER_NOM = "Nom";
     const HEADER_PRENOM = "Prénom";
     const HEADER_EMAIL = "Mail";
@@ -57,17 +57,17 @@ class EtudiantCsvImportValidator extends AbstractCsvImportValidator
 
     public function readData($rowData=[]) : static
     { //Transforme les données au bon types
-        $this->numEtu = trim(($rowData[self::HEADER_NUM_ETUDIANT]) ?? "");
-        $this->nom = trim(($rowData[self::HEADER_NOM]) ?? "");
-        $this->prenom = trim(($rowData[self::HEADER_PRENOM]) ?? "");
-        $this->email = trim(($rowData[self::HEADER_EMAIL]) ?? "");
-        $this->dateNaissance = trim(($rowData[self::HEADER_DATE_NAISSANCE]) ?? "");
+        $this->numEtu =  trim($this->getCsvService()->readDataAt(self::HEADER_NUM_ETUDIANT, $rowData, ""));
+        $this->nom =  trim($this->getCsvService()->readDataAt(self::HEADER_NOM, $rowData, ""));
+        $this->prenom =  trim($this->getCsvService()->readDataAt(self::HEADER_PRENOM, $rowData, ""));
+        $this->email =  trim($this->getCsvService()->readDataAt(self::HEADER_EMAIL, $rowData, ""));
+        $this->dateNaissance =  trim($this->getCsvService()->readDataAt(self::HEADER_DATE_NAISSANCE, $rowData, ""));
+        $this->adresse =  trim($this->getCsvService()->readDataAt(self::HEADER_ADRESSE, $rowData, ""));
+        $this->adresseComplement =  trim($this->getCsvService()->readDataAt(self::HEADER_ADRESSE_COMPLEMENT, $rowData, ""));
+        $this->cp =  trim($this->getCsvService()->readDataAt(self::HEADER_CP, $rowData, ""));
+        $this->ville =  trim($this->getCsvService()->readDataAt(self::HEADER_VILLE, $rowData, ""));
+        $this->cedex =  trim($this->getCsvService()->readDataAt(self::HEADER_CEDEX, $rowData, ""));
 
-        $this->adresse = trim(($rowData[self::HEADER_ADRESSE]) ?? "");
-        $this->adresseComplement = trim(($rowData[self::HEADER_ADRESSE_COMPLEMENT]) ?? "");
-        $this->cp = trim(($rowData[self::HEADER_CP]) ?? "");
-        $this->ville = trim(($rowData[self::HEADER_VILLE]) ?? "");
-        $this->cedex = trim(($rowData[self::HEADER_CEDEX]) ?? "");
         return $this;
     }
 
@@ -103,7 +103,7 @@ class EtudiantCsvImportValidator extends AbstractCsvImportValidator
     {
         $numEtu = $this->numEtu;
         if ($numEtu == "") {
-            $msg = "Le numéro d'étudiant n'a pas été fourni'";
+            $msg = "Le numéro d'étudiant n'a pas été fourni";
             throw new ImportException($msg);
         }
         if (strlen($numEtu) > 25) {
@@ -144,6 +144,7 @@ class EtudiantCsvImportValidator extends AbstractCsvImportValidator
     {
         $date = $this->dateNaissance;
         if(!isset($date)){return true;}
+        if($date == ""){return true;}
         /** @var DateTime $dateTest */
         $dateTest = CSVService::textToDate($date);
         if(!isset($dateTest)){

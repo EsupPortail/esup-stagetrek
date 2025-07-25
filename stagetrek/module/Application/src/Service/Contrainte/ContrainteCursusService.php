@@ -4,6 +4,7 @@ namespace Application\Service\Contrainte;
 
 use Application\Entity\Db\ContrainteCursus;
 use Application\Entity\Db\ContrainteCursusEtudiant;
+use Application\Entity\Db\ContrainteCursusPortee;
 use Application\Entity\Db\Etudiant;
 use Application\Service\Contrainte\Traits\ContrainteCursusEtudiantServiceAwareTrait;
 use Application\Service\Etudiant\Traits\EtudiantServiceAwareTrait;
@@ -26,17 +27,7 @@ class ContrainteCursusService extends CommonEntityService
     public function findAll(): array
     {
         $contraintes = parent::findAll();
-        //Trie par défaut : portée/libellé
-        usort($contraintes, function (ContrainteCursus $c1, ContrainteCursus $c2) {
-            //Trie par portée
-            if ($c1->getContrainteCursusPortee()->getId() != $c2->getContrainteCursusPortee()->getId()) {
-                return $c1->getContrainteCursusPortee()->getOrdre() - $c2->getContrainteCursusPortee()->getOrdre();
-            }
-            if ($c1->getOrdre() != $c2->getOrdre()) {
-                return $c1->getOrdre() - $c2->getOrdre();
-            }
-            return strcmp(strtolower($c1->getLibelle()), strtolower($c2->getLibelle()));
-        });
+        $contraintes = ContrainteCursus::sort($contraintes);
         return $contraintes;
     }
 
@@ -149,6 +140,21 @@ class ContrainteCursusService extends CommonEntityService
     protected function recomputeEtudiantContrainteCursus(): void
     {
         $this->execProcedure('update_contraintes_cursus');
+    }
+
+    public function findContraintesForTerrain(?\Application\Entity\Db\TerrainStage $terrain) : array
+    {
+        //TODO : revoir pourquoi on ne fait pas plutot une table ContrainteCursusTerrainsLinker
+        //Recherche des contraintes de cursus sur le terrain de stage
+        $c1 = $this->getObjectManager()->getRepository(ContrainteCursusPortee::class)->findBy(['code' => ContrainteCursusPortee::GENERALE]);
+        $c2 = $this->getObjectManager()->getRepository(ContrainteCursusPortee::class)->findBy(['code' => ContrainteCursusPortee::CATEGORIE]);
+        $c3 = $this->getObjectManager()->getRepository(ContrainteCursusPortee::class)->findBy(['code' => ContrainteCursusPortee::TERRAIN]);
+
+        $contraintes1 = $this->findAllBy(['contrainteCursusPortee' => $c1], ['dateFin' => 'desc','dateDebut' => 'desc',]);
+        $contraintes2 = $this->findAllBy(['contrainteCursusPortee' => $c2, 'categorieStage' => $terrain->getCategorieStage()], ['dateFin' => 'desc','dateDebut' => 'desc',]);
+        $contraintes3 = $this->findAllBy(['contrainteCursusPortee' => $c3, 'terrainStage' => $terrain], ['dateFin' => 'desc','dateDebut' => 'desc',]);
+        $contraintes2 = array_merge($contraintes1, $contraintes2);
+        return array_merge($contraintes2, $contraintes3);
     }
 
 }

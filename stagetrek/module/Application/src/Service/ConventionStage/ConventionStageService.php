@@ -10,11 +10,9 @@ use Application\Service\Misc\CommonEntityService;
 use Application\Service\Renderer\MacroService;
 use DateTime;
 use Exception;
-use Fichier\Entity\Db\Fichier;
-use Fichier\Entity\Db\Nature;
-use Fichier\Service\Fichier\FichierService;
+use UnicaenFichier\Entity\Db\Nature;
+use UnicaenFichier\Service\Fichier\FichierService;
 use UnicaenPdf\Exporter\PdfExporter;
-use UnicaenRenderer\Entity\Db\Rendu;
 use UnicaenRenderer\Entity\Db\Template;
 use UnicaenRenderer\Service\Macro\MacroServiceAwareTrait;
 use UnicaenRenderer\Service\Rendu\RenduServiceAwareTrait;
@@ -324,8 +322,6 @@ class ConventionStageService extends CommonEntityService
         $macrosService = $this->getMacroService();
         return $macrosService->textContainsMacro($convention->getCorps());
     }
-
-
 
     //Code
     const TEMPLATE_HEADER_CONVENTION = 'Convention-header';

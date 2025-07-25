@@ -3,8 +3,8 @@
 return [
     'unicaen-app' => [
         'app_infos' => [
-            'version' => '1.0.0',
-            'date' => '01/07/2024',
+            'version' => '1.3.0',
+            'date' => '23/07/2025',
         ],
     ],
     'comment' => '',

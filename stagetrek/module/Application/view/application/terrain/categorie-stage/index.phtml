@@ -46,10 +46,6 @@ $canSeeTerrains = $terrainVh->actionAllowed(TerrainStageController::ACTION_LISTE
                            checked>
                     <label class="mx-3 form-check-label" for="row-secondaire-switch">Afficher les catégories secondaires</label>
                 </div>
-                <div class="col-md-4 form-check form-switch">
-                    <input class="form-check-input" type="checkbox" id="col-code-switch" data-col="col-code">
-                    <label class="mx-3 form-check-label" for="col-code-switch">Afficher le code des catégories</label>
-                </div>
             </div>
         </form>
     </div>
@@ -86,10 +82,6 @@ $canSeeTerrains = $terrainVh->actionAllowed(TerrainStageController::ACTION_LISTE
     $(function () {
         let body = $("body");
         let liste = $("#liste-categories-content");
-
-        $("#col-code-switch").on('change', function(){
-            body.trigger("toggle-code");
-        })
 
         $("#row-principale-switch").on('change', function(){
             body.trigger("toggle-cat-principale");

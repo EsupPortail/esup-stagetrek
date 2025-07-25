@@ -99,7 +99,7 @@ $stageVh = $this->stage();
                     </th>
                 </tr>
                 <tr>
-                    <th class="col-md-6">Etudiant</th>
+                    <th class="col-md-6">Étudiant</th>
                     <th class="col-md-2 text-center no-search">Score de référence</th>
                     <th class="col-md-1 no-search">Automatique</th>
                     <th class="col-md-2 no-search">Manuel</th>
@@ -120,10 +120,10 @@ $stageVh = $this->stage();
                 $ordreAutomatique = $stage->getOrdreAffectationAutomatique();
                 ?>
                 <tr class="" data-stage-id="<?= $stage->getId() ?>">
-                    <td data-order="<?= $etudiant->getDisplayName() ?><?= $etudiant->getNumEtu() ?>"
-                        data-filter="<?= $etudiant->getDisplayName() ?><?= $etudiant->getNumEtu() ?>"
+                    <td data-order="<?= $etudiant->getNom() ?> <?= $etudiant->getPrenom() ?><?= $etudiant->getNumEtu() ?>"
+                        data-filter="<?= $etudiant->getNom() ?> <?= $etudiant->getPrenom() ?><?= $etudiant->getNumEtu() ?>"
                     >
-                        <?= $etudiant->getDisplayName() ?> (<?= $etudiant->getNumEtu() ?>)
+                        <?= $etudiant->getNom() ?> <?= $etudiant->getPrenom() ?> (<?= $etudiant->getNumEtu() ?>)
                     </td>
 
                     <td class="text-center" data-order="<?= ($scorePreAffectation) ?? PHP_INT_MAX ?>">

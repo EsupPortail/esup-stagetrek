@@ -1,18 +1,41 @@
 <?php
-//phpinfo();
-//die();
 
+use Application\Provider\Misc\EnvironnementProvider;
+use Laminas\Mvc\Application;
+use Laminas\Stdlib\ArrayUtils;
 
-define('REQUEST_MICROTIME', microtime(true));
+try{
+    chdir(dirname(__DIR__));
+    if ( !file_exists('vendor/autoload.php')) {
+        throw new RuntimeException(
+            'Unable to load application.'
+        );
+    }
 
-/**
- * This makes our life easier when dealing with paths. Everything is relative
- * to the application root now.
- */
-chdir(dirname(__DIR__));
+    // Setup autoloading
+    include 'vendor/autoload.php';
 
-// Setup autoloading
-require 'init_autoloader.php';
+    $appConfig = include 'config/application.config.php';
 
-// Run the application!
-Laminas\Mvc\Application::init(require 'config/application.config.php')->run();
+    if (file_exists('config/development.config.php')) {
+        $appConfig = ArrayUtils::merge(
+            $appConfig,
+            include 'config/development.config.php'
+        );
+    }
+
+    // Run the application!
+    Application::init($appConfig)->run();
+
+}
+//Ramasse miette pour les derniéres erreurs non capturée
+catch (Exception|Error|RuntimeException $e){
+    $env =  ($_ENV['APP_ENV']) ?? EnvironnementProvider::PRODUCTION;
+    if($env == EnvironnementProvider::DEVELOPPEMENT){
+        throw $e;
+    }
+    if(!headers_sent()){
+        header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error', true, 500);
+    }
+    echo "<h1>Internal Server Error</h1>";
+}

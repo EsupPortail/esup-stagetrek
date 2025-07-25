@@ -28,7 +28,7 @@ class CategorieStageFieldset extends AbstractEntityFieldset
     public function init(): void
     {
         $this->initIdInput();
-        $this->initCodeInput();
+        $this->initCodeInput(true);
         $this->initLibelleInput();
         $this->initOrdreInput();
         $this->initAcronymeInput();

@@ -89,13 +89,7 @@ class TerrainStageController extends AbstractActionController
     public function afficherAction() : ViewModel
     {
         $terrain = $this->getTerrainStageFromRoute();
-        //Recherche des contraintes de cursus sur le terrain de stage
-        $contraintes1 = $this->getContrainteCursusService()->findAllBy(['contrainteCursusPortee' => ContrainteCursusPortee::ID_PORTEE_GENERAL], ['dateFin' => 'desc','dateDebut' => 'desc',]);
-        $contraintes2 = $this->getContrainteCursusService()->findAllBy(['contrainteCursusPortee' => ContrainteCursusPortee::ID_PORTEE_TERRAIN, 'terrainStage' => $terrain->getId()], ['dateFin' => 'desc','dateDebut' => 'desc',]);
-        $contraintes3 = $this->getContrainteCursusService()->findAllBy(['contrainteCursusPortee' => ContrainteCursusPortee::ID_PORTEE_CATEGORIE, 'categorieStage' => $terrain->getCategorieStage()->getId()], ['dateFin' => 'desc','dateDebut' => 'desc',]);
-        $contraintes2 = array_merge($contraintes1, $contraintes2);
-        $contraintes = array_merge($contraintes2, $contraintes3);
-
+        $contraintes = $this->getContrainteCursusService()->findContraintesForTerrain($terrain);
         return new ViewModel(['terrain' => $terrain, 'contraintes' => $contraintes]);
     }
 

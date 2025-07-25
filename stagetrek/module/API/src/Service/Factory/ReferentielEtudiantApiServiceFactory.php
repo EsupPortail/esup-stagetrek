@@ -62,13 +62,13 @@ class ReferentielEtudiantApiServiceFactory implements AbstractFactoryInterface
                 ]
             );
         }
-        if (array_key_exists('use_proxy', $apiParams) && $apiParams['use_proxy'] === true) {
-            $apiRest->setOptions([
-                    'proxyhost' => $params['proxyhost'],
-                    'proxyport' => $params['proxyport']
-                ]
-            );
-        }
+//        if (array_key_exists('use_proxy', $apiParams) && $apiParams['use_proxy'] === true) {
+//            $apiRest->setOptions([
+//                    'proxyhost' => $params['proxyhost'],
+//                    'proxyport' => $params['proxyport']
+//                ]
+//            );
+//        }
         $service->setApiRest($apiRest);
 
         return $service;
