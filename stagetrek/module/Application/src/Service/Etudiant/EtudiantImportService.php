@@ -41,7 +41,7 @@ class EtudiantImportService
     /** @return RoleInterface */
     public function getEtudiantRole(): RoleInterface
     {
-        return $this->getRoleService()->findByRoleId(RolesProvider::ROLE_ETUDIANT);
+        return $this->getRoleService()->findByRoleId(RolesProvider::ETUDIANT);
     }
 
     use ReferentielServiceAwareTrait;
@@ -56,9 +56,8 @@ class EtudiantImportService
      * @throws \Doctrine\ORM\Exception\NotSupported
      * @throws \Doctrine\ORM\Exception\ORMException
      */
-    public function importEtudiantFromReferentiel(?ReferentielPromo $referentielPromo = null): array
+    public function importEtudiantFromReferentiel(?ReferentielPromo $referentielPromo = null, string $codeAnnee=null): array
     {
-
         $refSource = $this->getReferentielSourceCode();
         if(!isset($refSource) || $refSource==""){
             Throw new ImportException("L'import depuis un référentiel exterieur n'est pas correctement configuré");
@@ -70,23 +69,12 @@ class EtudiantImportService
         if($refSource != $dateSource){
             Throw new ImportException("L'import depuis le référentiel exterieur n'est pas configuré pour la source de code ".$dateSource);
         }
-        $refDataConfig = $this->getReferentielDataConfig();
-
-        if(empty($refDataConfig)
-            || !isset($refDataConfig['num_etu'])
-            || !isset($refDataConfig['nom'])
-            || !isset($refDataConfig['prenom'])
-            || !isset($refDataConfig['email'])
-            || !isset($refDataConfig['date_naissance'])
-        ){
-            throw new ImportException("L'import depuis un référentiel exterieur n'est pas correctement configuré : noms des champs requis indéterminé");
-        }
         $code = $referentielPromo->getCodePromo();
         if(!isset($code) || $code == ""){
             throw new ImportException("Le code de la promotion dans le référentiel n'est pas défini");
         }
         try{
-            $apiData = $this->getReferentielEtudiantService()->findByCodePromo($code);
+            $apiData = $this->getReferentielEtudiantService()->findByCodePromo($code, $codeAnnee);
         }
         catch (Exception $e){
             $msg = sprintf("Erreur d'accés au référentiel : %s", $e->getMessage());
@@ -147,16 +135,17 @@ class EtudiantImportService
 
     private function getEtudiantFromCSVData(mixed $rowData) : Etudiant
     {
-        $numEtu = trim(($rowData[EtudiantCsvImportValidator::HEADER_NUM_ETUDIANT]) ?? "");
-        $nom = trim(($rowData[EtudiantCsvImportValidator::HEADER_NOM]) ?? "");
-        $prenom = trim(($rowData[EtudiantCsvImportValidator::HEADER_PRENOM]) ?? "");
-        $email = trim(($rowData[EtudiantCsvImportValidator::HEADER_EMAIL]) ?? "");
-        $dateNaissance =  CSVService::textToDate(($rowData[EtudiantCsvImportValidator::HEADER_DATE_NAISSANCE]) ?? null);
-        $adresse = trim(($rowData[EtudiantCsvImportValidator::HEADER_ADRESSE]) ?? "");
-        $complement = trim(($rowData[EtudiantCsvImportValidator::HEADER_ADRESSE_COMPLEMENT]) ?? "");
-        $cp = trim(($rowData[EtudiantCsvImportValidator::HEADER_CP]) ?? "");
-        $ville = trim(($rowData[EtudiantCsvImportValidator::HEADER_VILLE]) ?? "");
-        $cedex = trim(($rowData[EtudiantCsvImportValidator::HEADER_CEDEX]) ?? "");
+        $numEtu =trim($this->getCsvService()->readDataAt(EtudiantCsvImportValidator::HEADER_NUM_ETUDIANT, $rowData, ""));
+        $nom =trim($this->getCsvService()->readDataAt(EtudiantCsvImportValidator::HEADER_NOM, $rowData, ""));
+        $prenom =trim($this->getCsvService()->readDataAt(EtudiantCsvImportValidator::HEADER_PRENOM, $rowData, ""));
+        $email =trim($this->getCsvService()->readDataAt(EtudiantCsvImportValidator::HEADER_EMAIL, $rowData, ""));
+        $dateNaissance =trim($this->getCsvService()->readDataAt(EtudiantCsvImportValidator::HEADER_DATE_NAISSANCE, $rowData, ""));
+        $dateNaissance = (isset($dateNaissance)) ? CSVService::textToDate($dateNaissance) : null;
+        $adresse =trim($this->getCsvService()->readDataAt(EtudiantCsvImportValidator::HEADER_ADRESSE, $rowData, ""));
+        $complement =trim($this->getCsvService()->readDataAt(EtudiantCsvImportValidator::HEADER_ADRESSE_COMPLEMENT, $rowData, ""));
+        $cp =trim($this->getCsvService()->readDataAt(EtudiantCsvImportValidator::HEADER_CP, $rowData, ""));
+        $ville =trim($this->getCsvService()->readDataAt(EtudiantCsvImportValidator::HEADER_VILLE, $rowData, ""));
+        $cedex =trim($this->getCsvService()->readDataAt(EtudiantCsvImportValidator::HEADER_CEDEX, $rowData, ""));
 
         $etudiant = $this->getEtudiantService()->findOneBy(['numEtu' => $numEtu]);
         if (!$etudiant) {
@@ -169,8 +158,8 @@ class EtudiantImportService
         $etudiant->setDateNaissance($dateNaissance);
 
         if($etudiant->getAdresse() === null){
-            $adresse = new Adresse();
-            $etudiant->setAdresse($adresse);
+            $adresseObject = new Adresse();
+            $etudiant->setAdresse($adresseObject);
         }
         $etudiant->getAdresse()->setAdresse($adresse);
         $etudiant->getAdresse()->setComplement($complement);
@@ -209,25 +198,20 @@ class EtudiantImportService
     protected function getEtudiantFromJSONData(array $eutData) : Etudiant
     {
         $dataConfig = $this->getReferentielDataConfig();
-        $keyNumEtu = $dataConfig['num_etu'];
-        $keyNom = $dataConfig['nom'];
-        $keyPrenom = $dataConfig['prenom'];
-        $keyEmail = $dataConfig['email'];
-        $keyDateNaissance = $dataConfig['date_naissance'];
 
-        if(!isset($eutData[$keyNumEtu]) ||
-            !isset($eutData[$keyNom]) || !
-            !isset($eutData[$keyPrenom]) || !
-            !isset($eutData[$keyEmail])
+        if(!isset($eutData['numEtu']) ||
+            !isset($eutData['nom']) || !
+            !isset($eutData['prenom']) ||
+            !isset($eutData['email'])
         ){
             throw new Exception("Les données fournisent par le référentiel ne contiennent pas les champs requis");
         }
 
-        $numEtu = $eutData[$keyNumEtu];
-        $nom = $eutData[$keyNom];
-        $prenom = $eutData[$keyPrenom];
-        $email = $eutData[$keyEmail];
-        $dateNaissance = ($eutData[$keyDateNaissance]) ?? null;
+        $numEtu = $eutData['numEtu'];
+        $nom = $eutData['nom'];
+        $prenom = $eutData['prenom'];
+        $email = $eutData['email'];
+        $dateNaissance = ($eutData['dateNaissance']) ?? null;
         if(!isset($numEtu)){
             throw new ImportException("Le numéro de l'étudiant.e n'est pas défini");
         }

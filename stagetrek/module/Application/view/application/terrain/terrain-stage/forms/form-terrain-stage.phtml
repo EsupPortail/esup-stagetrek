@@ -81,7 +81,6 @@ $adresseFieldset = $fieldset->get($fieldset::ADRESSE);
     <div class="card-body">
         <?= $fe($form->prepare(), $form::INVALIDE_ERROR_MESSAGE) ?>
         <?= $fr($fieldset->get($form::INPUT_ID)); ?>
-        <?= $fr($fieldset->get($fieldset::CODE)); ?>
 
         <div class="tab-content" id="nav-tabContent">
             <div class="tab-pane fade show active border-0" id="form-infos"
@@ -89,6 +88,12 @@ $adresseFieldset = $fieldset->get($fieldset::ADRESSE);
                 <div class="row">
                     <div class="col-md-6">
                         <?= $fcg($fieldset->get($fieldset::CATEGORIE_STAGE)); ?>
+                    </div>
+                    <div class="col-md-6">
+                        <?= $fcg($fieldset->get($fieldset::CODE)); ?>
+                        <div class="text-small text-muted">
+                            Laisser ce champ vide pour generer automatiquement le code
+                        </div>
                     </div>
                 </div>
                 <div class="row">

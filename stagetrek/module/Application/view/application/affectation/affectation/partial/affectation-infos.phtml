@@ -34,10 +34,10 @@ $today = new DateTime();
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-4">
-                        <strong>Etudiant</strong>
+                        <strong>Étudiant</strong>
                     </div>
                     <div class="col-md-8">
-                        <?= $etudiant->getDisplayName() ?> (<?= $etudiant->getNumEtu() ?>)
+                        <?= $etudiant->getNom() ?> <?= $etudiant->getPrenom() ?> (<?= $etudiant->getNumEtu() ?>)
                     </div>
                     <div class="col-md-4">
                         <strong>Stage</strong>

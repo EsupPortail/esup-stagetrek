@@ -2,7 +2,7 @@
 
 namespace Application\Provider\Fichier;
 
-use Fichier\Provider\Nature\NatureFichierProvider as UnicaenFichierNatureProvider;
+use UnicaenFichier\Provider\Nature\NatureFichierProvider as UnicaenFichierNatureProvider;
 
 class NatureFichierProvider extends UnicaenFichierNatureProvider
 {

@@ -12,7 +12,7 @@ RUN chmod +x /proxy.sh
 RUN sh /proxy.sh
 
 ARG HTTP_PROXY
-ARG APPLICATION_ENV
+ARG APP_ENV
 ARG CONSOLE_ENV
 ENV http_proxy=$HTTP_PROXY
 ENV https_proxy=$HTTP_PROXY
@@ -49,12 +49,6 @@ RUN apt-get update && apt-get install -y \
     gnupg2 \apt-transport-https  \
     lsb-release  \
     ca-certificates
-
-RUN apt-get -qq update && apt-get -y install \
-    apt-transport-https  \
-    lsb-release  \
-    ca-certificates  \
-    curl
 
 RUN curl -sSLo /usr/share/keyrings/deb.sury.org-php.gpg https://packages.sury.org/php/apt.gpg
 RUN sh -c 'echo "deb [signed-by=/usr/share/keyrings/deb.sury.org-php.gpg] https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list'
@@ -99,11 +93,11 @@ RUN apt-get install -y libz-dev libmemcached-dev && \
     apt-get install -y memcached libmemcached-tools
 
 # XDebug from source for dev
-#RUN if [ "$APPLICATION_ENV" = "development" ]; then \
- # echo 'Mode "'$APPLICATION_ENV'" Installation de xdebug'; \
- RUN pecl install xdebug; \
-  docker-php-ext-enable xdebug;
-#fi
+RUN if [ "$APP_ENV" = "development" ]; then \
+  echo 'Mode "'$APP_ENV'" Installation de xdebug'; \
+  pecl install xdebug; \
+  docker-php-ext-enable xdebug; \
+fi
 
 ##ssl
 #RUN docker-php-ext-install openssl
@@ -123,9 +117,7 @@ RUN php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
 # Build Stagetrek
 WORKDIR /var/www/html/stagetrek/
 
-# Problème sur unicaenLdap, fixe temporaire
-RUN composer update unicaen/ldap
-RUN composer install --no-dev --no-suggest --optimize-autoloader
+# update des lib
 RUN composer update
 
 ENV COMPOSER_ALLOW_SUPERUSER=1

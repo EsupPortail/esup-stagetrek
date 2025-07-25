@@ -1,4 +1,4 @@
-version: '2.1'
+
 services:
   stagetrek-core:
     image: stagetrek-core
@@ -9,7 +9,10 @@ services:
       args:
         PHP_VERSION: 8.2
         HTTP_PROXY: ${PROXY_URL}
-        APPLICATION_ENV: ${APPLICATION_ENV:-test}
+        APP_ENV: ${APP_ENV:-test}
+    depends_on:
+      - stagetrek-service
+      - stagetrek-db
     env_file: .env
     volumes:
       - ./stagetrek:/var/www/html/stagetrek
@@ -26,6 +29,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
     networks:
       - stagetrek-network
+#      - stagetrek-api
     user: root
     ports:
       - 9000:9000
@@ -42,6 +46,7 @@ services:
 #  Conf apache
   stagetrek-service:
     container_name: stagetrek-service
+    hostname: ${SERVER_NAME:-localhost}
     build:
       context: .
       dockerfile: ./deploy_configuration/docker/DockerfileApacheService
@@ -60,17 +65,20 @@ services:
     environment:
       STAGETREK_INSTANCE_URL: ${STAGETREK_INSTANCE_URL:-localhost}
       STAGETREK_CORE_POD_NAME: stagetrek-core
-      APPLICATION_ENV: ${APPLICATION_ENV:-test}
+      APP_ENV: ${APP_ENV:-test}
       APACHE_LOG_DIR: '/var/log/apache2'
     networks:
       - stagetrek-network
+#      - stagetrek-api
+    env_file: .env
     volumes:
       - ./data/cache-apache/:/var/www/html/stagetrek/cache
       - ./stagetrek:/var/www/html/stagetrek
-      - ./deploy_configuration/apache/supervisor-localhost.conf:/supervisord.conf
-      - ./deploy_configuration/apache/stagetrek-localhost.conf:/etc/apache2/sites-available/000-default.conf
-      - ./deploy_configuration/apache/stagetrek-ssl.conf:/etc/apache2/sites-available/default-ssl.conf
-      #     TimeZone pour l'image basé sur celle du host
+      - ./.env:/var/www/html/stagetrek/.env
+      - ./deploy_configuration/apache/supervisor.conf:/supervisord.conf
+      - ./deploy_configuration/apache/000-default.conf:/etc/apache2/sites-available/000-default.conf
+      - ./deploy_configuration/apache/default-ssl.conf:/etc/apache2/sites-available/default-ssl.conf
+#      #     TimeZone pour l'image basé sur celle du host
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     ports:
@@ -86,7 +94,6 @@ services:
         HTTP_PROXY: ${PROXY_URL}
     restart: always
     environment:
-      #On ne fournis ici que les données utiles à la BDD et non toutes celle présente dans .env
       POSTGRES_USER: ${DATABASE_USER:-admin}
       POSTGRES_PASSWORD: ${DATABASE_PSWD:-admin}
       POSTGRES_DB: ${DATABASE_NAME:-demo}
@@ -133,10 +140,13 @@ services:
 networks:
   stagetrek-network:
     driver: bridge
+#  stagetrek-api:
+#    external: true
 
 volumes:
   stagetrek-db:
   deploy_configuration:
   cache-apache:
   stagetrek:
+  .env:
   data:

@@ -9,6 +9,7 @@ use Console\Service\Update\UpdateContactCommand;
 use Console\Service\Update\UpdateContraintesCommand;
 use Console\Service\Update\UpdateConventionStageCommand;
 use Console\Service\Update\UpdateEtudiantCommand;
+use Console\Service\Update\UpdateOrdreAffectationCommand;
 use Console\Service\Update\UpdatePreferenceCommand;
 use Console\Service\Update\UpdateSessionCommand;
 use Console\Service\Update\UpdateStageCommand;
@@ -27,6 +28,7 @@ return [
             'update-preferences' => UpdatePreferenceCommand::class,
             'update-sessions' => UpdateSessionCommand::class,
             'update-stages' => UpdateStageCommand::class,
+            'update-ordres-affectations' => UpdateOrdreAffectationCommand::class,
             'update-validations-stages' => UpdateValidationStageCommand::class,
         ],
     ],
@@ -42,6 +44,7 @@ return [
             UpdatePreferenceCommand::class => UpdateEntitiesCommandFactory::class,
             UpdateSessionCommand::class => UpdateEntitiesCommandFactory::class,
             UpdateStageCommand::class => UpdateEntitiesCommandFactory::class,
+            UpdateOrdreAffectationCommand::class => UpdateEntitiesCommandFactory::class,
             UpdateValidationStageCommand::class => UpdateEntitiesCommandFactory::class,
         ]
     ],

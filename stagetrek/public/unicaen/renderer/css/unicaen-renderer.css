@@ -19,3 +19,23 @@
 .macro-selection-placeholder{
   display: none;
 }
+
+#template-insert-widget-content{
+  display: none;
+}
+.template-popover{
+  display: none;
+}
+.template-insert-widget {
+  position: relative;
+  top: 32px;
+  left: -5px;
+  margin-left: 15px;
+}
+
+.template-select {
+  width: 15rem;
+}
+.template-selection-placeholder{
+  display: none;
+}

@@ -49,7 +49,7 @@ class AbstractApiRestServiceFactory implements AbstractFactoryInterface
         $service = new $requestedName($apiParams);
 
         if (!$service->getApiUrl()) {
-            throw new LogicException(sprintf("L'Url d'accès à l'API '%s' est introuvable dans la configuration.", $service::getParamsApiKey()));
+            throw new LogicException(sprintf("L'url d'accès à l'API '%s' est introuvable dans la configuration.", $service::getParamsApiKey()));
         }
 
         // Set REST client

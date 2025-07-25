@@ -36,7 +36,7 @@ $terrain = $stage->getTerrainStage();
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6">
-                        <div><b>Etudiant : </b> <?= $etudiant->getDisplayName() ?></div>
+                        <div><b>Etudiant : </b> <?= $etudiant->getNom() ?> <?= $etudiant->getPrenom() ?></div>
                         <div>
                             <b>Terrain : </b>
                             <?= ($terrain) ? sprintf("%s (%s)", $terrain->getLibelle(), $terrain->getCategorieStage()->getLibelle())

@@ -204,7 +204,7 @@ class PreferenceAssertion extends AbstractAssertion
     protected function userIsStudent() : bool
     {
         $role = $this->getRole();
-        return $role->getRoleId() == RolesProvider::ROLE_ETUDIANT;
+        return $role->getRoleId() == RolesProvider::ETUDIANT;
     }
 
     /**

@@ -61,10 +61,10 @@ class MailAutoAffectationEvenementService extends AbstractMailAutoEvenementServi
         $datePlanification = $stage->getDateFinCommission();
         $datePlanification->setTime(8,0);
 
-        $parametres['session-id'] = $session->getId();
-        $parametres['stage-id'] = $stage->getId();
-        $parametres['etudiant-id'] = $stage->getEtudiant()->getId();
-        $parametres['affectation-stage-id'] = $affectation->getId();
+        $parametres['session-id'] =  "".$session->getId();
+        $parametres['stage-id'] =  "".$stage->getId();
+        $parametres['etudiant-id'] =  "".$stage->getEtudiant()->getId();
+        $parametres['affectation-stage-id'] =  "".$affectation->getId();
         $parametres['stage'] = $stage->getLibelle();
         $parametres['etudiant'] = $etudiant->getDisplayName();
 

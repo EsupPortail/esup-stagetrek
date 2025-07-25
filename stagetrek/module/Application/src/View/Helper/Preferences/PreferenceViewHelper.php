@@ -188,22 +188,24 @@ class PreferenceViewHelper  extends AbstractEntityActionViewHelper
         $niveauDemande = $session->getNiveauDemande($terrain);
 
         $libelleDemande = (isset($niveauDemande)) ? $niveauDemande->getLibelle() : "Indéterminée";
-        $badgeClass = (! isset($niveauDemande)) ? "text-muted text-small" :
-            match ($niveauDemande->getCode()) {
-                TerrainStageNiveauDemande::INDETERMINE, "text-muted text-small",
-                TerrainStageNiveauDemande::FERME => "badge badge-muted",
-                TerrainStageNiveauDemande::NO_DEMANDE => "badge badge-success",
-                TerrainStageNiveauDemande::RANG_5 => "badge badge-light-success",
-                TerrainStageNiveauDemande::RANG_4 => "badge badge-light-primary",
-                TerrainStageNiveauDemande::RANG_3 => "badge badge-primary",
-                TerrainStageNiveauDemande::RANG_2 => "badge badge-warning",
-                TerrainStageNiveauDemande::RANG_1 => "badge badge-danger"
+        $code = ($niveauDemande->getCode()) ?? $niveauDemande::INDETERMINE;
+        $badgeClass = match ($code) {
+            TerrainStageNiveauDemande::INDETERMINE => "badge bnd bnd-na",
+            TerrainStageNiveauDemande::FERME => "badge bnd bnd-ferme",
+            TerrainStageNiveauDemande::NO_DEMANDE => "badge bnd bnd-0",
+            TerrainStageNiveauDemande::RANG_1 => "badge bnd bnd-1",
+            TerrainStageNiveauDemande::RANG_2 => "badge bnd bnd-2",
+            TerrainStageNiveauDemande::RANG_3 => "badge bnd bnd-3",
+            TerrainStageNiveauDemande::RANG_4 => "badge bnd bnd-4",
+            TerrainStageNiveauDemande::RANG_5 => "badge bnd bnd-5",
+            TerrainStageNiveauDemande::RANG_6 => "badge bnd bnd-6",
+            TerrainStageNiveauDemande::RANG_7 => "badge bnd bnd-7",
+            TerrainStageNiveauDemande::RANG_8 => "badge bnd bnd-8",
+            TerrainStageNiveauDemande::RANG_9 => "badge bnd bnd-9",
+            TerrainStageNiveauDemande::RANG_10 => "badge bnd bnd-10",
         };
-
         $libelle = sprintf("<span class='mx-1 %s'>%s</span>", $badgeClass, $libelleDemande);
         if($this->vueEtudianteActive){return $libelle;}
-
-
 
         $max = 0;
         $total = 0;

@@ -33,7 +33,6 @@ class CategorieStageCsvImportValidator extends AbstractCsvImportValidator
         ];
     }
 
-    protected bool $modeEdit = false;
     protected ?string $code = null;
     protected ?string $acronyme = null;
     protected ?string $libelle = null;
@@ -42,12 +41,11 @@ class CategorieStageCsvImportValidator extends AbstractCsvImportValidator
 
     public function readData($rowData=[]) : static
     { //Transforme les données au bon types
-        $this->code = trim(($rowData[self::HEADER_CODE_CATEGORIE]) ?? "");
-        $this->modeEdit = ($this->code != "");
-        $this->acronyme = trim(($rowData[self::HEADER_ACRONYME]) ?? "");
-        $this->libelle = trim(($rowData[self::HEADER_LIBELLE]) ?? "");
-        $this->ordre = CSVService::textToInt($rowData[self::HEADER_ORDRE] ?? 0);
-        $this->principal = CSVService::yesNoValueToBoolean($rowData[self::HEADER_PRINCIPAL] ?? "");
+        $this->code = trim($this->getCsvService()->readDataAt(self::HEADER_CODE_CATEGORIE, $rowData, ""));
+        $this->acronyme = trim($this->getCsvService()->readDataAt(self::HEADER_ACRONYME, $rowData, ""));
+        $this->libelle = trim($this->getCsvService()->readDataAt(self::HEADER_LIBELLE, $rowData, ""));
+        $this->ordre = CSVService::textToInt($this->getCsvService()->readDataAt(self::HEADER_ORDRE, $rowData, 0));
+        $this->principal = CSVService::yesNoValueToBoolean($this->getCsvService()->readDataAt(self::HEADER_PRINCIPAL, $rowData, false));
         return $this;
     }
 
@@ -128,13 +126,13 @@ class CategorieStageCsvImportValidator extends AbstractCsvImportValidator
      */
     private function assertCode() : bool
     {
-        if(!$this->modeEdit){return true;}
         $code = $this->code;
-        $categorie = $this->findCategorieWithCode($code);
-        if (!$categorie) {
-            $msg = sprintf("La catégorie de code %s n'existe pas.", $code);
-            throw new ImportException($msg);
-        }
+        if($code==""){return true;}
+        //autogénération du code
+//        Inutile en fait car si non vide, on peut creer la catégorie en spécifiant le code
+//        $categorie = $this->findCategorieWithCode($code);
+        //Implique une création avec un code précis
+//        if (!$categorie) {return true;}
 
         $this->listeCodeCategorieAdd[$code] = (isset($this->listeCodeCategorieAdd[$code])) ? $this->listeCodeCategorieAdd[$code]+1 : 1;
         if($this->listeCodeCategorieAdd[$code] >1){

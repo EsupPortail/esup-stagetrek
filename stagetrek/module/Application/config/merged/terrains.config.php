@@ -111,16 +111,8 @@ return [
                     'controller' => CategorieStageController::class,
                     'action' => [
                         CategorieStageController::ACTION_INDEX,
-                    ],
-                    'privileges' => [
-                        TerrainPrivileges::CATEGORIE_STAGE_AFFICHER,
-                    ],
-                    'assertion' => 'Assertion\\CategorieStage',
-                ],
-                [
-                    'controller' => CategorieStageController::class,
-                    'action' => [
                         CategorieStageController::ACTION_LISTER,
+                        CategorieStageController::ACTION_AFFICHER,
                     ],
                     'privileges' => [
                         TerrainPrivileges::CATEGORIE_STAGE_AFFICHER,
@@ -354,17 +346,6 @@ return [
                 ],
                 'may_terminate' => true,
                 'child_routes' => [
-                    'ajouter' => [
-                        'type' => Literal::class,
-                        'options' => [
-                            'route' => '/ajouter',
-                            'defaults' => [
-                                'controller' => CategorieStageController::class,
-                                'action' => CategorieStageController::ACTION_AJOUTER,
-                            ],
-                        ],
-                        'may_terminate' => true,
-                    ],
                     'lister' => [
                         'type' => Literal::class,
                         'options' => [
@@ -372,6 +353,31 @@ return [
                             'defaults' => [
                                 'controller' => CategorieStageController::class,
                                 'action' => CategorieStageController::ACTION_LISTER,
+                            ],
+                        ],
+                        'may_terminate' => true,
+                    ],
+                    'afficher' => [
+                        'type' => Segment::class,
+                        'options' => [
+                            'route' => '/afficher[/:categorieStage]',
+                            'constraints' => [
+                                'categorieStage' => '[0-9]+',
+                            ],
+                            'defaults' => [
+                                'controller' => CategorieStageController::class,
+                                'action' => CategorieStageController::ACTION_AFFICHER,
+                            ],
+                        ],
+                        'may_terminate' => true,
+                    ],
+                    'ajouter' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/ajouter',
+                            'defaults' => [
+                                'controller' => CategorieStageController::class,
+                                'action' => CategorieStageController::ACTION_AJOUTER,
                             ],
                         ],
                         'may_terminate' => true,

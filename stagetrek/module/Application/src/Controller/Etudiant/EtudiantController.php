@@ -4,6 +4,7 @@
 namespace Application\Controller\Etudiant;
 
 use Application\Controller\Misc\Interfaces\AbstractActionController;
+use Application\Entity\Db\AnneeUniversitaire;
 use Application\Entity\Db\Etudiant;
 use Application\Entity\Db\Groupe;
 use Application\Entity\Traits\Etudiant\HasEtudiantTrait;
@@ -176,7 +177,7 @@ class EtudiantController extends AbstractActionController
                     /** @var Etudiant $etudiant */
                     $etudiant = $form->getData();
                     $this->getEtudiantService()->update($etudiant);
-                    $msg = sprintf("Le profil de %s a été modifé.", $etudiant->getDisplayName());
+                    $msg = sprintf("Le profil de %s a été modifié.", $etudiant->getDisplayName());
                     $this->sendSuccessMessage($msg);
                     $form->bind($etudiant);
                 } catch (Exception $e) {
@@ -260,10 +261,17 @@ class EtudiantController extends AbstractActionController
                     if ($importReferentiel) {
                         /** @var \Application\Entity\Db\ReferentielPromo $referentiel */
                         $referentiel = $this->getReferentielPromoService()->find($referentielId);
+                        $anneeId =  intval(($data[ImportEtudiantForm::INPUT_IMPORT_REFERENTIEL_ANNEE]) ?? 0);
+                        /** @var AnneeUniversitaire $annee */
+                        $annee = $this->getAnneeUniversitaireService()->find($anneeId);
                         if(!isset($referentiel)) {
                             throw new ImportException("Le référentiel demandé n'as pas été trouvé");
                         }
-                        $etudiants = $this->getEtudiantImportService()->importEtudiantFromReferentiel($referentiel);
+                        if(!isset($annee)) {
+                            throw new ImportException("L'année demandée n'as pas été trouvée");
+                        }
+                        $date = $annee->getDateDebut()->format('Y');
+                        $etudiants = $this->getEtudiantImportService()->importEtudiantFromReferentiel($referentiel, $date);
                         $success = true;
                     }
                     else if ($importFromFile) {

@@ -75,7 +75,7 @@ class MessageInfoService extends CommonEntityService
         //TODO : a ne pas faire ici, a revoir
         $today = new DateTime();
         $user = $this->getCurrentUser();
-        if ($role && $role->getRoleId() == RolesProvider::ROLE_ETUDIANT) {
+        if ($role && $role->getRoleId() == RolesProvider::ETUDIANT) {
             $etudiant = $this->getObjectManager()->getRepository(Etudiant::class)->findOneBy(['user' => $user->getId()]);
             if ($etudiant) {
                 /** @var Stage $stage */

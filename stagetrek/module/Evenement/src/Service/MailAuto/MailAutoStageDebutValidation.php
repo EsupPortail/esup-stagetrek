@@ -54,9 +54,7 @@ class MailAutoStageDebutValidation extends AbstractMailAutoEvenementService
             foreach ($session->getStages() as $stage){
                 if($stage->isNonEffectue()){continue;}
                 if($stage->getValidationStage()->isValide()){continue;}
-                if($stage->hasEtatEnErreur() || $stage->hasEtatEnAlerte()){
-                    continue;
-                }
+                if($stage->hasEtatEnErreur() || $stage->hasEtatEnAlerte()){continue;}
                 if(!$stage->getAffectationStage() || !$stage->getAffectationStage()->hasEtatValidee()){
                     continue;
                 }
@@ -128,10 +126,10 @@ class MailAutoStageDebutValidation extends AbstractMailAutoEvenementService
             $datePlanification = $today;
         }
 
-        $parametres['session-id'] = $session->getId();
-        $parametres['stage-id'] = $stage->getId();
-        $parametres['etudiant-id'] = $stage->getEtudiant()->getId();
-        $parametres['contact-stage-id'] = $contactStage->getId();
+        $parametres['session-id'] =  "".$session->getId();
+        $parametres['stage-id'] = "".$stage->getId();
+        $parametres['etudiant-id'] = "".$stage->getEtudiant()->getId();
+        $parametres['contact-stage-id'] = "".$contactStage->getId();
         $parametres['stage'] = $stage->getLibelle();
         $parametres['etudiant'] = $etudiant->getDisplayName();
         $parametres['contact'] = $destinataireName;

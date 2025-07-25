@@ -4,6 +4,7 @@ namespace Application\Entity\Db;
 
 use Application\Entity\Interfaces\AcronymeEntityInterface;
 use Application\Entity\Interfaces\LibelleEntityInterface;
+use Application\Entity\Interfaces\OrderEntityInterface;
 use Application\Entity\Traits\Contraintes\HasContrainteCursusPorteeTrait;
 use Application\Entity\Traits\InterfaceImplementation\AcronymeEntityTrait;
 use Application\Entity\Traits\InterfaceImplementation\DescriptionEntityTrait;
@@ -13,13 +14,14 @@ use Application\Entity\Traits\InterfaceImplementation\OrderEntityTrait;
 use Application\Entity\Traits\Stage\HasTerrainStageTrait;
 use Application\Entity\Traits\Terrain\HasCategorieStageTrait;
 use DateTime;
+use Doctrine\Common\Collections\Collection;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 
 /**
  * ContrainteCursus
  */
 class ContrainteCursus implements ResourceInterface,
-    LibelleEntityInterface, AcronymeEntityInterface
+    LibelleEntityInterface, AcronymeEntityInterface, OrderEntityInterface
 {
     const RESOURCE_ID = 'ContrainteCursus';
 
@@ -29,6 +31,27 @@ class ContrainteCursus implements ResourceInterface,
     public function getResourceId(): string
     {
         return self::RESOURCE_ID;
+    }
+
+    /**
+     * @param OrderEntityInterface[] $entities
+     */
+    public static function sort(array|Collection $entities, string $order = 'asc'): array
+    {
+        $ordre = ($order != 'desc') ? 1 : -1;
+        if($entities instanceof Collection){$entities = $entities->toArray();}
+                //Trie par défaut : portée/libellé
+        usort($entities, function (ContrainteCursus $c1, ContrainteCursus $c2) use ($ordre){
+            //Trie par portée
+            if ($c1->getContrainteCursusPortee()->getId() != $c2->getContrainteCursusPortee()->getId()) {
+                return  $ordre* ($c1->getContrainteCursusPortee()->getOrdre() - $c2->getContrainteCursusPortee()->getOrdre());
+            }
+            if ($c1->getOrdre() != $c2->getOrdre()) {
+                return $ordre*($c1->getOrdre() - $c2->getOrdre());
+            }
+            return $ordre*strcmp(strtolower($c1->getLibelle()), strtolower($c2->getLibelle()));
+        });
+        return $entities;
     }
 
     use IdEntityTrait;
@@ -129,17 +152,17 @@ class ContrainteCursus implements ResourceInterface,
 
     public function hasPorteeGeneral(): bool
     {
-        return $this->hasContrainteCursusPortee() && $this->getContrainteCursusPortee()->isType(ContrainteCursusPortee::ID_PORTEE_GENERAL);
+        return $this->hasContrainteCursusPortee() && $this->getContrainteCursusPortee()->isType(ContrainteCursusPortee::GENERALE);
     }
 
     public function hasPorteeCategorie(): bool
     {
-        return $this->hasContrainteCursusPortee() && $this->getContrainteCursusPortee()->isType(ContrainteCursusPortee::ID_PORTEE_CATEGORIE);
+        return $this->hasContrainteCursusPortee() && $this->getContrainteCursusPortee()->isType(ContrainteCursusPortee::CATEGORIE);
     }
 
     public function hasPorteeTerrain(): bool
     {
-        return $this->hasContrainteCursusPortee() && $this->getContrainteCursusPortee()->isType(ContrainteCursusPortee::ID_PORTEE_TERRAIN);
+        return $this->hasContrainteCursusPortee() && $this->getContrainteCursusPortee()->isType(ContrainteCursusPortee::TERRAIN);
     }
 
     /**

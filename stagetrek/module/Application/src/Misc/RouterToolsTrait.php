@@ -280,7 +280,7 @@ trait RouterToolsTrait
     public function currentRoleIsStudent() : bool
     {
         $role = $this->getCurrentRole();
-        return (isset($role) && $role->getRoleId() == RolesProvider::ROLE_ETUDIANT);
+        return (isset($role) && $role->getRoleId() == RolesProvider::ETUDIANT);
     }
 
 }

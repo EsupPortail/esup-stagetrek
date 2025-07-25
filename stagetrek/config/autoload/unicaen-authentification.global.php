@@ -104,7 +104,7 @@ $config = [
              * Alias éventuels des clés renseignées par Shibboleth dans la variable superglobale $_SERVER
              * une fois l'authentification réussie.
              */
-            'aliases' => [
+//            'aliases' => [
 //                'eppn'                   => 'HTTP_EPPN',
 //                'mail'                   => 'HTTP_MAIL',
 //                'eduPersonPrincipalName' => 'HTTP_EPPN',
@@ -114,21 +114,24 @@ $config = [
 //                'displayName'            => 'HTTP_DISPLAYNAME',
 //                'sn'                     => 'HTTP_SN',
 //                'givenName'              => 'HTTP_GIVENNAME',
-            ],
-
+//            ],
+//
+//            'simulate' => [
+//                'HTTP_EPPN'           => $eppn = 'premierf@domaine.fr',
+//                'HTTP_SUPANNEMPID'    => '00012345',
+//                'HTTP_DISPLAYNAME'    => $eppn,
+//                'HTTP_MAIL'           => $eppn,
+//                'HTTP_GIVENNAME'      => 'François',
+//                'HTTP_SN'             => 'Premier',
+//                'HTTP_SUPANNCIVILITE' => 'M.',
+//            ],
+//
+//
             /**
              * Clés dont la présence sera requise par l'application dans la variable superglobale $_SERVER
              * une fois l'authentification réussie.
              */
             'required_attributes' => [
-                'eppn',
-                'mail',
-                //'eduPersonPrincipalName',
-//                'supannCivilite',
-                //'displayName',
-                //'sn|surname', // i.e. 'sn' ou 'surname'
-                //'givenName',
-                //'supannEtuId|supannEmpId',
             ],
             /**
              * Configuration de la stratégie d'extraction d'un identifiant utile parmi les données d'authentification

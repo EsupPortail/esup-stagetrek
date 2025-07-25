@@ -2,13 +2,11 @@
 
 namespace API\Controller;
 
-use API\Service\Traits\VilleApiServiceAwareTrait;
 use Application\Controller\Misc\Interfaces\AbstractActionController;
 use Application\Service\Referentiel\RechercheEtudiant\RechercheEtudiantLdapService;
 use Exception;
 use Laminas\Http\Response;
 use Laminas\View\Model\JsonModel;
-use Throwable;
 
 //Action de recherche des villes
 class ReferentielEtudiantController extends AbstractActionController
@@ -28,8 +26,9 @@ class ReferentielEtudiantController extends AbstractActionController
                 'information' => "Le service n'est pas disponible",
             ));
         }
-        if(isset($this->urlToken)){
-            $token = $this->params()->fromRoute('token', '');
+        if(false && isset($this->urlToken)){
+            $request = $this->getRequest();
+            $token = $request->getHeader('Authorization');
             if($token != $this->urlToken){
                 $this->response->setStatusCode(Response::STATUS_CODE_403);
                 return new JsonModel(array(
@@ -40,24 +39,23 @@ class ReferentielEtudiantController extends AbstractActionController
         }
         error_reporting(E_ERROR);
         try {
-
-            $dataConfig = $this->getDataConfig();
-            $keyNumEtu = ($dataConfig['num_etu']) ?? "num_etu";
-            $keyNom = ($dataConfig['nom']) ?? "nom";
-            $keyPrenom = ($dataConfig['prenom']) ?? "prenom";
-            $keyEmail = ($dataConfig['email']) ?? "email";
-            $keyDateNaissance = ($dataConfig['date_naissance']) ?? "date_naissance";
             $result = null;
 
             if (($codePromo = $this->params()->fromQuery('code'))) {
+                $annee = $this->params()->fromQuery('annee');
+                if(!isset($annee)){
+                    $annee = date('Y');
+                }
                 $etudiants = $this->getLdapService()->findEtudiantsByPromo($codePromo);
                 foreach ($etudiants as $e) {
                     $result[] = [
-                    $keyNumEtu =>$e->getNumEtu(),
-                    $keyNom =>$e->getLastName(),
-                        $keyPrenom =>$e->getFirstName(),
-                        $keyEmail =>$e->getMail(),
-                        $keyDateNaissance =>$e->getDateNaissance(),
+                        "numEtu" =>$e->getNumEtu(),
+                        "nom" =>$e->getLastName(),
+                       'prenom' =>$e->getFirstName(),
+                        'email' =>$e->getMail(),
+                        'dateNaissance' =>$e->getDateNaissance(),
+                        'codeVet' =>$codePromo,
+                        'annee' => $annee,
                     ];
                 }
             }

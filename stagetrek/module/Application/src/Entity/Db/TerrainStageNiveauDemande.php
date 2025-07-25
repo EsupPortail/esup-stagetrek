@@ -23,6 +23,11 @@ class TerrainStageNiveauDemande implements ResourceInterface,
     const RANG_3 = 'rang_3';
     const RANG_4 = 'rang_4';
     const RANG_5 = 'rang_5';
+    const RANG_6 = 'rang_6';
+    const RANG_7 = 'rang_7';
+    const RANG_8 = 'rang_8';
+    const RANG_9 = 'rang_9';
+    const RANG_10 = 'rang_10';
     const NO_DEMANDE = 'no_demande';
     const FERME = 'ferme';
     const INDETERMINE = 'n/a';

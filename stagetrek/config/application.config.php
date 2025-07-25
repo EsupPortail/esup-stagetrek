@@ -23,7 +23,6 @@ $modules = [
     'DoctrineModule',
     'DoctrineORMModule',
     'ZfcUser',
-
     'BjyAuthorize',
     'UnicaenApp',
     'Unicaen\Console',
@@ -37,24 +36,31 @@ $modules = [
     'UnicaenEvenement',
     'UnicaenEtat',
     'Unicaen\BddAdmin',
+    'UnicaenFichier',
+    'UnicaenStorage',
     'Application',
     'Console',
     'Evenement',
     'API',
-    'Fichier',
-    'UnicaenStorage',
+    'BddAdmin',
 ];
 
+//Ajout de Faker qui pose pb en l'incluant depuis modules
+require_once 'vendor/autoload.php';
 
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__.'/../');
 $dotenv->load();
 
+if(!isset($_ENV['APP_ENV'])){
+    $_ENV['APP_ENV'] = EnvironnementProvider::PRODUCTION;
+}
 
-$applicationEnv = getenv('APPLICATION_ENV') ?: EnvironnementProvider::TEST;
+$applicationEnv = $_ENV['APP_ENV'];
 if ($applicationEnv == EnvironnementProvider::DEVELOPPEMENT) {
     $modules[] = 'Laminas\DeveloperTools';
 //    $modules[] = 'UnicaenCode';
 }
+
 
 $moduleListenerOptions = [
     'config_glob_paths'    => [

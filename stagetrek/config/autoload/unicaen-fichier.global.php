@@ -1,6 +1,6 @@
 <?php
 
-use Fichier\Filter\FileName\NatureBasedFileNameFormatter;
+use UnicaenFichier\Filter\FileName\NatureBasedFileNameFormatter;
 use UnicaenStorage\Adapter\FilesystemStorageAdapter;
 use UnicaenStorage\Adapter\S3StorageAdapter;
 

@@ -51,6 +51,7 @@ class TerrainStageSelectPicker extends AbstractSelectPicker
         }
         return $this;
     }
+
     //Permet nottament de modifier le label de la catégorie
     public function addCategorieStage(CategorieStage $categorieStage) : static
     {

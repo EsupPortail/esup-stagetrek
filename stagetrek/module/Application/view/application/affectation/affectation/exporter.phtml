@@ -127,7 +127,7 @@ $today = new DateTime();
             <thead>
             <tr>
                 <th class="col-md-1 no-search no-export" data-type="num">Ordre</th>
-                <th class="col-md-3 no-export">Etudiant</th>
+                <th class="col-md-3 no-export">Étudiant</th>
                 <th class="col-md-4 no-export">Terrain</th>
                 <th class="col-md-4 no-search no-export">État</th>
 <!--                Colonne caché pour les export-->
@@ -185,7 +185,7 @@ $today = new DateTime();
                         <?= ($stage->getOrdreAffectation()) ?? "<span class='text-muted'>-</span>" ?>
                     </td>
                     <td>
-                        <?= $etudiant->getDisplayName() ?> (<?= $etudiant->getNumEtu() ?>)
+                        <?= $etudiant->getNom() ?> <?= $etudiant->getPrenom() ?> (<?= $etudiant->getNumEtu() ?>)
                     </td>
                     <td data-order="<?= ($terrain) ? $categorie->getLibelle()." ".$terrain->getLibelle() : 'ZZZZ' ?>"
                         data-filter="

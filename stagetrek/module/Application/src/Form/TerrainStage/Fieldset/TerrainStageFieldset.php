@@ -37,7 +37,7 @@ class TerrainStageFieldset extends AbstractEntityFieldset
     public function init(): void
     {
         $this->initIdInput();
-        $this->initCodeInput();
+        $this->initCodeInput(true);
         $this->initLibelleInput();
         $this->initCategorieInput();
         $this->initPlacesInput();

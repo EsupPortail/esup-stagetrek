@@ -38,7 +38,6 @@ class ConventionStageController extends AbstractActionController
     const EVENT_MODIFIER = "event-modifier-convention";
     const EVENT_SUPPRIMER = "event-supprimer-convention";
 
-
     use HasConventionStageTrait;
     use HasValidationStageTrait;
     use ConventionStageServiceAwareTrait;

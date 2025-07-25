@@ -80,11 +80,12 @@ class CategorieStageService extends CommonEntityService
      */
     private function getCategorieFromData(mixed $rowData) : CategorieStage
     {
-        $code = trim(($rowData[CategorieStageCsvImportValidator::HEADER_CODE_CATEGORIE]) ?? "");
-        $acronyme = trim(($rowData[CategorieStageCsvImportValidator::HEADER_ACRONYME])  ?? "");
-        $libelle = trim(($rowData[CategorieStageCsvImportValidator::HEADER_LIBELLE])  ?? "");
-        $ordre = CSVService::textToInt(($rowData[CategorieStageCsvImportValidator::HEADER_ORDRE]) ?? 0, 0);
-        $principale =  CSVService::yesNoValueToBoolean(($rowData[CategorieStageCsvImportValidator::HEADER_PRINCIPAL])  ?? "", false);
+        $code = trim($this->getCsvService()->readDataAt(CategorieStageCsvImportValidator::HEADER_CODE_CATEGORIE, $rowData, ""));
+        $acronyme = trim($this->getCsvService()->readDataAt(CategorieStageCsvImportValidator::HEADER_ACRONYME, $rowData, ""));
+        $libelle = trim($this->getCsvService()->readDataAt(CategorieStageCsvImportValidator::HEADER_LIBELLE, $rowData, ""));
+        $ordre = CSVService::textToInt($this->getCsvService()->readDataAt(CategorieStageCsvImportValidator::HEADER_ORDRE, $rowData, 0));
+        $principale = CSVService::yesNoValueToBoolean($this->getCsvService()->readDataAt(CategorieStageCsvImportValidator::HEADER_PRINCIPAL, $rowData, false));
+
         /** @var CategorieStage $categorie */
         $categorie = $this->getObjectManager()->getRepository(CategorieStage::class)->findOneBy(['code' => $code]);
         if (!$categorie) {

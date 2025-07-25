@@ -25,8 +25,8 @@ $vh = $this->terrainStage();
             <tr>
                 <th class="hidden">Catégorie</th>
                 <th class="hidden no-search" data-type="num"></th>
-                <th class="col-md-2 hidden no-sarch col-code">Code</th>
-                <th class="col-md-7">Terrain</th>
+                <th class="col-md-2">Code</th>
+                <th class="col-md-7">Libellé</th>
                 <th class="col-md-2 no-search" data-type="num">Etat</th>
                 <th class="col-md-1 text-end no-sort no-search">Actions</th>
             </tr>
@@ -39,7 +39,7 @@ $vh = $this->terrainStage();
                         <?= $terrain->getCategorieStage()->getLibelle() ?>
                         <?=($terrain->isTerrainSecondaire()) ? "<span class='text-small'>(Terrains secondaires)</span>" : "" ?></td>
                     <td class="hidden" data-order="<?= ($terrain->getCategorieStage()->isCategoriePrincipale() ? 0 : 10000) + $terrain->getCategorieStage()->getOrdre() ?>"> </td>
-                    <td class="col-code hidden"><?= $terrain->getCode() ?></td>
+                    <td class=""><?= $terrain->getCode() ?></td>
                     <td><?= $terrain->getLibelle() ?></td>
                     <td class="" data-order="<?= (($terrain->isHorsSubdivision()) ? 1 : 0) + (($terrain->isActif()) ? 0 : 1 )*10  ?> ">
                         <?php if($terrain->isHorsSubdivision()) :?>
@@ -61,9 +61,6 @@ $vh = $this->terrainStage();
 
 <script type="text/javascript">
     let body = $("body");
-    body.on("toggle-code", function (){
-        $("#<?= $tableId ?> .col-code").toggleClass("hidden");
-    });
 
     body.on("toggle-cat-principale", function (){
         $("#<?= $tableId ?> .cat-principale").toggleClass("hidden");
@@ -75,7 +72,7 @@ $vh = $this->terrainStage();
     $(function () {
         let options = generateDataTableSetings(
             {
-                "order": [[3, "asc"]],
+                "order": [[4, "asc"]],
                 "lengthMenu": [[10, 50, 100, 250, -1], [10, 50, 100, 250, "Tous"]],
                 "orderFixed": {
                     "pre": [ 1, 'asc' ],

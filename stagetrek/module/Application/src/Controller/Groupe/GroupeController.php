@@ -167,7 +167,7 @@ class GroupeController extends AbstractActionController
                     /** @var Groupe $groupe */
                     $groupe = $form->getData();
                     $groupeService->update($groupe);
-                    $msg = sprintf("Le groupe %s a été modifé.", $groupe->getLibelle());
+                    $msg = sprintf("Le groupe %s a été modifié.", $groupe->getLibelle());
                     $this->sendSuccessMessage($msg);
                     return $this->successAction($title, $msg);
                 } catch (Exception $e) {

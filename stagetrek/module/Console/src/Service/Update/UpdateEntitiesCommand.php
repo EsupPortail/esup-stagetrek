@@ -55,7 +55,6 @@ class UpdateEntitiesCommand extends AbstractUpdateEntityCommand
 
             $this->clearMails();
             $this->clearEventsLogs();
-            $this->clearEventsLogs();
 
             $this->io->success("Maj terminée");
         }catch (Exception $e){

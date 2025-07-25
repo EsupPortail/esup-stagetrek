@@ -2,23 +2,23 @@
 
 namespace Console;
 
-use Console\Service\Evenement\Factory\GenererEvenementsCommandFactory;
-use Console\Service\Evenement\Factory\TraiterEvenementsCommandFactory;
-use Console\Service\Evenement\GenererEvenementCommand;
-use Console\Service\Evenement\TraiterEvenementCommand;
+use Console\Service\Evenement\Factory\EvenementGenererCommandFactory;
+use Console\Service\Evenement\Factory\EvenementTraiterCommandFactory;
+use Console\Service\Evenement\EvenementGenererCommand;
+use Console\Service\Evenement\EvenementTraiterCommand;
 
 return [
     'laminas-cli' => [
         'commands' => [
-            'generer-evenements' => GenererEvenementCommand::class,
-            'traiter-evenements' => TraiterEvenementCommand::class,
+            'evenement:generer' => EvenementGenererCommand::class,
+            'evenement:traiter' => EvenementTraiterCommand::class,
         ],
     ],
 
     'service_manager' => [
         'factories' => [
-            GenererEvenementCommand::class => GenererEvenementsCommandFactory::class,
-            TraiterEvenementCommand::class => TraiterEvenementsCommandFactory::class,
+            EvenementGenererCommand::class => EvenementGenererCommandFactory::class,
+            EvenementTraiterCommand::class => EvenementTraiterCommandFactory::class,
         ]
     ],
 ];

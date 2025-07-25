@@ -23,6 +23,7 @@ use UnicaenRenderer\Service\Template\TemplateServiceAwareTrait;
 /** Surcouche du module MailService pour gerer les cas spécifique de l'application */
 class MailService extends \UnicaenMail\Service\Mail\MailService
 {
+    //Todo : splitter les mails avec un MailTypeProvider et un MailTypeService par type de mail pour la génération du contenue, les variables ...
     use TemplateServiceAwareTrait;
     use RenduServiceAwareTrait;
     use MacroServiceAwareTrait;
@@ -43,6 +44,10 @@ class MailService extends \UnicaenMail\Service\Mail\MailService
         $macroData = $this->getMailTypeMacroVariables($codeMail, $data);
         $rendu = $renduService->generateRenduByTemplateCode($codeMail, $macroData, false);
         $to = $this->getMailTypeDestinataires($codeMail, $data);
+        //transformation de to en chaine de caractéres s'il s'agit d'un tableaux
+        if(is_array($to)){
+            $to = implode(',',$to);
+        }
         $sujet = $rendu->getSujet();
         $corps = $rendu->getCorps();
 

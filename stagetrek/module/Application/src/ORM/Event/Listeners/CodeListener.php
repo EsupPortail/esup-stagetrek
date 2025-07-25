@@ -61,10 +61,17 @@ class CodeListener implements EventSubscriber
         $this->generateCode($args);
     }
     /**
+     * @param LifecycleEventArgs $args
+     */
+    public function preUpdate(LifecycleEventArgs $args)
+    {
+        $this->generateCode($args);
+    }
+    /**
      * {@inheritdoc}
      */
     public function getSubscribedEvents()
     {
-        return [Events::prePersist];
+        return [Events::prePersist, Events::preUpdate];
     }
 }

@@ -92,7 +92,7 @@ class EtudiantService extends CommonEntityService
     /** @return RoleInterface */
     public function getEtudiantRole(): RoleInterface
     {
-        return $this->getRoleService()->findByRoleId(RolesProvider::ROLE_ETUDIANT);
+        return $this->getRoleService()->findByRoleId(RolesProvider::ETUDIANT);
     }
 
     /**

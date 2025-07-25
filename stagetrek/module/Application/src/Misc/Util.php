@@ -2,9 +2,10 @@
 
 namespace Application\Misc;
 
+use DateTime;
 use RandomLib\Factory as RandomLib;
 use function Application\recursive_array_diff;
-use function Application\strtr;
+use function strtr;
 
 class Util extends \UnicaenApp\Util
 {
@@ -287,5 +288,27 @@ class Util extends \UnicaenApp\Util
             }
         }
         return $r;
+    }
+
+
+//    const POINT_MEDIANT = '&#183;';
+//    const POINT_MEDIANT = '&middot;';
+    const POINT_MEDIANT = '·'; //marche y compris avec la fonction escapehtml
+
+//    Est-ce que la date courante est avant la date fournis
+    public static function todayIsBefore(?DateTime $date, bool $strict=false) : bool
+    {
+        if(!isset($date)){return false;}
+        $today = new DateTime();
+        if($strict){return  $today < $date;}
+        else{return $today <= $date;}
+    }
+    public static function todayIsAfter(?DateTime $date, bool $strict=false) : bool
+    {
+        return !self::todayIsBefore($date, !$strict);
+    }
+    public static function todayIsBetween(?DateTime $date1, ?DateTime $date2, bool $strict1=false, bool $strict2=false) : bool
+    {
+        return self::todayIsAfter($date1, $strict1) && self::todayIsBefore($date2, $strict2);
     }
 }

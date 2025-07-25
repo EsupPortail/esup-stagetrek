@@ -7,7 +7,7 @@ use Application\Entity\Traits\Convention\HasModeleConventionStageTrait;
 use Application\Entity\Traits\InterfaceImplementation\IdEntityTrait;
 use Application\Entity\Traits\Stage\HasStageTrait;
 use DateTime;
-use Fichier\Entity\Db\Fichier;
+use UnicaenFichier\Entity\Db\Fichier;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 use UnicaenRenderer\Entity\Db\Rendu;
 /**

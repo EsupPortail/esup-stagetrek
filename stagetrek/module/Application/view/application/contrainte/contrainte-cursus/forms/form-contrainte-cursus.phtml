@@ -52,10 +52,10 @@ $fieldset = $form->getEntityFieldset();
             <?= $fcg($fieldset->get($fieldset::PORTEE)); ?>
         </div>
         <div class="col-md-6">
-            <span class="portee-complement" data-portee-id="<?= ContrainteCursusPortee::ID_PORTEE_CATEGORIE ?>">
+            <span class="portee-complement" data-code-portee="<?= ContrainteCursusPortee::CATEGORIE ?>">
                  <?= $fcg($fieldset->get($fieldset::CATEGORIE_STAGE)); ?>
             </span>
-            <span class="portee-complement" data-portee-id="<?= ContrainteCursusPortee::ID_PORTEE_TERRAIN ?>">
+            <span class="portee-complement" data-code-portee="<?= ContrainteCursusPortee::TERRAIN ?>">
                  <?= $fcg($fieldset->get($fieldset::TERRAIN_STAGE)); ?>
             </span>
         </div>
@@ -101,12 +101,13 @@ $fieldset = $form->getEntityFieldset();
         let porteeSelector = $("#<?=$fieldset::PORTEE ?>");
 
         function updatePortee() {
-            let portee = porteeSelector.val();
+            let portee = porteeSelector.find(':selected').data('code');
             $(".portee-complement").each(function () {
-                if ($(this).data("portee-id") == portee) {
+                if ($(this).data("code-portee") == portee) {
                     $(this).show();
                 } else {
                     $(this).hide();
+                    $(this).val(null);
                     let input = $(this).find("select");
                     input.val(null);
                 }

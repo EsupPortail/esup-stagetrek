@@ -68,9 +68,13 @@ $canAdd = $vh->actionAllowed(AnneeUniversitaireController::ACTION_AJOUTER);
                         <?= $annee->getDateFin()->format('d/m/Y') ?>
                     </td>
                     <td class="text-end" data-order="<?= (isset($etat) ? $etat->getType()->getOrdre() : PHP_INT_MIN) ?>"
-                        style="color:<?= $etat->getType()->getCouleur() ?>"
+                      <?php if((isset($etat))) :?>
+                        style="color:<?=  $etat->getType()->getCouleur() ?>"
+                        <?php endif; ?>
                     >
-                        <span class="<?= $etat->getType()->getIcone() ?>"></span> <?= $etat->getTypeLibelle() ?>
+                        <?php if((isset($etat))) :?>
+                            <span class="<?= $etat->getType()->getIcone() ?>"></span> <?= $etat->getTypeLibelle() ?>
+                        <?php endif; ?>
                     </td>
                 </tr>
             <?php endforeach; ?>

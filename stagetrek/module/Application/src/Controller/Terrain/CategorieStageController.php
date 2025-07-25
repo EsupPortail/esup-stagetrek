@@ -4,6 +4,7 @@ namespace Application\Controller\Terrain;
 
 use Application\Controller\Misc\Interfaces\AbstractActionController;
 use Application\Entity\Db\CategorieStage;
+use Application\Entity\Db\ContrainteCursusPortee;
 use Application\Entity\Traits\Stage\HasTerrainStageTrait;
 use Application\Exceptions\ImportException;
 use Application\Form\Misc\Traits\ImportFormAwareTrait;
@@ -25,6 +26,7 @@ class CategorieStageController extends AbstractActionController
     use HasTerrainStageTrait;
     const ROUTE_INDEX = "categorie-stage";
     const ROUTE_LISTER = "categorie-stage/lister";
+    const ROUTE_AFFICHER = "categorie-stage/afficher";
     const ROUTE_AJOUTER = "categorie-stage/ajouter";
     const ROUTE_MODIFIER = "categorie-stage/modifier";
     const ROUTE_SUPPRIMER = "categorie-stage/supprimer";
@@ -32,6 +34,7 @@ class CategorieStageController extends AbstractActionController
 
     const ACTION_INDEX = "index";
     const ACTION_LISTER = "lister";
+    const ACTION_AFFICHER = "afficher";
     const ACTION_AJOUTER = "ajouter";
     const ACTION_MODIFIER = "modifier";
     const ACTION_SUPPRIMER = "supprimer";
@@ -65,6 +68,13 @@ class CategorieStageController extends AbstractActionController
         $categoriesStages = $this->getCategorieStageService()->findAll();
         return new ViewModel(['categoriesStages' => $categoriesStages]);
     }
+
+    public function afficherAction() : ViewModel
+    {
+        $categorieStage = $this->getCategorieStageFromRoute();
+        return new ViewModel(['categorieStage' => $categorieStage]);
+    }
+
 
     public function ajouterAction() : ViewModel
 

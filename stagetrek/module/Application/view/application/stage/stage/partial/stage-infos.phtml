@@ -33,10 +33,10 @@ $annee = $stage->getAnneeUniversitaire()
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-4">
-                            <strong>Etudiant</strong>
+                            <strong>Étudiant</strong>
                         </div>
                         <div class="col-md-8">
-                            <?= $etudiant->getDisplayName() ?> (<?= $this->etudiant($etudiant)->lienAfficher() ?>)
+                            <?= $etudiant->getNom() ?> <?= $etudiant->getPrenom() ?> (<?= $this->etudiant($etudiant)->lienAfficher() ?>)
                         </div>
                         <div class="col-md-4">
                             <strong>Session</strong>

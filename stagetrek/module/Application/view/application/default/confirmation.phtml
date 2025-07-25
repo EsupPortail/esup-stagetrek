@@ -1,0 +1,71 @@
+<?php
+
+/**
+ * @var string $title
+ * @var string $text
+ * @var string $action
+ */
+
+use Application\Misc\Util;
+
+?>
+
+<div class="card">
+    <?php if ($title) : ?>
+        <h1 class="card-header page-header">
+            <?= $title ?>
+        </h1>
+    <?php endif; ?>
+
+    <div class="card-body">
+        <div class="card-text">
+            <div class="row">
+                <div class="col-md-12 lead">
+                    <?= $text; ?>
+                </div>
+            </div>
+            <?php
+            $msg = $this->messenger()->addCurrentMessagesFromFlashMessengerWithNamespace('confirmation');
+            ?>
+            <?php if ($msg && $msg->hasMessages()) : ?>
+                <div class="row">
+                    <div class="col-md-12">
+                        <?= $msg ?>
+                    </div>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+    <?php if ($action) : ?>
+        <div class="card-footer">
+            <div class="row">
+                <div class="col-md-2">
+                    <form method="post" action="<?php echo $action; ?>">
+                        <input type="hidden" name="reponse" value="oui">
+                        <input type="submit" name="oui" class="btn btn-success action"
+                               value="Oui, je suis sûr<?=Util::POINT_MEDIANT?>e">
+                    </form>
+                </div>
+                <div class="col-md-2">
+                    <form method="post" action="<?php echo $action; ?>">
+                        <input type="hidden" name="reponse" value="non">
+                        <input type="submit" id="non" name="non" class="btn btn-danger action"
+                               value="Non, je ne veux pas">
+                    </form>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+</div>
+
+<script>
+    $(function () {
+        $("input#non").click(function (e) {
+            if ($('div.modal').length > 0) {
+                $('div.modal').modal('hide');
+                e.preventDefault(e);
+            }
+        });
+    });
+</script>
+

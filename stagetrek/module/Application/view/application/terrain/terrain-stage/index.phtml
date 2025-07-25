@@ -47,10 +47,6 @@ $canImportTerrain = $vh->actionAllowed(TerrainStageController::ACTION_IMPORTER);
                         <label class="mx-3 form-check-label" for="row-secondaire-switch">Afficher les terrains
                             secondaires</label>
                     </div>
-                    <div class="col-md-4 form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="col-code-switch" data-col="col-code">
-                        <label class="mx-3 form-check-label" for="col-code-switch">Afficher le code des terrains</label>
-                    </div>
                 </div>
             </form>
         </div>
@@ -88,10 +84,6 @@ $canImportTerrain = $vh->actionAllowed(TerrainStageController::ACTION_IMPORTER);
     $(function () {
         let body = $("body");
         let liste = $("#liste-terrains-content");
-
-        $("#col-code-switch").on('change', function(){
-            body.trigger("toggle-code");
-        })
 
         $("#row-principale-switch").on('change', function(){
             body.trigger("toggle-cat-principale");

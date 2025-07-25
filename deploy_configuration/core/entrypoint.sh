@@ -21,11 +21,12 @@ echo "Créations des repertoires de conventions"
 mkdir -p ${CONVENTIONS_DIRECTORY}
 chmod -R 777 ${CONVENTIONS_DIRECTORY}
 
+#S'il n'existe pas (lors de la premiére install)
 echo "Créations des repertoires pour db-admin"
 mkdir -p ${BDD_ADMIN_DIR}
 chmod -R 777 ${BDD_ADMIN_DIR}
 echo "Composer"
-  composer install
+composer install
 
 echo "Créations du repertoires de log"
 mkdir -p /var/log/stagetrek

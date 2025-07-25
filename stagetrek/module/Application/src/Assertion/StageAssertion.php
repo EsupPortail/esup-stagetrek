@@ -138,7 +138,7 @@ class StageAssertion extends AbstractAssertion
     protected function userIsStudent() : bool
     {
         $role = $this->getRole();
-        return $role->getRoleId() == RolesProvider::ROLE_ETUDIANT;
+        return $role->getRoleId() == RolesProvider::ETUDIANT;
     }
 
     protected function userIsStageOwner(Stage $stage) : bool

@@ -1,0 +1,127 @@
+<?php
+
+use Application\Controller\Contact\ContactTerrainController;
+use Application\Controller\Terrain\CategorieStageController;
+use Application\Controller\Terrain\TerrainStageController;
+use Application\Entity\Db\CategorieStage;
+use Application\Entity\Db\ContrainteCursus;
+use Application\Entity\Db\TerrainStage;
+use Application\View\Helper\Terrains\CategorieStageViewHelper;
+use Application\View\Helper\Terrains\TerrainStageViewHelper;
+
+/**
+ * @see CategorieStageController::afficherAction()
+ *
+
+ * @var CategorieStage $categorieStage
+ */
+
+/** @var CategorieStageViewHelper $vh */
+$vh = $this->categorieStage($categorieStage);
+
+$canEdit = $vh->actionAllowed(CategorieStageController::ACTION_MODIFIER);
+$canDelete = $vh->actionAllowed(CategorieStageController::ACTION_SUPPRIMER);
+?>
+
+<h1 class="page-header">
+    <span class="icon">
+        <i class="fas fa-hospital"></i>
+    </span>
+    Catégorie de stage - <?= $categorieStage->getLibelle() ?>
+</h1>
+<nav>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <button class="nav-link active" id="nav-infos" data-bs-toggle="tab" data-bs-target="#infos" type="button"
+                role="tab" aria-controls="infos" aria-selected="true">Informations
+        </button>
+        <button class="nav-link" id="nav-terrains-cat" data-bs-toggle="tab"
+                data-bs-target="#terrains-cat" type="button"
+                role="tab" aria-controls="terrains-cat" aria-selected="false">Terrains
+        </button>
+    </div>
+</nav>
+
+<div class="card tab-content" id="nav-tabContent">
+    <div class="tab-pane fade show active" id="infos" role="tabpanel" aria-labelledby="nav-infos">
+        <?php if ($canEdit || $canDelete) : ?>
+            <div class="card-header card-sub-header text-end">
+                <?= $vh->lienModifier() ?>
+                <?= $vh->lienSupprimer() ?>
+            </div>
+        <?php endif; ?>
+        <div id="infos-content" class="card-body">
+            <div class="row">
+                <div class="col-md-2">
+                    <strong>Code</strong>
+                </div>
+                <div class="col-md-10">
+                    <?= $categorieStage->getCode() ?>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-md-2">
+                    <strong>Libellé</strong>
+                </div>
+                <div class="col-md-10">
+                    <?= $categorieStage->getLibelle() ?>
+                </div>
+                <div class="col-md-2">
+                    <strong>Acronyme</strong>
+                </div>
+                <div class="col-md-4">
+                    <?= $categorieStage->getAcronyme() ?>
+                </div>
+                <div class="col-md-2">
+                    <strong>Type de stage</strong>
+                </div>
+                <div class="col-md-4">
+                    <?= ($categorieStage->isCategoriePrincipale()) ? "Principale" : "Secondaire" ?>
+                </div>
+                <div class="col-md-2">
+                    <strong>Ordre d'affichage</strong>
+                </div>
+                <div class="col-md-10">
+                    <?= $categorieStage->getOrdre() ?>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <?= $this->backButton("Liste des categories")->backTo($this->url(CategorieStageController::ROUTE_INDEX, [], [], true)) ?>
+        </div>
+    </div>
+
+
+    <div class="tab-pane fade" id="terrains-cat" role="tabpanel" aria-labelledby="nav-terrains-cat">
+        <?php /** @var TerrainStageViewHelper $tVh */
+        $tVh = $this->terrainStage();
+        ?>
+        <div id="terrains-content" class="card-body">
+            <?= $tVh->renderListe($categorieStage->getTerrainsStages()->toArray()); ?>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    //Rechargement lors des event
+    $(function () {
+
+        let body = $("body");
+        body.on("<?=CategorieStageController::EVENT_MODIFIER?>",
+            function () {
+                window.location.reload();
+            }
+        );
+        body.on("<?=CategorieStageController::EVENT_SUPPRIMER?> "
+            , function () {
+                $("#nav-tabContent > div").empty().append(
+                    "<div class='tab-pane show'><div class='m-3 card card-info'><div class='card-body'><div class='alert alert-info'>" +
+                    "La catégorie de stage vient d'être supprimée, vous allez être rediriger dans quelques secondes." +
+                    "</div></div></div></div>"
+                );
+                setTimeout(function () {
+                    window.location.href = "<?= $this->url(CategorieStageController::ROUTE_INDEX)?>";
+                }, 2000);
+            });
+    });
+</script>

@@ -4,6 +4,7 @@
 namespace Application\Form\Notification\Factory;
 
 use Application\Entity\Db\FaqCategorieQuestion;
+use Application\Form\Misc\Validator\CodeValidator;
 use Application\Form\Misc\Validator\LibelleValidator;
 use Application\Form\Notification\Fieldset\FaqCategorieQuestionFieldset;
 use Application\Service\Notification\FaqCategorieQuestionService;
@@ -43,12 +44,19 @@ class FaqCategorieQuestionFieldsetFactory implements FactoryInterface
         $fieldset->setHydrator($hydrator);
         $fieldset->setObject(new FaqCategorieQuestion());
 
-        /** @var LibelleValidator $libelleValidator */
-        $libelleValidator = $container->get(ValidatorPluginManager::class)->get(LibelleValidator::class);
         /** @var FaqCategorieQuestionService $faqCategorieQuestionService */
         $faqCategorieQuestionService = $container->get(ServiceManager::class)->get(FaqCategorieQuestionService::class);
-        $libelleValidator->setEntityService($faqCategorieQuestionService);
+
+        /** @var CodeValidator $codeValidator */
+        $codeValidator = $container->get(ValidatorPluginManager::class)->get(CodeValidator::class);
+        $codeValidator->setEntityService($faqCategorieQuestionService);
+        $fieldset->setCodeValidator($codeValidator);
+
+        /** @var LibelleValidator $libelleValidator */
+        $libelleValidator = $container->get(ValidatorPluginManager::class)->get(LibelleValidator::class);
+$libelleValidator->setEntityService($faqCategorieQuestionService);
         $fieldset->setLibelleValidator($libelleValidator);
+
 
         return $fieldset;
     }

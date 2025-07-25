@@ -43,7 +43,7 @@ class FaqService extends CommonEntityService
             });
         }
         //Cas particulier de l'administrateur : il peut toujours les voirs même si théoriquement non (permet éventuellement de corriger un bug)
-        if($role->getRoleId()==RolesProvider::ROLE_ADMINISTATEUR){
+        if($role->getRoleId()==RolesProvider::ADMIN_TECH){
             return $res;
         }
         return array_filter($res, function(Faq $question) use($role){

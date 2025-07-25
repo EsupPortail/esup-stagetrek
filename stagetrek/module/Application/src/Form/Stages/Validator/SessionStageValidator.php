@@ -56,7 +56,7 @@ class SessionStageValidator extends AbstractValidator implements ObjectManagerAw
         self::CALLBACK_FUNCTION_NOT_IMPLEMENTED_ERROR => "La fonction de validation n'a pas été définie.",
         self::LIBELLE_ALREADY_USED_ERROR => "Ce libellé de session est déjà utilisé pour le groupe %groupeLibelle%",
         self::GROUPE_NOT_FOUND_ERROR => "Le groupe demandé n'a pas été trouvé.",
-        self::GROUPE_CANT_BE_REDEFIND => "Le groupe de la session de stage ne peux pas être modifé",
+        self::GROUPE_CANT_BE_REDEFIND => "Le groupe de la session de stage ne peux pas être modifié",
         self::GROUPE_ALREADY_IN_STAGE => "Le groupe %groupeLibelle% a déjà un stage entre les dates indiquées",
         self::ANNEE_VALIDEE_ERROR => "Impossible d'ajouter une nouvelle session de stage car l'année universitaire %anneeLibelle% est validée",
         self::NOT_A_DATE_ERROR => "La date de %date1Libelle% n'est pas valide",

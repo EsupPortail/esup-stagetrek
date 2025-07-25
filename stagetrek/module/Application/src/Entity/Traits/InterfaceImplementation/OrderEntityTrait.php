@@ -41,5 +41,4 @@ trait OrderEntityTrait
         });
         return $entities;
     }
-
 }

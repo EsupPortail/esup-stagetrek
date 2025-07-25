@@ -9,6 +9,9 @@ foreach ($authService as $authKey){
     $authServicesAllowed[$authKey] = true;
 }
 
+if(!isset($authServicesAllowed['ldap'])){
+    return [];
+}
 return [
     // Module [Unicaen]Ldap
     'unicaen-ldap' => [

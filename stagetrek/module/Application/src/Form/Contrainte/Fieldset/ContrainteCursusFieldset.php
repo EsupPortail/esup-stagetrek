@@ -61,6 +61,15 @@ class ContrainteCursusFieldset extends AbstractEntityFieldset
                 'id' => self::PORTEE,
             ],
         ]);
+        /** @var ContrainteCursusPorteeSelectPicker $input */
+        $input = $this->get(self::PORTEE);
+        $portees = $this->getObjectManager()->getRepository(ContrainteCursusPortee::class)->findAll();
+        foreach ($portees as $portee) {
+            $input->setContrainteCursusPorteeAttribute($portee, 'data-code', $portee->getCode());
+        }
+
+
+
         $this->setInputfilterSpecification(self::PORTEE, [
             "name" => self::PORTEE,
             'required' => true,
@@ -94,19 +103,9 @@ class ContrainteCursusFieldset extends AbstractEntityFieldset
             ],
         ]);
 
-        $categorieRequired = ($this->get(self::PORTEE)->getValue() == ContrainteCursusPortee::ID_PORTEE_CATEGORIE);
         $this->setInputfilterSpecification(self::CATEGORIE_STAGE, [
             "name" => self::CATEGORIE_STAGE,
-            'required' => $categorieRequired,
-            'validators' => [
-                [
-                    'name' => ContrainteCursusValidator::class,
-                    'options' => [
-                        'callback' => ContrainteCursusValidator::ASSERT_CATEGORIE_TERRAIN,
-                        'break_chain_on_failure' => false,
-                    ],
-                ],
-            ],
+            'required' => false,
         ]);
     }
     const TERRAIN_STAGE = "terrainStage";
@@ -124,20 +123,9 @@ class ContrainteCursusFieldset extends AbstractEntityFieldset
             ],
         ]);
 
-        $terrainRequired = ($this->get(self::PORTEE)->getValue() == ContrainteCursusPortee::ID_PORTEE_TERRAIN);
         $this->setInputfilterSpecification(self::TERRAIN_STAGE, [
             "name" => self::TERRAIN_STAGE,
-            'required' => $terrainRequired,
-            'validators' => [
-                [
-                    'name' => ContrainteCursusValidator::class,
-                    'options' => [
-                        'callback' => ContrainteCursusValidator::ASSERT_TERRAIN,
-                        'break_chain_on_failure' => false,
-                    ],
-                ],
-            ],
-
+            'required' => false,
         ]);
 
     }
