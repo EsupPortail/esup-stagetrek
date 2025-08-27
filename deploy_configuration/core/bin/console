@@ -1,0 +1,4 @@
+#!/bin/bash
+
+/var/www/html/stagetrek/vendor/bin/laminas $@
+
