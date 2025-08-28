@@ -1,3 +1,5 @@
-*.env
-data/
+data/cache-apache
+data/stagetrek-db
+doccumentation/notes/
+.env
 deploy_configuration/shibconf/key/
