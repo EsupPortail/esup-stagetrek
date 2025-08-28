@@ -1,6 +1,6 @@
 CHANGELOG
 =========
-1.3.2 (24/07/2025)
+1.3.2 (28/08/2025)
 ------------------
 - script bin/stagetrek/console manquant
 - Schema de bdd manquant

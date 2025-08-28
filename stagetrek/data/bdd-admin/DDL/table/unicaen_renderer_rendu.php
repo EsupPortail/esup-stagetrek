@@ -1,0 +1,76 @@
+<?php
+
+//@formatter:off
+
+return [
+    'schema'      => 'public',
+    'name'        => 'unicaen_renderer_rendu',
+    'temporary'   => FALSE,
+    'logging'     => TRUE,
+    'commentaire' => NULL,
+    'sequence'    => 'unicaen_renderer_rendu_id_seq',
+    'columns'     => [
+        'corps'           => [
+            'name'        => 'corps',
+            'type'        => 'clob',
+            'bdd-type'    => 'text',
+            'length'      => 0,
+            'scale'       => NULL,
+            'precision'   => NULL,
+            'nullable'    => FALSE,
+            'default'     => NULL,
+            'position'    => 5,
+            'commentaire' => NULL,
+        ],
+        'date_generation' => [
+            'name'        => 'date_generation',
+            'type'        => 'date',
+            'bdd-type'    => 'timestamp without time zone',
+            'length'      => 0,
+            'scale'       => NULL,
+            'precision'   => 6,
+            'nullable'    => FALSE,
+            'default'     => NULL,
+            'position'    => 3,
+            'commentaire' => NULL,
+        ],
+        'id'              => [
+            'name'        => 'id',
+            'type'        => 'int',
+            'bdd-type'    => 'integer',
+            'length'      => 0,
+            'scale'       => NULL,
+            'precision'   => 4,
+            'nullable'    => FALSE,
+            'default'     => 'nextval(\'unicaen_renderer_rendu_id_seq\'::regclass)',
+            'position'    => 1,
+            'commentaire' => NULL,
+        ],
+        'sujet'           => [
+            'name'        => 'sujet',
+            'type'        => 'clob',
+            'bdd-type'    => 'text',
+            'length'      => 0,
+            'scale'       => NULL,
+            'precision'   => NULL,
+            'nullable'    => FALSE,
+            'default'     => NULL,
+            'position'    => 4,
+            'commentaire' => NULL,
+        ],
+        'template_id'     => [
+            'name'        => 'template_id',
+            'type'        => 'int',
+            'bdd-type'    => 'integer',
+            'length'      => 0,
+            'scale'       => NULL,
+            'precision'   => 4,
+            'nullable'    => TRUE,
+            'default'     => NULL,
+            'position'    => 2,
+            'commentaire' => NULL,
+        ],
+    ],
+];
+
+//@formatter:on

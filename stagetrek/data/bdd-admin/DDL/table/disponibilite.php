@@ -1,0 +1,76 @@
+<?php
+
+//@formatter:off
+
+return [
+    'schema'      => 'public',
+    'name'        => 'disponibilite',
+    'temporary'   => FALSE,
+    'logging'     => TRUE,
+    'commentaire' => NULL,
+    'sequence'    => 'disponibilite_id_seq',
+    'columns'     => [
+        'date_debut'                   => [
+            'name'        => 'date_debut',
+            'type'        => 'date',
+            'bdd-type'    => 'date',
+            'length'      => 0,
+            'scale'       => NULL,
+            'precision'   => NULL,
+            'nullable'    => FALSE,
+            'default'     => NULL,
+            'position'    => 3,
+            'commentaire' => NULL,
+        ],
+        'date_fin'                     => [
+            'name'        => 'date_fin',
+            'type'        => 'date',
+            'bdd-type'    => 'date',
+            'length'      => 0,
+            'scale'       => NULL,
+            'precision'   => NULL,
+            'nullable'    => FALSE,
+            'default'     => NULL,
+            'position'    => 4,
+            'commentaire' => NULL,
+        ],
+        'etudiant_id'                  => [
+            'name'        => 'etudiant_id',
+            'type'        => 'int',
+            'bdd-type'    => 'integer',
+            'length'      => 0,
+            'scale'       => NULL,
+            'precision'   => 4,
+            'nullable'    => FALSE,
+            'default'     => NULL,
+            'position'    => 2,
+            'commentaire' => NULL,
+        ],
+        'id'                           => [
+            'name'        => 'id',
+            'type'        => 'int',
+            'bdd-type'    => 'integer',
+            'length'      => 0,
+            'scale'       => NULL,
+            'precision'   => 4,
+            'nullable'    => FALSE,
+            'default'     => 'nextval(\'disponibilite_id_seq\'::regclass)',
+            'position'    => 1,
+            'commentaire' => NULL,
+        ],
+        'informations_complementaires' => [
+            'name'        => 'informations_complementaires',
+            'type'        => 'string',
+            'bdd-type'    => 'character varying',
+            'length'      => 255,
+            'scale'       => NULL,
+            'precision'   => NULL,
+            'nullable'    => TRUE,
+            'default'     => 'NULL',
+            'position'    => 5,
+            'commentaire' => NULL,
+        ],
+    ],
+];
+
+//@formatter:on
