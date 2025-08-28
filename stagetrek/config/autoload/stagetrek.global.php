@@ -13,11 +13,9 @@ return [
         'app_infos' => [
             'nom'     => "StageTrek",
             'desc'    => "Application de gestion des stages de médecine de second cycle",
-            'version' => "0.0.1",
-            'date'    => "01/06/2021",
-//            TODO : a modifier en variable d'environnement ? (si le contact doit être local aux instance ou celle de contact qui va être crée
-            'contact' => ['mail' => "assistance-stagetrek@unicaen.fr",
-            /*'tel' => "01 02 03 04 05"*/],
+            'version' => "1.3.2",
+            'date'    => "28/08/2025",
+            'contact' => ['mail' => "assistance-stagetrek@unicaen.fr"],
         ],
 
         'session_refresh_period' => 0, // 0 <=> aucune requête exécutée
