@@ -1,5 +1,12 @@
 CHANGELOG
 =========
+1.3.2 (24/07/2025)
+------------------
+- script bin/stagetrek/console manquant
+- Schema de bdd manquant
+- [Bug fixe] Modificaitons des dates de naissances des étudiants
+
+
 1.3.1 (24/07/2025)
 ------------------
 - Config pour voir les messages d'erreur en mode dev

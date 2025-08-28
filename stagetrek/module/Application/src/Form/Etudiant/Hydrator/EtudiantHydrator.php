@@ -31,7 +31,7 @@ class EtudiantHydrator extends AbstractHydrator implements HydratorInterface
         /** @var User $user */
         $user = $etudiant->getUser();
         $idUser = ($user) ? $user->getId() : null;
-        $dateNaissance = ($etudiant->getDateNaissance()) ? $etudiant->getDateNaissance()->format('d/m/Y') : null;
+        $dateNaissance = $etudiant->getDateNaissance();
         return [
             EtudiantFieldset::ID => $etudiant->getId(),
             EtudiantFieldset::USER => $idUser,
@@ -64,7 +64,7 @@ class EtudiantHydrator extends AbstractHydrator implements HydratorInterface
         if(isset($data[EtudiantFieldset::MAIL])){ $etudiant->setEmail(trim($data[EtudiantFieldset::MAIL]));}
         if (isset($data[EtudiantFieldset::DATE_NAISSANCE])
             && $data[EtudiantFieldset::DATE_NAISSANCE] != '') {
-            $date = DateTime::createFromFormat('d/m/Y', $data[EtudiantFieldset::DATE_NAISSANCE]);
+            $date = DateTime::createFromFormat('Y-m-d', $data[EtudiantFieldset::DATE_NAISSANCE]);
             if ($date) {
                 $date->setTime(0, 0);
                 if (!$etudiant->getDateNaissance()
@@ -72,6 +72,9 @@ class EtudiantHydrator extends AbstractHydrator implements HydratorInterface
                     $etudiant->setDateNaissance($date);
                 }
             }
+        }
+        if(!isset($data[EtudiantFieldset::DATE_NAISSANCE]) || !isset($date) || !$date){
+            $etudiant->setDateNaissance(null);
         }
         if (isset($data[EtudiantFieldset::ADRESSE])) {
             $etudiant->setAdresse($data[EtudiantFieldset::ADRESSE]);
