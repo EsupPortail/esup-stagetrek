@@ -1,0 +1,76 @@
+<?php
+
+//@formatter:off
+
+return [
+    'schema'      => 'public',
+    'name'        => 'unicaen_renderer_macro',
+    'temporary'   => FALSE,
+    'logging'     => TRUE,
+    'commentaire' => NULL,
+    'sequence'    => 'unicaen_renderer_macro_id_seq',
+    'columns'     => [
+        'code'          => [
+            'name'        => 'code',
+            'type'        => 'string',
+            'bdd-type'    => 'character varying',
+            'length'      => 256,
+            'scale'       => NULL,
+            'precision'   => NULL,
+            'nullable'    => FALSE,
+            'default'     => NULL,
+            'position'    => 2,
+            'commentaire' => NULL,
+        ],
+        'description'   => [
+            'name'        => 'description',
+            'type'        => 'clob',
+            'bdd-type'    => 'text',
+            'length'      => 0,
+            'scale'       => NULL,
+            'precision'   => NULL,
+            'nullable'    => TRUE,
+            'default'     => NULL,
+            'position'    => 3,
+            'commentaire' => NULL,
+        ],
+        'id'            => [
+            'name'        => 'id',
+            'type'        => 'int',
+            'bdd-type'    => 'integer',
+            'length'      => 0,
+            'scale'       => NULL,
+            'precision'   => 4,
+            'nullable'    => FALSE,
+            'default'     => 'nextval(\'unicaen_renderer_macro_id_seq\'::regclass)',
+            'position'    => 1,
+            'commentaire' => NULL,
+        ],
+        'methode_name'  => [
+            'name'        => 'methode_name',
+            'type'        => 'string',
+            'bdd-type'    => 'character varying',
+            'length'      => 256,
+            'scale'       => NULL,
+            'precision'   => NULL,
+            'nullable'    => FALSE,
+            'default'     => NULL,
+            'position'    => 5,
+            'commentaire' => NULL,
+        ],
+        'variable_name' => [
+            'name'        => 'variable_name',
+            'type'        => 'string',
+            'bdd-type'    => 'character varying',
+            'length'      => 256,
+            'scale'       => NULL,
+            'precision'   => NULL,
+            'nullable'    => FALSE,
+            'default'     => NULL,
+            'position'    => 4,
+            'commentaire' => NULL,
+        ],
+    ],
+];
+
+//@formatter:on
