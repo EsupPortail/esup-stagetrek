@@ -30,7 +30,7 @@ return [
         'ddl' => [
             //TODO : en var d'environnement : uniquement le BDD_ADMIN_DIR et imposé les repertoire/nom des fichier ...
             /* Répertoire où placer votre DDL */
-            'dir'                    => $bddAdminDir."/ddl",
+            'dir'                    => $bddAdminDir."/DDL",
 
             /* Nom par défaut du fichier de sauvegarde des positionnements de colonnes */
             'columns_positions_file' => $bddAdminDir."/ddl_columns_pos.php",
