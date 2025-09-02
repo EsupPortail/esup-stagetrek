@@ -43,6 +43,12 @@ make install
 6. Création de la base de données
 ```bash
 make bash
+/bin/stagetrek/console bddadmin:install
+```
+
+6. bis. Mise à jour de la base de données
+```bash
+make bash
 /bin/stagetrek/console bddadmin:update
 ```
 
