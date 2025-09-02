@@ -78,6 +78,7 @@ services:
       - ./deploy_configuration/apache/supervisor.conf:/supervisord.conf
       - ./deploy_configuration/apache/000-default.conf:/etc/apache2/sites-available/000-default.conf
       - ./deploy_configuration/apache/default-ssl.conf:/etc/apache2/sites-available/default-ssl.conf
+      - ./deploy_configuration/apache/stagetrek.conf:/etc/apache2/conf-available/stagetrek.conf
 #      #     TimeZone pour l'image basé sur celle du host
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro

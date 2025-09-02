@@ -46,7 +46,7 @@ make bash
 /bin/stagetrek/console bddadmin:install
 ```
 
-6. bis. Mise à jour de la base de données
+6. bis. Mise à jour de la base de données / import des données depuis le DDL
 ```bash
 make bash
 /bin/stagetrek/console bddadmin:update
