@@ -75,7 +75,7 @@ $config = [
             'ldap' => [
                 'enabled' => ($authServicesAllowed['ldap']),
                 'log_failures' => false,
-                'username' => "supannaliaslogin",
+                'username' => (isset($_ENV['LDAP_USERNAME']) && !empty($_ENV['LDAP_USERNAME'])) ? $_ENV['LDAP_USERNAME'] : "supannaliaslogin",
             ],
 
             'form_skip' => $formSkiped,
