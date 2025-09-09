@@ -76,10 +76,12 @@ COPY ./deploy_configuration/shibconf/files_conf/security.conf /etc/apache2/conf-
 COPY ./deploy_configuration/shibconf/files_conf/shib.conf /etc/apache2/conf-available
 COPY ./deploy_configuration/shibconf/files_conf/wayf.conf /etc/apache2/conf-available
 COPY ./deploy_configuration/shibconf/files_conf/ports.conf /etc/apache2
+COPY ./deploy_configuration/apache/stagetrek.conf /etc/apache2/conf-available/
 
 RUN a2enmod shib
 RUN a2enmod rewrite actions proxy proxy_fcgi setenvif
 RUN a2enconf security
+RUN a2enconf stagetrek.conf
 RUN a2enconf wayf
 
 COPY ./deploy_configuration/shibconf/switchwayf /var/www/html/switchwayf

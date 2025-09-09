@@ -51,14 +51,14 @@ class FooterViewHelper extends AbstractHelper
             $logo =null;
         }
 
-        $rf = "<img src='/unistrap-1.0.0/img/logo/republique-francaise.svg' width='110' height='100' class='logo-rf'>";
+        $rf = "<img src='/unistrap-1.0.0/img/logo/republique-francaise.svg' width='110' height='100' class='logo-rf' alt=''>";
 
         if(!isset($logo) || $logo==""){return $rf;}
         $univ = sprintf("<img src='%s'  width='160' class='logo-universite' title='%s'>",
             $logo, (isset($name) && $name != "") ? $this->view->escapehtml($name) : ""
         );
         if(isset($url) && $url != ""){
-            $univ = sprintf("<a href='%s'>%s</a>", $url, $univ);
+            $univ = sprintf("<a href='%s' target='blank'>%s</a>", $url, $univ);
         }
         $html = sprintf("%s %s", $rf, $univ);
         return $html;
@@ -96,22 +96,30 @@ class FooterViewHelper extends AbstractHelper
         } catch (Exception) {
             $mentionsLegales = null;
         }
+        try{
+            $schemaHandicap =  $service->getParametreValue(Parametre::FOOTER_UNIV_SCHEMA_HANDICAP);
+        } catch (Exception) {
+            $schemaHandicap = null;
+        }
 
         $html ="<ul class='navigation'>";
         if(isset($univName) && $univName != "" && isset($univName) && $univURl != "") {
-            $html .= sprintf("<li><a href='%s'  title='%s'>%s</a></li>", $univURl,  $this->view->escapeHtml($univName), $univName);
+            $html .= sprintf("<li><a href='%s'  title='%s' target='blank'>%s</a></li>", $univURl,  $this->view->escapeHtml($univName), $univName);
         }
-        $html .= sprintf("<li><a href='%s' class='apropo' title='%s'>%s</a></li>", '/apropos', $this->view->escapeHtml("À propos de l'application"), 'À  propos');
+        $html .= sprintf("<li><a href='%s' class='apropo' title='%s' target='blank'>%s</a></li>", '/apropos', $this->view->escapeHtml("À propos de l'application"), 'À  propos');
         $html .= sprintf("<li><a href='%s' class='plan' title='%s'>%s</a></li>", '/plan', $this->view->escapeHtml("Page de navigation au sein de l'application"), ' Plan de navigation');
 
         if(isset($contactUrl) && $contactUrl != "") {
-            $html .= sprintf("<li><a href='%s' title='%s'>%s</a></li>", $contactUrl,  $this->view->escapeHtml("Contact"), 'Contact');
+            $html .= sprintf("<li><a href='%s' title='%s' target='blank'>%s</a></li>", $contactUrl,  $this->view->escapeHtml("Contact"), 'Contact');
         }
         if(isset($mentionsLegales) && $mentionsLegales != "") {
-            $html .= sprintf("<li><a href='%s' title='%s'>%s</a></li>", $mentionsLegales,  $this->view->escapeHtml("Mentions légales"), 'Mentions légales');
+            $html .= sprintf("<li><a href='%s' title='%s' target='blank'>%s</a></li>", $mentionsLegales,  $this->view->escapeHtml("Mentions légales"), 'Mentions légales');
         }
         if(isset($viePrivee) && $viePrivee != "") {
-            $html .= sprintf("<li><a href='%s' title='%s'>%s</a></li>", $viePrivee,  $this->view->escapeHtml("Vie privée"), 'Vie privée');
+            $html .= sprintf("<li><a href='%s' title='%s' target='blank'>%s</a></li>", $viePrivee,  $this->view->escapeHtml("Vie privée"), 'Vie privée');
+        }
+        if(isset($schemaHandicap) && $schemaHandicap != "") {
+            $html .= sprintf("<li><a href='%s' title='%s' target='blank'>%s</a></li>", $schemaHandicap,  $this->view->escapeHtml("Schéma directeur pluriannuel handicap"), 'Schéma handicap');
         }
         $html .="</ul>";
         return $html;
