@@ -111,6 +111,7 @@ class Parametre implements ResourceInterface,
     const FOOTER_UNIV_LOGO = 'footer_univ_logo';
     const FOOTER_UNIV_CONTACT = 'footer_univ_contact';
     const FOOTER_UNIV_VIE_PRIVEE = 'footer_univ_vie_privee';
+    const FOOTER_UNIV_SCHEMA_HANDICAP = 'footer_univ_schema_handicap';
     const FOOTER_UNIV_MENTIONS_LEGALS = 'footer_univ_mentions_legals';
 
     // Dates des stages

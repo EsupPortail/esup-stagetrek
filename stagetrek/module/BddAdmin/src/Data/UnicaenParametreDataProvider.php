@@ -474,7 +474,15 @@ class UnicaenParametreDataProvider implements DataProviderInterface {
                 "parametre_type_id" => ParametreType::STRING,
                 "ordre" => $ordre++,
             ],
-
+            [
+                "categorie_id" => ParametreCategorie::FOOTER,
+                "code" => Parametre::FOOTER_UNIV_SCHEMA_HANDICAP,
+                "libelle" => "Liens vers le schéma directeur pluriannuel Handicap et accessibilité",
+                "description" => "URL vers le schéma directeur pluriannuel Handicap et accessibilité",
+                "value" => isset($_ENV['UNIV_SCHEMA_HANDICAP']) && !empty($_ENV['UNIV_SCHEMA_HANDICAP']) ? $_ENV['UNIV_SCHEMA_HANDICAP'] : "[A renseigner]",
+                "parametre_type_id" => ParametreType::STRING,
+                "ordre" => $ordre++,
+            ],
             [
                 "categorie_id" => ParametreCategorie::LOG,
                 "code" => Parametre::CONSERVATION_LOG,

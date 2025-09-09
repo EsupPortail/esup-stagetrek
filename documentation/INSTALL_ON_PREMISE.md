@@ -103,7 +103,7 @@ make clean                # Vide les caches Docker ## Attention : Supprime tous 
 Les fichiers de configuration de l'application sont disponibles ici :
 
 ```bash
-/path/to/repo//stagetrek/stagetrek/config/autoload
+/path/to/repo/stagetrek/stagetrek/config/autoload
 xxx@xxx-t24:/usr/local/applis/stagetrek/html/stagetrek/stagetrek/config/autoload# ll
 total 76
 -rwxrwxrwx 1 www-data www-data  773 22 août  10:43 api.global.php
