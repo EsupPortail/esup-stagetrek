@@ -4,6 +4,7 @@
  * UnicaenAuthentification Global Configuration
  */
 //Mettre par défaut aucune authentification ?
+#$authService = ;
 $authService = ($_ENV['AUTH_SERVICE'] && $_ENV['AUTH_SERVICE'] != "") ? $_ENV['AUTH_SERVICE']  : 'db';
 
 $authService = str_replace(' ', '', $authService);
