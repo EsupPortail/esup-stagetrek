@@ -16,7 +16,7 @@ Une [`procédure d'installation`](./documentation/INSTALL_ON_PREMISE.md) est à 
 
 
 # Mise à jour de la Base de données
-La [`procédure de mise à jour`](./documentation/BBD_ADMIN.md) vous indiquera comment appliquer les scripts de mise à jour de la base de données.
+La [`procédure de mise à jour`](./documentation/BDD_ADMIN.md) vous indiquera comment appliquer les scripts de mise à jour de la base de données.
 
 # Nous contacter
 
