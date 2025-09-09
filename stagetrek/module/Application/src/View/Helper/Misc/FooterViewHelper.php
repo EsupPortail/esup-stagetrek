@@ -51,7 +51,7 @@ class FooterViewHelper extends AbstractHelper
             $logo =null;
         }
 
-        $rf = "<img src='/unistrap-1.0.0/img/logo/republique-francaise.svg' width='110' height='100' class='logo-rf'>";
+        $rf = "<img src='/unistrap-1.0.0/img/logo/republique-francaise.svg' width='110' height='100' class='logo-rf' alt=''>";
 
         if(!isset($logo) || $logo==""){return $rf;}
         $univ = sprintf("<img src='%s'  width='160' class='logo-universite' title='%s'>",
