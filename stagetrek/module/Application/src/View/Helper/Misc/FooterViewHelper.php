@@ -58,7 +58,7 @@ class FooterViewHelper extends AbstractHelper
             $logo, (isset($name) && $name != "") ? $this->view->escapehtml($name) : ""
         );
         if(isset($url) && $url != ""){
-            $univ = sprintf("<a href='%s'>%s</a>", $url, $univ);
+            $univ = sprintf("<a href='%s' target='blank'>%s</a>", $url, $univ);
         }
         $html = sprintf("%s %s", $rf, $univ);
         return $html;
