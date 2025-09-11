@@ -21,7 +21,7 @@ return [
                         'hostname' => ($_ENV['CAS_HOST']) ?? "",
                         'port'     => (isset($_ENV['CAS_PORT'])) ? intval($_ENV['CAS_PORT']) : 0,
                         'version'  => ($_ENV['CAS_VERSION']) ?? "",
-                        'uri'      => "",
+                        'uri'      => $_ENV['CAS_URI'] ?? "",
                         'debug'    => false,
                     ],
                 ],
