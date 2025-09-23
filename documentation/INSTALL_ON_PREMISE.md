@@ -51,6 +51,57 @@ make bash
 make start
 ```
 
+## Récupérer les logs sur la machine hôte
+
+### En ligne de commande :
+
+```bash
+docker logs -f stagetrek-service # équivalent de tail -f
+```
+
+### Utilisation d'un service
+Exemple de Tours sur une Debian 12
+
+```bash
+sudo vi /etc/systemd/system/stagetrek-apache-logs.service
+```
+
+Contenu du fichier stagetrek-apache-logs.service :
+
+```yaml
+[Unit]
+Description=StageTrek Apache Docker Logs Tailing
+After=docker.service
+Requires=docker.service
+ 
+[Service]
+Type=simple
+ExecStart=/usr/bin/docker logs -f stagetrek-service
+StandardOutput=append:/usr/local/applis/stagetrek/logs/apache-docker.log
+StandardError=append:/usr/local/applis/stagetrek/logs/apache-docker.log
+Restart=always
+RestartSec=10
+User=root
+ 
+[Install]
+WantedBy=multi-user.target
+```
+
+Activation :
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable stagetrek-apache-logs.service
+sudo systemctl start stagetrek-apache-logs.service
+```
+
+Si après un premier montage des containers :
+
+```bash
+docker compose down
+docker compose up -d
+```
+
 ## TIMEMACHINE
 Le service timemachine peux être désactivé au besoin. 
 Il s'agit d'un service permettant de faire des dumps de la base de données vers un serveur de sauvegarde.
