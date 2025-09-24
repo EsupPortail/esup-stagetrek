@@ -2,21 +2,31 @@
 
 namespace Application\Entity\Db;
 
-use Application\Entity\Interfaces\LibelleEntityInterface;
+use Application\Entity\Interfaces\HasCodeInterface;
+use Application\Entity\Interfaces\HasLibelleInterface;
+use Application\Entity\Interfaces\LockableEntityInterface;
 use Application\Entity\Traits\Groupe\HasGroupesTrait;
-use Application\Entity\Traits\InterfaceImplementation\IdEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\LibelleEntityTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasCodeTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasIdTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasLibelleTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasLockTrait;
 use Application\Provider\EtatType\AnneeEtatTypeProvider;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
+use PHPUnit\Framework\Exception;
 use UnicaenEtat\Entity\Db\HasEtatsInterface;
 use UnicaenEtat\Entity\Db\HasEtatsTrait;
+use UnicaenTag\Entity\Db\HasTagsInterface;
+use UnicaenTag\Entity\Db\HasTagsTrait;
 
 /**
  * AnneeUniversitaire
  */
-class AnneeUniversitaire implements ResourceInterface, LibelleEntityInterface, HasEtatsInterface
+class AnneeUniversitaire implements ResourceInterface, HasLibelleInterface, HasEtatsInterface
+    , HasCodeInterface
+    , HasTagsInterface
+    , LockableEntityInterface
 {
     const RESOURCE_ID = 'AnneeUniversitaire';
     /**
@@ -49,8 +59,17 @@ class AnneeUniversitaire implements ResourceInterface, LibelleEntityInterface, H
         $this->libelle = sprintf("%s / %s", $yearStar, ($yearStar + 1));
     }
 
-    use IdEntityTrait;
-    use LibelleEntityTrait;
+    use HasIdTrait;
+    use HasCodeTrait;
+    public function generateDefaultCode(array $param = []) : string
+    {
+        if(!isset($this->dateDebut)){
+            throw new Exception("Impossible de généré le code de l'année : date de début non définie");
+        }
+        return $this->dateDebut->format('Y');
+    }
+
+    use HasLibelleTrait;
     use HasGroupesTrait;
     use HasEtatsTrait;
 
@@ -109,6 +128,7 @@ class AnneeUniversitaire implements ResourceInterface, LibelleEntityInterface, H
     public function setDateDebut(DateTime $dateDebut): static
     {
         $this->dateDebut = $dateDebut;
+        $this->code = $dateDebut->format('Y');
         return $this;
     }
 
@@ -134,10 +154,11 @@ class AnneeUniversitaire implements ResourceInterface, LibelleEntityInterface, H
         return $this;
     }
 
+
     /**
      * Get anneeVerrouillee.
-     *
      * @return bool
+     * @deprecated Passage au système de lock par tag
      */
     public function getAnneeVerrouillee(): bool
     {
@@ -146,23 +167,30 @@ class AnneeUniversitaire implements ResourceInterface, LibelleEntityInterface, H
 
     /**
      * Get anneeVerrouillee.
-     *
      * @return bool
+     * @deprecated Passage au système de lock par tag
      */
     public function isAnneeVerrouillee(): bool
     {
         return $this->anneeVerrouillee;
     }
+
+    use HasTagsTrait;
+    use HasLockTrait;
+
     /**
      * Get anneeVerrouillee.
-     *
-     * @return bool
+     * @deprecated Passage au système de lock par tag
      */
     public function isValidee(): bool
     {
         return $this->isAnneeVerrouillee();
     }
 
+    /**
+     * Get anneeVerrouillee.
+     * @deprecated Passage au système de lock par tag
+     */
     public function isNonValidee(): bool
     {
         return !$this->isAnneeVerrouillee();
@@ -173,6 +201,7 @@ class AnneeUniversitaire implements ResourceInterface, LibelleEntityInterface, H
      *
      * @param bool $anneeVerrouillee
      * @return \Application\Entity\Db\AnneeUniversitaire
+     * @deprecated Passage au système de lock par tag
      */
     public function setAnneeVerrouillee(bool $anneeVerrouillee): static
     {

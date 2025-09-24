@@ -3,7 +3,7 @@
 namespace Application\Entity\Db;
 
 use Application\Entity\Traits\Etudiant\HasEtudiantTrait;
-use Application\Entity\Traits\InterfaceImplementation\IdEntityTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasIdTrait;
 use DateTime;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 
@@ -22,7 +22,7 @@ class Disponibilite implements ResourceInterface
         return self::RESOURCE_ID;
     }
 
-    use IdEntityTrait;
+    use HasIdTrait;
     use HasEtudiantTrait;
 
     /**

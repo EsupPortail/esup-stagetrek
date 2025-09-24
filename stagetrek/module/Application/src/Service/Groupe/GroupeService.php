@@ -8,6 +8,7 @@ use Application\Entity\Db\Etudiant;
 use Application\Entity\Db\Groupe;
 use Application\Entity\Db\SessionStage;
 use Application\Entity\Db\Stage;
+use Application\Service\Etudiant\Traits\EtudiantServiceAwareTrait;
 use Application\Service\Misc\CommonEntityService;
 use Application\Service\Stage\Traits\SessionStageServiceAwareTrait;
 use Application\Service\Stage\Traits\StageServiceAwareTrait;
@@ -23,7 +24,7 @@ use Application\Form\Groupe\GroupeRechercheForm as FormRecherche;
 class GroupeService extends CommonEntityService
 {
     use StageServiceAwareTrait;
-
+    use EtudiantServiceAwareTrait;
     /** @return string */
     public function getEntityClass(): string
     {
@@ -121,6 +122,7 @@ class GroupeService extends CommonEntityService
      * @throws \Doctrine\ORM\Exception\ORMException
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Exception
      */
     public function addEtudiants(Groupe $groupe, array $etudiants): Groupe
     {
@@ -137,6 +139,7 @@ class GroupeService extends CommonEntityService
                     $this->getObjectManager()->persist($stage);
                     $this->getObjectManager()->persist($stage->getValidationStage());
                     $this->getObjectManager()->persist($stage->getAffectationStage());
+                    $this->getStageService()->updateEtat($stage);
                 }
             }
         }
@@ -146,6 +149,7 @@ class GroupeService extends CommonEntityService
         foreach ($etudiants as $etudiant) {
             $this->getStageService()->recomputeOrdresStage(null, $etudiant);
         }
+        $this->getEtudiantService()->updateEtats($etudiants);
         return $groupe;
     }
 
@@ -169,22 +173,23 @@ class GroupeService extends CommonEntityService
                     if (isset($affectation) && $affectation->hasEtatValidee()) {
                         throw new Exception( sprintf("Le stage %s de %s a une affectation validée par la commission et ne peux donc pas être supprimé", $stage->getLibelle(), $stage->getEtudiant()->getDisplayName()));
                     }
-                    $this->getObjectManager()->remove($stage);
+                    $this->getStageService()->delete($stage);
                 }
                 $etudiant->removeSessionStage($session);
                 $this->getObjectManager()->persist($etudiant);
                 $this->getObjectManager()->persist($session);
+//              On fait un premier flush ici pour valider la suppression des stages de l'étudiants
+//              Requis car sinon il y a une boucle dans le mapping entre l'étudiant, le groupe, ces stages ...
+                $this->getObjectManager()->flush();
             }
             $groupe->removeEtudiant($etudiant);
         }
         $this->getObjectManager()->persist($groupe);
-        if ($this->hasUnitOfWorksChange()) {
-            $this->getObjectManager()->flush();
-
-            foreach ($etudiants as $etudiant) {
-                $this->getStageService()->recomputeOrdresStage(null, $etudiant);
-            }
+        $this->getObjectManager()->flush();
+        foreach ($etudiants as $etudiant) {
+            $this->getStageService()->recomputeOrdresStage(null, $etudiant);
         }
+        $this->getEtudiantService()->updateEtats($etudiants);
         return $groupe;
     }
 
@@ -222,11 +227,13 @@ class GroupeService extends CommonEntityService
      * Un étudiant peut être inscrit dans un groupe si
      * TODO : a revoir s'il ne faut pas plutot faire un validateur sur les actions d'ajout / suppression et filtrer la listes par ce validateur
      */
-    public function findEtudiantsCanBeAddInGroupe(Groupe $groupe) : array
+    public function findEtudiantsCanBeAddInGroupe(Groupe $groupe, ?array $etudiants=null) : array
     {
         $annee = $groupe->getAnneeUniversitaire();
         $groupes = $annee->getGroupes();
-        $etudiants = $this->getObjectManager()->getRepository(Etudiant::class)->findAll();
+        if(!isset($etudiants)){
+            $etudiants = $this->getObjectManager()->getRepository(Etudiant::class)->findAll();
+        }
         return array_filter($etudiants, function (Etudiant $etudiant) use ($groupes) {
             foreach ($groupes as $g){
                 if($etudiant->getGroupes()->contains($g)){

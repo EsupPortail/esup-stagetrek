@@ -1,7 +1,7 @@
-# Stagetrek
+Application Stagetrek
+=========================
 
-Application de gestion des stages de médecine en second cycle
-
+Stagetrek est une application de Gestion des stages de médecine de second cycle
 
 # Mises à jour
 La [`liste des changements`](./documentation/CHANGELOG.md) vous permettra de savoir :
@@ -12,12 +12,26 @@ quels sont les éventuels bugs corrigés
 s'il y a des notes de mise à jour à prendre en compte pour installer cette nouvelle version.
 
 # Installation
-Une [`procédure d'installation`](./documentation/INSTALL_ON_PREMISE.md) est à votre disposition pour mettre en place une nouvelle instance de SMILE, que ce soit en test ou en production.
+Une [`procédure d'installation`](documentation/install/install.md) est à votre disposition pour mettre en place une nouvelle instance de stagetrek, que ce soit en test ou en production.
 
 
-# Mise à jour de la Base de données
-La [`procédure de mise à jour`](./documentation/BBD_ADMIN.md) vous indiquera comment appliquer les scripts de mise à jour de la base de données.
+# Documentation fonctionnelle
+
+- [doc_fonctionnelle.pdf](documentation/doc_fonctionnelle.pdf)
+- [doc_import.pdf](documentation/Import/doc_import.pdf)
+
+# Documentation technique
+- [authentification.md](documentation/Authentification/authentification.md)
+- [bdd.md](documentation/BDD/bdd.md)
+- [console.md](documentation/Consoles/console.md)
+- [fichier.md](documentation/Fichier/fichier.md)
+- [import.md](documentation/Import/import.md)
+- [configuation.md](documentation/install/configuation.md)
+- [mails.md](documentation/Mails/mails.md)
 
 # Nous contacter
 
 Pour une première prise de contact, vous pouvez nous joindre au moyen de l'adresse mail [contact-stagetrek@unicaen.fr](mailto:contact-stagetrek@unicaen.fr>)
+
+Cette application est également proposée en SaaS via le porteil Esup.
+

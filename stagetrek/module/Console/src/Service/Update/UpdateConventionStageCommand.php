@@ -19,7 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class UpdateConventionStageCommand extends AbstractUpdateEntityCommand
 {
-    protected static $defaultName = 'update-conventions-stages';
+    protected static $defaultName = 'update:conventions-stages';
 
     /**
      * @throws \Exception

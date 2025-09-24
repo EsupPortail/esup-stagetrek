@@ -37,15 +37,14 @@ use Application\Form\Preferences\Validator\PreferenceValidator;
 use Application\Misc\ArrayRessource;
 use Application\Provider\Privilege\EtudiantPrivileges;
 use Application\Service\Etudiant\DisponibiliteService;
-use Application\Service\Etudiant\EtudiantImportService;
 use Application\Service\Etudiant\EtudiantService;
 use Application\Service\Etudiant\Factory\DisponibiliteServiceFactory;
-use Application\Service\Etudiant\Factory\EtudiantImportServiceFactory;
 use Application\Service\Etudiant\Factory\EtudiantServiceFactory;
 use Application\Service\Preference\Factory\PreferenceServiceFactory;
 use Application\Service\Preference\PreferenceService;
 use Application\Validator\Import\EtudiantCsvImportValidator;
 use Application\Validator\Import\Factory\AbstractImportCsvValidatorFactory;
+use Application\Validator\Import\Factory\EtudiantCsvImportValidatorFactory;
 use Application\View\Helper\Disponibilite\DisponibiliteViewHelper;
 use Application\View\Helper\Etudiant\EtudiantViewHelper;
 use Application\View\Helper\Etudiant\EtudiantViewHelperFactory;
@@ -447,14 +446,13 @@ return [
         'factories' => [
             DisponibiliteService::class => DisponibiliteServiceFactory::class,
             EtudiantService::class => EtudiantServiceFactory::class,
-            EtudiantImportService::class => EtudiantImportServiceFactory::class,
             PreferenceService::class => PreferenceServiceFactory::class,
         ],
     ],
     'validators' => [
         'factories' => [
             //Pour les imports
-            EtudiantCsvImportValidator::class => AbstractImportCsvValidatorFactory::class,
+            EtudiantCsvImportValidator::class => EtudiantCsvImportValidatorFactory::class,
             //Pour les formulaires
             PreferenceValidator::class => PreferenceValidatorFactory::class,
             DisponibiliteValidator::class => DisponibiliteValidatorFactory::class,

@@ -12,10 +12,11 @@ use Application\Form\Referentiel\Fieldset\ReferentielPromoFieldset;
  */
 class ReferentielPromoForm extends AbstractEntityForm
 {
-    public function init(): void
+    public function init() : static
     {
         parent::init();
         $fieldset = $this->getFormFactory()->getFormElementManager()->get(ReferentielPromoFieldset::class);
         $this->setEntityFieldset($fieldset);
+        return $this;
     }
 }

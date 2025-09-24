@@ -3,11 +3,14 @@
 namespace Application\Entity\Db;
 
 use Application\Entity\Interfaces\HasAdresseInterface;
+use Application\Entity\Interfaces\HasSourceInterface;
 use Application\Entity\Traits\Adresse\HasAdresseTrait;
 use Application\Entity\Traits\Contrainte\HasContraintesCursusEtudiantsTrait;
 use Application\Entity\Traits\Etudiant\HasDisponibilitesTrait;
 use Application\Entity\Traits\Groupe\HasGroupesTrait;
-use Application\Entity\Traits\InterfaceImplementation\IdEntityTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasCodeTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasIdTrait;
+use Application\Entity\Traits\Referentiel\HasSourceTrait;
 use Application\Entity\Traits\Stage\HasSessionsStagesTrait;
 use Application\Entity\Traits\Stage\HasStagesTrait;
 use Application\Entity\Traits\Utilisateur\HasUserTrait;
@@ -15,13 +18,17 @@ use Application\Provider\EtatType\EtudiantEtatTypeProvider;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
+use UnicaenDbImport\Entity\Db\Interfaces\SourceAwareInterface;
 use UnicaenEtat\Entity\Db\HasEtatsInterface;
 use UnicaenEtat\Entity\Db\HasEtatsTrait;
+use UnicaenUtilisateur\Entity\Db\HistoriqueAwareInterface;
+use UnicaenUtilisateur\Entity\Db\HistoriqueAwareTrait;
 
 /**
  * Etudiant
  */
 class Etudiant implements ResourceInterface, HasAdresseInterface, HasEtatsInterface
+, HasSourceInterface, HistoriqueAwareInterface
 {
     const RESOURCE_ID = 'Etudiant';
     /**
@@ -29,7 +36,7 @@ class Etudiant implements ResourceInterface, HasAdresseInterface, HasEtatsInterf
      */
     protected ?string $numEtu = null;
 
-    use IdEntityTrait;
+    use HasIdTrait;
     use HasUserTrait;
     use HasAdresseTrait;
     use HasStagesTrait;
@@ -383,5 +390,14 @@ class Etudiant implements ResourceInterface, HasAdresseInterface, HasEtatsInterf
             }
         }
         return $n;
+    }
+
+    use HasSourceTrait;
+    use HistoriqueAwareTrait;
+    use HasCodeTrait;
+
+    public function getCode(): ?string
+    {
+        return $this->numEtu;
     }
 }

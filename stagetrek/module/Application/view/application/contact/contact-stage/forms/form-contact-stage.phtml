@@ -113,47 +113,5 @@ $etudiant = $fieldset->getEtudiant();
 <script type="text/javascript">
     $(function () {
         $('.selectpicker').selectpicker('render');
-
-        <?php if(!$etudiant) :?>
-        $(function () {
-
-            /// TODo : regarder du coté de l'aide de vue FormSearchAndSelect (Dans Unicaen App ViewHelper qui est peut être déjà intégrer dans le FormControlGroup)
-            let autocomp = $("#<?=$fieldset::ETUDIANT?>");
-            //Remplacement du formControlClick pour intégrer l'icone de recherche
-            searchData = autocomp.parent().find(".form-control-clear");
-            searchData.hide();
-            searchData.html("<span class='loadingInProgress fas fa-spinner fa-pulse'></span>");
-            autocomp.on("blur", function () {
-                searchData.hide();
-            })
-            autocomp.on("keydown", function () {
-                $('#<?= $formId ?> #<?= $fieldset::ETUDIANT_ID?>').val('');
-                if (this.value === '') {
-                    searchData.hide();
-                } else {
-                    searchData.show();
-                }
-            });
-
-            autocomp.autocomplete({
-                elementDomId: '<?=$fieldset::ETUDIANT ?>',
-                // source: '/etudiants/rechercherEtudiant',// donner ici en dure car on ne passe pas par la fonction url (ne marche pas dans le javascript)
-                source: '<?= $this->url(ReferentielController::ROUTE_RECHERCHER_ETUDIANT, ['source' => Source::STAGETREK], [], true)?>',
-                minLength: 2,
-                delay: 750,
-                select: function (event, ui) {
-                    $('#<?= $formId ?> #<?= $fieldset::ETUDIANT_ID?>').val(ui.item.id);
-                    searchData.hide();
-                }
-
-            });
-            autocomp.on("propertychange", function () {
-                if (this.value === '') {//On vide les autres champs
-                    $('#<?= $formId ?> #<?= $fieldset::ETUDIANT_ID?>').val('');
-                }
-                searchData.hide();
-            });
-        });
-        <?php endif; ?>
     });
 </script>

@@ -291,7 +291,7 @@ class SessionStageViewHelper extends AbstractEntityActionViewHelper
         $niveauDemande = $session->getNiveauDemande($terrain);
 
         $libelleDemande = (isset($niveauDemande)) ? $niveauDemande->getLibelle() : "Indéterminée";
-        $code = ($niveauDemande->getCode()) ?? $niveauDemande::INDETERMINE;
+        $code = (isset($niveauDemande)) ? $niveauDemande->getCode() : TerrainStageNiveauDemande::INDETERMINE;
         $badgeClass = match ($code) {
                 TerrainStageNiveauDemande::INDETERMINE => "badge bnd bnd-na",
                 TerrainStageNiveauDemande::FERME => "badge bnd bnd-ferme",

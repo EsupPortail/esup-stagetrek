@@ -13,9 +13,9 @@ trait HasEtudiantsTrait
 {
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
+     * @var \Doctrine\Common\Collections\Collection|null
      */
-    protected Collection $etudiants;
+    protected ?Collection $etudiants = null;
 
     /**
      * @param Etudiant $etudiant
@@ -23,6 +23,7 @@ trait HasEtudiantsTrait
      */
     public function addEtudiant(Etudiant $etudiant): static
     {
+        if(!isset($this->etudiants)){$this->initEtudiantsCollection();}
         if (!$this->etudiants->contains($etudiant)) {
             $this->etudiants->add($etudiant);
         }
@@ -37,6 +38,7 @@ trait HasEtudiantsTrait
      */
     public function removeEtudiant(Etudiant $etudiant): static
     {
+        if(!isset($this->etudiants)){$this->initEtudiantsCollection();}
         $this->etudiants->removeElement($etudiant);
         return $this;
     }
@@ -47,8 +49,19 @@ trait HasEtudiantsTrait
      */
     public function getEtudiants(): Collection
     {
+        if(!isset($this->etudiants)){$this->initEtudiantsCollection();}
         return $this->etudiants;
     }
+
+    public function setEtudiants(Collection|array $etudiants): void
+    {
+        if(is_array($etudiants)) {
+            $etudiants = new ArrayCollection($etudiants);
+        }
+        if(!isset($this->etudiants)){$this->initEtudiantsCollection();}
+        $this->etudiants = $etudiants;
+    }
+
 
     /**
      * @return void

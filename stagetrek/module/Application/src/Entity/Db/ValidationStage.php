@@ -2,7 +2,7 @@
 
 namespace Application\Entity\Db;
 
-use Application\Entity\Traits\InterfaceImplementation\IdEntityTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasIdTrait;
 use Application\Entity\Traits\Stage\HasStageTrait;
 use Application\Provider\EtatType\ValidationStageEtatTypeProvider;
 use DateTime;
@@ -15,7 +15,7 @@ use UnicaenEtat\Entity\Db\HasEtatsTrait;
  */
 class ValidationStage implements HasEtatsInterface
 {
-    use IdEntityTrait;
+    use HasIdTrait;
     use HasStageTrait;
     use HasEtatsTrait;
 

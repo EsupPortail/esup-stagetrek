@@ -33,7 +33,7 @@ class ContactStageFieldset extends AbstractEntityFieldset
 
     use IdInputAwareTrait;
 
-    public function init(): void
+    public function init() : static
     {
         $this->initIdInput();
         $this->initContactInput();
@@ -41,6 +41,7 @@ class ContactStageFieldset extends AbstractEntityFieldset
         $this->initStageInput();
         $this->initSessionInput();
         $this->initPropertiesInput();
+        return $this;
     }
 
     const CONTACT = "contact";

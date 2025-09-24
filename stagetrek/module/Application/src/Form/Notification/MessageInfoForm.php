@@ -13,10 +13,11 @@ use Application\Form\Notification\Fieldset\MessageInfoFieldset;
 class MessageInfoForm extends AbstractEntityForm
 {
 
-    public function init(): void
+    public function init() : static
     {
         parent::init();
         $fieldset = $this->getFormFactory()->getFormElementManager()->get(MessageInfoFieldset::class);
         $this->setEntityFieldset($fieldset);
+        return $this;
     }
 }

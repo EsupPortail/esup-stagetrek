@@ -5,9 +5,9 @@ namespace Application\Entity\Db;
 use Application\Entity\Traits\Contact\HasContactStageTrait;
 use Application\Entity\Traits\Convention\HasConventionStageTrait;
 use Application\Entity\Traits\Etudiant\HasEtudiantTrait;
-use Application\Entity\Traits\InterfaceImplementation\IdEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\LibelleEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\OrderEntityTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasIdTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasLibelleTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasOrderTrait;
 use Application\Entity\Traits\Stage\HasStageTrait;
 use DateTime;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
@@ -30,9 +30,9 @@ class ConventionStageSignataire implements ResourceInterface
 
 
 
-    use IdEntityTrait;
-    use LibelleEntityTrait;
-    use OrderEntityTrait;
+    use HasIdTrait;
+    use HasLibelleTrait;
+    use HasOrderTrait;
     use HasEtudiantTrait;
     use HasStageTrait;
     use HasConventionStageTrait;

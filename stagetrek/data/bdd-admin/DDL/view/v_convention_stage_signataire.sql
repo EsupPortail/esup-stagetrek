@@ -46,12 +46,12 @@ WITH etudiant AS (
            FROM contacts
         )
  SELECT row_number() OVER () AS id,
-    stage_id,
-    etudiant_id,
-    contact_stage_id,
-    convention_stage_id,
-    libelle,
-    display_name,
-    mail,
-    ordre_affichage
+    signataires.stage_id,
+    signataires.etudiant_id,
+    signataires.contact_stage_id,
+    signataires.convention_stage_id,
+    signataires.libelle,
+    signataires.display_name,
+    signataires.mail,
+    signataires.ordre_affichage
    FROM signataires

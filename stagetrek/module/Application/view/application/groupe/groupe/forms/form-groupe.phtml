@@ -29,17 +29,30 @@ $fieldset = $form->getEntityFieldset();
 <?= $fr($fieldset->get(GroupeFieldset::ID)); ?>
 
 <div class="row">
-    <div class="col-md-6">
-        <?= $fct($fieldset->get(GroupeFieldset::LIBELLE)); ?>
+    <div class="col-md-4">
+        <?= $fct($fieldset->get(GroupeFieldset::CODE)); ?>
     </div>
-    <div class="col-md-6">
-        <?= $fcg($fieldset->get(GroupeFieldset::ANNEE_UNIVERSITAIRE)); ?>
+</div>
+<div class="row">
+    <div class="col-md-12 text-small text-muted">
+        Laissez ce champ vide pour utiliser le code par défaut sous la forme "YYYY_DFAMSX"
     </div>
 </div>
 
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-4">
+        <?= $fct($fieldset->get(GroupeFieldset::LIBELLE)); ?>
+    </div>
+    <div class="col-md-4">
+        <?= $fcg($fieldset->get(GroupeFieldset::ANNEE_UNIVERSITAIRE)); ?>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-4">
         <?= $fcg($fieldset->get(GroupeFieldset::NIVEAU_ETUDE)); ?>
+    </div>
+    <div class="col-md-4">
+        <?= $fcg($fieldset->get(GroupeFieldset::REFERENTIELS)); ?>
     </div>
 </div>
 

@@ -13,9 +13,9 @@ trait HasGroupesTrait
 {
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
+     * @var \Doctrine\Common\Collections\Collection|null
      */
-    protected Collection $groupes;
+    protected ?Collection $groupes = null;
 
     /**
      * @return void
@@ -53,8 +53,22 @@ trait HasGroupesTrait
      * Get groupes
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getGroupes() : Collection
+    public function getGroupes() : ?Collection
     {
+        if(!isset($this->groupes)){
+            $this->initGroupesCollection();
+        }
         return $this->groupes;
     }
+
+    public function setGroupes(Collection|array $groupes): static
+    {
+        if(is_array($groupes)){
+            $groupes = new ArrayCollection($groupes);
+        }
+        $this->groupes = $groupes;
+        return $this;
+    }
+
+
 }

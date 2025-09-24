@@ -18,7 +18,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class UpdateValidationStageCommand extends AbstractUpdateEntityCommand
 {
-    protected static $defaultName = 'update-validations-stages';
+    protected static $defaultName = 'update:validations-stages';
 
     /**
      * @throws \Exception

@@ -13,11 +13,12 @@ use Application\Form\Preferences\Fieldset\PreferenceFieldset;
 class PreferenceForm extends AbstractEntityForm
 {
 
-    public function init(): void
+    public function init() : static
     {
         parent::init();
         $fieldset = $this->getFormFactory()->getFormElementManager()->get(PreferenceFieldset::class);
         $this->setEntityFieldset($fieldset);
+        return $this;
     }
 
     public function setModeAdmin(bool $modeAdmin=true): void

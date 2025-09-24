@@ -29,7 +29,7 @@ class ModeleConventionStageFieldset extends AbstractEntityFieldset
     const FOOTER = "footer";
     const TERRAINS = "terrainsStages";
 
-    public function init(): void
+    public function init() : static
     {
         $this->initIdInput();
         $this->setCodeLabel("Label du template");
@@ -39,6 +39,7 @@ class ModeleConventionStageFieldset extends AbstractEntityFieldset
         $this->initCorpsInput();
         $this->initCssInput();
         $this->initTerrainsStagesInput();
+        return $this;
     }
 
     private function initCorpsInput() : void

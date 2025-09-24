@@ -1,16 +1,22 @@
 <?php
 
-$authService = ($_ENV['AUTH_SERVICE'] && $_ENV['AUTH_SERVICE'] != "") ? $_ENV['AUTH_SERVICE']  : 'db';
-
-$authService = str_replace(' ', '', $authService);
-$authService = explode(",", $authService);
-
-foreach ($authService as $authKey){
-    $authServicesAllowed[$authKey] = true;
-}
-
-if(!isset($authServicesAllowed['ldap'])){
-    return [];
+$connection =  [];
+if(isset($_ENV['LDAP_REPLICA_HOST']) && ($_ENV['LDAP_REPLICA_HOST']) != ""){
+    $connection = [
+        'default' => [
+            'params' => [
+                'host'                  => ($_ENV['LDAP_REPLICA_HOST']) ?? "",
+                'port'                  => ($_ENV['LDAP_REPLICA_PORT']) ?? "",
+                'username'              => ($_ENV['LDAP_REPLICA_USERNAME']) ?? "",
+                'password'              => ($_ENV['LDAP_REPLICA_PASSWORD']) ?? "",
+//                        diff entre les 2 config (Pour unicaen APP on se limite au poeple')
+                'baseDn'                => ($_ENV['LDAP_BRANCH_PEOPLE']) ?? "",
+                'bindRequiresDn'        => true,
+                'accountFilterFormat'   => "(&(objectClass=supannPerson)(supannAliasLogin=%s))",
+//                        'accountFilterFormat'   => "(&(eduPersonAffiliation=member)(!(eduPersonAffiliation=student))(supannAliasLogin=%s))",
+            ]
+        ]
+    ];
 }
 return [
     // Module [Unicaen]Ldap
@@ -29,21 +35,7 @@ return [
     // Module [Unicaen]App
     'unicaen-app' => [
         'ldap' => [
-            'connection' => [
-                'default' => [
-                    'params' => [
-                        'host'                  => ($_ENV['LDAP_REPLICA_HOST']) ?? "",
-                        'port'                  => ($_ENV['LDAP_REPLICA_PORT']) ?? "",
-                        'username'              => ($_ENV['LDAP_REPLICA_USERNAME']) ?? "",
-                        'password'              => ($_ENV['LDAP_REPLICA_PASSWORD']) ?? "",
-//                        diff entre les 2 config (Pour unicaen APP on se limite au poeple')
-                        'baseDn'                => ($_ENV['LDAP_BRANCH_PEOPLE']) ?? "",
-                        'bindRequiresDn'        => true,
-                        'accountFilterFormat'   => "(&(objectClass=supannPerson)(supannAliasLogin=%s))",
-//                        'accountFilterFormat'   => "(&(eduPersonAffiliation=member)(!(eduPersonAffiliation=student))(supannAliasLogin=%s))",
-                    ]
-                ]
-            ],
+            'connection' => $connection,
             'dn' => [
                 'UTILISATEURS_BASE_DN'                  => 'ou=people,dc=unicaen,dc=fr',
                 'UTILISATEURS_DESACTIVES_BASE_DN'       => 'ou=deactivated,dc=unicaen,dc=fr',

@@ -168,18 +168,18 @@ class CSVService
     public function readCSVFile(array $fileData=[]): static
     {
         if(!key_exists("type", $fileData) || !in_array($fileData["type"], $this->mimeType)){
-            throw new ImportException("Le fichier fournis n'est pas un CSV valide.");
+            throw new ImportException("Le fichier fourni n'est pas un CSV valide.");
         }
         $fileName = key_exists("tmp_name", $fileData) ? $fileData["tmp_name"] : null;
         if(!$fileName){
-            throw new ImportException("Le fichier fournis n'a pas été correctement chargé.");
+            throw new ImportException("Le fichier fourni n'a pas été correctement chargé.");
         }
         $csv =  array_map(
             function($data) { return str_getcsv($data, $this->separator, $this->enclosure);}
             , file($fileName)
         );
         if($csv==[]){
-            throw new ImportException("Le fichier fournis est vide");
+            throw new ImportException("Le fichier fourni est vide");
         }
         //Vérification du header et récupération de la colonne pour chaque entête
         $headerPosition = [];

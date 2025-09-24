@@ -59,13 +59,17 @@ class SourceAssertion extends AbstractAssertion
 
     private function assertModifier(?Source $source) : bool
     {
-        return isset($source);
+        if(!isset($source)){
+            return false;
+        }
+        if($source->isLock()){return false;}
+        return true;
     }
 
     private function assertSupprimer(?Source $source) : bool
     {
         if(!isset($source)) return false;
-        if($source->getCode() == Source::STAGETREK) return false;
+        if($source->isLock()){return false;}
 
         $ref = $this->getObjectManager()->getRepository(ReferentielPromo::class)->findOneBy(['source' => $source]);
         if(isset($ref)){return false;} //on ne peut pas supprimé une source utilisé

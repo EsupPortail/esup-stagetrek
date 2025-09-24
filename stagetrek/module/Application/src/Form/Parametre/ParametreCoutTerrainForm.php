@@ -14,11 +14,12 @@ use Application\Form\Parametre\Fieldset\ParametreCoutTerrainFieldset;
 class ParametreCoutTerrainForm extends AbstractEntityForm
 {
 
-    public function init(): void
+    public function init() : static
     {
         parent::init();
         $fieldset = $this->getFormFactory()->getFormElementManager()->get(ParametreCoutTerrainFieldset::class);
         $this->setEntityFieldset($fieldset);
+        return $this;
     }
 
     public function fixerTerrainStage(TerrainStage $terrain): static

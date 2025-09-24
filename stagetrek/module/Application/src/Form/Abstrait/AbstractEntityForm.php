@@ -54,7 +54,7 @@ abstract class AbstractEntityForm extends Form implements AbstractFormConstantes
         $this->title = ($name) ?: "";
     }
 
-    public function init(): void
+    public function init(): static
     {
         parent::init();
         $this
@@ -65,6 +65,7 @@ abstract class AbstractEntityForm extends Form implements AbstractFormConstantes
 
         $this->initSubmit();
         $this->initCSRF();
+        return $this;
     }
 
     protected function initSubmit() : void

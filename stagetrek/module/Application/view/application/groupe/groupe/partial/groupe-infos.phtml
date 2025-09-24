@@ -5,17 +5,13 @@ use Application\Entity\Db\Groupe;
 use Application\View\Helper\Annees\AnneeUniversitaireViewHelper;
 use Application\View\Helper\Groupe\GroupeViewHelper;
 
-
 /**
  * @see GroupeController::afficherAction()
  *
-
  * @var Groupe $groupe
  */
-
 /** @var GroupeViewHelper $vh */
 $vh = $this->groupe($groupe);
-
 $annee = $groupe->getAnneeUniversitaire();
 /** @var AnneeUniversitaireViewHelper $anneeVh */
 $anneeVh = $this->anneeUniversitaire($annee);
@@ -29,6 +25,14 @@ $anneeEtat = $annee->getEtatActif();
                 Description
             </div>
             <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <strong>Code</strong>
+                    </div>
+                    <div class="col-md-8">
+                        <?= $groupe->getCode() ?>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-md-4">
                         <strong>Libellé</strong>
@@ -69,7 +73,7 @@ $anneeEtat = $annee->getEtatActif();
                         <strong>Libellé</strong>
                     </div>
                     <div class="col-md-8">
-                        <?= $anneeVh->lienAfficher()?>
+                        <?= $anneeVh->lienAfficher() ?>
                     </div>
                 </div>
                 <div class="row">
@@ -86,11 +90,47 @@ $anneeEtat = $annee->getEtatActif();
                         <strong>Etat</strong>
                     </div>
                     <div class="col-md-8">
-                        <?= $this->etatinstance($anneeEtat, ['display-categorie'=> false, 'display-libelle' => true]) ?>
+                        <?= $this->etatinstance($anneeEtat, ['display-categorie' => false, 'display-libelle' => true]) ?>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <div class="col my-3">
+        <div class="card h-100">
+            <div class="card-header">
+                Référentiels
+            </div>
+            <div class="card-body">
+                <?php
+                $referentiels = $groupe->getReferentielsPromos();
+                if (!isset($referentiels) || $referentiels->isEmpty()): ?>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="alert alert-info">
+                                Le groupe n'est associé à aucun référentiel pour l'import d'étudiants.
+                            </div>
+                        </div>
+                    </div>
+                <?php else: ?>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <strong>Liste des référentiels</strong>
+                        </div>
+                        <div class="col-md-8">
+                            <?php foreach ($referentiels as $referentiel): ?>
+                                <?= $this->referentielPromo($referentiel); ?>
+                            <?php endforeach ?>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 text-small text-muted">
+                            Lors d'un import depuis l'un de ces référentiels, les étudiants seront automatiquement ajoutés dans ce groupe
+                        </div>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
 </div>

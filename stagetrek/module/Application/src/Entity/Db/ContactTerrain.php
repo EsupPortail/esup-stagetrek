@@ -3,12 +3,12 @@
 namespace Application\Entity\Db;
 
 use Application\Entity\Db;
-use Application\Entity\Interfaces\CodeEntityInterface;
-use Application\Entity\Interfaces\LibelleEntityInterface;
+use Application\Entity\Interfaces\HasCodeInterface;
+use Application\Entity\Interfaces\HasLibelleInterface;
 use Application\Entity\Traits\Contact\HasContactTrait;
-use Application\Entity\Traits\InterfaceImplementation\CodeEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\IdEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\LibelleEntityTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasCodeTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasIdTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasLibelleTrait;
 use Application\Entity\Traits\Stage\HasTerrainStageTrait;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 
@@ -16,7 +16,7 @@ use Laminas\Permissions\Acl\Resource\ResourceInterface;
  * ContactTerrain
  */
 class ContactTerrain implements ResourceInterface,
-    CodeEntityInterface, LibelleEntityInterface
+    HasCodeInterface, HasLibelleInterface
 {
     const RESOURCE_ID = 'ContactTerrain';
 
@@ -33,8 +33,8 @@ class ContactTerrain implements ResourceInterface,
      */
     protected bool $isResponsableStage = false;
 
-    use IdEntityTrait;
-    use CodeEntityTrait;
+    use HasIdTrait;
+    use HasCodeTrait;
 
     /**
      * @return string|null
@@ -48,7 +48,7 @@ class ContactTerrain implements ResourceInterface,
         return $this;
     }
 
-    use LibelleEntityTrait;
+    use HasLibelleTrait;
     /**
      * Get libelle.
      *

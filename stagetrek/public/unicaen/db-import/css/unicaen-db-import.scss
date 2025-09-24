@@ -1,0 +1,33 @@
+dl.import,
+dl.synchro {
+  dl dl dt {
+    border-left: solid 3px rgba(128, 128, 128, 0.3);
+  }
+  dl {
+    margin-bottom: 0;
+  }
+  dt {
+    h3 {
+      margin-bottom: 0.25rem;
+    }
+  }
+}
+
+dl.caracteristiques,
+dl.caracteristiques {
+  dl dl {
+    dt, dd {
+      font-size: 90%;
+      line-height: normal;
+      margin-bottom: 0;
+    }
+  }
+  dd.name {
+    font-weight: 700;
+    font-size: 140%
+  }
+  ul, ol {
+    padding-left: 1rem;
+    margin-bottom: 0;
+  }
+}

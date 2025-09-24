@@ -18,10 +18,11 @@ class ContrainteCursusEtudiantFieldset extends AbstractEntityFieldset
 
     use IdInputAwareTrait;
     /** Placeholder des inputs */
-    public function init(): void
+    public function init() : static
     {
         $this->initIdInput();
         $this->initEquivalenceInput();
+        return $this;
     }
 
     const NB_STAGE_VALIDE_EQUIVALENCE = "nbEquivalences";

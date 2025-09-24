@@ -35,15 +35,16 @@ $fieldset = $form->getEntityFieldset();
         </div>
     </div>
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-8">
             <?= $fct($fieldset->get($fieldset::LIBELLE)); ?>
         </div>
     </div>
     <div class="row">
         <div class="col-md-6">
             <?= $fct($fieldset->get($fieldset::CODE_PROMO)); ?>
+            <div class="text-small text-muted">Code de la promo dans l'annuaire LDAP, code de la VET dans apogée / Pégase ...</div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <?= $fcg($fieldset->get($fieldset::ORDRE)); ?>
         </div>
     </div>

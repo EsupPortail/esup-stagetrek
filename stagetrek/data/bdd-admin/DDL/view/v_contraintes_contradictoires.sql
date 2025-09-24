@@ -152,6 +152,6 @@ WITH dates AS (
              LEFT JOIN contradiction_indirect cdi ON c_1.contrainte_id = cdi.contrainte_id
           GROUP BY c_1.contrainte_id, c_1.portee, c_1.categorie_id, c_1.terrain_id, c_1.min, c_1.max
         )
- SELECT contrainte_id
+ SELECT c.contrainte_id
    FROM contradiction c
-  WHERE contradiction = true
+  WHERE c.contradiction = true

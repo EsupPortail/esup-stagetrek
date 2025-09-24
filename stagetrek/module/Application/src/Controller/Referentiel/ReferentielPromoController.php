@@ -7,7 +7,7 @@ use Application\Controller\Misc\Interfaces\AbstractActionController;
 use Application\Entity\Db\ReferentielPromo;
 use Application\Entity\Traits\Referentiel\HasReferentielPromoTrait;
 use Application\Form\Misc\Traits\ConfirmationFormAwareTrait;
-use Application\Form\Referentiel\Traits\ReferentielPromoFormsAwareTrait;
+use Application\Form\Referentiel\Traits\ReferentielPromoFormAwareTrait;
 use Application\Service\Referentiel\Traits\ReferentielPromoServiceAwareTrait;
 use Exception;
 use Laminas\View\Model\ViewModel;
@@ -37,8 +37,8 @@ class ReferentielPromoController extends AbstractActionController
     const EVENT_SUPPRIMER = 'event-supprimer-referentiel-promo';
 
     use ReferentielPromoServiceAwareTrait;
-    use ReferentielPromoFormsAwareTrait;
     use ConfirmationFormAwareTrait;
+    use ReferentielPromoFormAwareTrait;
 
     use HasReferentielPromoTrait;
 

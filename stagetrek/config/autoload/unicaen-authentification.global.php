@@ -28,18 +28,6 @@ if($userpationAllowed != ""){
 else{
     $userpationAllowed=[];
 }
-//A revoir
-$defaultUsers = ($_ENV['DEFAULT_USERS']) ?? "";
-if($defaultUsers != ""){
-    $defaultUsers = str_replace(' ', '', $defaultUsers);
-    $defaultUsers = explode(",", $defaultUsers);
-}
-else{
-    $defaultUsers=[];
-}
-
-
-
 
 $config = [
     // Module [Unicaen]Auth
@@ -57,8 +45,6 @@ $config = [
          * NB: à réserver exclusivement aux tests.
          */
         'usurpation_allowed_usernames' => $userpationAllowed,
-        'default_users' => $defaultUsers,
-
 
         'local' => [
             'order' => 1,
@@ -127,12 +113,17 @@ $config = [
 //            ],
 //
 //
+
             /**
              * Clés dont la présence sera requise par l'application dans la variable superglobale $_SERVER
              * une fois l'authentification réussie.
+             * Mise à null ici pour passer la vérification sur les supannEmpId | supannEtuId | supannRefId
+             * Paramètre requis théoriquement par UnicaenUtilisateur, mais qui semble poser problème
+             * TODO : voir la cause du pb (est-ce que c'est car renater ne renvoie pas supannEmpId ou un autre problème)
              */
-            'required_attributes' => [
-            ],
+//            'required_attributes' => [
+//            ],
+            'required_attributes' => null,
             /**
              * Configuration de la stratégie d'extraction d'un identifiant utile parmi les données d'authentification
              * shibboleth.
@@ -149,6 +140,11 @@ $config = [
                 ],
             ],
         ],
+
+
+        //Pour la commande console utilisateur:create-user
+        //Doit être sous la forme d'un table ['db', 'ldap' ...]
+        'authentications_services' => $authService,
     ],
 ];
 

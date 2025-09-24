@@ -41,7 +41,7 @@ class AffectationStageFieldset  extends AbstractEntityFieldset
     const VALIDER = "validee";
     const INFOS = "informationsComplementaires";
     const SEND_MAIL = "sendMail";
-    public function init(): void
+    public function init(): static
     {
         $this->initIdInput();
         $this->initStageInput();
@@ -49,6 +49,7 @@ class AffectationStageFieldset  extends AbstractEntityFieldset
         $this->initCoutsAffectationInputs();
         $this->initEtatsInputs();
         $this->initPropertiesInputs();
+        return $this;
     }
 
     private function initStageInput() : void

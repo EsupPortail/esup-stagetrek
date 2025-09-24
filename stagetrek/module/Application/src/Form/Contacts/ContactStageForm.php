@@ -10,11 +10,12 @@ use Application\Form\Contacts\Fieldset\ContactStageFieldset;
 
 class ContactStageForm extends AbstractEntityForm
 {
-    public function init(): void
+    public function init(): static
     {
         parent::init();
         $fieldset = $this->getFormFactory()->getFormElementManager()->get(ContactStageFieldset::class);
         $this->setEntityFieldset($fieldset);
+        return $this;
     }
 
     public function setModeEdition(?bool $mode = true) : static

@@ -1,0 +1,27 @@
+dl.import dl dl dt,
+dl.synchro dl dl dt {
+  border-left: solid 3px rgba(128, 128, 128, 0.3); }
+dl.import dl,
+dl.synchro dl {
+  margin-bottom: 0; }
+dl.import dt h3,
+dl.synchro dt h3 {
+  margin-bottom: 0.25rem; }
+
+dl.caracteristiques dl dl dt, dl.caracteristiques dl dl dd,
+dl.caracteristiques dl dl dt,
+dl.caracteristiques dl dl dd {
+  font-size: 90%;
+  line-height: normal;
+  margin-bottom: 0; }
+dl.caracteristiques dd.name,
+dl.caracteristiques dd.name {
+  font-weight: 700;
+  font-size: 140%; }
+dl.caracteristiques ul, dl.caracteristiques ol,
+dl.caracteristiques ul,
+dl.caracteristiques ol {
+  padding-left: 1rem;
+  margin-bottom: 0; }
+
+/*# sourceMappingURL=unicaen-db-import.css.map */

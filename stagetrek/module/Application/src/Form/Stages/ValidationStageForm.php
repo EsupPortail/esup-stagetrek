@@ -14,11 +14,12 @@ use Laminas\Form\Element\Csrf;
 class ValidationStageForm extends AbstractEntityForm
 {
 
-    public function init(): void
+    public function init() : static
     {
         parent::init();
         $fieldset = $this->getFormFactory()->getFormElementManager()->get(ValidationStageFieldset::class);
         $this->setEntityFieldset($fieldset);
+        return $this;
     }
 
     protected function initCSRF() : void

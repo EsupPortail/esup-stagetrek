@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE public.algo_score_v2(IN sessionid integer)
+CREATE OR REPLACE PROCEDURE public.algo_score_v2(sessionid integer)
  LANGUAGE plpgsql
 AS $procedure$
 declare

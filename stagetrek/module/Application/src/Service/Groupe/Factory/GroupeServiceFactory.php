@@ -2,6 +2,7 @@
 
 namespace Application\Service\Groupe\Factory;
 
+use Application\Service\Etudiant\EtudiantService;
 use Application\Service\Groupe\GroupeService;
 use Application\Service\Stage\SessionStageService;
 use Application\Service\Stage\StageService;
@@ -40,6 +41,10 @@ class GroupeServiceFactory implements FactoryInterface
         /** @var SessionStageService $sessionStageService */
         $sessionStageService = $container->get(ServiceManager::class)->get(SessionStageService::class);
         $serviceProvider->setSessionStageService($sessionStageService);
+
+        /** @var \Application\Service\Etudiant\EtudiantService $etudiantService */
+        $etudiantService = $container->get(ServiceManager::class)->get(EtudiantService::class);
+        $serviceProvider->setEtudiantService($etudiantService);
 
         return $serviceProvider;
     }

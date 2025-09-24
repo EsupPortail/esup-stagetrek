@@ -7,7 +7,7 @@ use Application\Entity\Traits\Contact\HasContactsStagesTrait;
 use Application\Entity\Traits\Convention\HasConventionStageSignatairesTrait;
 use Application\Entity\Traits\Convention\HasConventionStageTrait;
 use Application\Entity\Traits\Etudiant\HasEtudiantTrait;
-use Application\Entity\Traits\InterfaceImplementation\IdEntityTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasIdTrait;
 use Application\Entity\Traits\Preference\HasPreferencesTrait;
 use Application\Entity\Traits\Stage\HasAffectationStageTrait;
 use Application\Entity\Traits\Stage\HasSessionStageTrait;
@@ -45,7 +45,7 @@ class Stage implements ResourceInterface, HasEtatsInterface
         $this->etats = new ArrayCollection();
     }
 
-    use IdEntityTrait;
+    use HasIdTrait;
     use HasSessionStageTrait;
     use HasPreferencesTrait;
     use HasAffectationStageTrait;

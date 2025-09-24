@@ -29,7 +29,7 @@ class FaqQuestionFieldset extends Fieldset
 {
     use ProvidesObjectManager;
 
-    public function init(): void
+    public function init() : static
     {
         $this->initIdInput();
         $this->initCategorieInput();
@@ -37,6 +37,7 @@ class FaqQuestionFieldset extends Fieldset
         $this->initReponseInput();
         $this->initOrdreInput();
         $this->initRolesInput();
+        return $this;
     }
 
 

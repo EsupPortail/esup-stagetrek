@@ -15,11 +15,12 @@ use Application\Form\Groupe\Fieldset\GroupeFieldset;
 class GroupeForm extends AbstractEntityForm implements AbstractFormConstantesInterface
 {
 
-    public function init(): void
+    public function init(): static
     {
         parent::init();
         $fieldset = $this->getFormFactory()->getFormElementManager()->get(GroupeFieldset::class);
         $this->setEntityFieldset($fieldset);
+        return $this;
     }
 
     /**

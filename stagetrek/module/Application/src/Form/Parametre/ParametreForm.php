@@ -12,10 +12,11 @@ use Application\Form\Parametre\Fieldset\ParametreFieldset;
  */
 class ParametreForm extends AbstractEntityForm
 {
-    public function init(): void
+    public function init() : static
     {
         parent::init();
         $fieldset = $this->getFormFactory()->getFormElementManager()->get(ParametreFieldset::class);
         $this->setEntityFieldset($fieldset);
+        return $this;
     }
 }

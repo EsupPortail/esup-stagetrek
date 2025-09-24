@@ -24,7 +24,7 @@ use UnicaenMail\Entity\Db\Mail;
 
 class UpdateEntitiesCommand extends AbstractUpdateEntityCommand
 {
-    protected static $defaultName = 'update-entities';
+    protected static $defaultName = 'update:entities';
 
     protected function configure() : static
     {

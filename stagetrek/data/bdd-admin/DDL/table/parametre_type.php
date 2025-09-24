@@ -19,7 +19,7 @@ return [
             'precision'   => NULL,
             'nullable'    => TRUE,
             'default'     => 'NULL',
-            'position'    => 3,
+            'position'    => 4,
             'commentaire' => NULL,
         ],
         'code'          => [
@@ -31,7 +31,7 @@ return [
             'precision'   => NULL,
             'nullable'    => TRUE,
             'default'     => NULL,
-            'position'    => 5,
+            'position'    => 2,
             'commentaire' => NULL,
         ],
         'id'            => [
@@ -55,7 +55,7 @@ return [
             'precision'   => NULL,
             'nullable'    => FALSE,
             'default'     => NULL,
-            'position'    => 2,
+            'position'    => 3,
             'commentaire' => NULL,
         ],
         'ordre'         => [
@@ -67,7 +67,7 @@ return [
             'precision'   => 4,
             'nullable'    => TRUE,
             'default'     => '1',
-            'position'    => 4,
+            'position'    => 5,
             'commentaire' => NULL,
         ],
     ],

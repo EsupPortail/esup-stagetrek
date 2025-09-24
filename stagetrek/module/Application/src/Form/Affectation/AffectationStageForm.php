@@ -17,12 +17,13 @@ class AffectationStageForm extends AbstractEntityForm
 
     const LABEL_SUBMIT_AFFECTER = "Affecter";
 
-    public function init(): void
+    public function init(): static
     {
         parent::init();
         $fieldset = $this->getFormFactory()->getFormElementManager()->get(AffectationStageFieldset::class);
         $this->setEntityFieldset($fieldset);
        $this->get(self::INPUT_SUBMIT)->setLabel(self::LABEL_SUBMIT_AFFECTER);
+       return $this;
     }
 
     /**

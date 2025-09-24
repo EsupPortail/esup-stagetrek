@@ -2,15 +2,15 @@
 
 namespace Application\Entity\Db;
 
-use Application\Entity\Interfaces\AcronymeEntityInterface;
-use Application\Entity\Interfaces\LibelleEntityInterface;
-use Application\Entity\Interfaces\OrderEntityInterface;
+use Application\Entity\Interfaces\HasAcronymeInterface;
+use Application\Entity\Interfaces\HasLibelleInterface;
+use Application\Entity\Interfaces\HasOrderInterface;
 use Application\Entity\Traits\Contraintes\HasContrainteCursusPorteeTrait;
-use Application\Entity\Traits\InterfaceImplementation\AcronymeEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\DescriptionEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\IdEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\LibelleEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\OrderEntityTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasAcronymeTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasDescriptionTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasIdTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasLibelleTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasOrderTrait;
 use Application\Entity\Traits\Stage\HasTerrainStageTrait;
 use Application\Entity\Traits\Terrain\HasCategorieStageTrait;
 use DateTime;
@@ -21,7 +21,7 @@ use Laminas\Permissions\Acl\Resource\ResourceInterface;
  * ContrainteCursus
  */
 class ContrainteCursus implements ResourceInterface,
-    LibelleEntityInterface, AcronymeEntityInterface, OrderEntityInterface
+    HasLibelleInterface, HasAcronymeInterface, HasOrderInterface
 {
     const RESOURCE_ID = 'ContrainteCursus';
 
@@ -34,7 +34,7 @@ class ContrainteCursus implements ResourceInterface,
     }
 
     /**
-     * @param OrderEntityInterface[] $entities
+     * @param HasOrderInterface[] $entities
      */
     public static function sort(array|Collection $entities, string $order = 'asc'): array
     {
@@ -54,15 +54,15 @@ class ContrainteCursus implements ResourceInterface,
         return $entities;
     }
 
-    use IdEntityTrait;
-    use LibelleEntityTrait;
-    use AcronymeEntityTrait;
+    use HasIdTrait;
+    use HasLibelleTrait;
+    use HasAcronymeTrait;
 
     use HasContrainteCursusPorteeTrait;
     use HasCategorieStageTrait;
     use HasTerrainStageTrait;
-    use OrderEntityTrait;
-    use DescriptionEntityTrait;
+    use HasOrderTrait;
+    use HasDescriptionTrait;
 
     /**
      * @var int|null

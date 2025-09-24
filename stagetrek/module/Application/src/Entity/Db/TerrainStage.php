@@ -3,15 +3,15 @@
 namespace Application\Entity\Db;
 
 use Application\Entity\Db;
-use Application\Entity\Interfaces\CodeEntityInterface;
+use Application\Entity\Interfaces\HasCodeInterface;
 use Application\Entity\Interfaces\HasAdresseInterface;
-use Application\Entity\Interfaces\LibelleEntityInterface;
+use Application\Entity\Interfaces\HasLibelleInterface;
 use Application\Entity\Traits\Adresse\HasAdresseTrait;
 use Application\Entity\Traits\Contact\HasContactsTerrainsTrait;
 use Application\Entity\Traits\Convention\HasModeleConventionStageTrait;
-use Application\Entity\Traits\InterfaceImplementation\CodeEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\IdEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\LibelleEntityTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasCodeTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasIdTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasLibelleTrait;
 use Application\Entity\Traits\Terrain\HasCategorieStageTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -21,7 +21,7 @@ use Laminas\Permissions\Acl\Resource\ResourceInterface;
  * TerrainStage
  */
 class TerrainStage implements ResourceInterface,
-    CodeEntityInterface, LibelleEntityInterface,
+    HasCodeInterface, HasLibelleInterface,
     HasAdresseInterface
 {
     const RESOURCE_ID = 'TerrainStage';
@@ -48,9 +48,9 @@ class TerrainStage implements ResourceInterface,
         return substr(sprintf("%s%s%s", $prefixe, $separateur, $uid), 0, 25);
     }
 
-    use IdEntityTrait;
-    use CodeEntityTrait;
-    use LibelleEntityTrait;
+    use HasIdTrait;
+    use HasCodeTrait;
+    use HasLibelleTrait;
     use HasCategorieStageTrait;
     use HasAdresseTrait;
     use HasContactsTerrainsTrait;

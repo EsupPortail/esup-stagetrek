@@ -3,27 +3,22 @@
 namespace Application\Controller\Etudiant\Factory;
 
 use Application\Controller\Etudiant\EtudiantController;
+use Application\Entity\Db\Source;
 use Application\Form\Etudiant\EtudiantForm;
 use Application\Form\Etudiant\EtudiantRechercheForm;
-use Application\Form\Etudiant\ImportEtudiantForm;
 use Application\Form\Misc\ConfirmationForm;
 use Application\Service\Affectation\AffectationStageService;
 use Application\Service\AnneeUniversitaire\AnneeUniversitaireService;
 use Application\Service\Contrainte\ContrainteCursusService;
-use Application\Service\Etudiant\EtudiantImportService;
 use Application\Service\Etudiant\EtudiantService;
 use Application\Service\Groupe\GroupeService;
-use Application\Service\Referentiel\ReferentielPromoService;
-use Application\Service\Referentiel\ReferentielService;
 use Application\Service\Stage\SessionStageService;
 use Application\Service\Stage\StageService;
-use Application\Validator\Import\EtudiantCsvImportValidator;
 use Doctrine\ORM\EntityManager;
 use Interop\Container\ContainerInterface;
 use Laminas\Form\FormElementManager;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Laminas\ServiceManager\ServiceManager;
-use Laminas\Validator\ValidatorPluginManager;
 
 /**
  * Class EtudiantControllerFactory
@@ -56,8 +51,6 @@ class EtudiantControllerFactory implements FactoryInterface
         $etudiantService = $container->get(EtudiantService::class);
         $controller->setEtudiantService($etudiantService);
 
-        $etudiantImportService = $container->get(EtudiantImportService::class);
-        $controller->setEtudiantImportService($etudiantImportService);
 
         /** @var AnneeUniversitaireService $anneeService */
         $anneeService = $container->get(ServiceManager::class)->get(AnneeUniversitaireService::class);
@@ -72,11 +65,11 @@ class EtudiantControllerFactory implements FactoryInterface
         $stageService = $container->get(StageService::class);
         $controller->setStageService($stageService);
 
-        $referentielService = $container->get(ReferentielService::class);
-        $controller->setReferentielService($referentielService);
-
-        $referentielPromoService = $container->get(ReferentielPromoService::class);
-        $controller->setReferentielPromoService($referentielPromoService);
+//        $referentielService = $container->get(ReferentielService::class);
+//        $controller->setReferentielService($referentielService);
+//
+//        $referentielPromoService = $container->get(ReferentielPromoService::class);
+//        $controller->setReferentielPromoService($referentielPromoService);
 
         /** @var ConfirmationForm $confirmationForm */
         $confirmationForm = $container->get(FormElementManager::class)->get(ConfirmationForm::class);
@@ -88,10 +81,24 @@ class EtudiantControllerFactory implements FactoryInterface
         $etudiantRechercheForm = $container->get(FormElementManager::class)->get(EtudiantRechercheForm::class);
         $controller->setEtudiantRechercheForm($etudiantRechercheForm);
 
-        $importEtudiantForm = $container->get(FormElementManager::class)->get(ImportEtudiantForm::class);
-        $controller->setImportEtudiantForm($importEtudiantForm);
-        $etudiantCsvImportValidator =  $container->get(ValidatorPluginManager::class)->get(EtudiantCsvImportValidator::class);
-        $controller->setImportValidator($etudiantCsvImportValidator);
+//        $importEtudiantForm = $container->get(FormElementManager::class)->get(ImportEtudiantForm::class);
+//        $controller->setImportEtudiantForm($importEtudiantForm);
+
+        $config = $container->get('Config');
+        if(isset($config['referentiels']['forms'])) {
+            foreach ($config['referentiels']['forms'] as $sourceCode => $formClass) {
+                $form = $container->get(FormElementManager::class)->get($formClass);
+                $controller->addImportEtudiantsForms($form);
+            }
+        }
+        if(isset($config['referentiels']['import_services'])) {
+            foreach ($config['referentiels']['import_services'] as $sourceCode => $serviceClass) {
+                $service = $container->get(ServiceManager::class)->get($serviceClass);
+                $controller->addReferentielEtudiantService($service, $sourceCode);
+            }
+        }
+//        TODO : a déplacer
+
 
         return $controller;
     }

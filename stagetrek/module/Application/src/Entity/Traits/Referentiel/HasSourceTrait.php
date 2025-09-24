@@ -37,4 +37,31 @@ trait HasSourceTrait
     {
         return $this->source !== null;
     }
+
+    /**
+     * @var string
+     */
+    private ?string $sourceCode = null;
+
+    /**
+     * @return string|null
+     */
+    public function getSourceCode(): ?string
+    {
+        return $this->sourceCode;
+    }
+
+    /**
+     * @param string|null $sourceCode
+     */
+    public function setSourceCode(?string $sourceCode): static
+    {
+        $this->sourceCode = $sourceCode;
+        return $this;
+    }
+
+    public function hasExternalSource() : bool
+    {
+        return isset($this->source) && $this->source->getCode() != Source::STAGETREK;
+    }
 }

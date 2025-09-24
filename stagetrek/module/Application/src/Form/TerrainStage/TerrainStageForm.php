@@ -11,10 +11,11 @@ use Application\Form\TerrainStage\Fieldset\TerrainStageFieldset;
  */
 class TerrainStageForm extends AbstractEntityForm
 {
-    public function init(): void
+    public function init() : static
     {
         parent::init();
         $fieldset = $this->getFormFactory()->getFormElementManager()->get(TerrainStageFieldset::class);
         $this->setEntityFieldset($fieldset);
+        return $this;
     }
 }

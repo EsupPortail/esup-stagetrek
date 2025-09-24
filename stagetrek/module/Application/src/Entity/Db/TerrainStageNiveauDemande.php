@@ -3,18 +3,18 @@
 namespace Application\Entity\Db;
 
 
-use Application\Entity\Interfaces\CodeEntityInterface;
-use Application\Entity\Interfaces\LibelleEntityInterface;
-use Application\Entity\Interfaces\OrderEntityInterface;
-use Application\Entity\Traits\InterfaceImplementation\CodeEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\IdEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\LibelleEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\OrderEntityTrait;
+use Application\Entity\Interfaces\HasCodeInterface;
+use Application\Entity\Interfaces\HasLibelleInterface;
+use Application\Entity\Interfaces\HasOrderInterface;
+use Application\Entity\Traits\InterfaceImplementation\HasCodeTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasIdTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasLibelleTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasOrderTrait;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 
 //TODO : gestions en backoffice ?
 class TerrainStageNiveauDemande implements ResourceInterface,
-    LibelleEntityInterface, OrderEntityInterface, CodeEntityInterface
+    HasLibelleInterface, HasOrderInterface, HasCodeInterface
 {
     const RESOURCE_ID = 'TerrainStageNiveauDemande';
 
@@ -41,7 +41,7 @@ class TerrainStageNiveauDemande implements ResourceInterface,
     }
 
 
-    use CodeEntityTrait;
+    use HasCodeTrait;
     public function generateDefaultCode(array $param = []) : string
     {
         $uid = ($param['uid']) ?? uniqid();
@@ -50,7 +50,7 @@ class TerrainStageNiveauDemande implements ResourceInterface,
         return substr(sprintf("%s%s%s", $prefixe, $separateur, $uid), 0, 25);
     }
 
-    use IdEntityTrait;
-    use LibelleEntityTrait;
-    use OrderEntityTrait;
+    use HasIdTrait;
+    use HasLibelleTrait;
+    use HasOrderTrait;
 }

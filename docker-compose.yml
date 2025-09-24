@@ -13,7 +13,7 @@ services:
     depends_on:
       - stagetrek-service
       - stagetrek-db
-    env_file: .env
+#    env_file: .env
     volumes:
       - ./stagetrek:/var/www/html/stagetrek
       - ./stagetrek/vendor:/var/www/html/stagetrek/vendor
@@ -24,9 +24,6 @@ services:
       - ./deploy_configuration/php/www.conf:/usr/local/etc/php-fpm.d/www.conf
       - ./stagetrek/data:/var/www/html/stagetrek/data
       - ./bin/logs:/var/log/stagetrek
-#     TimeZone pour l'image basé sur celle du host
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
     networks:
       - stagetrek-network
 #      - stagetrek-api
@@ -76,11 +73,10 @@ services:
       - ./stagetrek:/var/www/html/stagetrek
       - ./.env:/var/www/html/stagetrek/.env
       - ./deploy_configuration/apache/supervisor.conf:/supervisord.conf
-      - ./deploy_configuration/apache/000-default.conf:/etc/apache2/sites-available/000-default.conf
-      - ./deploy_configuration/apache/default-ssl.conf:/etc/apache2/sites-available/default-ssl.conf
-#      #     TimeZone pour l'image basé sur celle du host
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
+#      Si l'on veux que la conf apache soit dans un volume (le temps d'y faire des modification), a ne pas conserver en volume car replace_env qui est utiliser en mode SaaS Risque de modifier les fichier
+#      - ./deploy_configuration/apache/000-default.conf:/etc/apache2/sites-available/000-default.conf
+#      - ./deploy_configuration/apache/default-ssl.conf:/etc/apache2/sites-available/default-ssl.conf
+
     ports:
       - 8080:80
       - 8443:443
@@ -106,9 +102,7 @@ services:
       - ./data/stagetrek-db:/stagetrek-db:rw
       - ./deploy_configuration/db/:/scripts_to_init/
       - ./deploy_configuration/db/autoload.sh:/docker-entrypoint-initdb.d/autoload.sh
-      #     TimeZone pour l'image basé sur celle du host
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
+
 
   stagetrek-timemachine:
     build:
@@ -132,10 +126,7 @@ services:
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-admin}
       BUCKET_INSTANCE_NAME: ${BUCKET_INSTANCE_NAME:-admin}
       ENDPOINT_URL: ${ENDPOINT_URL:-admin}
-    volumes:
-      #     TimeZone pour l'image basé sur celle du host
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
+#    volumes:
 
 networks:
   stagetrek-network:

@@ -2,6 +2,9 @@
 
 use Application\Provider\Misc\EnvironnementProvider;
 
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__.'/../');
+$dotenv->load();
+
 $modules = [
     'Laminas\Cache',
     'Laminas\Filter',
@@ -35,9 +38,11 @@ $modules = [
     'UnicaenRenderer',
     'UnicaenEvenement',
     'UnicaenEtat',
+    'UnicaenTag',
     'Unicaen\BddAdmin',
     'UnicaenFichier',
     'UnicaenStorage',
+    'UnicaenDbImport',
     'Application',
     'Console',
     'Evenement',
@@ -47,9 +52,6 @@ $modules = [
 
 //Ajout de Faker qui pose pb en l'incluant depuis modules
 require_once 'vendor/autoload.php';
-
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__.'/../');
-$dotenv->load();
 
 if(!isset($_ENV['APP_ENV'])){
     $_ENV['APP_ENV'] = EnvironnementProvider::PRODUCTION;

@@ -4,28 +4,27 @@
 namespace Application\Controller\Etudiant;
 
 use Application\Controller\Misc\Interfaces\AbstractActionController;
-use Application\Entity\Db\AnneeUniversitaire;
 use Application\Entity\Db\Etudiant;
-use Application\Entity\Db\Groupe;
 use Application\Entity\Traits\Etudiant\HasEtudiantTrait;
 use Application\Entity\Traits\Groupe\HasGroupeTrait;
-use Application\Exceptions\ImportException;
-use Application\Form\Etudiant\ImportEtudiantForm;
 use Application\Form\Etudiant\Traits\EtudiantFormAwareTrait;
 use Application\Form\Etudiant\Traits\ImportEtudiantFormAwareTrait;
 use Application\Form\Misc\Traits\ConfirmationFormAwareTrait;
+use Application\Form\Referentiel\Interfaces\AbstractImportEtudiantsForm;
+use Application\Form\Referentiel\Interfaces\ImportEtudiantsFormInterface;
+use Application\Form\Referentiel\Traits\ImportEtudiantsFormsAwareTrait;
 use Application\Service\Affectation\Traits\AffectationStageServiceAwareTrait;
 use Application\Service\AnneeUniversitaire\Traits\AnneeUniversitaireServiceAwareTrait;
 use Application\Service\Contrainte\Traits\ContrainteCursusServiceAwareTrait;
 use Application\Service\Etudiant\Traits\EtudiantServiceAwareTrait;
 use Application\Service\Groupe\Traits\GroupeServiceAwareTrait;
+use Application\Service\Referentiel\Interfaces\ImportEtudiantsServiceInterface;
 use Application\Service\Referentiel\Traits\ReferentielPromoServiceAwareTrait;
-use Application\Service\Referentiel\Traits\ReferentielServiceAwareTrait;
+use Application\Service\Referentiel\Traits\ReferentielsEtudiantsServicesAwareTrait;
 use Application\Service\Stage\Traits\SessionStageServiceAwareTrait;
 use Application\Service\Stage\Traits\StageServiceAwareTrait;
-use Application\Validator\Import\EtudiantCsvImportValidator;
 use Application\Validator\Import\Traits\ImportValidatorTrait;
-use Doctrine\Common\Collections\ArrayCollection;
+use ArrayObject;
 use Exception;
 use Laminas\Http\Request;
 use laminas\Mvc\Plugin\FlashMessenger\FlashMessenger;
@@ -45,17 +44,14 @@ use ZfcUser\Controller\Plugin\ZfcUserAuthentication;
 class EtudiantController extends AbstractActionController
 {
     use HasEtudiantTrait;
-
     use EtudiantServiceAwareTrait;
     use AnneeUniversitaireServiceAwareTrait;
     use SessionStageServiceAwareTrait;
     use StageServiceAwareTrait;
     use AffectationStageServiceAwareTrait;
     use ContrainteCursusServiceAwareTrait;
-
     use EtudiantFormAwareTrait;
     use ConfirmationFormAwareTrait;
-
 
     /**
      * Partie pour l'administration des étudiants
@@ -91,13 +87,13 @@ class EtudiantController extends AbstractActionController
      * @throws \Doctrine\ORM\Exception\NotSupported
      * @throws \Doctrine\DBAL\Exception
      */
-    public function indexAction() : ViewModel
+    public function indexAction(): ViewModel
     {
         $form = $this->getEtudiantRechercheForm();
         if ($data = $this->params()->fromPost()) {
             $form->setData($data);
             $criteria = [];
-            if($form->isValid()) {
+            if ($form->isValid()) {
                 $criteria = array_filter($data, function ($v) {
                     return !empty($v);
                 });
@@ -107,41 +103,36 @@ class EtudiantController extends AbstractActionController
             } else {
                 $etudiants = $this->getEtudiantService()->findAll();
             }
-        }
-        else {
+        } else {
             $etudiants = $this->getEtudiantService()->findAll();
         }
-
         return new ViewModel(['form' => $form, 'etudiants' => $etudiants]);
     }
 
     public function afficherAction(): ViewModel
     {
         $etudiant = $this->getEtudiantFromRoute();
-
         return new ViewModel(['etudiant' => $etudiant]);
     }
 
 
-    public function afficherInfosAction() : ViewModel
+    public function afficherInfosAction(): ViewModel
     {
         $etudiant = $this->getEtudiantFromRoute();
         return new ViewModel(['etudiant' => $etudiant]);
     }
 
-    public function listerStagesAction() : ViewModel
+    public function listerStagesAction(): ViewModel
     {
         $etudiant = $this->getEtudiantFromRoute();
         return new ViewModel(['etudiant' => $etudiant]);
     }
 
-    public function ajouterAction() : ViewModel
+    public function ajouterAction(): ViewModel
     {
         $title = "Ajouter un étudiant";
-
         $form = $this->getAddEtudiantForm();
         $form->bind(new Etudiant());
-
         if ($data = $this->params()->fromPost()) {
             $form->setData($data);
             if ($form->isValid()) {
@@ -159,15 +150,14 @@ class EtudiantController extends AbstractActionController
                 }
             }
         }
-        return new ViewModel(['title' => $title, 'form'=>$form]);
+        return new ViewModel(['title' => $title, 'form' => $form]);
     }
 
-    public function modifierAction() : ViewModel
+    public function modifierAction(): ViewModel
     {
         $title = "Modifier l'étudiant";
         /** @var Etudiant $etudiant */
         $etudiant = $this->getEtudiantFromRoute();
-
         $form = $this->getEditEtudiantForm();
         $form->bind($etudiant);
         if ($data = $this->params()->fromPost()) {
@@ -185,56 +175,52 @@ class EtudiantController extends AbstractActionController
                 }
             }
         }
-        return new ViewModel(['title' => $title, 'form'=>$form, 'etudiant'=>$etudiant]);
+        return new ViewModel(['title' => $title, 'form' => $form, 'etudiant' => $etudiant]);
     }
 
-    public function supprimerAction() : ViewModel
+    public function supprimerAction(): ViewModel
     {
         $title = "Supprimer l'étudiant";
         $etudiant = $this->getEtudiantFromRoute();
-
         /** @var Etudiant $etudiant */
         $form = $this->getConfirmationForm();
-        $question = sprintf("Voulez-vraiment supprimer l'étudiant.e %s de l'application ?",
-            $etudiant->getDisplayName()
-        );
+        $question = sprintf("Voulez-vraiment supprimer l'étudiant.e %s de l'application ?", $etudiant->getDisplayName());
         $form->setConfirmationQuestion($question);
-
         if ($this->actionConfirmed()) {
             try {
                 $this->getEtudiantService()->delete($etudiant);
-                $msg = sprintf("Le profil de %s a été supprimé.",
-                    $etudiant->getDisplayName()
-                );
+                $msg = sprintf("Le profil de %s a été supprimé.", $etudiant->getDisplayName());
                 $this->sendSuccessMessage($msg);
                 return $this->successAction($title, $msg);
             } catch (Exception $e) {
                 return $this->failureAction($title, null, $e);
             }
         }
-        return new ViewModel(['title' => $title, 'form'=>$form]);
+        return new ViewModel(['title' => $title, 'form' => $form]);
     }
 
 
     use ImportValidatorTrait;
-
     use GroupeServiceAwareTrait;
     use HasGroupeTrait;
     use ImportEtudiantFormAwareTrait;
 
     /** TODO : a revoir */
     use ReferentielPromoServiceAwareTrait;
-    use ReferentielServiceAwareTrait;
-//
+    use ReferentielsEtudiantsServicesAwareTrait;
+
+    use ImportEtudiantsFormsAwareTrait;
+
+
 
     public function importerAction(): ViewModel
     {
         $title = "Importer des étudiants";
-
-        /** @var Groupe $groupe */
-        $groupe = $this->getGroupeFromRoute();
-
-        $form = $this->getImportEtudiantForm($groupe);
+        $forms = $this->getImportEtudiantsForms();
+        $services = $this->getReferentielsEtudiantsServices();
+        if (empty($forms) || empty($services)) {
+            return $this->renderError($title, "Aucun service d'import des étudiants n'est définie");
+        }
         /** @var Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -242,91 +228,50 @@ class EtudiantController extends AbstractActionController
                 $request->getPost()->toArray(),
                 $request->getFiles()->toArray()
             );
-            //Pour avoir le bon onglet sur la page indépendament de la validité du formulaire
-            $importReferentiel = (boolval($data[ImportEtudiantForm::INPUT_IMPORT_REFERENTIEL]));
-            $importFromGroupe = (boolval($data[ImportEtudiantForm::INPUT_IMPORT_GROUPE]));
-            $importFromFile =  (boolval($data[ImportEtudiantForm::INPUT_IMPORT_FILE])) && ($data[ImportEtudiantForm::INPUT_IMPORT_FILE]['name'] != "");
-            $data[ImportEtudiantForm::INPUT_CURRENT_IMPORT] = match (true) {
-                $importFromFile => ImportEtudiantForm::INPUT_IMPORT_FILE,
-                $importFromGroupe => ImportEtudiantForm::INPUT_IMPORT_GROUPE,
-                default => ImportEtudiantForm::INPUT_IMPORT_REFERENTIEL,
-            };
-            $form->setData($data);
-            if ($form->isValid()) {
-                try {
-                    $referentielId = intval(($data[ImportEtudiantForm::INPUT_IMPORT_REFERENTIEL]) ?? 0);
-                    $etudiants = [];
-                    $success = false;
-                    //Import depuis un référentiel
-                    if ($importReferentiel) {
-                        /** @var \Application\Entity\Db\ReferentielPromo $referentiel */
-                        $referentiel = $this->getReferentielPromoService()->find($referentielId);
-                        $anneeId =  intval(($data[ImportEtudiantForm::INPUT_IMPORT_REFERENTIEL_ANNEE]) ?? 0);
-                        /** @var AnneeUniversitaire $annee */
-                        $annee = $this->getAnneeUniversitaireService()->find($anneeId);
-                        if(!isset($referentiel)) {
-                            throw new ImportException("Le référentiel demandé n'as pas été trouvé");
+            $key = ($data[AbstractImportEtudiantsForm::INPUT_KEY])?? null;
+            if(!isset($key)) {
+                throw new Exception("Impossible de déterminer le type d'import à effectuer");
+            }
+            /** @var AbstractImportEtudiantsForm $formActif */
+            $formActif = $this->getImportEtudiantsForm($key);
+            if(isset($formActif)){
+                $formActif->setActif(true);
+                $formActif->bind(new ArrayObject($data));
+                if ($formActif->isValid()) {
+                    $data = $formActif->getData()->getArrayCopy();
+                    try{
+                        $sourceCode = ($data[$formActif::INPUT_SOURCE]) ?? 'N/A';
+                        $importService = $this->getReferentielEtudiantService($sourceCode);
+                        if(!isset($importService) || !isset($importService)) {
+                            throw new Exception("Impossible de déterminer le service de gestion de l'import des étudiants pour la source demandée");
                         }
-                        if(!isset($annee)) {
-                            throw new ImportException("L'année demandée n'as pas été trouvée");
+                        if(!$importService instanceof ImportEtudiantsServiceInterface){
+                            throw new Exception("Le service ne permet pas l'import d'étudiant");
                         }
-                        $date = $annee->getDateDebut()->format('Y');
-                        $etudiants = $this->getEtudiantImportService()->importEtudiantFromReferentiel($referentiel, $date);
-                        $success = true;
-                    }
-                    else if ($importFromFile) {
-                        $fileData = $data[ImportEtudiantForm::INPUT_IMPORT_FILE];
-                        /** @var EtudiantCsvImportValidator $importValidator */
-                        $importValidator = $this->getImportValidator();
-                        if ($importValidator->isValid($fileData)) {
-                            $etudiants = $this->getEtudiantImportService()->importEtudiantFromCSV($fileData);
-                            $success = true;
-                        } else {
-                            $msg = $importValidator->getNotAllowedImportMessage();
-                            $this->sendWarningMessage($msg, self::ACTION_IMPORTER);
+                        $etudiants = $importService->importer($data);
+                        $log = $importService->renderLogs();
+                        $type = $importService->getLogType();
+                        if(isset($log)) {
+                            $this->flashMessenger()->addMessage($log, self::ACTION_IMPORTER . Messenger::NAMESPACED_SEVERITY_SEPARATOR . $type);
                         }
                     }
-                    else {
-                        $groupeId = intval($data[ImportEtudiantForm::INPUT_IMPORT_GROUPE], 0);
-                        /** @var Groupe $groupe */
-                        $groupe = $this->getGroupeService()->find($groupeId);
-                        $etudiants = $groupe->getEtudiants()->toArray();
-                        $success = true;
+                    catch(Exception $e){
+                        $log = (isset($importService)) ? $importService->renderLogs(): null;
+                        if(!isset($log)){$log = $e->getMessage();}
+                        return $this->renderError($title, $log);
                     }
-                    //Pour ne pas faire les groupes en cas d'echec;
-                    if ($success) {
-                        //Ajout dans le groupe
-                        $groupeId = intval(($data[ImportEtudiantForm::INPUT_ADD_IN_GROUPE]) ?? 0);
-                        /** @var Groupe $groupe */
-                        $groupe = $this->getGroupeService()->find($groupeId);
-                        if ((!empty($etudiants)) && $groupe) {
-                            //TODO : a revoir si l'on garde ce pseudo-filtre / sécuréité
-                            $etudiantsCanBeAdd = $this->getGroupeService()->findEtudiantsCanBeAddInGroupe($groupe);
-                            $etudiantsCanBeAdd = new ArrayCollection($etudiantsCanBeAdd);
-                            $etudiants = array_filter($etudiants, function (Etudiant $etudiant) use($etudiantsCanBeAdd){
-                                return $etudiantsCanBeAdd->contains($etudiant);
-                            });
-                            $this->getGroupeService()->addEtudiants($groupe, $etudiants);
-
-                            $this->getGroupeService()->update($groupe);
-                        }
-                        $this->getEtudiantService()->updateEtats($etudiants);
-                        //Messages
-                        $msg = "Import effectué";
-                        $msg .= sprintf("<br/><span class='mx-3'>%s étudiant(s) ajouté(s) ou mis à jours</span>",
-                            sizeof($etudiants)
-                        );
-
-                        $this->flashMessenger()->addMessage($msg, self::ACTION_IMPORTER . Messenger::NAMESPACED_SEVERITY_SEPARATOR . Messenger::SUCCESS);
-                    }
-                } catch (ImportException $e) {
-                    $this->flashMessenger()->addMessage($e->getMessage(), self::ACTION_IMPORTER . Messenger::NAMESPACED_SEVERITY_SEPARATOR . Messenger::ERROR);
-                } catch (Exception $e) {
-                    return $this->failureAction($title, $e->getMessage()."<br/>". $e->getTraceAsString());
                 }
             }
         }
-        return new ViewModel(['title' => $title, 'form'=>$form]);
+        //Calcul du formulaire actif par défaut
+        if(!isset($formActif)){
+            $form = current($forms);
+            if(isset($form) && $form instanceof ImportEtudiantsFormInterface){
+                $form->setActif(true);
+            }
+        }
+
+        return new ViewModel(['title' => $title, 'forms'=>$forms]);
     }
 
     /**

@@ -3,9 +3,13 @@
 
 namespace Application\Form\Annees\Fieldset;
 
+use Application\Entity\Db\AnneeUniversitaire;
 use Application\Form\Misc\Abstracts\AbstractEntityFieldset;
+use Application\Form\Misc\Traits\CodeInputAwareTrait;
 use Application\Form\Misc\Traits\IdInputAwareTrait;
 use Application\Form\Misc\Traits\LibelleInputAwareTrait;
+use DateInterval;
+use DateTime;
 use Laminas\Filter\StringTrim;
 use Laminas\Filter\StripTags;
 use Laminas\Form\Element\Date;
@@ -19,16 +23,19 @@ class AnneeUniversitaireFieldset extends AbstractEntityFieldset
 {
 
     use IdInputAwareTrait;
+    use CodeInputAwareTrait;
     use LibelleInputAwareTrait;
 
     const DATE_DEBUT = "dateDebut";
     const DATE_FIN = "dateFin";
 
-    public function init(): void
+    public function init(): static
     {
         $this->initIdInput();
+        $this->initCodeInput();
         $this->initLibelleInput();
         $this->initDatesInputs();
+        return $this;
     }
 
     protected function initDatesInputs() : static
@@ -63,6 +70,22 @@ class AnneeUniversitaireFieldset extends AbstractEntityFieldset
                     ['name' => StringTrim::class],
                 ],
                 'validators' => [
+                    [
+                        'name' => Callback::class,
+                        'options' => [
+                            'messages' => [
+                                Callback::INVALID_VALUE => "Une année universitaire est déjà définie pour cette période",
+                            ],
+                            'callback' => function ($value, $context = []) {
+                                $date = $context[self::DATE_DEBUT];
+                                $date = DateTime::createFromFormat('Y-m-d', $date);
+                                $code = $date->format('Y');
+                                if($code == $context[self::CODE]){return true;}
+                                $exist = $this->getObjectManager()->getRepository(AnneeUniversitaire::class)->findOneBy(['code' => $code]);
+                                return !isset($exist);
+                            }
+                        ],
+                    ],
                     [
                         'name' => Callback::class,
                         'options' => [

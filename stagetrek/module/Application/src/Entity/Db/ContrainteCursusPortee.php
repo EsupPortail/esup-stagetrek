@@ -2,12 +2,12 @@
 
 namespace Application\Entity\Db;
 
-use Application\Entity\Interfaces\LibelleEntityInterface;
-use Application\Entity\Interfaces\OrderEntityInterface;
-use Application\Entity\Traits\InterfaceImplementation\CodeEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\IdEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\LibelleEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\OrderEntityTrait;
+use Application\Entity\Interfaces\HasLibelleInterface;
+use Application\Entity\Interfaces\HasOrderInterface;
+use Application\Entity\Traits\InterfaceImplementation\HasCodeTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasIdTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasLibelleTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasOrderTrait;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 use Mpdf\Tag\Li;
 
@@ -15,7 +15,7 @@ use Mpdf\Tag\Li;
  * ContrainteCursusPortee
  */
 class ContrainteCursusPortee implements ResourceInterface,
-    OrderEntityInterface, LibelleEntityInterface
+    HasOrderInterface, HasLibelleInterface
 {
     const RESOURCE_ID = 'ContrainteCursus';
 
@@ -36,8 +36,8 @@ class ContrainteCursusPortee implements ResourceInterface,
         return $this->getCode() == $code;
     }
 
-    use IdEntityTrait;
-    use CodeEntityTrait;
-    use LibelleEntityTrait;
-    use OrderEntityTrait;
+    use HasIdTrait;
+    use HasCodeTrait;
+    use HasLibelleTrait;
+    use HasOrderTrait;
 }

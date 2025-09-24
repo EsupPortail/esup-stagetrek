@@ -18,7 +18,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class UpdateContactCommand extends AbstractUpdateEntityCommand
 {
-    protected static $defaultName = 'update-contacts';
+    protected static $defaultName = 'update:contacts';
 
     /**
      * @throws \Exception

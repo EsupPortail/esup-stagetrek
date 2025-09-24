@@ -114,7 +114,7 @@ abstract class AbstractCsvImportValidator extends AbstractValidator implements O
      */
     protected $messageTemplates = [
         self::NO_DATA => "Aucune données à importer.",
-        self::INVALIDE_FILE => "Le fichier fournis n'est pas valide.",
+        self::INVALIDE_FILE => "Le fichier fourni n'est pas valide.",
         self::EXCEPTION => "%exceptionMessage%",
     ];
 

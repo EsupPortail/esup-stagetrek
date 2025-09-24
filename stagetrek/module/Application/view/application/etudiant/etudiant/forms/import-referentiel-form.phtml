@@ -1,0 +1,57 @@
+<?php
+
+use Application\Controller\Etudiant\EtudiantController;
+use Application\Form\Referentiel\ReferentielImportEtudiantsForm;
+
+/**
+ * @see EtudiantController::importerAction()
+ * @var ReferentielImportEtudiantsForm $form
+ */
+
+$fct = $this->formControlText();
+$fcg = $this->formControlGroup();
+$fe = $this->formErrors();
+$fh = $this->formHidden();
+?>
+
+
+<?php echo $this->form()->openTag($form->prepare()); ?>
+<?= $fe($form->prepare(), $form::INVALIDE_ERROR_MESSAGE) ?>
+<?= $fh($form->get($form::INPUT_KEY)); ?>
+<?= $fh($form->get($form::INPUT_SOURCE)); ?>
+
+
+    <div class="row">
+        <div class="col-md-6">
+            <?= $fcg($form->get($form::INPUT_REFERENTIEL)) ?>
+        </div>
+        <div class="col-md-6">
+            <?= $fcg($form->get($form::INPUT_ANNEE)) ?>
+        </div>
+    </div>
+
+    <div class="mt-3 row">
+        <div class="col-md-3">
+            <?= $fcg($form->get($form::INPUT_SUBMIT)); ?>
+        </div>
+    </div>
+<?= $this->formHidden($form->get($form::CSRF)); ?>
+<?php echo $this->form()->closeTag(); ?>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="alert alert-info text-small">
+            Lors de l'ajout des étudiants
+            <ul>
+                <li> Si le référentiel est associé à 1 groupe pour l'année selectionnée,
+                    les étudiants qui le peuvent (c'est-à dire ceux n'étant pas déjà inscrit dans un groupe pour l'année en question)
+                    sont automatiquement inscrit dans ce groupe.
+                </li>
+                <li>
+                    Ils seront également inscrit aux <strong>futurs</strong> stage de ce groupe
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

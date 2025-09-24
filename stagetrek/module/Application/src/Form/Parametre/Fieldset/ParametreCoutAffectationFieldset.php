@@ -19,11 +19,12 @@ class ParametreCoutAffectationFieldset extends AbstractEntityFieldset
 
     use IdInputAwareTrait;
 
-    public function init(): void
+    public function init() : static
     {
         $this->initIdInput();
         $this->initRangInput();
         $this->initCoutInput();
+        return $this;
     }
 
 
