@@ -25,7 +25,7 @@ class CategorieStageFieldset extends AbstractEntityFieldset
     use OrdreInputAwareTrait;
     use AcronymeInputAwareTrait;
 
-    public function init(): void
+    public function init() : static
     {
         $this->initIdInput();
         $this->initCodeInput(true);
@@ -33,6 +33,7 @@ class CategorieStageFieldset extends AbstractEntityFieldset
         $this->initOrdreInput();
         $this->initAcronymeInput();
         $this->initInputCategorie();
+        return $this;
     }
 
     const CATEGORIE_PRINCIPALE = "categoriePrincipale";

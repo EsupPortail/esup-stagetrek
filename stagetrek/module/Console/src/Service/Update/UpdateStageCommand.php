@@ -16,7 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class UpdateStageCommand extends AbstractUpdateEntityCommand
 {
-    protected static $defaultName = 'update-stages';
+    protected static $defaultName = 'update:stages';
 
     /**
      * @throws \Exception

@@ -4,15 +4,16 @@
 namespace Application\Controller\Referentiel;
 
 use Application\Controller\Misc\Interfaces\AbstractActionController;
-use Application\Service\Referentiel\Traits\ReferentielServiceAwareTrait;
+use Application\Service\Referentiel\Traits\ReferentielsEtudiantsServicesAwareTrait;
 use Laminas\View\Model\JsonModel;
 
 /**
  * @package Application\Controller
  */
+/** @deprecated Refonte en cours de la gestions  des étudiants */
 class ReferentielController extends AbstractActionController
 {
-    use ReferentielServiceAwareTrait;
+    use ReferentielsEtudiantsServicesAwareTrait;
 
     const ROUTE_RECHERCHER_ETUDIANT = 'referentiel/rechercher/etudiant';
     const ACTION_RECHERCHER_ETUDIANT = "rechercher-etudiant";

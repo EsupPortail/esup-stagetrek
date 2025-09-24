@@ -51,7 +51,7 @@ class MessageInfoFieldset extends Fieldset
     const PLACEHOLDER_TITLE = "Saisir un titre";
     const PLACEHOLDER_MESSAGE = "Saisir un message";
 
-    public function init(): void
+    public function init() : static
     {
         $this->add([
             "name" => self::INPUT_TITLE,
@@ -174,6 +174,7 @@ class MessageInfoFieldset extends Fieldset
                 'id' => self::INPUT_ROLES,
             ],
         ]);
+        return $this;
 
     }
 

@@ -26,13 +26,14 @@ class SessionStageFieldset extends AbstractEntityFieldset
     use LibelleInputAwareTrait;
 
 
-    public function init(): void
+    public function init() : static
     {
         $this->initIdInput();
         $this->initLibelleInput();
         $this->initGroupeInput();
         $this->initDatesInputs();
         $this->initPropertiesInputs();
+        return $this;
     }
     use HasGroupeTrait;
     use HasAnneeUniversitaireTrait;

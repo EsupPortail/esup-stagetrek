@@ -4,7 +4,7 @@ namespace Application\Entity\Db;
 
 
 use Application\Entity\Db;
-use Application\Entity\Traits\InterfaceImplementation\IdEntityTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasIdTrait;
 use Application\Entity\Traits\Stage\HasTerrainStageTrait;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 
@@ -22,7 +22,7 @@ class ParametreTerrainCoutAffectationFixe implements ResourceInterface
         return self::RESOURCE_ID;
     }
 
-    use IdEntityTrait;
+    use HasIdTrait;
     use HasTerrainStageTrait;
 
     /**

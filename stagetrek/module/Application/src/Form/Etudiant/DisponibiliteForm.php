@@ -12,10 +12,11 @@ use Application\Form\Etudiant\Fieldset\DisponibiliteFieldset;
  */
 class DisponibiliteForm extends AbstractEntityForm
 {
-    public function init(): void
+    public function init() : static
     {
         parent::init();
         $fieldset = $this->getFormFactory()->getFormElementManager()->get(DisponibiliteFieldset::class);
         $this->setEntityFieldset($fieldset);
+        return $this;
     }
 }

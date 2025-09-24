@@ -51,6 +51,9 @@ RUN curl https://dl.min.io/client/mc/release/linux-arm64/mc \
   -o ~/minio-binaries/mc
 RUN apt-get install -y s3cmd
 
+#Gestion de la timezone
+ENV TZ=Europe/Paris
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 #Clean the Proxy env
 ENV HTTP_PROXY ""

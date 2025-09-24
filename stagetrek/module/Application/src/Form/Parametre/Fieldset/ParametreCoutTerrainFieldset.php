@@ -23,12 +23,13 @@ class ParametreCoutTerrainFieldset  extends AbstractEntityFieldset
 {
 
     use IdInputAwareTrait;
-    public function init(): void
+    public function init() : static
     {
         $this->initIdInput();
         $this->initTerrainInput();
         $this->initCoutInput();
         $this->initUseCoutMedianInput();
+        return $this;
     }
 
     const COUT = "cout";

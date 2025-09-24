@@ -2,18 +2,19 @@
 
 namespace Application\Entity\Db;
 
-use Application\Entity\Interfaces\CodeEntityInterface;
-use Application\Entity\Interfaces\LibelleEntityInterface;
-use Application\Entity\Interfaces\OrderEntityInterface;
-use Application\Entity\Traits\InterfaceImplementation\CodeEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\IdEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\LibelleEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\OrderEntityTrait;
+use Application\Entity\Interfaces\HasCodeInterface;
+use Application\Entity\Interfaces\HasLibelleInterface;
+use Application\Entity\Interfaces\HasOrderInterface;
+use Application\Entity\Traits\Groupe\HasGroupesTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasCodeTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasIdTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasLibelleTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasOrderTrait;
 use Application\Entity\Traits\Referentiel\HasSourceTrait;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 
 class ReferentielPromo implements ResourceInterface,
-    CodeEntityInterface, LibelleEntityInterface, OrderEntityInterface
+    HasCodeInterface, HasLibelleInterface, HasOrderInterface
 {
     const RESOURCE_ID = 'Promo';
 
@@ -25,11 +26,19 @@ class ReferentielPromo implements ResourceInterface,
         return self::RESOURCE_ID;
     }
 
-    use IdEntityTrait;
-    use CodeEntityTrait;
-    use LibelleEntityTrait;
-    use OrderEntityTrait;
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->initGroupesCollection();
+    }
+    use HasIdTrait;
+    use HasCodeTrait;
+    use HasLibelleTrait;
+    use HasOrderTrait;
     use HasSourceTrait;
+    use HasGroupesTrait;
 
     protected string $codePromo="";
 

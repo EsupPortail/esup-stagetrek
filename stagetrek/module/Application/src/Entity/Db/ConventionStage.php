@@ -4,7 +4,7 @@ namespace Application\Entity\Db;
 
 use Application\Entity\Traits\Convention\HasConventionStageSignatairesTrait;
 use Application\Entity\Traits\Convention\HasModeleConventionStageTrait;
-use Application\Entity\Traits\InterfaceImplementation\IdEntityTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasIdTrait;
 use Application\Entity\Traits\Stage\HasStageTrait;
 use DateTime;
 use UnicaenFichier\Entity\Db\Fichier;
@@ -25,7 +25,7 @@ class ConventionStage implements ResourceInterface
         return self::RESOURCE_ID;
     }
 
-    use IdEntityTrait;
+    use HasIdTrait;
 
     use HasModeleConventionStageTrait;
     use HasConventionStageSignatairesTrait;

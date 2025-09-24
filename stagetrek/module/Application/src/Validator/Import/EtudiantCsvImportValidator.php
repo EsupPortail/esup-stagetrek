@@ -4,6 +4,7 @@ namespace Application\Validator\Import;
 
 use Application\Entity\Db\Etudiant;
 use Application\Exceptions\ImportException;
+use Application\Service\Groupe\Traits\GroupeServiceAwareTrait;
 use Application\Service\Misc\CSVService;
 use Application\Validator\Import\Interfaces\AbstractCsvImportValidator;
 use DateTime;
@@ -24,6 +25,7 @@ class EtudiantCsvImportValidator extends AbstractCsvImportValidator
     const HEADER_CP = "Code postale";
     const HEADER_VILLE = "Ville";
     const HEADER_CEDEX = "Cedex";
+    const HEADER_CODE_GROUPE = "Groupe";
 
     /**
      * @return array
@@ -41,6 +43,7 @@ class EtudiantCsvImportValidator extends AbstractCsvImportValidator
             self::HEADER_CP,
             self::HEADER_VILLE,
             self::HEADER_CEDEX,
+            self::HEADER_CODE_GROUPE,
         ];
     }
 
@@ -54,6 +57,7 @@ class EtudiantCsvImportValidator extends AbstractCsvImportValidator
     protected ?string $cp = null;
     protected ?string $ville = null;
     protected ?string $cedex = null;
+    protected ?string $codeGroupe = null;
 
     public function readData($rowData=[]) : static
     { //Transforme les données au bon types
@@ -67,6 +71,7 @@ class EtudiantCsvImportValidator extends AbstractCsvImportValidator
         $this->cp =  trim($this->getCsvService()->readDataAt(self::HEADER_CP, $rowData, ""));
         $this->ville =  trim($this->getCsvService()->readDataAt(self::HEADER_VILLE, $rowData, ""));
         $this->cedex =  trim($this->getCsvService()->readDataAt(self::HEADER_CEDEX, $rowData, ""));
+        $this->codeGroupe =  trim($this->getCsvService()->readDataAt(self::HEADER_CODE_GROUPE, $rowData, ""));
 
         return $this;
     }
@@ -81,7 +86,8 @@ class EtudiantCsvImportValidator extends AbstractCsvImportValidator
             && $this->assertIdentity()
             && $this->assertMail()
             && $this->assertDateNaissance()
-            && $this->assertAdresse();
+            && $this->assertAdresse()
+            && $this->assertGroupe();
     }
 
     //Pour la vérification que plusieurs code/libellé ne sont pas présent de multiple fois dans le fichier
@@ -202,6 +208,20 @@ class EtudiantCsvImportValidator extends AbstractCsvImportValidator
         }
         if (strlen($this->cedex) > 25 ) {
             $msg = "Le champ cedex ne doit pas dépasser les 25 caractéres";
+            throw new ImportException($msg);
+        }
+        return true;
+    }
+
+    use GroupeServiceAwareTrait;
+    private function assertGroupe(): bool
+    {
+        if (!isset($this->codeGroupe) || $this->codeGroupe =="") {
+            return true;
+        }
+        $groupe = $this->getGroupeService()->findOneBy(['code' => $this->codeGroupe]);
+        if(!isset($groupe)){
+            $msg = sprintf("Le groupe de code %s n'as pas été trouvée", $this->codeGroupe);
             throw new ImportException($msg);
         }
         return true;

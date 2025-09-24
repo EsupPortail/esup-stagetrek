@@ -23,13 +23,14 @@ class ValidationStageFieldset  extends AbstractEntityFieldset
 {
     use IdInputAwareTrait;
 
-    public function init(): void
+    public function init() : static
     {
         $this->initIdInput();
         $this->initEtatValidationInput();
         $this->initWarningInput();
         $this->initValidateByInput();
         $this->initComentairesInputs();
+        return $this;
 
     }
     const INPUT_ETAT_VALIDATION = "etatValidation";

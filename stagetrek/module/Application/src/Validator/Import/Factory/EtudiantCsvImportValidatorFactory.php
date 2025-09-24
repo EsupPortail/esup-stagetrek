@@ -2,6 +2,7 @@
 
 namespace Application\Validator\Import\Factory;
 
+use Application\Service\Groupe\GroupeService;
 use Application\Service\Misc\CSVService;
 use Application\Validator\Import\EtudiantCsvImportValidator;
 use Doctrine\ORM\EntityManager;
@@ -49,12 +50,12 @@ class EtudiantCsvImportValidatorFactory implements AbstractFactoryInterface
          */
         $entityManager = $container->get('Doctrine\ORM\EntityManager');
         $serviceManager = $container->get(ServiceManager::class);
+
         $validator->setObjectManager($entityManager);
         $validator->setServiceManager($serviceManager);
+        $validator->setCsvService( $container->get(ServiceManager::class)->get(CSVService::class));
 
-        /** @var CSVService $csvService */
-        $csvService = $container->get(ServiceManager::class)->get(CSVService::class);
-        $validator->setCsvService($csvService);
+        $validator->setGroupeService($container->get(ServiceManager::class)->get(GroupeService::class));
 
         return $validator;
     }

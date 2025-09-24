@@ -2,7 +2,7 @@
 
 namespace Application\Entity\Db;
 
-use Application\Entity\Traits\InterfaceImplementation\IdEntityTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasIdTrait;
 use Application\Entity\Traits\Stage\HasStageTrait;
 use Application\Entity\Traits\Stage\HasTerrainStageSecondaireTrait;
 use Application\Entity\Traits\Stage\HasTerrainStageTrait;
@@ -34,7 +34,7 @@ class AffectationStage implements ResourceInterface,
         $this->etats = new ArrayCollection();
     }
 
-    use IdEntityTrait;
+    use HasIdTrait;
 
     use HasStageTrait;
     use HasTerrainStageTrait;

@@ -6,11 +6,17 @@
     </indexes>
     <unique-constraints>
       <unique-constraint name="annee_universitaire_id_unique" columns="id"/>
+      <unique-constraint name="annee_code_unique" columns="code"/>
     </unique-constraints>
     <id name="id" type="bigint" column="id">
       <generator strategy="SEQUENCE"/>
       <sequence-generator sequence-name="annee_universitaire_id_seq" allocation-size="1" initial-value="1"/>
     </id>
+    <field name="code" type="string" column="code" length="64" nullable="false">
+      <options>
+        <option name="default"/>
+      </options>
+    </field>
     <field name="libelle" type="string" column="libelle" length="255" nullable="true">
       <options>
         <option name="fixed"/>
@@ -54,6 +60,19 @@
         </inverse-join-columns>
       </join-table>
     </many-to-many>
+
+    <!--    Lien avec unicaenTag -->
+    <many-to-many field="tags" target-entity="UnicaenTag\Entity\Db\Tag">
+      <join-table name="annee_tag_linker">
+        <join-columns>
+          <join-column name="annee_universitaire_id" referenced-column-name="id"/>
+        </join-columns>
+        <inverse-join-columns>
+          <join-column name="tag_id" referenced-column-name="id"/>
+        </inverse-join-columns>
+      </join-table>
+    </many-to-many>
+
 
   </entity>
 </doctrine-mapping>

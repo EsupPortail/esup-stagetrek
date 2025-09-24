@@ -42,7 +42,7 @@ class AdresseFieldset extends Fieldset
     const PLACEHOLDER_CEDEX = "Cedex";
 
     //Options pour les filtres sur les choix
-    public function init(): void
+    public function init(): static
     {
         $this->add([
             "name" => self::INPUT_ADRESSE,
@@ -110,6 +110,7 @@ class AdresseFieldset extends Fieldset
                 "placeholder" => self::PLACEHOLDER_CEDEX,
             ],
         ]);
+        return $this;
     }
 
     public function getInputFilterSpecification(): array

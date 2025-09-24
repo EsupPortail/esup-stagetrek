@@ -3,7 +3,7 @@
 namespace Application\Entity\Db;
 
 use Application\Entity\Traits\Contact\HasContactTrait;
-use Application\Entity\Traits\InterfaceImplementation\IdEntityTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasIdTrait;
 use Application\Entity\Traits\Stage\HasStageTrait;
 use DateTime;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
@@ -33,7 +33,7 @@ class ContactStage implements ResourceInterface
     protected bool $isSignataireConvention = false;
 
 
-    use IdEntityTrait;
+    use HasIdTrait;
     use HasContactTrait;
     use HasStageTrait;
 

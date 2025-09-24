@@ -5,7 +5,7 @@ namespace Application\Entity\Db;
 
 use Application\Entity\Traits\Contraintes\HasContrainteCursusTrait;
 use Application\Entity\Traits\Etudiant\HasEtudiantTrait;
-use Application\Entity\Traits\InterfaceImplementation\IdEntityTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasIdTrait;
 use Application\Provider\EtatType\ContrainteCursusEtudiantEtatTypeProvider;
 use Doctrine\Common\Collections\ArrayCollection;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
@@ -70,7 +70,7 @@ class ContrainteCursusEtudiant implements ResourceInterface, HasEtatsInterface
         $this->etats = new ArrayCollection();
     }
 
-    use IdEntityTrait;
+    use HasIdTrait;
     use HasEtudiantTrait;
     use HasContrainteCursusTrait;
     use HasEtatsTrait;

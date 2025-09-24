@@ -3,6 +3,7 @@
 namespace Application\View\Helper\Referentiel;
 
 use Application\Controller\Referentiel\ReferentielPromoController as Controller;
+use Application\Entity\Db\Groupe;
 use Application\Entity\Db\ReferentielPromo;
 use Application\Entity\Traits\Referentiel\HasReferentielPromoTrait;
 use Application\Provider\Misc\Icone;
@@ -105,5 +106,35 @@ class ReferentielPromoViewHelper extends AbstractEntityActionViewHelper
         $attributes['data-event'] = ($attributes['data-event']) ??  Controller::EVENT_SUPPRIMER;
 
         return $this->generateActionLink($url, $libelle, $attributes);
+    }
+
+    public function renderGroupesInfos() : string
+    {
+        $groupes = $this->getReferentielPromo()->getGroupes()->toArray();
+        $dataContent="";
+        $color = "text-primary";
+        /** @var Groupe $groupe */
+        foreach ($groupes as $groupe) {
+            $dataContent .= sprintf("<div>%s - %s</div>", $groupe->getLibelle(), $groupe->getAnneeUniversitaire()->getLibelle());
+        }
+        if(empty($groupes)) {
+            $dataContent = "Aucun groupe associé au référentiel";
+            $color = "text-muted";
+        }
+        return sprintf('<span class="%s"> <a
+                    data-bs-toggle="popover" 
+                    data-bs-placement="bottom" 
+                    data-bs-trigger="focus"
+                    tabindex="0"
+                    data-bs-content="%s"
+                    >%s <span class="icon icon-users"></span></a></span>',
+            $color, $dataContent, sizeof($groupes)
+        );
+//
+//qsf
+//                        <span class="text-primary"><?= $groupes->count()
+//<!--                            <span class="fas fa-users"></span>-->
+//<!--                        </span>-->
+//<!--    }-->
     }
 }

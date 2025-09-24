@@ -36,6 +36,10 @@ use Application\Provider\Privilege\StagePrivileges;
 use Application\Provider\Privilege\TerrainPrivileges;
 use Laminas\DeveloperTools\Collector\MailCollector;
 use Laminas\Router\Http\Literal;
+use UnicaenDbImport\Privilege\ImportPrivilege;
+use UnicaenDbImport\Privilege\LogPrivilege;
+use UnicaenDbImport\Privilege\ObservationPrivilege;
+use UnicaenDbImport\Privilege\SynchroPrivilege;
 use UnicaenEtat\Controller\EtatCategorieController;
 use UnicaenEtat\Controller\EtatTypeController;
 use UnicaenEtat\Provider\Privilege\EtatPrivileges;
@@ -52,6 +56,8 @@ use UnicaenRenderer\Controller\TemplateController;
 use UnicaenRenderer\Provider\Privilege\DocumentcontenuPrivileges;
 use UnicaenRenderer\Provider\Privilege\DocumentmacroPrivileges;
 use UnicaenRenderer\Provider\Privilege\DocumenttemplatePrivileges;
+use UnicaenTag\Controller\TagCategorieController;
+use UnicaenTag\Controller\TagController;
 use UnicaenUtilisateur\Controller\RoleController;
 use UnicaenUtilisateur\Controller\UtilisateurController;
 use UnicaenUtilisateur\Provider\Privilege\RolePrivileges;
@@ -411,6 +417,38 @@ return [
                                 "icon" => "fas fa-angle-right",
                                 "order" => $order++,
                             ],
+                            [
+                                'label' => "Imports",
+                                "title" => "Imports des données",
+                                'route' => 'unicaen-db-import/import',
+                                "icon" => "fas fa-angle-right",
+                                "resource" => ImportPrivilege::getResourceId(ImportPrivilege::LISTER),
+                                "order" => $order++,
+                            ],
+                            [
+                                'label' => "Synchros",
+                                "title" => "Synchronisations des données",
+                                'route' => 'unicaen-db-import/synchro',
+                                "icon" => "fas fa-angle-right",
+                                "resource" => SynchroPrivilege::getResourceId(SynchroPrivilege::LISTER),
+                                "order" => $order++,
+                            ],
+//                            [
+//                                'label' => "Logs",
+//                                "title" => "Logs des imports et synchro",
+//                                'route' => 'unicaen-db-import/log',
+//                                "icon" => "fas fa-angle-right",
+//                                "resource" => LogPrivilege::getResourceId(LogPrivilege::LISTER),
+//                                "order" => $order++,
+//                            ],
+//                            [
+//                                'label' => "Observations",
+//                                "title" => "Observations des imports et synchro",
+//                                'route' => 'unicaen-db-import/observ',
+//                                "icon" => "fas fa-angle-right",
+//                                "resource" => ObservationPrivilege::getResourceId(ObservationPrivilege::LISTER),
+//                                "order" => $order++,
+//                            ],
 
                             /////////////////////
                             // UnicaenEtat
@@ -441,6 +479,23 @@ return [
                                 "icon" => "fas fa-angle-right",
                             ],
 
+                            [
+                                "label" => "Catégories de tags",
+                                "title" => "Gestion des catégories de tags",
+                                "route" => "unicaen-tag/tag-categorie",
+                                "resource" =>  PrivilegeController::getResourceId(TagCategorieController::class, 'index'),
+                                "order" => $order++,
+                                "icon" => "fas fa-angle-right",
+                            ],
+                            [
+                                "label" => "Tags",
+                                "title" => "Gestion des tags",
+                                "route" => "unicaen-tag",
+                                "resource" =>  PrivilegeController::getResourceId(TagController::class, 'index'),
+                                "order" => $order++,
+                                "icon" => "fas fa-angle-right",
+                            ],
+
                             /////////////////////
                             // Unicaen-Evenements
                             /////////////////////
@@ -463,6 +518,8 @@ return [
                             ],
                         ],
                     ],
+                    // Suppression des routes de navigations fournis par des librairies
+                    'unicaen-db-import' => null,
                     //Désactivations des menu de navigatins du footer
                     'etab' => null,
                     'apropos' => null,

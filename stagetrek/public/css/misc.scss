@@ -376,6 +376,18 @@ div.jumbotron {
     color: #f8f9fa;
     background-color: rgba(var(--bs-primary-rgb));
   }
+  &.source-csv{
+    color: #f8f9fa;
+    background-color: rgba(var(--bs-info-rgb));
+  }
+  &.source-pegase{
+    color: #f8f9fa;
+    background-color: rgba(var(--bs-danger-rgb));
+  }
+  &.source-appoge{
+    color: #f8f9fa;
+    background-color: rgba(var(--bs-danger-warning));
+  }
   &.source-ldap{
     color: #f8f9fa;
     background-color: rgba(var(--bs-success-rgb));

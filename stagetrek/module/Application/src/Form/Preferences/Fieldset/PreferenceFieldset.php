@@ -44,13 +44,14 @@ class PreferenceFieldset extends AbstractEntityFieldset
     /**
      * @throws \Doctrine\ORM\Exception\NotSupported
      */
-    public function init(): void
+    public function init() : static
     {
         $this->initIdInput();
         $this->initStageInput();
         $this->initTerrainPrincipalInput();
         $this->initTerrainSecondaireInput();
         $this->initRangInput();
+        return $this;
     }
 
     private function initStageInput() : void

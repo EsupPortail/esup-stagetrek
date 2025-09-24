@@ -29,12 +29,13 @@ class ContactTerrainFieldset extends AbstractEntityFieldset
     use IdInputAwareTrait;
 
 
-    public function init(): void
+    public function init() : static
     {
         $this->initIdInput();
         $this->initContactInput();
         $this->initTerrainInput();
         $this->initPropertiesInput();
+        return $this;
     }
 
     private function initContactInput() : void

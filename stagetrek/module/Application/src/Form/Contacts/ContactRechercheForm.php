@@ -18,7 +18,7 @@ class ContactRechercheForm extends AbstractRechercheForm
     const INPUT_ACTIF = "actif";
     const INPUT_AFFICHER_CODE = "afficherCode";
 
-    public function init(): void
+    public function init(): static
     {
         parent::init();
         $this->add([
@@ -117,8 +117,7 @@ class ContactRechercheForm extends AbstractRechercheForm
                 'class' => 'form-check-input'
             ],
         ]);
-
-
+        return $this;
     }
 
     public function getInputFilterSpecification(): array

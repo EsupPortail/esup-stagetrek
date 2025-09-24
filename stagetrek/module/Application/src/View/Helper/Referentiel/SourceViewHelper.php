@@ -61,7 +61,7 @@ class SourceViewHelper extends AbstractEntityActionViewHelper
 
         return match ($action) {
             Controller::ACTION_AJOUTER => $this->hasPrivilege(ReferentielPrivilege::REFERENTIEL_SOURCE_AJOUTER),
-            Controller::ACTION_MODIFIER => $this->hasSource() && $this->hasPrivilege(ReferentielPrivilege::REFERENTIEL_SOURCE_MODIFIER),
+            Controller::ACTION_MODIFIER => $this->hasSource() && $this->callAssertion($ressources, ReferentielPrivilege::REFERENTIEL_SOURCE_MODIFIER),
             Controller::ACTION_SUPPRIMER => $this->hasSource() && $this->callAssertion($ressources, ReferentielPrivilege::REFERENTIEL_SOURCE_SUPPRIMER),
             default => false,
         };

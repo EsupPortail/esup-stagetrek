@@ -19,17 +19,17 @@ return [
     'laminas-cli' => [
         'commands' => [
             //Note : ne pas faire de commande UpdateEntities car trop de données possibles
-            'update-affectations' => UpdateAffectationCommand::class,
-            'update-annees' => UpdateAnneeCommand::class,
-            'update-contraintes' => UpdateContraintesCommand::class,
-            'update-conventions-stages' => UpdateConventionStageCommand::class,
-            'update-contacts' => UpdateContactCommand::class,
-            'update-etudiants' => UpdateEtudiantCommand::class,
-            'update-preferences' => UpdatePreferenceCommand::class,
-            'update-sessions' => UpdateSessionCommand::class,
-            'update-stages' => UpdateStageCommand::class,
-            'update-ordres-affectations' => UpdateOrdreAffectationCommand::class,
-            'update-validations-stages' => UpdateValidationStageCommand::class,
+            'update:affectations' => UpdateAffectationCommand::class,
+            'update:annees' => UpdateAnneeCommand::class,
+            'update:contraintes' => UpdateContraintesCommand::class,
+            'update:conventions-stages' => UpdateConventionStageCommand::class,
+            'update:contacts' => UpdateContactCommand::class,
+            'update:etudiants' => UpdateEtudiantCommand::class,
+            'update:preferences' => UpdatePreferenceCommand::class,
+            'update:sessions' => UpdateSessionCommand::class,
+            'update:stages' => UpdateStageCommand::class,
+            'update:ordres-affectations' => UpdateOrdreAffectationCommand::class,
+            'update:validations-stages' => UpdateValidationStageCommand::class,
         ],
     ],
 

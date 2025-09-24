@@ -21,11 +21,6 @@ class IdentityProviderFactory
         $etudiantService = $container->get(EtudiantService::class);
         $service->setEtudiantService($etudiantService);
 
-        $config = $container->get('Configuration');
-        if(isset($config['unicaen-auth']['default_users'])){
-            $defaultUsers = $config['unicaen-auth']['default_users'];
-            $service->setDefaultUsers($defaultUsers);
-        }
         return $service;
     }
 }

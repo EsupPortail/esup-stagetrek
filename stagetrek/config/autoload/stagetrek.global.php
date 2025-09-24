@@ -21,11 +21,11 @@ return [
         'session_refresh_period' => 0, // 0 <=> aucune requête exécutée
         'maintenance' => [
             // activation (TRUE: activé, FALSE: désactivé)
-            'enable' => isset($_ENV['MAINTENACE_ACTIVE']) && $_ENV['MAINTENACE_ACTIVE']=="true" ? true : false,
+            'enable' => isset($_ENV['MAINTENANCE_ACTIVE']) && $_ENV['MAINTENANCE_ACTIVE']=="true" ? true : false,
             // message à afficher
             'message' => "L'application est temporairement indisponible pour des raisons de maintenance, veuillez nous excuser pour la gêne occasionnée.",
             // le mode console est-il aussi concerné (TRUE: oui, FALSE: non)
-            'include_cli' => isset($_ENV['MAINTENACE_CLI_ACTIVE']) && $_ENV['MAINTENACE_CLI_ACTIVE']=="true" ? true : false,
+            'include_cli' => isset($_ENV['MAINTENANCE_CLI_ACTIVE']) && $_ENV['MAINTENANCE_CLI_ACTIVE']=="true" ? true : false,
            // liste blanche des adresses IP clientes à laisser passer
             //TODO : a voir si réelement utile. Si oui, passer en variables d'environnement
             'white_list' => [

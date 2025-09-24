@@ -8,10 +8,11 @@ use Application\Form\Contacts\Fieldset\ContactFieldset;
 
 class ContactForm extends AbstractEntityForm
 {
-    public function init(): void
+    public function init(): static
     {
         parent::init();
         $fieldset = $this->getFormFactory()->getFormElementManager()->get(ContactFieldset::class);
         $this->setEntityFieldset($fieldset);
+        return $this;
     }
 }

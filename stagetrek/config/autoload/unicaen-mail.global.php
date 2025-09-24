@@ -10,8 +10,9 @@ if (isset($_ENV['MAIL_SMTP_PORT']) && $_ENV['MAIL_SMTP_PORT']!="") {
     $transportOptions['port'] = intval($_ENV['MAIL_SMTP_PORT']);
 }
 
-if (isset($_ENV['MAIL_SMTP_CONNECTION_CLASS']) && $_ENV['MAIL_SMTP_CONNECTION_CLASS']!="") {
-    $transportOptions['connection_class'] = $_ENV['MAIL_SMTP_CONNECTION_CLASS'];
+
+if (isset($_ENV['MAIL_SMTP_USE_AUTH']) && $_ENV['MAIL_SMTP_USE_AUTH']!="") {
+    $transportOptions['connection_config']['use_auth'] =  (isset($_ENV['MAIL_SMTP_USE_AUTH']) && $_ENV['MAIL_SMTP_USE_AUTH']=="true");
 }
 if (isset($_ENV['MAIL_SMTP_USERNAME']) && $_ENV['MAIL_SMTP_USERNAME']!="") {
     $transportOptions['connection_config']['username'] = $_ENV['MAIL_SMTP_USERNAME'];
@@ -19,9 +20,7 @@ if (isset($_ENV['MAIL_SMTP_USERNAME']) && $_ENV['MAIL_SMTP_USERNAME']!="") {
 if (isset($_ENV['MAIL_SMTP_PASSWORD']) && $_ENV['MAIL_SMTP_PASSWORD']!="") {
     $transportOptions['connection_config']['password'] = $_ENV['MAIL_SMTP_PASSWORD'];
 }
-if (isset($_ENV['MAIL_SMTP_SSL']) && $_ENV['MAIL_SMTP_SSL']!="") {
-    $transportOptions['connection_config']['ssl'] = $_ENV['MAIL_SMTP_SSL'];
-}
+$transportOptions['tls'] =  (isset($_ENV['MAIL_SMTP_TLS']) && ($_ENV['MAIL_SMTP_TLS']=="true")) ? true : false;
 
 return [
     'unicaen-mail' => [

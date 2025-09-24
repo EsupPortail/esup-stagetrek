@@ -3,6 +3,7 @@
 
 namespace Application\Form\Referentiel\Fieldset;
 
+use Application\Entity\Db\Source;
 use Application\Form\Misc\Abstracts\AbstractEntityFieldset;
 use Application\Form\Misc\Traits\CodeInputAwareTrait;
 use Application\Form\Misc\Traits\IdInputAwareTrait;
@@ -25,7 +26,7 @@ class ReferentielPromoFieldset extends AbstractEntityFieldset
     use LibelleInputAwareTrait;
     use OrdreInputAwareTrait;
 
-    public function init(): void
+    public function init() : static
     {
         $this->initIdInput();
         $this->initCodeInput();
@@ -33,6 +34,7 @@ class ReferentielPromoFieldset extends AbstractEntityFieldset
         $this->initOrdreInput();
         $this->initSourceInput();
         $this->initCodePromoInput();
+        return $this;
     }
 
 

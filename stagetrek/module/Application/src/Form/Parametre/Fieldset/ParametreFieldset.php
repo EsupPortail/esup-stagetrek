@@ -23,7 +23,7 @@ class ParametreFieldset extends AbstractEntityFieldset
     use LibelleInputAwareTrait;
     use DescriptionInputAwareTrait;
 
-    public function init(): void
+    public function init() : static
     {
         $this->setDescriptionMaxSize(255);
 
@@ -32,6 +32,7 @@ class ParametreFieldset extends AbstractEntityFieldset
         $this->initOrdreInput();
         $this->initDescriptionInput();
         $this->initParamValue();
+        return $this;
     }
 
     const PARAM_VALUE = "value";

@@ -25,5 +25,12 @@
         <option name="default">1</option>
       </options>
     </field>
+
+    <field name="importable" type="boolean" column="importable" nullable="false"/>
+    <field name="lock" type="boolean" column="lock" nullable="false"/>
+    <field name="synchro_delete_enabled" type="boolean" column="synchro_delete_enabled" nullable="false"/>
+    <field name="synchro_insert_enabled" type="boolean" column="synchro_insert_enabled" nullable="false"/>
+    <field name="synchro_undelete_enabled" type="boolean" column="synchro_undelete_enabled" nullable="false"/>
+    <field name="synchro_update_enabled" type="boolean" column="synchro_update_enabled" nullable="false"/>
   </entity>
 </doctrine-mapping>

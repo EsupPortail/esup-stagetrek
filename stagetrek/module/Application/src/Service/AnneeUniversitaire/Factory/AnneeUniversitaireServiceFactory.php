@@ -12,6 +12,7 @@ use Laminas\ServiceManager\Factory\FactoryInterface;
 use Laminas\ServiceManager\ServiceManager;
 use UnicaenEtat\Service\EtatInstance\EtatInstanceService;
 use UnicaenEtat\Service\EtatType\EtatTypeService;
+use UnicaenTag\Service\Tag\TagService;
 
 /**
  * Class AnneeUniversitaireServiceFactory
@@ -49,6 +50,8 @@ class AnneeUniversitaireServiceFactory implements FactoryInterface
 
         $serviceProvider->setEtatTypeService($container->get(EtatTypeService::class));
         $serviceProvider->setEtatInstanceService($container->get(EtatInstanceService::class));
+
+        $serviceProvider->setTagService($container->get(TagService::class));
 
         return $serviceProvider;
     }

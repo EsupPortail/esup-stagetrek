@@ -32,12 +32,13 @@ class DisponibiliteFieldset extends AbstractEntityFieldset
     const INFO = "informationComplementaire";
     const FORCER_DISPONIBILITE = "forcerDisponibilite";
 
-    public function init(): void
+    public function init() : static
     {
         $this->initIdInput();
         $this->initEtudiantInput();
         $this->initDatesInputs();
         $this->initPropertiesInputs();
+        return $this;
     }
     private function initEtudiantInput(): void
     {

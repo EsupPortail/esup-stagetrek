@@ -2,14 +2,14 @@
 
 namespace Application\Entity\Db;
 
-use Application\Entity\Interfaces\CodeEntityInterface;
-use Application\Entity\Interfaces\LibelleEntityInterface;
-use Application\Entity\Interfaces\OrderEntityInterface;
-use Application\Entity\Traits\InterfaceImplementation\CodeEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\DescriptionEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\IdEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\LibelleEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\OrderEntityTrait;
+use Application\Entity\Interfaces\HasCodeInterface;
+use Application\Entity\Interfaces\HasLibelleInterface;
+use Application\Entity\Interfaces\HasOrderInterface;
+use Application\Entity\Traits\InterfaceImplementation\HasCodeTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasDescriptionTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasIdTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasLibelleTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasOrderTrait;
 use Application\Entity\Traits\Parametre\HasParametreCategorieTrait;
 use Application\Entity\Traits\Parametre\HasParametreTypeTrait;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
@@ -18,7 +18,7 @@ use Laminas\Permissions\Acl\Resource\ResourceInterface;
  * Parametre
  */
 class Parametre implements ResourceInterface,
-    LibelleEntityInterface, CodeEntityInterface, OrderEntityInterface
+    HasLibelleInterface, HasCodeInterface, HasOrderInterface
 {
     const RESOURCE_ID = 'Parametre';
 
@@ -59,11 +59,11 @@ class Parametre implements ResourceInterface,
     }
 
 
-    use IdEntityTrait;
-    use LibelleEntityTrait;
-    use OrderEntityTrait;
-    use CodeEntityTrait;
-    use DescriptionEntityTrait;
+    use HasIdTrait;
+    use HasLibelleTrait;
+    use HasOrderTrait;
+    use HasCodeTrait;
+    use HasDescriptionTrait;
 
     use HasParametreTypeTrait;
     use HasParametreCategorieTrait;

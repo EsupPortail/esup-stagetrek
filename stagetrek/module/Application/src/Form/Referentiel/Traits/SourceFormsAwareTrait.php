@@ -8,7 +8,7 @@ use Application\Provider\Misc\Icone;
 use Application\Provider\Misc\Label;
 
 /**
- * Traits ReferentielPromoFormsAwareTrait
+ * Traits ReferentielPromoFormAwareTrait
  * @package Application\Form\Traits
  */
 trait SourceFormsAwareTrait

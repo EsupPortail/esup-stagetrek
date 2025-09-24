@@ -13,11 +13,12 @@ use Application\Form\Contrainte\Fieldset\ContrainteCursusEtudiantFieldset;
  */
 class ContrainteCursusEtudiantForm extends AbstractEntityForm
 {
-    public function init(): void
+    public function init() : static
     {
         parent::init();
         $fieldset = $this->getFormFactory()->getFormElementManager()->get(ContrainteCursusEtudiantFieldset::class);
         $this->setEntityFieldset($fieldset);
+        return $this;
     }
     public function setEtudiantContrainteCursus(ContrainteCursusEtudiant $contrainteCursusEtudiant) : static
     {

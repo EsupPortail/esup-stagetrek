@@ -3,7 +3,7 @@
 namespace Application\Entity\Db;
 
 use Application\Entity\Traits\Adresse\HasAdresseTypeTrait;
-use Application\Entity\Traits\InterfaceImplementation\IdEntityTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasIdTrait;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 /**
  * Adresse
@@ -19,7 +19,7 @@ class Adresse implements ResourceInterface
      */
     protected ?string $adresse = null;
 
-    use IdEntityTrait;
+    use HasIdTrait;
     use HasAdresseTypeTrait;
     /**
      * @var string|null

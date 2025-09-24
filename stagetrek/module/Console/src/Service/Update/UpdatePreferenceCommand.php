@@ -12,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class UpdatePreferenceCommand extends AbstractUpdateEntityCommand
 {
-    protected static $defaultName = 'update-preferences';
+    protected static $defaultName = 'update:preferences';
 
     /**
      * @throws \Exception

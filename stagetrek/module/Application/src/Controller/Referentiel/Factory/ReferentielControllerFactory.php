@@ -3,7 +3,7 @@
 namespace Application\Controller\Referentiel\Factory;
 
 use Application\Controller\Referentiel\ReferentielController;
-use Application\Service\Referentiel\ReferentielService;
+use Application\Service\Referentiel\MultipleReferentielEtudiantsService;
 use Doctrine\ORM\EntityManager;
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
@@ -11,6 +11,7 @@ use Laminas\ServiceManager\Factory\FactoryInterface;
 /**
  * Class ReferentielControllerFactory
  * @package Referentiel\Controller
+ * @deprecated Refonte en cours de la gestions  des étudiants
  */
 class ReferentielControllerFactory implements FactoryInterface
 {
@@ -31,9 +32,9 @@ class ReferentielControllerFactory implements FactoryInterface
         $entityManager = $container->get(EntityManager::class);
         $controller->setObjectManager($entityManager);
 
-        /** @var ReferentielService $referentielService */
-        $referentielService = $container->get(ReferentielService::class);
-        $controller->setReferentielService($referentielService);
+//        /** @var MultipleReferentielEtudiantsService $referentielService */
+//        $referentielService = $container->get(MultipleReferentielEtudiantsService::class);
+//        $controller->setReferentielService($referentielService);
 
         return $controller;
     }

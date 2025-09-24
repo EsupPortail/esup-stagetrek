@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class UpdateSessionCommand extends AbstractUpdateEntityCommand
 {
-    protected static $defaultName = 'update-sessions';
+    protected static $defaultName = 'update:sessions';
 
     /**
      * @throws \Exception

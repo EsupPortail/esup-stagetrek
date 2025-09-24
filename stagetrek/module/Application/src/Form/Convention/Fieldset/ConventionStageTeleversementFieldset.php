@@ -13,7 +13,7 @@ use Laminas\Validator\File\UploadFile;
 class ConventionStageTeleversementFieldset extends AbstractEntityFieldset
 {
     const INPUT_FILE = 'file';
-    public function init(): void
+    public function init() : static
     {
         $this->add([
             'type' => File::class,
@@ -76,6 +76,7 @@ class ConventionStageTeleversementFieldset extends AbstractEntityFieldset
                 ],
             ],
         ]);
+        return $this;
     }
 
     const VALIDATOR_MSG_FILE_NOT_FOUND = "Vous devez fournir un fichier au format pdf.";

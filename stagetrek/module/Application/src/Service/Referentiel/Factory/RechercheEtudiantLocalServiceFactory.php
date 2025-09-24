@@ -2,7 +2,7 @@
 
 namespace Application\Service\Referentiel\Factory;
 
-use Application\Service\Referentiel\RechercheEtudiant\RechercheEtudiantLocalService;
+use Application\Service\Referentiel\LocalEtudiantService;
 use Doctrine\ORM\EntityManager;
 use Interop\Container\ContainerInterface;
 
@@ -11,14 +11,14 @@ class RechercheEtudiantLocalServiceFactory
 
     /**
      * @param ContainerInterface $container
-     * @return RechercheEtudiantLocalService
+     * @return LocalEtudiantService
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function __invoke(ContainerInterface $container): RechercheEtudiantLocalService
+    public function __invoke(ContainerInterface $container): LocalEtudiantService
     {
 
-        $service = new RechercheEtudiantLocalService();
+        $service = new LocalEtudiantService();
         $entityManager = $container->get(EntityManager::class);
         $service->setObjectManager($entityManager);
 

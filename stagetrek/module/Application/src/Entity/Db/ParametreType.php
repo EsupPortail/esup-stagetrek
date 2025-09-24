@@ -2,17 +2,17 @@
 
 namespace Application\Entity\Db;
 
-use Application\Entity\Interfaces\LibelleEntityInterface;
-use Application\Entity\Interfaces\OrderEntityInterface;
-use Application\Entity\Traits\InterfaceImplementation\IdEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\LibelleEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\OrderEntityTrait;
+use Application\Entity\Interfaces\HasLibelleInterface;
+use Application\Entity\Interfaces\HasOrderInterface;
+use Application\Entity\Traits\InterfaceImplementation\HasIdTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasLibelleTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasOrderTrait;
 
 /**
  * ParametreType
  */
 class ParametreType
-implements LibelleEntityInterface, OrderEntityInterface
+implements HasLibelleInterface, HasOrderInterface
 {
     const RESOURCE_ID = 'ParametreType';
     /**
@@ -29,9 +29,9 @@ implements LibelleEntityInterface, OrderEntityInterface
     const FLOAT = 'float';
     const BOOL = 'bool';
 
-    use IdEntityTrait;
-    use LibelleEntityTrait;
-    use OrderEntityTrait;
+    use HasIdTrait;
+    use HasLibelleTrait;
+    use HasOrderTrait;
 
 
     /**

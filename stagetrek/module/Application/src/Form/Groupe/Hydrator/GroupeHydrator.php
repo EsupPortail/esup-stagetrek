@@ -6,6 +6,7 @@ namespace Application\Form\Groupe\Hydrator;
 use Application\Entity\Db\AnneeUniversitaire;
 use Application\Entity\Db\Groupe;
 use Application\Entity\Db\NiveauEtude;
+use Application\Entity\Db\ReferentielPromo;
 use Application\Form\Groupe\Fieldset\GroupeFieldset;
 use DoctrineModule\Persistence\ObjectManagerAwareInterface;
 use DoctrineModule\Persistence\ProvidesObjectManager;
@@ -32,6 +33,7 @@ class GroupeHydrator extends AbstractHydrator implements HydratorInterface, Obje
         $groupe = $object;
         $data = [
             GroupeFieldset::ID => $groupe->getId(),
+            GroupeFieldset::CODE => $groupe->getCode(),
             GroupeFieldset::LIBELLE => $groupe->getLibelle(),
         ];
         if ($groupe->getAnneeUniversitaire() != null) {
@@ -39,6 +41,13 @@ class GroupeHydrator extends AbstractHydrator implements HydratorInterface, Obje
         }
         if ($groupe->getNiveauEtude() != null) {
             $data[GroupeFieldset::NIVEAU_ETUDE] = $groupe->getNiveauEtude()->getId();
+        }
+        if ($groupe->getReferentielsPromos()->isEmpty()) {
+            $data[GroupeFieldset::REFERENTIELS] = [];
+        } else {
+            foreach ($groupe->getReferentielsPromos() as $r) {
+                $data[GroupeFieldset::REFERENTIELS][] = $r->getId();
+            }
         }
         return $data;
     }
@@ -53,6 +62,12 @@ class GroupeHydrator extends AbstractHydrator implements HydratorInterface, Obje
     {
         /** @var Groupe $groupe */
         $groupe = $object;
+        if(isset($data[GroupeFieldset::CODE])){
+            $groupe->setCode($data[GroupeFieldset::CODE]);
+        }
+        else {
+        $groupe->setCode(null);
+        }
         if(isset($data[GroupeFieldset::LIBELLE])){
             $groupe->setLibelle($data[GroupeFieldset::LIBELLE]);
         }
@@ -64,6 +79,22 @@ class GroupeHydrator extends AbstractHydrator implements HydratorInterface, Obje
             $annee = $this->getObjectManager()->getRepository(AnneeUniversitaire::class)->find($data[GroupeFieldset::ANNEE_UNIVERSITAIRE]);
             $groupe->setAnneeUniversitaire($annee);
         }
+
+        if (isset($data[GroupeFieldset::REFERENTIELS])) {
+            $referentielsSelected = $data[GroupeFieldset::REFERENTIELS];
+            /** @var ReferentielPromo[] $referentiels */
+            $referentiels = $this->getObjectManager()->getRepository(ReferentielPromo::class)->findAll();
+            $referentiels = array_filter($referentiels, function (ReferentielPromo $r) use ($referentielsSelected) {
+                return in_array($r->getId(), $referentielsSelected);
+            });
+            $groupe->getReferentielsPromos()->clear();
+            foreach ($referentiels as $r) {
+                $groupe->addReferentielPromo($r);
+            }
+        } else {
+            $groupe->getReferentielsPromos()->clear();
+        }
+
         return $groupe;
     }
 }

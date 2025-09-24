@@ -3,12 +3,12 @@
 namespace Application\Entity\Db;
 
 use Application\Entity\Db;
-use Application\Entity\Interfaces\LibelleEntityInterface;
+use Application\Entity\Interfaces\HasLibelleInterface;
 use Application\Entity\Traits\AnneeUniversitaire\HasAnneeUniversitaireTrait;
 use Application\Entity\Traits\Etudiant\HasEtudiantsTrait;
 use Application\Entity\Traits\Groupe\HasGroupeTrait;
-use Application\Entity\Traits\InterfaceImplementation\IdEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\LibelleEntityTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasIdTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasLibelleTrait;
 use Application\Entity\Traits\Stage\HasAffectationsStagesTrait;
 use Application\Entity\Traits\Stage\HasStagesTrait;
 use Application\Entity\Traits\Terrain\HasTerrainsStagesTrait;
@@ -25,7 +25,7 @@ use UnicaenEtat\Entity\Db\HasEtatsTrait;
 /**
  * SessionStage
  */
-class SessionStage implements ResourceInterface, LibelleEntityInterface, HasEtatsInterface
+class SessionStage implements ResourceInterface, HasLibelleInterface, HasEtatsInterface
 {
     const RESOURCE_ID = 'SessionStage';
     /**
@@ -84,8 +84,8 @@ class SessionStage implements ResourceInterface, LibelleEntityInterface, HasEtat
         $this->etats = new ArrayCollection();
     }
 
-    use IdEntityTrait;
-    use LibelleEntityTrait;
+    use HasIdTrait;
+    use HasLibelleTrait;
     use HasEtatsTrait;
 
     use HasAnneeUniversitaireTrait;

@@ -2,14 +2,14 @@
 
 namespace Application\Entity\Db;
 
-use Application\Entity\Interfaces\AcronymeEntityInterface;
-use Application\Entity\Interfaces\CodeEntityInterface;
-use Application\Entity\Interfaces\LibelleEntityInterface;
-use Application\Entity\Traits\InterfaceImplementation\AcronymeEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\CodeEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\IdEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\LibelleEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\OrderEntityTrait;
+use Application\Entity\Interfaces\HasAcronymeInterface;
+use Application\Entity\Interfaces\HasCodeInterface;
+use Application\Entity\Interfaces\HasLibelleInterface;
+use Application\Entity\Traits\InterfaceImplementation\HasAcronymeTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasCodeTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasIdTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasLibelleTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasOrderTrait;
 use Application\Entity\Traits\Terrain\HasTerrainsStagesTrait;
 use Doctrine\Common\Collections\Collection;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
@@ -18,7 +18,7 @@ use Laminas\Permissions\Acl\Resource\ResourceInterface;
  * CategorieStage
  */
 class CategorieStage implements ResourceInterface,
-    LibelleEntityInterface, CodeEntityInterface, AcronymeEntityInterface
+    HasLibelleInterface, HasCodeInterface, HasAcronymeInterface
 {
 
     const RESOURCE_ID = 'CategorieStage';
@@ -51,15 +51,15 @@ class CategorieStage implements ResourceInterface,
         $this->initTerrainsStagesCollection();
     }
 
-    use IdEntityTrait;
-    use LibelleEntityTrait;
-    use AcronymeEntityTrait;
-    use CodeEntityTrait;
+    use HasIdTrait;
+    use HasLibelleTrait;
+    use HasAcronymeTrait;
+    use HasCodeTrait;
 
 
     use HasTerrainsStagesTrait;
 
-    use OrderEntityTrait;
+    use HasOrderTrait;
     //Surchage de la fonction de trie pour gérer la distincting Catégorie Principal/secondaire
     public static function sort(array|Collection $entities, string $order = 'asc'): array
     {

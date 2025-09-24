@@ -2,13 +2,13 @@
 
 namespace Application\Entity\Db;
 
-use Application\Entity\Interfaces\CodeEntityInterface;
-use Application\Entity\Interfaces\LibelleEntityInterface;
-use Application\Entity\Interfaces\OrderEntityInterface;
-use Application\Entity\Traits\InterfaceImplementation\CodeEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\IdEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\LibelleEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\OrderEntityTrait;
+use Application\Entity\Interfaces\HasCodeInterface;
+use Application\Entity\Interfaces\HasLibelleInterface;
+use Application\Entity\Interfaces\HasOrderInterface;
+use Application\Entity\Traits\InterfaceImplementation\HasCodeTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasIdTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasLibelleTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasOrderTrait;
 use Application\Entity\Traits\Notification\HasFaqQuestionsTrait;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 
@@ -16,8 +16,8 @@ use Laminas\Permissions\Acl\Resource\ResourceInterface;
  * FaqCategorieQuestion
  */
 class FaqCategorieQuestion implements ResourceInterface,
-    CodeEntityInterface,
-    LibelleEntityInterface, OrderEntityInterface
+    HasCodeInterface,
+    HasLibelleInterface, HasOrderInterface
 {
     /**
      *
@@ -34,10 +34,10 @@ class FaqCategorieQuestion implements ResourceInterface,
         return self::RESOURCE_ID;
     }
 
-    use IdEntityTrait;
-    use CodeEntityTrait;
-    use LibelleEntityTrait;
-    use OrderEntityTrait;
+    use HasIdTrait;
+    use HasCodeTrait;
+    use HasLibelleTrait;
+    use HasOrderTrait;
     use HasFaqQuestionsTrait;
     /**
      * Constructor

@@ -1,5 +1,34 @@
 CHANGELOG
 =========
+1.4.0 (24/09/2025)
+------------------
+- [Documentations] : Mise au propre de la documentation
+- [Bug fixe] : Timezone des containers
+- [Référentiel] : refonte de l'import des étudiants via un référentiel externe
+  - Consulter la documentation correspondante
+  - Référentiels gérés si les données de configurations sont fournis :
+    - annuaire LDAP (requiert une configuration LDAP à fournir pour le mode SaaS)
+    - Une BDD externe :(requiert une configuration spécifique à fournir pour le mode SaaS)
+  - Import par CSV : ajout du code des groupes
+  - Champs code pour les Entités Années, Etudiant et groupe
+  - Association entre les sources de référence et les groupe d'étudiant
+- [Utilisateur] : création via la console 
+  - Consulter la documentation correspondante
+- [Bug fixe] : création manuelle d'évenement
+- [UnicaenTag] : Ajout de la librairie UnicaenTag
+  - Début d'usage pour les années universitaire
+
+1.3.6 (11/09/2025)
+------------------
+- [Bug fixe] : retrait d'un étudiants lorsqu'il a déjà des stages de planifiés
+- [Bug fixe] : calcul des états lors de l'ajout/le retrait d'un étudiants dans un groupe
+
+1.3.5 (09/09/2025)
+------------------
+- [Bug fixe] : Correctif permettant d'envoyer des mails via un autre protocole que TLS
+- [Bug fixe temporaire] : Ignore la config Shib 'required_attributes' qui pose problème avec le supannEmpId|supannEtuId
+TODO : erreur à investiguer
+
 1.3.2 (28/08/2025)
 ------------------
 - script bin/stagetrek/console manquant

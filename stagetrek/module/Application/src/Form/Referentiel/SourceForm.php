@@ -12,10 +12,11 @@ use Application\Form\Referentiel\Fieldset\SourceFieldset;
  */
 class SourceForm extends AbstractEntityForm
 {
-    public function init(): void
+    public function init() : static
     {
         parent::init();
         $fieldset = $this->getFormFactory()->getFormElementManager()->get(SourceFieldset::class);
         $this->setEntityFieldset($fieldset);
+        return $this;
     }
 }

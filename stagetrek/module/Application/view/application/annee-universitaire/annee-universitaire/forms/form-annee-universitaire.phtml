@@ -24,6 +24,7 @@ $fieldset = $form->getEntityFieldset();
 <?= $this->form()->openTag($form->prepare()) ?>
 <?= $fe($form->prepare(), AnneeUniversitaireForm::INVALIDE_ERROR_MESSAGE) ?>
 <?= $fr($fieldset->get(AnneeUniversitaireFieldset::ID)); ?>
+<?= $fr($fieldset->get(AnneeUniversitaireFieldset::CODE)); ?>
 
     <div class="row">
         <div class="col-md-12">

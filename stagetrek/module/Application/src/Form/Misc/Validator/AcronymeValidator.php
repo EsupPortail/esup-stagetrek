@@ -2,7 +2,7 @@
 
 namespace Application\Form\Misc\Validator;
 
-use Application\Entity\Interfaces\AcronymeEntityInterface;
+use Application\Entity\Interfaces\HasAcronymeInterface;
 use Application\Service\Misc\CommonEntityService;
 use Laminas\Validator\AbstractValidator;
 use RuntimeException;
@@ -46,9 +46,9 @@ class AcronymeValidator extends AbstractValidator
         return $this;
     }
 
-    /** @var AcronymeEntityInterface|null $entity */
-    protected ?AcronymeEntityInterface $entity = null;
-    public function setEntity(AcronymeEntityInterface $entity) : static
+    /** @var HasAcronymeInterface|null $entity */
+    protected ?HasAcronymeInterface $entity = null;
+    public function setEntity(HasAcronymeInterface $entity) : static
     {
         if(method_exists($entity,$this->idGetter())){
             throw new RuntimeException("L'entité fournise doit implémenté la fonction getId().");

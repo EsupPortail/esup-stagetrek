@@ -23,7 +23,7 @@ class ContactFieldset extends AbstractEntityFieldset
     use LibelleInputAwareTrait;
     use MailInputAwareTrait;
 
-    public function init(): void
+    public function init() : static
     {
         $this->setLibelleLabel("Libellé / Fonction");
         $this->getLibelleValidator()->setUnique(false);
@@ -34,6 +34,7 @@ class ContactFieldset extends AbstractEntityFieldset
         $this->initDisplayNameInput();
         $this->initTelephoneInput();
         $this->initEtatInput();
+        return $this;
     }
 
     const DISPLAY_NAME = "displayName";

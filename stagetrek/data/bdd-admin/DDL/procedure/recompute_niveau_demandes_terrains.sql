@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE public.recompute_niveau_demandes_terrains(IN sessionid integer)
+CREATE OR REPLACE PROCEDURE public.recompute_niveau_demandes_terrains(sessionid integer)
  LANGUAGE plpgsql
 AS $procedure$
 BEGIN

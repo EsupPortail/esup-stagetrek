@@ -12,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class UpdateContraintesCommand extends AbstractUpdateEntityCommand
 {
-    protected static $defaultName = 'update-contraintes';
+    protected static $defaultName = 'update:contraintes';
 
     /**
      * @throws \Exception

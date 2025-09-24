@@ -14,11 +14,12 @@ use Application\Form\Parametre\Fieldset\NiveauEtudeFieldset;
 class NiveauEtudeForm extends AbstractEntityForm
 {
 
-    public function init(): void
+    public function init() : static
     {
         parent::init();
         $fieldset = $this->getFormFactory()->getFormElementManager()->get(NiveauEtudeFieldset::class);
         $this->setEntityFieldset($fieldset);
+        return $this;
     }
 
     public function fixerNiveauEtude(NiveauEtude $niveauEtude): static

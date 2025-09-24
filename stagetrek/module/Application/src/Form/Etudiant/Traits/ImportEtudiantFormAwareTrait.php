@@ -9,6 +9,7 @@ use Application\Form\Etudiant\ImportEtudiantForm;
 /**
  * Traits ImportEtudiantFormAwareTrait
  * @package Application\Form\Etudiant\Traits
+ * @deprecated Refonte en cours
  */
 trait ImportEtudiantFormAwareTrait
 {
