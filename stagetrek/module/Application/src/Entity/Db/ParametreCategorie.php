@@ -3,9 +3,9 @@
 namespace Application\Entity\Db;
 
 
-use Application\Entity\Traits\InterfaceImplementation\IdEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\LibelleEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\OrderEntityTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasIdTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasLibelleTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasOrderTrait;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 
 /**
@@ -31,7 +31,7 @@ class ParametreCategorie implements ResourceInterface
     const FOOTER = 'footer';
     const LOG = 'log';
 
-    use IdEntityTrait;
-    use LibelleEntityTrait;
-    use OrderEntityTrait;
+    use HasIdTrait;
+    use HasLibelleTrait;
+    use HasOrderTrait;
 }

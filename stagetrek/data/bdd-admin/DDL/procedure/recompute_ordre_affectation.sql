@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE public.recompute_ordre_affectation(IN sessionid integer)
+CREATE OR REPLACE PROCEDURE public.recompute_ordre_affectation(sessionid integer)
  LANGUAGE plpgsql
 AS $procedure$
 BEGIN

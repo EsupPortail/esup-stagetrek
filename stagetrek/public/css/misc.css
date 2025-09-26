@@ -367,6 +367,18 @@ div.jumbotron#index-informations {
   color: #f8f9fa;
   background-color: rgba(var(--bs-primary-rgb));
 }
+.badge.source-csv {
+  color: #f8f9fa;
+  background-color: rgba(var(--bs-info-rgb));
+}
+.badge.source-pegase {
+  color: #f8f9fa;
+  background-color: rgba(var(--bs-danger-rgb));
+}
+.badge.source-appoge {
+  color: #f8f9fa;
+  background-color: rgba(var(--bs-danger-warning));
+}
 .badge.source-ldap {
   color: #f8f9fa;
   background-color: rgba(var(--bs-success-rgb));

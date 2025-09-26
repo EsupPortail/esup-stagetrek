@@ -2,11 +2,11 @@
 
 namespace Application\Entity\Db;
 
-use Application\Entity\Traits\InterfaceImplementation\CodeEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\DescriptionEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\IdEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\LibelleEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\OrderEntityTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasCodeTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasDescriptionTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasIdTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasLibelleTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasOrderTrait;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 
 /**
@@ -24,9 +24,9 @@ class ProcedureAffectation implements ResourceInterface
         return self::RESOURCE_ID;
     }
 
-    use IdEntityTrait;
-    use CodeEntityTrait;
-    use LibelleEntityTrait;
-    use DescriptionEntityTrait;
-    use OrderEntityTrait;
+    use HasIdTrait;
+    use HasCodeTrait;
+    use HasLibelleTrait;
+    use HasDescriptionTrait;
+    use HasOrderTrait;
 }

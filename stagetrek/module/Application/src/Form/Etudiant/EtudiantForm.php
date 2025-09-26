@@ -10,10 +10,11 @@ use Application\Form\Etudiant\Fieldset\EtudiantFieldset;
  */
 class EtudiantForm extends AbstractEntityForm
 {
-    public function init(): void
+    public function init(): static
     {
         parent::init();
         $fieldset = $this->getFormFactory()->getFormElementManager()->get(EtudiantFieldset::class);
         $this->setEntityFieldset($fieldset);
+        return $this;
     }
 }

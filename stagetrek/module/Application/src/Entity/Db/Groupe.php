@@ -2,12 +2,16 @@
 
 namespace Application\Entity\Db;
 
-use Application\Entity\Interfaces\LibelleEntityInterface;
+use Application\Entity\Interfaces\HasCodeInterface;
+use Application\Entity\Interfaces\HasLibelleInterface;
 use Application\Entity\Traits\AnneeUniversitaire\HasAnneeUniversitaireTrait;
 use Application\Entity\Traits\Etudiant\HasEtudiantsTrait;
-use Application\Entity\Traits\InterfaceImplementation\IdEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\LibelleEntityTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasCodeTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasIdTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasLibelleTrait;
 use Application\Entity\Traits\Parametre\HasNiveauEtudeTrait;
+use Application\Entity\Traits\Referentiel\HasReferentielPromoTrait;
+use Application\Entity\Traits\Referentiel\HasReferentielsPromosTrait;
 use Application\Entity\Traits\Stage\HasSessionsStagesTrait;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 
@@ -15,10 +19,9 @@ use Laminas\Permissions\Acl\Resource\ResourceInterface;
  * Groupe
  */
 class Groupe implements ResourceInterface,
-    LibelleEntityInterface
+    HasLibelleInterface, HasCodeInterface
 {
     const RESOURCE_ID = 'Groupe';
-
     /**
      * @return string
      */
@@ -27,12 +30,22 @@ class Groupe implements ResourceInterface,
         return self::RESOURCE_ID;
     }
 
-    use IdEntityTrait;
-    use LibelleEntityTrait;
+    use HasIdTrait;
+    use HasCodeTrait;
+    public function generateDefaultCode(array $param = []) : string
+    {
+        $niveauEtude = $this->getNiveauEtude();
+        $annee = $this->getAnneeUniversitaire();
+        return sprintf("%s_DFASM%s", $annee->getCode(), $niveauEtude->getOrdre());
+    }
+
+    use HasLibelleTrait;
     use HasAnneeUniversitaireTrait;
     use HasNiveauEtudeTrait;
     use HasEtudiantsTrait;
     use HasSessionsStagesTrait;
+
+    use HasReferentielsPromosTrait;
 
     /**
      * @var \Application\Entity\Db\Groupe|null
@@ -51,6 +64,7 @@ class Groupe implements ResourceInterface,
     {
         $this->initEtudiantsCollection();
         $this->initSessionsStagesCollection();
+        $this->initReferentielsPromosCollection();
     }
 
     /** Fonction de trie d'un tableau de groupe */
@@ -89,7 +103,7 @@ class Groupe implements ResourceInterface,
      */
     public function removeEtudiant(Etudiant $etudiant) : static
     {
-        if ($this->etudiants->contains($etudiant)) {
+        if ($this->hasEtudiant($etudiant)) {
             $this->etudiants->removeElement($etudiant);
             $etudiant->removeGroupe($this);
             /** @var SessionStage $s */
@@ -107,11 +121,17 @@ class Groupe implements ResourceInterface,
      */
     public function addEtudiant(Etudiant $etudiant): static
     {
-        if (!$this->etudiants->contains($etudiant)) {
+        if (!$this->hasEtudiant($etudiant)) {
             $this->etudiants[] = $etudiant;
             $etudiant->addGroupe($this);
         }
         return $this;
+    }
+
+    /** Est-ce que l'étudiant est inscrit dans le groupe */
+    public function hasEtudiant(Etudiant $etudiant) : ?bool
+    {
+        return $this->etudiants->contains($etudiant);
     }
 
 

@@ -227,6 +227,9 @@ class StageService extends CommonEntityService
         $stage->getEtudiant()->removeSessionStage($stage->getSessionStage());
         $etudiant = $stage->getEtudiant();
         $session = $stage->getSessionStage();
+//        Pour éviter des pb de cycles;
+        $stage->setStagePrecedent();
+        $stage->setStageSuivant();
         $this->getObjectManager()->remove($stage);
         if ($this->hasUnitOfWorksChange()) {
             $this->getObjectManager()->flush();
@@ -263,6 +266,8 @@ class StageService extends CommonEntityService
             $sessions[] = $stage->getSessionStage();
             // Retrait du lien entre l'étudiant et la session de stage nécessaire
             $etudiant->removeSessionStage($stage->getSessionStage());
+            $stage->setStagePrecedent();
+            $stage->setStageSuivant();
             $this->getObjectManager()->remove($stage);
         }
         if ($this->hasUnitOfWorksChange()) {

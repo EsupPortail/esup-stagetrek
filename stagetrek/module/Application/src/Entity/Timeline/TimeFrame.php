@@ -2,8 +2,8 @@
 
 namespace Application\Entity\Timeline;
 //TODO : a revoir
-use Application\Entity\Traits\InterfaceImplementation\IdEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\LibelleEntityTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasIdTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasLibelleTrait;
 use DateTime;
 use Exception;
 
@@ -24,8 +24,8 @@ class TimeFrame
         $this->end = $end;
     }
 
-    use IdEntityTrait;
-    use LibelleEntityTrait;
+    use HasIdTrait;
+    use HasLibelleTrait;
 
 
     protected ?string $textInfos = null;

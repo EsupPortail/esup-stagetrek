@@ -2,8 +2,8 @@
 
 namespace Application\Entity\Timeline;
 
-use Application\Entity\Traits\InterfaceImplementation\IdEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\LibelleEntityTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasIdTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasLibelleTrait;
 use DateInterval;
 use DateTime;
 
@@ -41,8 +41,8 @@ class Timeline
         $this->timeFrames = [];
     }
 
-    use IdEntityTrait;
-    use LibelleEntityTrait;
+    use HasIdTrait;
+    use HasLibelleTrait;
 
 
     protected ?DateTime $defaultStart = null;

@@ -20,11 +20,12 @@ class FaqCategorieQuestionFieldset extends AbstractEntityFieldset
     use OrdreInputAwareTrait;
     use CodeInputAwareTrait;
 
-    public function init(): void
+    public function init(): static
     {
         $this->initIdInput();
         $this->initCodeInput(true);
         $this->initLibelleInput();
         $this->initOrdreInput();
+        return $this;
     }
 }

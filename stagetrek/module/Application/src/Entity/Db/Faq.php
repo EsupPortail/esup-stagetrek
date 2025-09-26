@@ -2,9 +2,9 @@
 
 namespace Application\Entity\Db;
 
-use Application\Entity\Interfaces\OrderEntityInterface;
-use Application\Entity\Traits\InterfaceImplementation\IdEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\OrderEntityTrait;
+use Application\Entity\Interfaces\HasOrderInterface;
+use Application\Entity\Traits\InterfaceImplementation\HasIdTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasOrderTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
@@ -13,7 +13,7 @@ use UnicaenUtilisateur\Entity\Db\Role;
 /**
  * Faq
  */
-class Faq implements ResourceInterface, OrderEntityInterface
+class Faq implements ResourceInterface, HasOrderInterface
 {
     /**
      *
@@ -30,8 +30,8 @@ class Faq implements ResourceInterface, OrderEntityInterface
         return self::RESOURCE_ID;
     }
 
-    use IdEntityTrait;
-    use OrderEntityTrait;
+    use HasIdTrait;
+    use HasOrderTrait;
 
     /**
      * @var string|null

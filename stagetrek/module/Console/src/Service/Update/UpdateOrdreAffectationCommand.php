@@ -20,7 +20,7 @@ use UnicaenEvenement\Entity\Db\Etat;
 
 class UpdateOrdreAffectationCommand extends AbstractUpdateEntityCommand
 {
-    protected static $defaultName = 'update-ordres-affectations';
+    protected static $defaultName = 'update:ordres-affectations';
 
     /**
      * @throws \Exception

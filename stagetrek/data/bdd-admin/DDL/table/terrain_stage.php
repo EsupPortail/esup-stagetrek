@@ -19,7 +19,7 @@ return [
             'precision'   => NULL,
             'nullable'    => TRUE,
             'default'     => 'true',
-            'position'    => 7,
+            'position'    => 8,
             'commentaire' => NULL,
         ],
         'adresse_id'                 => [
@@ -31,7 +31,7 @@ return [
             'precision'   => 8,
             'nullable'    => TRUE,
             'default'     => NULL,
-            'position'    => 10,
+            'position'    => 11,
             'commentaire' => NULL,
         ],
         'categorie_stage_id'         => [
@@ -43,7 +43,7 @@ return [
             'precision'   => 4,
             'nullable'    => FALSE,
             'default'     => NULL,
-            'position'    => 2,
+            'position'    => 3,
             'commentaire' => NULL,
         ],
         'code'                       => [
@@ -55,7 +55,7 @@ return [
             'precision'   => NULL,
             'nullable'    => FALSE,
             'default'     => NULL,
-            'position'    => 13,
+            'position'    => 2,
             'commentaire' => NULL,
         ],
         'hors_subdivision'           => [
@@ -91,7 +91,7 @@ return [
             'precision'   => 4,
             'nullable'    => FALSE,
             'default'     => '0',
-            'position'    => 5,
+            'position'    => 6,
             'commentaire' => NULL,
         ],
         'infos'                      => [
@@ -103,7 +103,7 @@ return [
             'precision'   => NULL,
             'nullable'    => TRUE,
             'default'     => NULL,
-            'position'    => 12,
+            'position'    => 13,
             'commentaire' => NULL,
         ],
         'libelle'                    => [
@@ -115,7 +115,7 @@ return [
             'precision'   => NULL,
             'nullable'    => FALSE,
             'default'     => NULL,
-            'position'    => 3,
+            'position'    => 4,
             'commentaire' => NULL,
         ],
         'lien'                       => [
@@ -127,7 +127,7 @@ return [
             'precision'   => NULL,
             'nullable'    => TRUE,
             'default'     => NULL,
-            'position'    => 11,
+            'position'    => 12,
             'commentaire' => NULL,
         ],
         'max_place'                  => [
@@ -139,7 +139,7 @@ return [
             'precision'   => 4,
             'nullable'    => FALSE,
             'default'     => '0',
-            'position'    => 6,
+            'position'    => 7,
             'commentaire' => NULL,
         ],
         'min_place'                  => [
@@ -151,7 +151,7 @@ return [
             'precision'   => 4,
             'nullable'    => FALSE,
             'default'     => '0',
-            'position'    => 4,
+            'position'    => 5,
             'commentaire' => NULL,
         ],
         'modele_convention_stage_id' => [
@@ -163,7 +163,7 @@ return [
             'precision'   => 8,
             'nullable'    => TRUE,
             'default'     => NULL,
-            'position'    => 8,
+            'position'    => 9,
             'commentaire' => NULL,
         ],
         'preferences_autorisees'     => [
@@ -175,7 +175,7 @@ return [
             'precision'   => NULL,
             'nullable'    => FALSE,
             'default'     => 'true',
-            'position'    => 9,
+            'position'    => 10,
             'commentaire' => NULL,
         ],
         'service'                    => [

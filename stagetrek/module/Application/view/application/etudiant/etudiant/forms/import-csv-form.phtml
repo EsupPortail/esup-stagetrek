@@ -1,0 +1,93 @@
+<?php
+
+use Application\Controller\Etudiant\EtudiantController;
+use Application\Form\Referentiel\ReferentielImportEtudiantsForm;
+use Application\Service\Misc\CSVService;
+use Application\Validator\Import\EtudiantCsvImportValidator;
+
+/**
+ * @see EtudiantController::importerAction()
+ * @var \Application\Form\Referentiel\CSVImportEtudiantsForm $form
+ */
+
+$fct = $this->formControlText();
+$fcg = $this->formControlGroup();
+$fe = $this->formErrors();
+$fh = $this->formHidden();
+
+/** @var EtudiantCsvImportValidator $validator */
+$validator = $form->getImportValidator();
+?>
+
+
+<?php echo $this->form()->openTag($form->prepare()); ?>
+<?= $fe($form->prepare(), $form::INVALIDE_ERROR_MESSAGE) ?>
+<?= $fh($form->get($form::INPUT_KEY)); ?>
+<?= $fh($form->get($form::INPUT_SOURCE)); ?>
+
+    <div class="row">
+        <div class="col-md-4">
+            <?= $fcg($form->get($form::INPUT_IMPORT_FILE)); ?>
+        </div>
+        <div class="col-md-8 text-muted text-small">
+            <ul>
+                <li>Le fichier CSV doit utiliser comme séparateur le '
+                    <?= CSVService::SEPARATOR ?>' et avoir les champs suivant : <br/>
+                    <?php $h = "";
+                    foreach (EtudiantCsvImportValidator::getImportHeader() as $key) {
+                        $h .= sprintf("<strong><span class='mx-2'>%s</span></strong>; ", $key);
+                    }
+                    echo $h;
+                    ?>
+                </li>
+                <li>
+                    Les champs <strong><?= $validator::HEADER_NUM_ETUDIANT ?></strong>
+                    et <strong><?= $validator::HEADER_EMAIL ?></strong>
+                    doivent être unique.
+                </li>
+                <li>
+                    Le champ <strong><?= $validator::HEADER_DATE_NAISSANCE ?></strong>
+                    doit être fournis au format <strong>JJ/MM/AAAA</strong> ou vide.
+                </li>
+                <li>
+                    Le champ <strong><?= $validator::HEADER_CODE_GROUPE ?></strong>
+                    doit correspondre au code du groupe de lequel inscrire l'étudiant ou être vide.
+                </li>
+            </ul>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-info">
+                Lors de l'ajout d'un étudiants
+                <ul>
+                    <li> Si un groupe est spécifiée et que l'étudiant n'est pas déjà inscrit dans un groupe de la même année, il
+                        sera inscrit dans ce groupe.
+                    </li>
+                    <li>
+                        Il sera également inscrit aux <strong>futurs</strong> stage de ce groupe
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <?php if(!empty($validator->getMessages()) ): ?>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-danger">
+                    <?=  $validator->getNotAllowedImportMessage(); ?>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <div class="mt-3 row">
+        <div class="col-md-3">
+            <?= $fcg($form->get($form::INPUT_SUBMIT)); ?>
+        </div>
+    </div>
+<?= $this->formHidden($form->get($form::CSRF)); ?>
+<?php echo $this->form()->closeTag(); ?>

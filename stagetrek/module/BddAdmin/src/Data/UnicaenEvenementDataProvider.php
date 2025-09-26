@@ -87,7 +87,7 @@ class UnicaenEvenementDataProvider implements DataProviderInterface {
             [
                 "code" => TypeEvenementProvider::MAIL_AUTO_AFFECTATION_VALIDEE,
                 "libelle" => "Mail automatique - Affectation validée",
-                "description" => "Envoie d'un mail automatique lors de la validation de l''affectation de stage",
+                "description" => "Envoie d'un mail automatique lors de la validation de l'affectation de stage",
                 "parametres" => "session-id;stage-id;etudiant-id;stage;etudiant",
                 "recursion" => "",
             ],

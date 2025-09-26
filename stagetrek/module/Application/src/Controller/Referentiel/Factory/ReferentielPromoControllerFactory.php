@@ -17,7 +17,6 @@ use Laminas\ServiceManager\Factory\FactoryInterface;
  */
 class ReferentielPromoControllerFactory implements FactoryInterface
 {
-
     /**
      * @param ContainerInterface $container
      * @param string $requestedName
@@ -40,7 +39,7 @@ class ReferentielPromoControllerFactory implements FactoryInterface
 
         /** @var ReferentielPromoForm $referentielPromoForm */
         $referentielPromoForm = $container->get(FormElementManager::class)->get(ReferentielPromoForm::class);
-        $controller->setReferentielForm($referentielPromoForm);
+        $controller->setReferentielPromoForm($referentielPromoForm);
 
         /** @var ConfirmationForm $confirmationForm */
         $confirmationForm = $container->get(FormElementManager::class)->get(ConfirmationForm::class);

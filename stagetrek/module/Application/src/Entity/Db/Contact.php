@@ -2,20 +2,20 @@
 
 namespace Application\Entity\Db;
 
-use Application\Entity\Interfaces\CodeEntityInterface;
-use Application\Entity\Interfaces\LibelleEntityInterface;
+use Application\Entity\Interfaces\HasCodeInterface;
+use Application\Entity\Interfaces\HasLibelleInterface;
 use Application\Entity\Traits\Contact\HasContactsStagesTrait;
 use Application\Entity\Traits\Contact\HasContactsTerrainsTrait;
-use Application\Entity\Traits\InterfaceImplementation\CodeEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\IdEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\LibelleEntityTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasCodeTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasIdTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasLibelleTrait;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 
 /**
  * Contact
  */
 class Contact implements ResourceInterface
-    , CodeEntityInterface, LibelleEntityInterface
+    , HasCodeInterface, HasLibelleInterface
 {
     const RESOURCE_ID = 'Contact';
     const CODE_ASSISTANCE = 'assistance';
@@ -48,9 +48,9 @@ class Contact implements ResourceInterface
         $this->initContactsTerrainsCollection();
     }
 
-    use IdEntityTrait;
-    use CodeEntityTrait;
-    use LibelleEntityTrait;
+    use HasIdTrait;
+    use HasCodeTrait;
+    use HasLibelleTrait;
 
     use HasContactsStagesTrait;
     use HasContactsTerrainsTrait;

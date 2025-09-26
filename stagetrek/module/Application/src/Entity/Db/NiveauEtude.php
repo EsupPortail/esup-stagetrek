@@ -4,9 +4,9 @@ namespace Application\Entity\Db;
 
 use Application\Entity\Db;
 use Application\Entity\Traits\Groupe\HasGroupesTrait;
-use Application\Entity\Traits\InterfaceImplementation\IdEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\LibelleEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\OrderEntityTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasIdTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasLibelleTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasOrderTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
@@ -26,9 +26,9 @@ class NiveauEtude implements ResourceInterface
         return self::RESOURCE_ID;
     }
 
-    use IdEntityTrait;
-    use LibelleEntityTrait;
-    use OrderEntityTrait;
+    use HasIdTrait;
+    use HasLibelleTrait;
+    use HasOrderTrait;
     use HasGroupesTrait;
 
     /**

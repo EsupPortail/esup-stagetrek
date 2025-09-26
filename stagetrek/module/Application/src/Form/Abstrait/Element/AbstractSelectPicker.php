@@ -13,12 +13,13 @@ Abstract class AbstractSelectPicker extends Select implements ObjectManagerAware
     use ProvidesObjectManager;
 
 
-    public function init(): void
+    public function init(): static
     {
         parent::init();
         //Pour avoir les attribus par défaut d'un selectPicker
         $this->setAttributes([]);
         $this->setDefaultData();
+        return $this;
     }
 
     /**

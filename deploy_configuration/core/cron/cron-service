@@ -1,6 +1,8 @@
 #Ajout des variables d'environnement au cron
 SHELL=/bin/sh
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+# Pour vérifier que les crons sont fonctionnels
+#*/1 * * * * root date >> /var/log/crontab.logs 2>&1
 
 # Example of job definition:
 # .---------------- minute (0 - 59)
@@ -12,10 +14,14 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 # *  *  *  *  * user-name command to be executed
 
 #Maj automatiques des entites
-0 6 * * * root (/bin/stagetrek/updates_entities.sh | ts) >> /var/log/stagetrek/updates.log 2>&1
+0 6 * * * root (/bin/stagetrek/updates_entities | ts) >> /var/log/stagetrek/updates.log 2>&1
 
 #Traitement des evenements toutes les 5 mins
-*/5 * * * * root (/bin/stagetrek/traiter_evenements.sh | ts) >> /var/log/stagetrek/evenements.log 2>&1
+*/5 * * * * root (/bin/stagetrek/traiter_evenements | ts) >> /var/log/stagetrek/evenements.log 2>&1
+
+#Clear des logs
+0 3 * * * root /var/www/html/vendor/bin/laminas evenement:purger-journal >> /var/log/stagetrek/clear.log 2>&1
+0 3 * * * root /var/www/html/vendor/bin/laminas evenement:purger-evenement >> /var/log/stagetrek/clear.log 2>&1
+0 3 * * * root /var/www/html/vendor/bin/laminas mail:purge >> /var/log/stagetrek/clear.log 2>&1
 
 ### !!! important : finir par un saut de ligne
-

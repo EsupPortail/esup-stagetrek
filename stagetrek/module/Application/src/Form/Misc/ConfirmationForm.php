@@ -96,7 +96,7 @@ class ConfirmationForm extends Form
         parent::__construct('ConfirmationForm');
     }
 
-    public function init(): void
+    public function init() : static
     {
         parent::init();
         $this->setAttribute("id", uniqid('confirmation-form_'));
@@ -107,6 +107,7 @@ class ConfirmationForm extends Form
         $this->hasBeenConfirmed = false;
         $this->addElements();
         $this->setData([]); //Pour que la confirmation par défaut soit possible
+        return $this;
     }
 
     protected function addElements(): static

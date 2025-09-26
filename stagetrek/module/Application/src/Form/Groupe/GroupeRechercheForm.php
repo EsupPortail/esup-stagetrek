@@ -22,7 +22,7 @@ class GroupeRechercheForm extends AbstractRechercheForm
     const INPUT_NIVEAU = "niveau_etude";
     const INPUT_ETAT ="annee_etat";
 
-    public function init(): void
+    public function init(): static
     {
         parent::init();
 
@@ -95,7 +95,7 @@ class GroupeRechercheForm extends AbstractRechercheForm
                 "data-count-selected-text" => "{0} etats selectionnés",
             ],
         ]);
-
+        return $this;
     }
 
     public function getInputFilterSpecification(): array

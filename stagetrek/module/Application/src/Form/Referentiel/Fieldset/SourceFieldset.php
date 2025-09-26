@@ -20,11 +20,12 @@ class SourceFieldset extends AbstractEntityFieldset
     use LibelleInputAwareTrait;
     use OrdreInputAwareTrait;
 
-    public function init(): void
+    public function init() : static
     {
         $this->initIdInput();
         $this->initCodeInput(true);
         $this->initLibelleInput();
         $this->initOrdreInput();
+        return $this;
     }
 }

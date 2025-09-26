@@ -111,9 +111,11 @@ class MailAutoStageValidationEffectueEvenementService extends AbstractMailAutoEv
                         $corps .= sprintf("<hr/><p><b>Commentaires portées à l'attention de la commission :</b><div>%s</div></p>", $validation->getCommentaireCache());
                     }
                     $mail = $this->getMailService()->sendMail($to, $sujet, $corps);
-                    $motsClef = ['stageId=' . $stage->getId()];
-                    $mail->setMotsClefs($motsClef);
-                    $this->getMailService()->update($mail);
+                    if(isset($mail)) {
+                        $motsClef = ['stageId=' . $stage->getId()];
+                        $mail->setMotsClefs($motsClef);
+                        $this->getMailService()->update($mail);
+                    }
                 }
             } catch (Exception $e) {
                 $evenement->setDateTraitement(new DateTime());

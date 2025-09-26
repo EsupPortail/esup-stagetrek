@@ -1,4 +1,5 @@
 FROM php:8.2-fpm-bullseye
+USER root
 
 ENV PHP_VERSION=8.2
 
@@ -36,7 +37,7 @@ WORKDIR /var/www/html/stagetrek/
 COPY ./stagetrek /var/www/html/stagetrek/
 
 # Préparation des variables d'environnement
-COPY ./.env_example /var/www/html/stagetrek
+COPY ../.env.example /var/www/html/stagetrek
 
 WORKDIR /var/www/html/stagetrek/
 
@@ -143,6 +144,10 @@ RUN apt-get install -y nano
 
 WORKDIR /var/www/html/stagetrek/
 
+#Gestion de la timezone
+ENV TZ=Europe/Paris
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 #install de suprervisor
 RUN apt-get install -y supervisor
 COPY ./deploy_configuration/core/supervisord.conf /
@@ -151,12 +156,18 @@ COPY ./deploy_configuration/core/supervisord.conf /
 RUN apt-get update && apt-get -y install cron
 RUN apt-get update && apt-get -y install moreutils
 RUN apt-get update && apt-get -y install logrotate
-RUN mkdir -p  /etc/logrotate.d
 RUN mkdir -p  /bin/stagetrek
+RUN mkdir -p  /etc/logrotate.d
+RUN mkdir -p  /var/log/stagetrek
 COPY ./deploy_configuration/core/cron/cron-service /etc/cron.d/stagetrek
 RUN chmod 0644 /etc/cron.d/stagetrek
 COPY ./deploy_configuration/core/cron/logrotate-service /etc/logrotate.d/stagetrek
+RUN chmod 0644 /etc/logrotate.d/stagetrek
 COPY ./deploy_configuration/core/bin /bin/stagetrek
 RUN chmod -R u+x /bin/stagetrek
+#Alias pour la commande console
+RUN echo "alias console='/bin/stagetrek/console'" >> ~/.bashrc
+
+
 
 WORKDIR /var/www/html/stagetrek/

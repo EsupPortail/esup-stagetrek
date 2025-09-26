@@ -34,7 +34,7 @@ class TerrainStageFieldset extends AbstractEntityFieldset
     use IdInputAwareTrait;
     use CodeInputAwareTrait;
     use LibelleInputAwareTrait;
-    public function init(): void
+    public function init() : static
     {
         $this->initIdInput();
         $this->initCodeInput(true);
@@ -46,6 +46,7 @@ class TerrainStageFieldset extends AbstractEntityFieldset
         $this->initContraintesInput();
         $this->initTerrainLinkerInput();
         $this->initModeleConventionInput();
+        return $this;
     }
 
 

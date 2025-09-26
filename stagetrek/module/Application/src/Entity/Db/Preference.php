@@ -2,7 +2,7 @@
 
 namespace Application\Entity\Db;
 
-use Application\Entity\Traits\InterfaceImplementation\IdEntityTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasIdTrait;
 use Application\Entity\Traits\Stage\HasStageTrait;
 use Application\Entity\Traits\Stage\HasTerrainStageSecondaireTrait;
 use Application\Entity\Traits\Stage\HasTerrainStageTrait;
@@ -38,7 +38,7 @@ class Preference implements ResourceInterface, HistoriqueAwareInterface
     }
 
 
-    use IdEntityTrait;
+    use HasIdTrait;
     use HasStageTrait;
     /**
      * @return \Application\Entity\Db\Etudiant|null

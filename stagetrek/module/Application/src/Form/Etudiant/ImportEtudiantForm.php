@@ -23,11 +23,16 @@ use Laminas\Validator\File\Size;
 use Laminas\Validator\File\UploadFile;
 
 /**
- * Class ImportEtudiantForm
- * @package Application\Form\Etudiant
+ * @deprecated Refonte en cours
  */
 class ImportEtudiantForm extends AbstractEntityForm implements AbstractFormConstantesInterface
 {
+    //A spliter en plusieurs formulaire
+    // A Déplacer dans Référentiel
+    // 1) Reférentiel exterieur
+    // 2) LDAP
+    // 3) CSV
+    // 4) ? Import depuis un groupe vers un autre a conserver ? a priori non car vraiment pas top
     // Liste des input
     const INPUT_DATA_PROVIDED = "data-provided";
     const INPUT_IMPORT_REFERENTIEL = "referentiel";
@@ -58,7 +63,7 @@ class ImportEtudiantForm extends AbstractEntityForm implements AbstractFormConst
     const VALIDATOR_MSG_IMPORT_GROUPE_NO_DESTINATION = "L'import depuis un groupe requiére de selectionner un autre groupe où inscrire les étudiants";
     const VALIDATOR_MSG_IMPORT_GROUPE_SAME_YEAR = "Le groupe de référence pour l'import ne doit pas être de la même année universitaire que le groupe d'inscription des étudiants";
 
-    public function init(): void
+    public function init() : static
     {
         $this->setAttribute('method', 'post')
             ->setAttribute('action', $this->getCurrentUrl())

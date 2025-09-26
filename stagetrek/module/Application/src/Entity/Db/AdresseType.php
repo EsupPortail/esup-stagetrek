@@ -2,9 +2,9 @@
 
 namespace Application\Entity\Db;
 
-use Application\Entity\Traits\InterfaceImplementation\CodeEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\IdEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\LibelleEntityTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasCodeTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasIdTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasLibelleTrait;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 
 /**
@@ -12,9 +12,9 @@ use Laminas\Permissions\Acl\Resource\ResourceInterface;
  */
 class AdresseType implements ResourceInterface //, CodeEntityInterface, LibelleEntityInterface
 {
-    use IdEntityTrait;
-    use CodeEntityTrait;
-    use LibelleEntityTrait;
+    use HasIdTrait;
+    use HasCodeTrait;
+    use HasLibelleTrait;
 
     const RESOURCE_ID = 'AdresseType';
 

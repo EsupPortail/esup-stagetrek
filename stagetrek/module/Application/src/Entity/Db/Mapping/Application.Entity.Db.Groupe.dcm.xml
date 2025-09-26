@@ -7,11 +7,17 @@
     </indexes>
     <unique-constraints>
       <unique-constraint name="groupe_id_unique" columns="id"/>
+      <unique-constraint name="groupe_code_unique" columns="code"/>
     </unique-constraints>
     <id name="id" type="bigint" column="id">
       <generator strategy="SEQUENCE"/>
       <sequence-generator sequence-name="groupe_id_seq" allocation-size="1" initial-value="1"/>
     </id>
+    <field name="code" type="string" column="code" length="64" nullable="false">
+      <options>
+        <option name="default"/>
+      </options>
+    </field>
     <field name="libelle" type="string" column="libelle" length="255" nullable="true">
       <options>
         <option name="fixed"/>
@@ -39,5 +45,16 @@
     <one-to-many field="sessionsStages" target-entity="Application\Entity\Db\SessionStage" mapped-by="groupe" />
 
     <many-to-many field="etudiants" target-entity="Application\Entity\Db\Etudiant" mapped-by="groupes" fetch="LAZY"/>
+
+    <many-to-many field="referentielsPromos" target-entity="Application\Entity\Db\ReferentielPromo" fetch="LAZY">
+      <join-table name="groupe_referentiel_promo_linker">
+        <join-columns>
+          <join-column name="groupe_id" referenced-column-name="id"/>
+        </join-columns>
+        <inverse-join-columns>
+          <join-column name="referentiel_promo_id" referenced-column-name="id"/>
+        </inverse-join-columns>
+      </join-table>
+    </many-to-many>
   </entity>
 </doctrine-mapping>

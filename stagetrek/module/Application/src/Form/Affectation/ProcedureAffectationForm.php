@@ -17,12 +17,13 @@ class ProcedureAffectationForm extends AbstractEntityForm implements ObjectManag
 {
     use ProvidesObjectManager;
 
-    public function init(): void
+    public function init(): static
     {
         parent::init();
         $fieldset = $this->getFormFactory()->getFormElementManager()->get(ProcedureAffectationFieldset::class);
         $this->setEntityFieldset($fieldset);
        $this->get(self::INPUT_SUBMIT)->setLabel(self::LABEL_SUBMIT_EDIT);
+        return $this;
     }
 
 }

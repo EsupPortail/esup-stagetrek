@@ -5,6 +5,7 @@ namespace Application\Form\Annees\Factory;
 
 use Application\Entity\Db\AnneeUniversitaire;
 use Application\Form\Annees\Fieldset\AnneeUniversitaireFieldset;
+use Application\Form\Misc\Validator\CodeValidator;
 use Application\Form\Misc\Validator\LibelleValidator;
 use Application\Service\AnneeUniversitaire\AnneeUniversitaireService;
 use Doctrine\Laminas\Hydrator\DoctrineObject;
@@ -44,6 +45,10 @@ class AnneeUniversitaireFieldsetFactory implements FactoryInterface
          */
         $anneeUniversitaireService = $container->get(ServiceManager::class)->get(AnneeUniversitaireService::class);
 
+        /** @var CodeValidator $codeValidator */
+        $codeValidator = $container->get(ValidatorPluginManager::class)->get(CodeValidator::class);
+        $codeValidator->setEntityService($anneeUniversitaireService);
+        $fieldset->setCodeValidator($codeValidator);
         /** @var LibelleValidator $libelleValidator */
         $libelleValidator = $container->get(ValidatorPluginManager::class)->get(LibelleValidator::class);
         $libelleValidator->setEntityService($anneeUniversitaireService);

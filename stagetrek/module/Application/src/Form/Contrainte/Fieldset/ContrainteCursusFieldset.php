@@ -34,7 +34,7 @@ class ContrainteCursusFieldset extends AbstractEntityFieldset
     use DescriptionInputAwareTrait;
     use OrdreInputAwareTrait;
 
-    public function init(): void
+    public function init() : static
     {
         $this->initIdInput();
         $this->initAcronymeInput();
@@ -46,6 +46,7 @@ class ContrainteCursusFieldset extends AbstractEntityFieldset
         $this->initTerrainStageInput();
         $this->initBornesInput();
         $this->initDatesInput();
+        return $this;
     }
 
     const PORTEE = "contrainteCursusPortee";

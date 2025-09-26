@@ -30,6 +30,7 @@ $actionMenu = $canEdit||$canDelete;
                     <sup><span class="icon icon-info text-muted"
                                title="Code de la promotion étudiante dans le référentiel">
                 </span></sup></th>
+                <th class="col-md-1 text-center" data-type="num">Groupes</th>
                 <th class="col-md-1 text-center" data-type="num">Ordre</th>
                 <?php if($actionMenu) :?>
                 <th class="no-sort no-search col-md-1 text-end" data-priority="0">Actions</th>
@@ -41,11 +42,18 @@ $actionMenu = $canEdit||$canDelete;
                 $source = $promo->getSource();
                 $vh->setReferentielPromo($promo);
                 $sVh->setSource($source);
+                $groupes = $promo->getGroupes();
                 ?>
                 <tr>
                     <td><?= $sVh ?></td>
                     <td><?= $vh ?></td>
                     <td><?= $promo->getCodePromo() ?></td>
+                    <td class="text-center" data-order="<?= $groupes->count() ?>"
+
+                    >
+                        <?= $vh->renderGroupesInfos($groupes) ?>
+
+                    </td>
                     <td class="text-center"><?= $promo->getOrdre() ?></td>
                     <?php if($actionMenu) :?>
                         <td class="text-end">

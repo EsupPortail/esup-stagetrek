@@ -12,10 +12,11 @@ use Application\Form\Notification\Fieldset\FaqCategorieQuestionFieldset;
  */
 class FaqCategorieQuestionForm extends AbstractEntityForm
 {
-    public function init(): void
+    public function init() : static
     {
         parent::init();
         $fieldset = $this->getFormFactory()->getFormElementManager()->get(FaqCategorieQuestionFieldset::class);
         $this->setEntityFieldset($fieldset);
+        return $this;
     }
 }

@@ -26,13 +26,14 @@ class ProcedureAffectationFieldset  extends AbstractEntityFieldset
     use OrdreInputAwareTrait;
     use DescriptionInputAwareTrait;
 
-    public function init(): void
+    public function init(): static
     {
         $this->initIdInput();
         $this->initCodeInput();
         $this->initLibelleInput();
         $this->initOrdreInput();
         $this->initDescriptionInput();
+        return $this;
     }
 
     private function initDescriptionInput() : void

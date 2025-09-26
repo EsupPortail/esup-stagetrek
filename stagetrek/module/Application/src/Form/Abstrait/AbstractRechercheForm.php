@@ -52,7 +52,7 @@ abstract class AbstractRechercheForm extends Form
     const INPUT_RECHERCHER='rechercher';
     const CSRF='csrf';
 
-    public function init(): void
+    public function init(): static
     {
         parent::init();
         $this->setAttribute("action", $this->getCurrentUrl());
@@ -96,5 +96,6 @@ abstract class AbstractRechercheForm extends Form
                 'class' => 'btn btn-secondary',
             ],
         ]);
+        return $this;
     }
 }

@@ -222,7 +222,7 @@ class ContactController extends AbstractActionController
                         throw new ImportException("Le fichier d'import n'est pas valide");
                     }
                     $this->getContactService()->importFromCSV($fileData);
-                    $msg = "L'importation des terrains de stages est terminée";
+                    $msg = "L'importation des contacts de stages est terminée";
                     $this->flashMessenger()->addMessage($msg,  self::ACTION_IMPORTER . Messenger::NAMESPACED_SEVERITY_SEPARATOR . Messenger::SUCCESS);
                 }
                 catch (ImportException $e) {

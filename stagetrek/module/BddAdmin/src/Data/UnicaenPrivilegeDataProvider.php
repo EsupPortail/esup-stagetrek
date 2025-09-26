@@ -25,7 +25,7 @@ class UnicaenPrivilegeDataProvider implements DataProviderInterface {
             case 'unicaen_privilege_privilege' :
                 $defaultConfig = [
                     'actions' => [DataManager::ACTION_INSTALL, DataManager::ACTION_UPDATE],
-                    'key'     => 'code',
+                    'key'     => ['categorie_id', 'code'],
                     'options' => ['update' => true, 'soft-delete' => false, 'delete' => false,
                         'columns' => [
                             'categorie_id'      => ['transformer' => 'select id from unicaen_privilege_categorie where code = %s'],
@@ -131,6 +131,12 @@ class UnicaenPrivilegeDataProvider implements DataProviderInterface {
                 "ordre" => $ordre++,
             ],
             [
+                "code" => "unicaen-db-import",
+                "libelle" => "Import",
+                "namespace" => "UnicaenDbImport\Provider\Privilege",
+                "ordre" => ++$ordre
+            ],
+            [
                 "code" => "parametre",
                 "libelle" => "Gestion des paramètres",
                 "namespace" => "Application\Provider\Privilege",
@@ -185,6 +191,12 @@ class UnicaenPrivilegeDataProvider implements DataProviderInterface {
                 "ordre" => $ordre++,
             ],
             [
+                "code" => "tag",
+                "libelle" => "Gestion des tags",
+                "namespace" => "Application\Provider\Privilege",
+                "ordre" => $ordre++,
+            ],
+            [
                 "code" => "storage",
                 "libelle" => "Stockage de fichiers",
                 "namespace" => "UnicaenStorage\Provider\Privilege",
@@ -202,7 +214,7 @@ class UnicaenPrivilegeDataProvider implements DataProviderInterface {
     public function unicaen_privilege_privilege(): array
     {
         $ordre = 1;
-        return [
+        $res = [
             /** Etudiant */
             [
                 "categorie_id" => "etudiant",
@@ -1029,25 +1041,25 @@ class UnicaenPrivilegeDataProvider implements DataProviderInterface {
             ],
             [
                 "categorie_id" => "evenementetat",
-                "code" => "etat_consultation",
+                "code" => "etat_voir",
                 "libelle" => "État - Visualiser les états",
                 "ordre" => $ordre++,
             ],
             [
                 "categorie_id" => "evenementetat",
-                "code" => "etat_ajout",
+                "code" => "etat_ajouter",
                 "libelle" => "État - Ajouter un état",
                 "ordre" => $ordre++,
             ],
             [
                 "categorie_id" => "evenementetat",
-                "code" => "etat_edition",
+                "code" => "etat_modifier",
                 "libelle" => "État - Modifier un état",
                 "ordre" => $ordre++,
             ],
             [
                 "categorie_id" => "evenementetat",
-                "code" => "etat_suppression",
+                "code" => "etat_supprimer",
                 "libelle" => "État - Supprimer un état",
                 "ordre" => $ordre++,
             ],
@@ -1227,14 +1239,14 @@ class UnicaenPrivilegeDataProvider implements DataProviderInterface {
             ],
             [
                 "categorie_id" => "etat",
-                "code" => "etat_detruire",
-                "libelle" => "Supprimer un état",
+                "code" => "etat_modifier",
+                "libelle" => "Modifier un état",
                 "ordre" => $ordre++,
             ],
             [
                 "categorie_id" => "etat",
-                "code" => "etat_modifier",
-                "libelle" => "Modifier un état",
+                "code" => "etat_detruire",
+                "libelle" => "Supprimer un état",
                 "ordre" => $ordre++,
             ],
             [
@@ -1255,229 +1267,396 @@ class UnicaenPrivilegeDataProvider implements DataProviderInterface {
                 "libelle" => "Afficher l'index des fichiers",
                 "ordre" => $ordre++,
             ],
+            /** Db-import */
+            [
+                "categorie_id" => "unicaen-db-import",
+                "code" => "import-consulter",
+                "libelle" => "Détail des imports",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "unicaen-db-import",
+                "code" => "import-lister",
+                "libelle" => "Lister les imports",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "unicaen-db-import",
+                "code" => "import-lancer",
+                "libelle" => "Exectuer un script d'import",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "unicaen-db-import",
+                "code" => "log-consulter",
+                "libelle" => "Détail d'un log",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "unicaen-db-import",
+                "code" => "log-lister",
+                "libelle" => "Lister les  logs des import",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "unicaen-db-import",
+                "code" => "observation-consulter",
+                "libelle" => "Détail d'une obeservation d'import",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "unicaen-db-import",
+                "code" => "observation-lister",
+                "libelle" => "Lister les  observation des import",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "unicaen-db-import",
+                "code" => "synchro-consulter",
+                "libelle" => "Détail des syncrhonisation",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "unicaen-db-import",
+                "code" => "synchro-lister",
+                "libelle" => "Lister les syncrhonisation",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "unicaen-db-import",
+                "code" => "synchro-lancer",
+                "libelle" => "Exectuer un script de synchronisation",
+                "ordre" => ++$ordre
+            ],
+        //UnicaenTag
+            [
+                "categorie_id" => "tag",
+                "code" => "tag_index",
+                "libelle" => "Afficher l'index des tags",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "tag",
+                "code" => "tag_ajouter",
+                "libelle" => "Ajouter un tag",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "tag",
+                "code" => "tag_modifier",
+                "libelle" => "Modifier un tag",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "tag",
+                "code" => "tag_supprimer",
+                "libelle" => "Supprimer un tag",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "tag",
+                "code" => "categorie_tag_index",
+                "libelle" => "Afficher l'index des catégories de tags",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "tag",
+                "code" => "categorie_tag_ajouter",
+                "libelle" => "Afficher l'index des catégories de tags",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "tag",
+                "code" => "categorie_tag_modifier",
+                "libelle" => "Modifier une categorie de tag",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "tag",
+                "code" => "categorie_tag_supprimer",
+                "libelle" => "Supprimer une categorie de tag",
+                "ordre" => ++$ordre
+            ],
+
         ];
+        return $res;
     }
 
     public function unicaen_privilege_privilege_role_linker(): array
     {
         $data = [
-
             /** Gestions des étudiants */
-            "etudiant_afficher"                     => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::GARDE, RolesProvider::SCOLARTIE],
-            "etudiant_ajouter"                      => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "etudiant_modifier"                     => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "etudiant_supprimer"                    => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
-            "etudiant_own_profil_afficher"          => [RolesProvider::ETUDIANT],
-            "groupe_afficher"                       => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::GARDE, RolesProvider::SCOLARTIE],
-            "groupe_ajouter"                        => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "groupe_modifier"                       => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "groupe_supprimer"                      => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "groupe_administrer_etudiants"          => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "preference_afficher"                   => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::GARDE],
-            "preference_ajouter"                    => [RolesProvider::ADMIN_TECH],
-            "preference_modifier"                   => [RolesProvider::ADMIN_TECH],
-            "preference_supprimer"                  => [RolesProvider::ADMIN_TECH],
-            "etudiant_own_preferences_afficher"     => [RolesProvider::ETUDIANT],
-            "etudiant_own_preferences_ajouter"      => [RolesProvider::ETUDIANT],
-            "etudiant_own_preferences_modifier"     => [RolesProvider::ETUDIANT],
-            "etudiant_own_preferences_supprimer"    => [RolesProvider::ETUDIANT],
-            "disponibilite_afficher"                => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::GARDE, RolesProvider::SCOLARTIE],
-            "disponibilite_ajouter"                 => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "disponibilite_modifier"                => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "disponibilite_supprimer"               => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "etudiant_contraintes_afficher"         => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "etudiant_contrainte_modifier"          => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "etudiant_contrainte_valider"           => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "etudiant_contrainte_invalider"         => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "etudiant_contrainte_activer"           => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "etudiant_contrainte_desactiver"        => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-
+            "etudiant" => [
+                "etudiant_afficher"                     => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::GARDE, RolesProvider::SCOLARTIE],
+                "etudiant_ajouter"                      => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "etudiant_modifier"                     => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "etudiant_supprimer"                    => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "etudiant_own_profil_afficher"          => [RolesProvider::ETUDIANT],
+                "groupe_afficher"                       => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::GARDE, RolesProvider::SCOLARTIE],
+                "groupe_ajouter"                        => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "groupe_modifier"                       => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "groupe_supprimer"                      => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "groupe_administrer_etudiants"          => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "preference_afficher"                   => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::GARDE],
+                "preference_ajouter"                    => [RolesProvider::ADMIN_TECH],
+                "preference_modifier"                   => [RolesProvider::ADMIN_TECH],
+                "preference_supprimer"                  => [RolesProvider::ADMIN_TECH],
+                "etudiant_own_preferences_afficher"     => [RolesProvider::ETUDIANT],
+                "etudiant_own_preferences_ajouter"      => [RolesProvider::ETUDIANT],
+                "etudiant_own_preferences_modifier"     => [RolesProvider::ETUDIANT],
+                "etudiant_own_preferences_supprimer"    => [RolesProvider::ETUDIANT],
+                "disponibilite_afficher"                => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::GARDE, RolesProvider::SCOLARTIE],
+                "disponibilite_ajouter"                 => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "disponibilite_modifier"                => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "disponibilite_supprimer"               => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "etudiant_contraintes_afficher"         => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "etudiant_contrainte_modifier"          => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "etudiant_contrainte_valider"           => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "etudiant_contrainte_invalider"         => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "etudiant_contrainte_activer"           => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "etudiant_contrainte_desactiver"        => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+            ],
             /** Terrains de stages */
-            "categorie_stage_afficher"              => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::GARDE, RolesProvider::SCOLARTIE],
-            "categorie_stage_ajouter"               => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
-            "categorie_stage_modifier"              => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
-            "categorie_stage_supprimer"             => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
-            "terrain_stage_afficher"                => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::GARDE, RolesProvider::SCOLARTIE],
-            "terrain_stage_ajouter"                 => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "terrain_stage_modifier"                => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "terrain_stage_supprimer"               => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
-            "terrains_importer"                     => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "terrains_exporter"                     => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-
+            "terrain" => [
+                "categorie_stage_afficher"              => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::GARDE, RolesProvider::SCOLARTIE],
+                "categorie_stage_ajouter"               => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "categorie_stage_modifier"              => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "categorie_stage_supprimer"             => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "terrain_stage_afficher"                => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::GARDE, RolesProvider::SCOLARTIE],
+                "terrain_stage_ajouter"                 => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "terrain_stage_modifier"                => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "terrain_stage_supprimer"               => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "terrains_importer"                     => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "terrains_exporter"                     => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+            ],
             /** Années universitaires */
-            "annee_universitaire_afficher"          => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::GARDE, RolesProvider::SCOLARTIE],
-            "annee_universitaire_ajouter"           => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "annee_universitaire_modifier"          => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "annee_universitaire_supprimer"         => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
-            "annee_universitaire_valider"           => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "annee_universitaire_deverrouiller"     => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-
+            "annee" => [
+                "annee_universitaire_afficher"          => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::GARDE, RolesProvider::SCOLARTIE],
+                "annee_universitaire_ajouter"           => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "annee_universitaire_modifier"          => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "annee_universitaire_supprimer"         => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "annee_universitaire_valider"           => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "annee_universitaire_deverrouiller"     => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+            ],
             /** Sessions des stages */
-            "session_stage_afficher"                => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::GARDE, RolesProvider::SCOLARTIE],
-            "session_stage_ajouter"                 => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "session_stage_modifier"                => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "session_stage_supprimer"               => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
-
+            "session" => [
+                "session_stage_afficher"                => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::GARDE, RolesProvider::SCOLARTIE],
+                "session_stage_ajouter"                 => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "session_stage_modifier"                => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "session_stage_supprimer"               => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+            ],
             /** Stages */
-            "stage_afficher"                        => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::GARDE, RolesProvider::SCOLARTIE],
-            "stage_ajouter"                         => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "stage_modifier"                        => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "stage_supprimer"                       => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
-            "etudiant_own_stages_afficher"          => [RolesProvider::ETUDIANT],
-            "affectation_afficher"                  => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::GARDE, RolesProvider::SCOLARTIE],
-            "affectation_ajouter"                   => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::GARDE],
-            "affectation_modifier"                  => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::GARDE],
-            "affectation_supprimer"                 => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::GARDE],
-            "affectation_run_procedure"             => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::GARDE],
-            "affectation_pre_valider"               => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::GARDE],
-            "commission_valider_affectations"       => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::GARDE],
-            "validation_stage_afficher"             => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::GARDE, RolesProvider::SCOLARTIE],
-            "validation_stage_modifier"             => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
-            "procedure_afficher"                    => [RolesProvider::ADMIN_TECH, RolesProvider::GARDE],
-            "procedure_modifier"                    => [RolesProvider::ADMIN_TECH, RolesProvider::GARDE],
-
+            "stage" => [
+                "stage_afficher"                        => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::GARDE, RolesProvider::SCOLARTIE],
+                "stage_ajouter"                         => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "stage_modifier"                        => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "stage_supprimer"                       => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "etudiant_own_stages_afficher"          => [RolesProvider::ETUDIANT],
+                "affectation_afficher"                  => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::GARDE, RolesProvider::SCOLARTIE],
+                "affectation_ajouter"                   => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::GARDE],
+                "affectation_modifier"                  => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::GARDE],
+                "affectation_supprimer"                 => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::GARDE],
+                "affectation_run_procedure"             => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::GARDE],
+                "affectation_pre_valider"               => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::GARDE],
+                "commission_valider_affectations"       => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::GARDE],
+                "validation_stage_afficher"             => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::GARDE, RolesProvider::SCOLARTIE],
+                "validation_stage_modifier"             => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "procedure_afficher"                    => [RolesProvider::ADMIN_TECH, RolesProvider::GARDE],
+                "procedure_modifier"                    => [RolesProvider::ADMIN_TECH, RolesProvider::GARDE],
+            ],
             /** Contacts */
-            "contact_afficher"                      => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "contact_ajouter"                       => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "contact_modifier"                      => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "contact_supprimer"                     => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "contact_importer"                      => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "contact_exporter"                      => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "contact_stage_afficher"                => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "contact_stage_ajouter"                 => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "contact_stage_modifier"                => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "contact_stage_supprimer"               => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "contact_terrain_afficher"              => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "contact_terrain_ajouter"               => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "contact_terrain_modifier"              => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "contact_terrain_supprimer"             => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "contact_terrain_importer"              => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "contact_terrain_exporter"              => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "send_mail_validation"                  => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-
+            "contact" => [
+                "contact_afficher"                      => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "contact_ajouter"                       => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "contact_modifier"                      => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "contact_supprimer"                     => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "contact_importer"                      => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "contact_exporter"                      => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "contact_stage_afficher"                => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "contact_stage_ajouter"                 => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "contact_stage_modifier"                => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "contact_stage_supprimer"               => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "contact_terrain_afficher"              => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "contact_terrain_ajouter"               => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "contact_terrain_modifier"              => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "contact_terrain_supprimer"             => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "contact_terrain_importer"              => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "contact_terrain_exporter"              => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "send_mail_validation"                  => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+            ],
             /** Convention de stage */
-            "convention_afficher"                   => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "convention_televerser"                 => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "convention_generer"                    => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "convention_modifier"                   => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "convention_supprimer"                  => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "convention_telecharger"                => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "modele_convention_afficher"            => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "modele_convention_ajouter"             => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "modele_convention_modifier"            => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "modele_convention_supprimer"           => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-
+            "convention" => [
+                "convention_afficher"                   => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "convention_televerser"                 => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "convention_generer"                    => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "convention_modifier"                   => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "convention_supprimer"                  => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "convention_telecharger"                => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "modele_convention_afficher"            => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "modele_convention_ajouter"             => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "modele_convention_modifier"            => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "modele_convention_supprimer"           => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+            ],
             /** Lib Unicaen-Utilisateur */
-            "utilisateur_afficher"                  => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
-            "utilisateur_ajouter"                   => [RolesProvider::ADMIN_TECH],
-            "utilisateur_changerstatus"             => [RolesProvider::ADMIN_TECH],
-            "utilisateur_modifierrole"              => [RolesProvider::ADMIN_TECH],
-            "utilisateur_rechercher"                => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
-
+            "utilisateur" => [
+                "utilisateur_afficher"                  => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "utilisateur_ajouter"                   => [RolesProvider::ADMIN_TECH],
+                "utilisateur_changerstatus"             => [RolesProvider::ADMIN_TECH],
+                "utilisateur_modifierrole"              => [RolesProvider::ADMIN_TECH],
+                "utilisateur_rechercher"                => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+            ],
             /** Lib Unicaen-Roles */
-            "role_afficher"                         => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
-            "role_modifier"                         => [RolesProvider::ADMIN_TECH],
-            "role_effacer"                          => [RolesProvider::ADMIN_TECH],
-
+            "role" => [
+                "role_afficher"                         => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "role_modifier"                         => [RolesProvider::ADMIN_TECH],
+                "role_effacer"                          => [RolesProvider::ADMIN_TECH],
+            ],
             /** Lib Unicaen-Privileges */
-            "privilege_voir"                        => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
-            "privilege_ajouter"                     => [RolesProvider::ADMIN_TECH],
-            "privilege_modifier"                    => [RolesProvider::ADMIN_TECH],
-            "privilege_supprimer"                   => [RolesProvider::ADMIN_TECH],
-            "privilege_affecter"                    => [RolesProvider::ADMIN_TECH],
-
-
+            "privilege" => [
+                "privilege_voir"                        => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "privilege_ajouter"                     => [RolesProvider::ADMIN_TECH],
+                "privilege_modifier"                    => [RolesProvider::ADMIN_TECH],
+                "privilege_supprimer"                   => [RolesProvider::ADMIN_TECH],
+                "privilege_affecter"                    => [RolesProvider::ADMIN_TECH],
+            ],
             /** Messages */
-            "message_info_afficher"                 => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "message_info_ajouter"                  => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "message_info_modifier"                 => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "message_info_supprimer"                => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "faq_question_afficher"                 => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "faq_question_ajouter"                  => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "faq_question_modifier"                 => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "faq_question_supprimer"                => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "faq_categorie_afficher"                => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "faq_categorie_ajouter"                 => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "faq_categorie_modifier"                => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "faq_categorie_supprimer"               => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-
+            "message" => [
+                "message_info_afficher"                 => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "message_info_ajouter"                  => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "message_info_modifier"                 => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "message_info_supprimer"                => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+            ],
+            "faq" => [
+                "faq_question_afficher"                 => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "faq_question_ajouter"                  => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "faq_question_modifier"                 => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "faq_question_supprimer"                => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "faq_categorie_afficher"                => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "faq_categorie_ajouter"                 => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "faq_categorie_modifier"                => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "faq_categorie_supprimer"               => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+            ],
            /** Référentiel de données */
-            "source_afficher"                       => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
-            "source_ajouter"                        => [RolesProvider::ADMIN_TECH],
-            "source_modifier"                       => [RolesProvider::ADMIN_TECH],
-            "source_supprimer"                      => [RolesProvider::ADMIN_TECH],
-            "promo_afficher"                        => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "promo_ajouter"                         => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "promo_modifier"                        => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "promo_supprimer"                       => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-
+            "referentiel" => [
+                "source_afficher"                       => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "source_ajouter"                        => [RolesProvider::ADMIN_TECH],
+                "source_modifier"                       => [RolesProvider::ADMIN_TECH],
+                "source_supprimer"                      => [RolesProvider::ADMIN_TECH],
+                "promo_afficher"                        => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "promo_ajouter"                         => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "promo_modifier"                        => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "promo_supprimer"                       => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+            ],
             /** Paramétres */
-            "parametre_afficher"                    => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "parametre_ajouter"                     => [RolesProvider::ADMIN_TECH],
-            "parametre_modifier"                    => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "parametre_supprimer"                   => [RolesProvider::ADMIN_TECH],
-            "parametre_contrainte_cursus_afficher"  => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "parametre_contrainte_cursus_ajouter"   => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
-            "parametre_contrainte_cursus_modifier"  => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
-            "parametre_contrainte_cursus_supprimer" => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
-            "niveau_etude_afficher"                 => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
-            "niveau_etude_ajouter"                  => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
-            "niveau_etude_modifier"                 => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
-            "niveau_etude_supprimer"                => [RolesProvider::ADMIN_TECH],
-
-            /** UnicaenEvenement */
-            "etat_consultation"                     => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
-            "etat_ajout"                            => [RolesProvider::ADMIN_TECH],
-            "etat_edition"                          => [RolesProvider::ADMIN_TECH],
-            "etat_suppression"                      => [RolesProvider::ADMIN_TECH],
-            "type_consultation"                     => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
-            "type_ajout"                            => [RolesProvider::ADMIN_TECH],
-            "type_edition"                          => [RolesProvider::ADMIN_TECH],
-            "type_suppression"                      => [RolesProvider::ADMIN_TECH],
-            "instance_consultation"                 => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
-            "instance_ajout"                        => [RolesProvider::ADMIN_TECH],
-            "instance_edition"                      => [RolesProvider::ADMIN_TECH],
-            "instance_suppression"                  => [RolesProvider::ADMIN_TECH],
-            "instance_traitement"                   => [RolesProvider::ADMIN_TECH],
-
+            "parametre" => [
+                "parametre_afficher"                    => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "parametre_ajouter"                     => [RolesProvider::ADMIN_TECH],
+                "parametre_modifier"                    => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "parametre_supprimer"                   => [RolesProvider::ADMIN_TECH],
+                "parametre_contrainte_cursus_afficher"  => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "parametre_contrainte_cursus_ajouter"   => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "parametre_contrainte_cursus_modifier"  => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "parametre_contrainte_cursus_supprimer" => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "niveau_etude_afficher"                 => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "niveau_etude_ajouter"                  => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "niveau_etude_modifier"                 => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "niveau_etude_supprimer"                => [RolesProvider::ADMIN_TECH],
+            ],
+            "evenementetat" =>  [
+                "etat_voir"                             => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "etat_ajouter"                            => [RolesProvider::ADMIN_TECH],
+                "etat_modifier"                          => [RolesProvider::ADMIN_TECH],
+                "etat_supprimer"                      => [RolesProvider::ADMIN_TECH],
+            ],
+            "evenementtype" => [
+                "type_consultation"                     => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "type_ajout"                            => [RolesProvider::ADMIN_TECH],
+                "type_edition"                          => [RolesProvider::ADMIN_TECH],
+                "type_suppression"                      => [RolesProvider::ADMIN_TECH],
+            ],
+            "evenementinstance" => [
+                "instance_consultation"                 => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "instance_ajout"                        => [RolesProvider::ADMIN_TECH],
+                "instance_edition"                      => [RolesProvider::ADMIN_TECH],
+                "instance_suppression"                  => [RolesProvider::ADMIN_TECH],
+                "instance_traitement"                   => [RolesProvider::ADMIN_TECH],
+            ],
             /** UnicaenRenderer */
-            "documentmacro_index"                   => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
-            "documentmacro_ajouter"                 => [RolesProvider::ADMIN_TECH],
-            "documentmacro_modifier"                => [RolesProvider::ADMIN_TECH],
-            "documentmacro_supprimer"               => [RolesProvider::ADMIN_TECH],
-            "documenttemplate_index"                => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "documenttemplate_afficher"             => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "documenttemplate_ajouter"              => [RolesProvider::ADMIN_TECH],
-            "documenttemplate_modifier"             => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "documenttemplate_supprimer"            => [RolesProvider::ADMIN_TECH],
-            "documentcontenu_index"                 => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
-            "documentcontenu_afficher"              => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
-            "documentcontenu_supprimer"             => [RolesProvider::ADMIN_TECH],
-
+            "documentmacro" => [
+                "documentmacro_index"                   => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "documentmacro_ajouter"                 => [RolesProvider::ADMIN_TECH],
+                "documentmacro_modifier"                => [RolesProvider::ADMIN_TECH],
+                "documentmacro_supprimer"               => [RolesProvider::ADMIN_TECH],
+            ],
+            "documenttemplate" => [
+                "documenttemplate_index"                => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "documenttemplate_afficher"             => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "documenttemplate_ajouter"              => [RolesProvider::ADMIN_TECH],
+                "documenttemplate_modifier"             => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "documenttemplate_supprimer"            => [RolesProvider::ADMIN_TECH],
+            ],
+            "documentcontenu" => [
+                "documentcontenu_index"                 => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "documentcontenu_afficher"              => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "documentcontenu_supprimer"             => [RolesProvider::ADMIN_TECH],
+            ],
             /** UnicaenMail */
-            "mail_index"                            => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "mail_afficher"                         => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
-            "mail_reenvoi"                          => [RolesProvider::ADMIN_TECH],
-            "mail_supprimer"                        => [RolesProvider::ADMIN_TECH],
-            "mail_test"                             => [RolesProvider::ADMIN_TECH],
-            "mail_afficher_config"                  => [RolesProvider::ADMIN_TECH],
-            //!!! ce privilége donne accés a des parmétres de conf. Seul l'admin Tech doit y avoir accés
+            "mail" => [
+                "mail_index"                            => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "mail_afficher"                         => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC, RolesProvider::SCOLARTIE],
+                "mail_reenvoi"                          => [RolesProvider::ADMIN_TECH],
+                "mail_supprimer"                        => [RolesProvider::ADMIN_TECH],
+                "mail_test"                             => [RolesProvider::ADMIN_TECH],
+                "mail_afficher_config"                  => [RolesProvider::ADMIN_TECH],
+            ],
+                //!!! ce privilége donne accés a des parmétres de conf. Seul l'admin Tech doit y avoir accés
             /** UnicaenEtat */
-            "etat_index"                            => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
-            "etat_ajouter"                          => [RolesProvider::ADMIN_TECH],
-            "etat_detruire"                         => [RolesProvider::ADMIN_TECH],
-            "etat_modifier"                         => [RolesProvider::ADMIN_TECH],
-            "etat_historiser"                       => [RolesProvider::ADMIN_TECH],
-
+            "etat" => [
+                "etat_index"                            => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "etat_ajouter"                          => [RolesProvider::ADMIN_TECH],
+                "etat_detruire"                         => [RolesProvider::ADMIN_TECH],
+                "etat_modifier"                         => [RolesProvider::ADMIN_TECH],
+                "etat_historiser"                       => [RolesProvider::ADMIN_TECH],
+            ],
             /** UnicaenStorage/Fichier */
-            "storage_index"                         => [RolesProvider::ADMIN_TECH],
-            "fichier_index"                         => [RolesProvider::ADMIN_TECH],
+            "storage" => [
+                "storage_index"                         => [RolesProvider::ADMIN_TECH],
+            ],
+            "fichier" => [
+                "fichier_index"                         => [RolesProvider::ADMIN_TECH],
+            ],
+            /** DbImport */
+            "unicaen-db-import" => [
+                "import-consulter" => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "import-lister" => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "import-lancer" => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "log-consulter" => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "log-lister" => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "observation-consulter" => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "observation-lister" => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "synchro-consulter" => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "synchro-lister" => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "synchro-lancer" => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+            ],
+            /** UnicaenTag */
+            "tag" => [
+                "tag_index" => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "tag_ajouter" => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "tag_modifier" => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "tag_supprimer" => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "categorie_tag_index" => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "categorie_tag_ajouter" => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "categorie_tag_modifier" => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "categorie_tag_supprimer" => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+            ],
         ];
 
         $res = [];
-        foreach ($data as $privilege  => $roles){
-            foreach ($roles as $role){
-                $res[] = ['role_id' => $role, 'privilege_id' => $privilege];
+        foreach ($data as $categorie  => $privileges) {
+            foreach ($privileges as $privilege => $roles) {
+                foreach ($roles as $role) {
+                    $res[] = ['role_id' => $role, 'privilege_id' => $privilege];
+                }
             }
         }
         return $res;

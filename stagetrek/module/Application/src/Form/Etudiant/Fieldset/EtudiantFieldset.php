@@ -29,7 +29,7 @@ class EtudiantFieldset extends AbstractEntityFieldset
     use IdInputAwareTrait;
     use MailInputAwareTrait;
 
-    public function init(): void
+    public function init() : static
     {
         $this->initIdInput();
         $this->initUserInput();
@@ -41,6 +41,7 @@ class EtudiantFieldset extends AbstractEntityFieldset
         $this->initMailInput();
 
         $this->initAdresseFielset();
+        return $this;
     }
 
 

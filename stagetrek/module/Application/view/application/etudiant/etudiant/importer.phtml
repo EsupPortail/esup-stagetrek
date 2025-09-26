@@ -1,25 +1,20 @@
 <?php
 
 use Application\Controller\Etudiant\EtudiantController;
-use Application\Form\Etudiant\ImportEtudiantForm;
-use Application\Service\Misc\CSVService;
-use Application\Validator\Import\EtudiantCsvImportValidator;
+use Application\Form\Referentiel\Interfaces\ImportEtudiantsFormInterface;
 use Application\View\Helper\Etudiant\EtudiantViewHelper;
 use UnicaenApp\View\Helper\Messenger;
 
 /**
  * @see EtudiantController::importerAction()
  * @var string $title
- * @var ImportEtudiantForm $form
+ * @var ImportEtudiantsFormInterface[] $forms
  */
 $fe = $this->formErrors();
 $fcg = $this->formControlGroup();
 $fr = $this->formrow();
 /** @var EtudiantViewHelper $vh */
 $vh = $this->etudiant();
-$importCsvActif = ($form->getCurrentImportValue() == ImportEtudiantForm::INPUT_IMPORT_FILE);
-$importReferentielActif = ($form->getCurrentImportValue() == ImportEtudiantForm::INPUT_IMPORT_REFERENTIEL);
-$importGroupeActif = ($form->getCurrentImportValue() == ImportEtudiantForm::INPUT_IMPORT_GROUPE);
 ?>
 
 
@@ -28,150 +23,49 @@ $importGroupeActif = ($form->getCurrentImportValue() == ImportEtudiantForm::INPU
     <?= $title ?>
 </h1>
 
+
+<?php
+$namespace = EtudiantController::ACTION_IMPORTER . Messenger::NAMESPACED_SEVERITY_SEPARATOR . "*";
+$msg = $this->messenger()->addCurrentMessagesFromFlashMessengerWithNamespace($namespace);
+?>
+<?php if ($msg && $msg->hasMessages()) : ?>
+    <div class="row">
+        <div class="col-md-12">
+            <?= $msg ?>
+        </div>
+    </div>
+<?php endif; ?>
+
 <nav>
     <div class="nav nav-tabs" id="nav-tab" role="tablist">
-        <button class="nav-link <?= ($importReferentielActif) ? "active" : "" ?>" id="nav-referentiel"
-                data-bs-toggle="tab" data-bs-target="#pan-referentiel"
+        <?php foreach ($forms as $form) :
+            $actif = $form->isActif();
+            $key = $form->getKey();
+            $label = $form->getFormLabel();
+        ?>
+        <button class="nav-link <?= ($actif) ? "active" : "" ?>" id="nav-<?=$key ?>"
+                data-bs-toggle="tab" data-bs-target="#pan-<?=$key ?>"
                 type="button"
                 role="tab" aria-controls="infos"
-                aria-selected="<?= ($importReferentielActif) ? "true" : "false" ?>">Depuis un référentiel
+                aria-selected="<?= ($actif) ? "true" : "false" ?>"> <?= $label ?>
         </button>
-        <button class="nav-link <?= ($importCsvActif) ? "active" : "" ?>" id="nav-csv" data-bs-toggle="tab"
-                data-bs-target="#pan-csv" type="button"
-                role="tab" aria-controls="csv" aria-selected="<?= ($importCsvActif) ? "true" : "false" ?>">
-            Depuis un CSV
-        </button>
-        <button class="nav-link <?= ($importGroupeActif) ? "active" : "" ?>" id="nav-groupe"
-                data-bs-toggle="tab" data-bs-target="#pan-groupe" type="button"
-                role="tab" aria-controls="groupe"
-                aria-selected="<?= ($importGroupeActif) ? "true" : "false" ?>">Depuis un groupe
-        </button>
+        <?php endforeach; ?>
     </div>
 </nav>
-<div class="card">
-    <div class="card-body">
-        <?= $this->form()->openTag($form->prepare()) ?>
-        <?= $fe($form->prepare(), ImportEtudiantForm::INVALIDE_ERROR_MESSAGE) ?>
-        <?= $this->formHidden($form->get(ImportEtudiantForm::INPUT_DATA_PROVIDED)) ?>
 
-        <?php
-        //Ajout de messages spécifique
-        $namespace = EtudiantController::ACTION_IMPORTER . Messenger::NAMESPACED_SEVERITY_SEPARATOR . "*";
-        $msg = $this->messenger()->addCurrentMessagesFromFlashMessengerWithNamespace($namespace);
-        ?>
-        <?php if ($msg && $msg->hasMessages()) : ?>
-            <div class="row">
-                <div class="col-md-12">
-                    <?= $msg ?>
-                </div>
-            </div>
-        <?php endif; ?>
+<div class="card tab-content" id="nav-tabContent">
+    <?php foreach ($forms as $form) :
+    $actif = $form->isActif();
+    $key = $form->getKey();
+    ?>
+    <div class="tab-pane fade show <?= ($actif) ? "active" : "" ?>" id="pan-<?=$key?>"
+         role="tabpanel" aria-labelledby="nav-<?=$key?>">
 
-        <div class="tab-content" id="nav-tabContent">
-            <div class="tab-pane fade show <?= ($importReferentielActif) ? "active" : "" ?>" id="pan-referentiel"
-                 role="tabpanel" aria-labelledby="nav-referentiel">
-                <div class="card">
-                    <div class="card-body">
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <?= $fcg($form->get(ImportEtudiantForm::INPUT_IMPORT_REFERENTIEL)) ?>
-                            </div>
-                            <div class="col-md-6">
-                                <?= $fcg($form->get(ImportEtudiantForm::INPUT_IMPORT_REFERENTIEL_ANNEE)) ?>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 text-small">
-                                <?= $this->partial('partial/import-annuaire-informations'); ?>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="tab-pane fade show <?= ($importCsvActif) ? "active" : "" ?>" id="pan-csv" role="tabpanel"
-                 aria-labelledby="nav-csv">
-                <div class="card">
-                    <div class="card-body">
-
-                        <div class="row">
-                            <div class="col-md-4">
-                                <?= $fcg($form->get($form::INPUT_IMPORT_FILE)); ?>
-                            </div>
-                            <div class="col-md-8 text-muted text-small">
-                                <ul>
-                                    <li>Le fichier CSV doit utiliser comme séparateur le '
-                                        <?= CSVService::SEPARATOR ?>' et avoir les champs suivant : <br/>
-                                        <?php $h = "";
-                                        foreach (EtudiantCsvImportValidator::getImportHeader() as $key) {
-                                            $h .= sprintf("<strong><span class='mx-2'>%s</span></strong>; ", $key);
-                                        }
-                                        echo $h;
-                                        ?>
-                                    </li>
-                                    <li>
-                                        Les champs <strong><?= EtudiantCsvImportValidator::HEADER_NUM_ETUDIANT ?></strong>
-                                        et <strong><?= EtudiantCsvImportValidator::HEADER_EMAIL ?></strong>
-                                        doivent être unique.
-                                    </li>
-                                    <li>
-                                        Le champ <strong><?= EtudiantCsvImportValidator::HEADER_DATE_NAISSANCE ?></strong>
-                                        doit être fournis au format <strong>JJ/MM/AAAA</strong> ou vide.
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-
-
-                    </div>
-                </div>
-            </div>
-            <div class="tab-pane fade show <?= ($importGroupeActif) ? "active" : "" ?>" id="pan-groupe"
-                 role="tabpanel" aria-labelledby="nav-groupe">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <?= $fcg($form->get(ImportEtudiantForm::INPUT_IMPORT_GROUPE)); ?>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12 text-small">
-                                Importer des étudiants d'un groupe déjà existant afin de les inscrire dans le groupe
-                                selectionné ci-après.
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="card-body">
+            <?= $vh->renderImportForm($form) ?>
         </div>
-
-        <div class="card my-3">
-            <div class="card-body">
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <?= $fcg($form->get(ImportEtudiantForm::INPUT_ADD_IN_GROUPE)); ?>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <span class="text-small text-muted">Seul les étudiants n'ayant pas déjà un groupe pour l'année universitaire correspondante au groupe demandé y seront ajouté.e.s.</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-12">
-                <?= $this->formControlGroup($form->get(ImportEtudiantForm::INPUT_SUBMIT)); ?>
-            </div>
-        </div>
-
-        <?= $this->formHidden($form->get(ImportEtudiantForm::CSRF)); ?>
-        <?= $this->form()->closeTag(); ?>
     </div>
+    <?php endforeach; ?>
 
     <div class="card-footer">
         <div class="row">
@@ -185,20 +79,5 @@ $importGroupeActif = ($form->getCurrentImportValue() == ImportEtudiantForm::INPU
 <script>
     $(function () {
         $('.selectpicker').selectpicker('render');
-    })
-    $(function () {
-        $('#<?= ImportEtudiantForm::INPUT_IMPORT_FILE?>').on('click', function () {
-            $('#<?= ImportEtudiantForm::INPUT_IMPORT_REFERENTIEL?>').val("").selectpicker('refresh');
-            $('#<?= ImportEtudiantForm::INPUT_IMPORT_GROUPE?>').val("").selectpicker('refresh');
-        });
-        $('#<?= ImportEtudiantForm::INPUT_IMPORT_REFERENTIEL?>').on('change', function () {
-            if ($(this).val()) {
-                $('#<?= ImportEtudiantForm::INPUT_IMPORT_GROUPE?>').val("").selectpicker('refresh');
-            }
-        });
-        $('#<?= ImportEtudiantForm::INPUT_IMPORT_GROUPE?>').on('change', function () {
-            $('#<?= ImportEtudiantForm::INPUT_IMPORT_FILE?>').val("");
-            $('#<?= ImportEtudiantForm::INPUT_IMPORT_REFERENTIEL?>').val("").selectpicker('refresh');
-        });
     })
 </script>

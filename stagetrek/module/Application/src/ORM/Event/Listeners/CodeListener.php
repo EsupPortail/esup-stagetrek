@@ -2,26 +2,13 @@
 
 namespace Application\ORM\Event\Listeners;
 
-use Application\Entity\Interfaces\CodeEntityInterface;
+use Application\Entity\Interfaces\HasCodeInterface;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
 use RuntimeException;
-use UnicaenUtilisateur\Entity\Db\HistoriqueAwareInterface;
 
-/**
- * Listener Doctrine.
- *
- * Renseigne si besoin l'heure et l'auteur de la création/modification
- * de toute entité dont la classe implémente HistoriqueAwareInterface.
- *
- * Déclenchement : avant que l'enregistrement ne soit persisté (création) ou mis à jour (update).
- *
- * @author Bertrand GAUTHIER <bertrand.gauthier at unicaen.fr>
- * @see HistoriqueAwareInterface
- *
- * todo /!\ why not /!\ eclater en deux un dans unicaen/application pour la date et un second dans utilisateur pour les utilisateurs
- */
 class CodeListener implements EventSubscriber
 {
     /**
@@ -29,12 +16,11 @@ class CodeListener implements EventSubscriber
      * @throws RuntimeException Aucun utilisateur disponible pour en faire l'auteur de la création/modification
      */
 
-
     protected function generateCode(LifecycleEventArgs $args): void
     {
         $entity = $args->getEntity();
         // l'entité doit implémenter l'interface requise
-        if (! $entity instanceof CodeEntityInterface) {
+        if (! $entity instanceof HasCodeInterface) {
             return;
         }
 //        Si l'entité à déjà un code on ne le génére pas
@@ -61,12 +47,13 @@ class CodeListener implements EventSubscriber
         $this->generateCode($args);
     }
     /**
-     * @param LifecycleEventArgs $args
+     * @throws \Doctrine\ORM\Exception\NotSupported
      */
-    public function preUpdate(LifecycleEventArgs $args)
+    public function preUpdate(PreUpdateEventArgs $args)
     {
         $this->generateCode($args);
     }
+
     /**
      * {@inheritdoc}
      */

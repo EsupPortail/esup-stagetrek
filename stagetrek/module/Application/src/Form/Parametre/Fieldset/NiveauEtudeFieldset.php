@@ -31,13 +31,14 @@ class NiveauEtudeFieldset extends AbstractEntityFieldset
 
     const EMPTY_OPTION_TEXT_NIVEAU_ETUDE_PARENT = "";
 
-    public function init(): void
+    public function init() : static
     {
         $this->initIdInput();
         $this->initLibelleInput();
         $this->initOrdreInput();
         $this->initNiveauEtudePrecedentInput();
         $this->initNbStages();
+        return $this;
     }
 
     protected function initNiveauEtudePrecedentInput() : static

@@ -5,7 +5,11 @@ namespace Application\View\Helper\Etudiant;
 
 use Application\Controller\Etudiant\EtudiantController as Controller;
 use Application\Entity\Db\Etudiant;
+use Application\Entity\Db\Source;
 use Application\Entity\Traits\Etudiant\HasEtudiantTrait;
+use Application\Form\Referentiel\CSVImportEtudiantsForm;
+use Application\Form\Referentiel\Interfaces\ImportEtudiantsFormInterface;
+use Application\Form\Referentiel\ReferentielImportEtudiantsForm;
 use Application\Misc\ArrayRessource;
 use Application\Provider\Misc\Icone;
 use Application\Provider\Misc\Label;
@@ -48,6 +52,16 @@ class EtudiantViewHelper extends AbstractEntityActionViewHelper
     public function renderForm(Form $form): string
     {
         return $this->getView()->render("application/etudiant/etudiant/forms/form-etudiant", ['form' => $form]);
+    }
+
+    public function renderImportForm(ImportEtudiantsFormInterface $form): string
+    {
+        switch ($form->getKey()){
+            case ReferentielImportEtudiantsForm::getKey() : return $this->getView()->render("application/etudiant/etudiant/forms/import-referentiel-form", ['form' => $form]);
+            case CSVImportEtudiantsForm::getKey()  : return $this->getView()->render("application/etudiant/etudiant/forms/import-csv-form", ['form' => $form]);
+            default : return "<div class='alert alert-danger'>Formulaire d'import non géré</div>";
+        }
+
     }
 
     /**

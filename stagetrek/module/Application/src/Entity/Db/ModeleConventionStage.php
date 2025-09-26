@@ -2,12 +2,12 @@
 
 namespace Application\Entity\Db;
 
-use Application\Entity\Interfaces\CodeEntityInterface;
-use Application\Entity\Interfaces\LibelleEntityInterface;
-use Application\Entity\Traits\InterfaceImplementation\CodeEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\DescriptionEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\IdEntityTrait;
-use Application\Entity\Traits\InterfaceImplementation\LibelleEntityTrait;
+use Application\Entity\Interfaces\HasCodeInterface;
+use Application\Entity\Interfaces\HasLibelleInterface;
+use Application\Entity\Traits\InterfaceImplementation\HasCodeTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasDescriptionTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasIdTrait;
+use Application\Entity\Traits\InterfaceImplementation\HasLibelleTrait;
 use Application\Entity\Traits\Terrain\HasTerrainsStagesTrait;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 use UnicaenRenderer\Entity\Db\Template;
@@ -18,7 +18,7 @@ use UnicaenUtilisateur\Entity\Db\HistoriqueAwareTrait;
  * ModeleConventionStage
  */
 class ModeleConventionStage implements ResourceInterface,
-    CodeEntityInterface, LibelleEntityInterface,
+    HasCodeInterface, HasLibelleInterface,
     HistoriqueAwareInterface
 {
     const RENDER_CONVENTION_NAMESPACE = 'Convention';
@@ -41,10 +41,10 @@ class ModeleConventionStage implements ResourceInterface,
         return substr(sprintf("%s%s%s", $prefixe, $separateur, $uid), 0, 100);
     }
 
-    use IdEntityTrait;
-    use CodeEntityTrait;
-    use LibelleEntityTrait;
-    use DescriptionEntityTrait;
+    use HasIdTrait;
+    use HasCodeTrait;
+    use HasLibelleTrait;
+    use HasDescriptionTrait;
     use HasTerrainsStagesTrait;
     use HistoriqueAwareTrait;
 

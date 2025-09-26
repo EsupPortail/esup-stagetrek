@@ -13,10 +13,11 @@ use Application\Form\Parametre\Fieldset\ParametreCoutAffectationFieldset;
 class ParametreCoutAffectationForm extends AbstractEntityForm
 {
 
-    public function init(): void
+    public function init() : static
     {
         parent::init();
         $fieldset = $this->getFormFactory()->getFormElementManager()->get(ParametreCoutAffectationFieldset::class);
         $this->setEntityFieldset($fieldset);
+        return $this;
     }
 }

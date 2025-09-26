@@ -16,11 +16,12 @@ use Application\Form\Stages\Fieldset\SessionStageFieldset;
 class SessionStageForm extends AbstractEntityForm implements AbstractFormConstantesInterface
 {
 
-    public function init(): void
+    public function init() : static
     {
         parent::init();
         $fieldset = $this->getFormFactory()->getFormElementManager()->get(SessionStageFieldset::class);
         $this->setEntityFieldset($fieldset);
+        return $this;
     }
 
     // Fonction qui permet de fixer l'année universitaire selectionnée / le groupe

@@ -5,6 +5,7 @@ namespace Application\Service\AnneeUniversitaire;
 
 use Application\Entity\Db\AnneeUniversitaire;
 use Application\Provider\EtatType\AnneeEtatTypeProvider;
+use Application\Provider\Tag\TagProvider;
 use Application\Service\Groupe\Traits\GroupeServiceAwareTrait;
 use Application\Service\Misc\CommonEntityService;
 use Application\Service\Misc\Traits\EntityEtatServiceAwareTrait;
@@ -13,12 +14,14 @@ use Application\Service\Stage\Traits\StageServiceAwareTrait;
 use DateTime;
 use Exception;
 use UnicaenEtat\Entity\Db\HasEtatsInterface;
+use UnicaenTag\Service\Tag\TagServiceAwareTrait;
 
 class AnneeUniversitaireService extends CommonEntityService
 {
     use GroupeServiceAwareTrait;
     use SessionStageServiceAwareTrait;
     use StageServiceAwareTrait;
+    use TagServiceAwareTrait;
     /** @return string */
     public function getEntityClass(): string
     {
@@ -124,6 +127,9 @@ class AnneeUniversitaireService extends CommonEntityService
     public function validerAnnee(AnneeUniversitaire $annee): AnneeUniversitaire
     {
         $annee->setAnneeVerrouillee(true);
+        $tag = $this->getTagService()->getTagByCode(TagProvider::ETAT_LOCK);
+        $annee->lock($tag);
+
         $this->getObjectManager()->persist($annee);
         if ($this->hasUnitOfWorksChange()) {
             $this->getObjectManager()->flush();
@@ -151,6 +157,7 @@ class AnneeUniversitaireService extends CommonEntityService
     public function deverouillerAnnee(AnneeUniversitaire $annee) : AnneeUniversitaire
     {
         $annee->setAnneeVerrouillee(false);
+        $annee->unlock();
         $this->getObjectManager()->persist($annee);
         if ($this->hasUnitOfWorksChange()) {
             $this->getObjectManager()->flush();

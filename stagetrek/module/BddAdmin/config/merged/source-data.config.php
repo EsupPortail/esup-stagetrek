@@ -18,13 +18,13 @@ use BddAdmin\Data\UnicaenParametreDataProvider;
 use BddAdmin\Data\UnicaenPrivilegeDataProvider;
 use BddAdmin\Data\UnicaenRendererDataProvider;
 use BddAdmin\Data\UnicaenRoleDataProvider;
+use BddAdmin\Data\UnicaenTagDataProvider;
 use BddAdmin\Data\UnicaenUtilisateurDataProvider;
 
 return [
     'unicaen-bddadmin' => [
         'data' => [
             'config'  => [
-
                 /** Table Diverses **/
                 'source' => SourceDataProvider::getConfig('source'),
                 'adresse_type' => AdresseDataProvider::getConfig('adresse_type'),
@@ -53,6 +53,8 @@ return [
                 /** UnicaenEtat */
                 'unicaen_etat_categorie' => UnicaenEtatDataProvider::getConfig('unicaen_etat_categorie'),
                 'unicaen_etat_type' => UnicaenEtatDataProvider::getConfig('unicaen_etat_type'),
+                'unicaen_tag_categorie' => UnicaenTagDataProvider::getConfig('unicaen_tag_categorie'),
+                'unicaen_tag' => UnicaenTagDataProvider::getConfig('unicaen_tag'),
 
 
                 /** UnicaenEtat */
@@ -100,6 +102,8 @@ return [
                 /** UnicaenEtat */
                 'unicaen_evenement_etat' => UnicaenEvenementDataProvider::class,
                 'unicaen_evenement_type' => UnicaenEvenementDataProvider::class,
+                'unicaen_tag_categorie' => UnicaenTagDataProvider::class,
+                'unicaen_tag' => UnicaenTagDataProvider::class,
                 /** UnicaenFichier */
                 'unicaen_fichier_nature' => UnicaenFichierDataProvider::class,
                 /** UnicaenFichier */

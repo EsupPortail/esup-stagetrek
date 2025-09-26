@@ -5,11 +5,14 @@ namespace Application\Form\Groupe\Fieldset;
 
 use Application\Entity\Db\AnneeUniversitaire;
 use Application\Entity\Db\Groupe;
+use Application\Entity\Db\ReferentielPromo;
 use Application\Form\Annees\Element\AnneeUniversitaireSelectPicker;
 use Application\Form\Misc\Abstracts\AbstractEntityFieldset;
+use Application\Form\Misc\Traits\CodeInputAwareTrait;
 use Application\Form\Misc\Traits\IdInputAwareTrait;
 use Application\Form\Misc\Traits\LibelleInputAwareTrait;
 use Application\Form\Parametre\Element\NiveauEtudeSelectPicker;
+use Application\Form\Referentiel\Element\ReferentielPromoSelectPicker;
 use Laminas\Filter\StringTrim;
 use Laminas\Filter\StripTags;
 use Laminas\Filter\ToInt;
@@ -25,24 +28,27 @@ class GroupeFieldset extends AbstractEntityFieldset
 {
     use IdInputAwareTrait;
     use LibelleInputAwareTrait;
+    use CodeInputAwareTrait;
 
 
     /**
      * @throws \Doctrine\ORM\Exception\NotSupported
      */
-    public function init(): void
+    public function init() : static
     {
+        $this->initCodeInput(true);
         $this->initIdInput();
         $this->initLibelleInput();
         $this->initAnneeInput();
         $this->initNiveauInput();
+        $this->initReferentielsInput();
+        return $this;
 
     }
 
     //On ne peux pas utiliser le libellé validator classique car le nom du groupe est dépendant de l'année
     protected function initLibelleInput(): static
     {
-
         $this->add([
             "name" => self::LIBELLE,
             'type' => Text::class,
@@ -212,5 +218,37 @@ class GroupeFieldset extends AbstractEntityFieldset
             }
         }
         return $this;
+    }
+
+
+    const REFERENTIELS = "referentiels";
+    public function initReferentielsInput() : void
+    {
+        $this->add([
+            'type' => ReferentielPromoSelectPicker::class,
+            'name' => self::REFERENTIELS,
+            'options' => [
+                'label' => 'Référentiels associées',
+            ],
+            'attributes' => [
+                'id' => self::REFERENTIELS,
+                "class" => 'selectpicker',
+                "data-live-search" => true,
+                "data-live-search-normalize" => true,
+                "multiple" => "multiple",
+                "data-tick-icon" => "fas fa-check text-primary",
+                "title" => "Sélectionnez des référentiels",
+                "data-selected-text-format" => "count > 2",
+                "data-count-selected-text" => "{0} référentiels",
+            ],
+        ]);
+
+        $this->setInputfilterSpecification(self::REFERENTIELS,  [
+            "name" => self::REFERENTIELS,
+            'required' => false,
+            'filters' => [
+                ['name' => ToInt::class],
+            ],
+        ]);
     }
 }

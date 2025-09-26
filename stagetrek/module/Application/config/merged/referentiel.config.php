@@ -10,8 +10,12 @@ use Application\Controller\Referentiel\SourceController;
 use Application\Entity\Db\ReferentielPromo;
 use Application\Entity\Db\Source;
 use Application\Form\Misc\Factory\SelectPickerFactory;
+use Application\Form\Referentiel\CSVImportEtudiantsForm;
 use Application\Form\Referentiel\Element\ReferentielPromoSelectPicker;
 use Application\Form\Referentiel\Element\SourceSelectPicker;
+use Application\Form\Referentiel\Factory\CSVImportEtudiantsFormFactory;
+use Application\Form\Referentiel\Factory\ImportEtudiantsHydratorFactory;
+use Application\Form\Referentiel\Factory\ReferentielImportEtudiantsFormFactory;
 use Application\Form\Referentiel\Factory\ReferentielPormoHydratorFactory;
 use Application\Form\Referentiel\Factory\ReferentielPromoFieldsetFactory;
 use Application\Form\Referentiel\Factory\ReferentielPromoFormFactory;
@@ -19,21 +23,29 @@ use Application\Form\Referentiel\Factory\SourceFieldsetFactory;
 use Application\Form\Referentiel\Factory\SourceFormFactory;
 use Application\Form\Referentiel\Fieldset\ReferentielPromoFieldset;
 use Application\Form\Referentiel\Fieldset\SourceFieldset;
+use Application\Form\Referentiel\Hydrator\CSVImportEtudiantsHydrator;
+use Application\Form\Referentiel\Hydrator\ReferentielImportEtudiantsHydrator;
 use Application\Form\Referentiel\Hydrator\ReferentielPromoHydrator;
+use Application\Form\Referentiel\LDAPImportEtudiantsForm;
+use Application\Form\Referentiel\ReferentielImportEtudiantsForm;
 use Application\Form\Referentiel\ReferentielPromoForm;
 use Application\Form\Referentiel\SourceForm;
 use Application\Misc\ArrayRessource;
 use Application\Provider\Privilege\EtudiantPrivileges;
 use Application\Provider\Privilege\ReferentielPrivilege;
-use Application\Service\Referentiel\Factory\RechercheEtudiantLdapServiceFactory;
+use Application\Service\Referentiel\CsvEtudiantService;
+use Application\Service\Referentiel\Factory\CSVEtudiantServiceFactory;
+use Application\Service\Referentiel\Factory\LdapEtudiantServiceFactory;
 use Application\Service\Referentiel\Factory\RechercheEtudiantLocalServiceFactory;
+use Application\Service\Referentiel\Factory\ReferentielDbImportEtudiantServiceFactory;
 use Application\Service\Referentiel\Factory\ReferentielPromoServiceFactory;
-use Application\Service\Referentiel\Factory\ReferentielServiceFactory;
+use Application\Service\Referentiel\Factory\MultipleReferentielsEtudiantsServiceFactory;
 use Application\Service\Referentiel\Factory\SourceServiceFactory;
-use Application\Service\Referentiel\RechercheEtudiant\RechercheEtudiantLdapService;
-use Application\Service\Referentiel\RechercheEtudiant\RechercheEtudiantLocalService;
+use Application\Service\Referentiel\LdapEtudiantService;
+use Application\Service\Referentiel\LocalEtudiantService;
+use Application\Service\Referentiel\ReferentielDbImportEtudiantService;
 use Application\Service\Referentiel\ReferentielPromoService;
-use Application\Service\Referentiel\ReferentielService;
+use Application\Service\Referentiel\MultipleReferentielEtudiantsService;
 use Application\Service\Referentiel\SourceService;
 use Application\View\Helper\Referentiel\ReferentielPromoViewHelper;
 use Application\View\Helper\Referentiel\SourceViewHelper;
@@ -164,7 +176,7 @@ return [
                         'privileges' => [
                             ReferentielPrivilege::REFERENTIEL_SOURCE_AFFICHER,
                             ReferentielPrivilege::REFERENTIEL_SOURCE_AJOUTER,
-                            ReferentielPrivilege::REFERENTIEL_SOURCE_AJOUTER,
+                            ReferentielPrivilege::REFERENTIEL_SOURCE_MODIFIER,
                             ReferentielPrivilege::REFERENTIEL_SOURCE_SUPPRIMER,
                         ],
                         'resources' => [Source::RESOURCE_ID, ArrayRessource::RESOURCE_ID],
@@ -348,6 +360,8 @@ return [
             SourceForm::class => SourceFormFactory::class,
             SourceFieldset::class => SourceFieldsetFactory::class,
             SourceSelectPicker::class => SelectPickerFactory::class,
+            CSVImportEtudiantsForm::class => CSVImportEtudiantsFormFactory::class,
+            ReferentielImportEtudiantsForm::class => ReferentielImportEtudiantsFormFactory::class,
 
             ReferentielPromoForm::class => ReferentielPromoFormFactory::class,
             ReferentielPromoFieldset::class => ReferentielPromoFieldsetFactory::class,
@@ -358,18 +372,21 @@ return [
     'hydrators' => [
         'factories' => [
             ReferentielPromoHydrator::class => ReferentielPormoHydratorFactory::class,
+            CSVImportEtudiantsHydrator::class => ImportEtudiantsHydratorFactory::class,
+            ReferentielImportEtudiantsHydrator::class => ImportEtudiantsHydratorFactory::class,
         ],
     ],
 
     'service_manager' => [
         'factories' => [
-
-            ReferentielService::class => ReferentielServiceFactory::class,
+            MultipleReferentielEtudiantsService::class => MultipleReferentielsEtudiantsServiceFactory::class,
             SourceService::class => SourceServiceFactory::class,
             ReferentielPromoService::class => ReferentielPromoServiceFactory::class,
+            CSVEtudiantService::class => CSVEtudiantServiceFactory::class,
+            ReferentielDbImportEtudiantService::class => ReferentielDbImportEtudiantServiceFactory::class,
 
-            RechercheEtudiantLdapService::class => RechercheEtudiantLdapServiceFactory::class,
-            RechercheEtudiantLocalService::class => RechercheEtudiantLocalServiceFactory::class,
+            LdapEtudiantService::class => LdapEtudiantServiceFactory::class,
+            LocalEtudiantService::class => RechercheEtudiantLocalServiceFactory::class,
         ],
     ],
 

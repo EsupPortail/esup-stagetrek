@@ -22,7 +22,7 @@ class SessionStageRechercheForm extends AbstractRechercheForm
     const INPUT_GROUPE = "groupe";
     const INPUT_ETAT="etat";
 
-    public function init(): void
+    public function init() : static
     {
         parent::init();
 
@@ -101,7 +101,7 @@ class SessionStageRechercheForm extends AbstractRechercheForm
                 "data-deselect-all-text" => "Tout déselectionner",
             ],
         ]);
-
+        return $this;
     }
 
     public function getInputFilterSpecification(): array

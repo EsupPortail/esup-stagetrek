@@ -14,7 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class UpdateAffectationCommand extends AbstractUpdateEntityCommand
 {
-    protected static $defaultName = 'update-annees';
+    protected static $defaultName = 'update:annees';
 
     /**
      * @throws \Exception
