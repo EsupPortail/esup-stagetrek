@@ -36,8 +36,9 @@ class MailAutoAffectationEvenementService extends AbstractMailAutoEvenementServi
         $etudiant = $stage->getEtudiant();
         $affectation = $stage->getAffectationStage();
 
+        $now = new DateTime();
         // Vérification que l'événement n'existe pas déjà
-        if($stage->getDateFinCommission() < new DateTime()) {
+        if($stage->getDateFinCommission() < $now) {
             $params = [
                 'type_code' => TypeEvenementProvider::MAIL_AUTO_AFFECTATION_VALIDEE,
                 'stage_id' => $stage->getId()
@@ -60,6 +61,9 @@ class MailAutoAffectationEvenementService extends AbstractMailAutoEvenementServi
         //Cette événement est généré/traité des que la validation à été effectué
         $datePlanification = $stage->getDateFinCommission();
         $datePlanification->setTime(8,0);
+        if($datePlanification < $now){
+            $datePlanification = $now;
+        }
 
         $parametres['session-id'] =  "".$session->getId();
         $parametres['stage-id'] =  "".$stage->getId();
@@ -88,6 +92,8 @@ class MailAutoAffectationEvenementService extends AbstractMailAutoEvenementServi
         $parametres = Json::decode($evenement->getParametres(), Json::TYPE_ARRAY);
         $stageId = ($parametres['stage-id']) ?? 0;
 
+//        TODO : a modifier pour pouvoir en creer a partir d'une session pour pouvoir envoyer tout ceux d'une session
+//          idée : pouvoir spécifier la session et non le stage
         /** @var Stage $stage */
         $stage = $this->getObjectManager()->getRepository(Stage::class)->find($stageId);
         if (!$stage) {

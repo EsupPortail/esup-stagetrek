@@ -47,6 +47,18 @@ class EtudiantCsvImportValidator extends AbstractCsvImportValidator
         ];
     }
 
+    public static function isChampsObligatoire(string $key) : bool
+    {
+        $champsObligatoire = [
+            self::HEADER_NUM_ETUDIANT => true,
+            self::HEADER_NOM => true,
+            self::HEADER_PRENOM => true,
+            self::HEADER_EMAIL => true,
+        ];
+        return ($champsObligatoire[$key]) ?? false;
+    }
+
+
     protected ?string $numEtu = null;
     protected ?string $nom = null;
     protected ?string $prenom = null;

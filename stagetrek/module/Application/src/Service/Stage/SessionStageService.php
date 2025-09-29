@@ -3,6 +3,7 @@
 namespace Application\Service\Stage;
 
 use Application\Entity\Db\AnneeUniversitaire;
+use Application\Entity\Db\Etudiant;
 use Application\Entity\Db\Groupe;
 use Application\Entity\Db\SessionStage;
 use Application\Entity\Db\Stage;
@@ -61,6 +62,9 @@ class SessionStageService extends CommonEntityService
         }
         if (!empty($criteria[FormRecherche::INPUT_ETAT])) {
             $qb = SessionStage::decorateWithEtats($qb, $alias, $criteria['etat']);
+        }
+        if(isset($criteria[FormRecherche::TAGS])){
+            $qb = Etudiant::decorateWithTags($qb, $alias, $criteria['tags']);
         }
         return $qb->getQuery()->getResult();
     }
@@ -463,7 +467,7 @@ class SessionStageService extends CommonEntityService
         $today = new DateTime();
 
         //Désactivé si l'année n'est pas vérouillée
-        if(!$annee->isAnneeVerrouillee()){ //on ne vérouille pas une session si la date de choix est commencé
+        if(!$annee->isLocked()){ //on ne vérouille pas une session si la date de choix est commencé
             $this->addEtatInfo("L'année universitaire n'est pas validé");
             if($today < $session->getDateDebutChoix()) {
                 return SessionEtatTypeProvider::DESACTIVE;

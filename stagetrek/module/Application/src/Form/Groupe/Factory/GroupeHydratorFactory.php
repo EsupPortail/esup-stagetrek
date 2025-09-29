@@ -6,6 +6,7 @@ use Application\Form\Groupe\Hydrator\GroupeHydrator;
 use Doctrine\ORM\EntityManager;
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
+use UnicaenTag\Service\Tag\TagService;
 
 /**
  * Class GroupeHydratorFactory
@@ -28,6 +29,8 @@ class GroupeHydratorFactory implements FactoryInterface
         /** @var EntityManager $entityManager */
         $entityManager = $container->get(EntityManager::class);
         $hydrator->setObjectManager($entityManager);
+
+        $hydrator->setTagService($container->get(TagService::class));
 
         return $hydrator;
     }

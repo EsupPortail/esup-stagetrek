@@ -4,24 +4,31 @@
 namespace Application\Form\Contacts\Fieldset;
 
 use Application\Form\Misc\Abstracts\AbstractEntityFieldset;
+use Application\Form\Misc\Interfaces\HasTagInputInterface;
 use Application\Form\Misc\Traits\CodeInputAwareTrait;
 use Application\Form\Misc\Traits\IdInputAwareTrait;
 use Application\Form\Misc\Traits\LibelleInputAwareTrait;
 use Application\Form\Misc\Traits\MailInputAwareTrait;
+use Application\Form\Misc\Traits\TagInputAwareTrait;
+use Application\Provider\Tag\CategorieTagProvider;
 use Laminas\Filter\StringTrim;
 use Laminas\Filter\StripTags;
 use Laminas\Filter\ToInt;
 use Laminas\Form\Element\Checkbox;
 use Laminas\Form\Element\Text;
 use Laminas\Validator\StringLength;
+use UnicaenTag\Entity\Db\HasTagsTrait;
+use UnicaenTag\Entity\Db\Tag;
 
 class ContactFieldset extends AbstractEntityFieldset
+    implements HasTagInputInterface
 {
 
     use IdInputAwareTrait;
     use CodeInputAwareTrait;
     use LibelleInputAwareTrait;
     use MailInputAwareTrait;
+    use TagInputAwareTrait;
 
     public function init() : static
     {
@@ -34,6 +41,7 @@ class ContactFieldset extends AbstractEntityFieldset
         $this->initDisplayNameInput();
         $this->initTelephoneInput();
         $this->initEtatInput();
+        $this->initTagsInputs();
         return $this;
     }
 
@@ -127,5 +135,30 @@ class ContactFieldset extends AbstractEntityFieldset
                 ['name' => ToInt::class],
             ],
         ]);
+    }
+
+    public function getTagsAvailables(): array
+    {
+        $tags = $this->getTagService()->getTags();
+        usort($tags, function (Tag $t1, Tag $t2) {
+            $c1 = $t1->getCategorie();
+            $c2 = $t2->getCategorie();
+            if ($c1->getId() !== $c2->getId()) {
+                //Trie spécifique : on met d'abord la catégorie Années
+                if ($c1->getCode() == CategorieTagProvider::CONTACT_STAGE) {
+                    return -1;
+                }
+                if ($c2->getCode() == CategorieTagProvider::CONTACT_STAGE) {
+                    return 1;
+                }
+                if ($c1->getOrdre() < $c2->getOrdre()) return -1;
+                if ($c2->getOrdre() < $c1->getOrdre()) return 1;
+                return ($c1->getId() < $c2->getId()) ? -1 : 1;
+            }
+            if ($t1->getOrdre() < $t2->getOrdre()) return -1;
+            if ($t2->getOrdre() < $t1->getOrdre()) return 1;
+            return ($t1->getId() < $t2->getId()) ? -1 : 1;
+        });
+        return $tags;
     }
 }

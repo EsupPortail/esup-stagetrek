@@ -13,12 +13,15 @@ use Application\Entity\Traits\InterfaceImplementation\HasOrderTrait;
 use Application\Entity\Traits\Terrain\HasTerrainsStagesTrait;
 use Doctrine\Common\Collections\Collection;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
+use UnicaenTag\Entity\Db\HasTagsInterface;
+use UnicaenTag\Entity\Db\HasTagsTrait;
 
 /**
  * CategorieStage
  */
 class CategorieStage implements ResourceInterface,
     HasLibelleInterface, HasCodeInterface, HasAcronymeInterface
+    , HasTagsInterface
 {
 
     const RESOURCE_ID = 'CategorieStage';
@@ -55,8 +58,6 @@ class CategorieStage implements ResourceInterface,
     use HasLibelleTrait;
     use HasAcronymeTrait;
     use HasCodeTrait;
-
-
     use HasTerrainsStagesTrait;
 
     use HasOrderTrait;
@@ -76,6 +77,7 @@ class CategorieStage implements ResourceInterface,
         return $entities;
     }
 
+    use HasTagsTrait;
 
     /**
      * @var bool

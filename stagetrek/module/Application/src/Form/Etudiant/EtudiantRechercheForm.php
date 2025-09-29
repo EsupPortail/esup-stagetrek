@@ -6,16 +6,22 @@ use Application\Form\Abstrait\AbstractRechercheForm;
 use Application\Form\Annees\Element\AnneeUniversitaireSelectPicker;
 use Application\Form\Etudiant\Element\EtudiantEtatSelectPicker;
 use Application\Form\Groupe\Element\GroupeSelectPicker;
+use Application\Form\Misc\Interfaces\HasTagInputInterface;
+use Application\Form\Misc\Traits\InputFilterProviderTrait;
+use Application\Form\Misc\Traits\TagInputAwareTrait;
+use Application\Provider\Tag\CategorieTagProvider;
 use Laminas\Filter\StringTrim;
 use Laminas\Filter\StripTags;
 use Laminas\Filter\ToInt;
 use Laminas\Form\Element\Text;
+use UnicaenTag\Entity\Db\Tag;
 
 /**
  * Class EtudiantForm
  * @package Application\Form\Etudiant
  */
 class EtudiantRechercheForm extends AbstractRechercheForm
+    implements HasTagInputInterface
 {
     const INPUT_NOM="nom";
     const INPUT_PRENOM="prenom";
@@ -24,9 +30,13 @@ class EtudiantRechercheForm extends AbstractRechercheForm
     const INPUT_GROUPE="groupe";
     const INPUT_ETAT="etat";
 
+    use TagInputAwareTrait;
+    use InputFilterProviderTrait;
+
     public function init(): static
     {
         parent::init();
+        $this->initTagsInputs();
 
         $this->add([
             'type' => Text::class,
@@ -192,6 +202,36 @@ class EtudiantRechercheForm extends AbstractRechercheForm
                     ['name' => ToInt::class],
                 ],
             ],
+
+            self::TAGS => [
+                "name" => self::TAGS,
+                'required' => false,
+                'filters' => [
+                    ['name' => ToInt::class],
+                ],
+            ],
         ];
+    }
+
+    public function getTagsAvailables() : array
+    {
+        $tags = $this->getTagService()->getTags();
+
+        usort($tags, function (Tag $t1, Tag $t2) {
+            $c1 = $t1->getCategorie();
+            $c2 = $t2->getCategorie();
+            if($c1->getId() !== $c2->getId()){
+                //Trie spécifique : on met d'abord la catégorie Années
+                if($c1->getCode()== CategorieTagProvider::ETUDIANT){return -1;}
+                if($c2->getCode()== CategorieTagProvider::ETUDIANT){return 1;}
+                if($c1->getOrdre() < $c2->getOrdre()) return -1;
+                if($c2->getOrdre() < $c1->getOrdre()) return 1;
+                return ($c1->getId() < $c2->getId()) ? -1 : 1;
+            }
+            if($t1->getOrdre() < $t2->getOrdre()) return -1;
+            if($t2->getOrdre() < $t1->getOrdre()) return 1;
+            return ($t1->getId() < $t2->getId()) ? -1 : 1;
+        });
+        return $tags;
     }
 }

@@ -94,13 +94,13 @@ return [
     //
     'session_config' => [
         // Session cookie will expire in 8 hour.
-        'cookie_lifetime' => 60*60*8,
+//        'cookie_lifetime' => 60*60*8,
         // Durée de vie max des variables de session (mis arbitrairement a 5min)
-        'gc_maxlifetime'     => 60*5,
+//        'gc_maxlifetime'     => 60*5,
 
-        'cookie_httponly' => 1,
-        'use_only_cookies' => 1,
-        'cookie_secure' => 1,
+//        'cookie_httponly' => 1,
+//        'use_only_cookies' => 1,
+//        'cookie_secure' => 1,
 
     ],
     //

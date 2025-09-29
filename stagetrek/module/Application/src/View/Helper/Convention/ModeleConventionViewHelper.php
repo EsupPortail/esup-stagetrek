@@ -110,7 +110,7 @@ class ModeleConventionViewHelper extends AbstractEntityActionViewHelper
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_AJOUTER, [], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::AJOUTER, Label::AJOUTER);
+        $libelle = ($libelle) ?? Label::render(Label::AJOUTER, Icone::AJOUTER);
         $attributes['title'] = ($attributes['title']) ??  "Ajouter un modéle de convention";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-success";
         if(!isset($attributes['data-event'])){$attributes['data-event'] = Controller::EVENT_AJOUTER;}
@@ -123,7 +123,7 @@ class ModeleConventionViewHelper extends AbstractEntityActionViewHelper
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_MODIFIER,  ['modeleConventionStage' => $this->getModeleConventionStage()->getId()], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::MODIFIER, Label::MODIFIER);
+        $libelle = ($libelle) ?? Label::render(Label::MODIFIER, Icone::MODIFIER);
         $attributes['title'] = ($attributes['title']) ??"Modifier le modéle de convention";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-primary ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ?? Controller::EVENT_MODIFIER;
@@ -136,7 +136,7 @@ class ModeleConventionViewHelper extends AbstractEntityActionViewHelper
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_SUPPRIMER, ['modeleConventionStage' => $this->getModeleConventionStage()->getId()], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::SUPPRIMER, Label::SUPPRIMER);
+        $libelle = Label::render(Label::SUPPRIMER, Icone::SUPPRIMER);
         $attributes['title'] = ($attributes['title']) ?? "Supprimer le modéle de convention de stage";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-danger ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ??  Controller::EVENT_SUPPRIMER;

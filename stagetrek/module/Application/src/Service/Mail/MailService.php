@@ -221,7 +221,7 @@ class MailService extends \UnicaenMail\Service\Mail\MailService
         $sessions = $this->getObjectManager()->getRepository(SessionStage::class)->findAll();
         foreach ($sessions as $session) {
             //L'année doit être verrouillée
-            if (!$session->getAnneeUniversitaire()->isAnneeVerrouillee()) {
+            if (!$session->getAnneeUniversitaire()->isLocked()) {
                 continue;
             }
             //L'état est valide
@@ -267,7 +267,7 @@ class MailService extends \UnicaenMail\Service\Mail\MailService
         $sessions = $this->getObjectManager()->getRepository(SessionStage::class)->findAll();
         foreach ($sessions as $session) {
             //L'année doit être verrouillée
-            if (!$session->getAnneeUniversitaire()->isAnneeVerrouillee()) {
+            if (!$session->getAnneeUniversitaire()->isLocked()) {
                 continue;
             }
             //Le statut autorise la validation
@@ -347,7 +347,7 @@ class MailService extends \UnicaenMail\Service\Mail\MailService
                 /** @var Stage $stage */
                 $stage = $data['stage'];
                 //L'année du stage n'est pas vérouillée
-                if (!$stage->getAnneeUniversitaire()->isAnneeVerrouillee()) {
+                if (!$stage->getAnneeUniversitaire()->isLocked()) {
                     $msg = sprintf("Impossible d'envoyer le mail de code %s. ", $codeMail);
                     $msg .= sprintf("L'année universitaire %s n'est pas validé", $stage->getAnneeUniversitaire()->getLibelle());
                     throw new Exception($msg);
@@ -380,7 +380,7 @@ class MailService extends \UnicaenMail\Service\Mail\MailService
                 /** @var Stage $stage */
                 $stage = $data['stage'];
                 //L'année du stage n'est pas vérouillée
-                if (!$stage->getAnneeUniversitaire()->isAnneeVerrouillee()) {
+                if (!$stage->getAnneeUniversitaire()->isLocked()) {
                     $msg = sprintf("Impossible d'envoyer le mail de code %s. ", $codeMail);
                     $msg .= sprintf("L'année universitaire %s n'est pas validé", $stage->getAnneeUniversitaire()->getLibelle());
                     throw new Exception($msg);

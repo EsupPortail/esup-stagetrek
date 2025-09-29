@@ -223,7 +223,7 @@ $canSeeStage = $this->isAllowed(StagePrivileges::getResourceId(StagePrivileges::
                 </td>
                 <?php if ($canSeeStage) : ?>
                     <td class="text-end">
-                        <?= $stageVh->lienAfficher(Icone::AFFICHER, ['class' => 'text-primary']) ?>
+                        <?= $stageVh->lienAfficher(Icone::render(Icone::AFFICHER), ['class' => 'text-primary']) ?>
                     </td>
                 <?php endif ?>
             </tr>

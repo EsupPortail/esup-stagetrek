@@ -16,11 +16,13 @@ use Application\Form\TerrainStage\Element\TerrainStageSecondaireSelectPicker;
 use Application\Form\TerrainStage\Element\TerrainStageSelectPicker;
 use Application\Form\TerrainStage\Factory\CategorieStageFieldsetFactory;
 use Application\Form\TerrainStage\Factory\CategorieStageFormFactory;
+use Application\Form\TerrainStage\Factory\CategorieStageHydratorFactory;
 use Application\Form\TerrainStage\Factory\TerrainStageFieldsetFactory;
 use Application\Form\TerrainStage\Factory\TerrainStageFormFactory;
 use Application\Form\TerrainStage\Factory\TerrainStageHydratorFactory;
 use Application\Form\TerrainStage\Fieldset\CategorieStageFieldset;
 use Application\Form\TerrainStage\Fieldset\TerrainStageFieldset;
+use Application\Form\TerrainStage\Hydrator\CategorieStageHydrator;
 use Application\Form\TerrainStage\Hydrator\TerrainStageHydrator;
 use Application\Form\TerrainStage\TerrainStageForm;
 use Application\Misc\ArrayRessource;
@@ -457,6 +459,7 @@ return [
     ],
     'hydrators' => [
         'factories' => [
+            CategorieStageHydrator::class => CategorieStageHydratorFactory::class,
             TerrainStageHydrator::class => TerrainStageHydratorFactory::class,
         ],
     ],

@@ -18,7 +18,7 @@ $vh = $this->anneeUniversitaire($annee);
 <?php
 //TODO : a déplacer dans le calcul du états des années
 $today = new DateTime();
-if ($annee->getDateDebut() < $today && !$annee->isAnneeVerrouillee()): ?>
+if ($annee->getDateDebut() < $today && !$annee->isLocked()): ?>
 
     <div class="row">
         <div class="col-md-12">
@@ -34,7 +34,7 @@ if ($annee->getDateDebut() < $today && !$annee->isAnneeVerrouillee()): ?>
 <?php if($annee->getGroupes()->isEmpty()): ?>
     <div class="row">
         <div class="col-md-12">
-            <div class="alert <?= ($annee->isAnneeVerrouillee()) ? "alert-info" : "alert-warning"?>">
+            <div class="alert <?= ($annee->isLocked()) ? "alert-info" : "alert-warning"?>">
                 L'année universitaire n'est associée à <strong>aucun</strong> groupe d'étudiants.
             </div>
         </div>
@@ -46,7 +46,7 @@ foreach ($annee->getGroupes() as $g) :?>
     <?php if ($g->getEtudiants()->isEmpty()): ?>
         <div class="row">
             <div class="col-md-12">
-                <div class="alert <?= ($annee->isAnneeVerrouillee()) ? "alert-info" : "alert-warning"?>">
+                <div class="alert <?= ($annee->isLocked()) ? "alert-info" : "alert-warning"?>">
                     Aucun étudiant n'est inscrit dans le groupe <?= $g->getLibelle() ?>
                 </div>
             </div>
@@ -55,7 +55,7 @@ foreach ($annee->getGroupes() as $g) :?>
     <?php if ($g->getSessionsStages()->isEmpty()): ?>
         <div class="row">
             <div class="col-md-12">
-                <div class="alert <?= ($annee->isAnneeVerrouillee()) ? "alert-info" : "alert-warning"?>">
+                <div class="alert <?= ($annee->isLocked()) ? "alert-info" : "alert-warning"?>">
                     Aucune session de stage n'est planifiée pour le groupe <?= $g->getLibelle() ?>
                 </div>
             </div>

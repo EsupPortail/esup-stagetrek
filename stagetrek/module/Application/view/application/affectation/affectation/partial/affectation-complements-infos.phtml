@@ -13,9 +13,9 @@ if (!isset($vueEtudiante)) {
 }
 ?>
 
-<div class="row">
-    <div class="col-md-12">
-        <div class="card">
+<div class="row row-cols-1 row-cols-md-2">
+    <div class="col">
+        <div class="card h-100">
             <div class="card-header">
                 Informations complémentaires
             </div>
@@ -23,6 +23,28 @@ if (!isset($vueEtudiante)) {
                 <div class="row">
                     <div class="col-md-12">
                         <?= ($affectationStage->getInformationsComplementaires()) ?? "<span class='text-muted'>Aucune informations complémentaires</span>" ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <?php $tags = $affectationStage->getTags(); ?>
+        <div class="card h-100 <?= (!$tags->isEmpty()) ? "card-primary" : "card-muted" ?>">
+            <div class="card-header">
+                Tags
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <?php foreach ($tags as $tag) {
+                            echo $this->unicaenTag($tag, ['display-libelle' => true, 'display-categorie' => false]);
+                        }
+                        if($tags->isEmpty()){
+                            echo "<span class='text-muted'>Aucun tag</span>";
+                        }
+                        ?>
                     </div>
                 </div>
             </div>

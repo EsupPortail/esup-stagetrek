@@ -21,6 +21,8 @@ use Laminas\Permissions\Acl\Resource\ResourceInterface;
 use UnicaenDbImport\Entity\Db\Interfaces\SourceAwareInterface;
 use UnicaenEtat\Entity\Db\HasEtatsInterface;
 use UnicaenEtat\Entity\Db\HasEtatsTrait;
+use UnicaenTag\Entity\Db\HasTagsInterface;
+use UnicaenTag\Entity\Db\HasTagsTrait;
 use UnicaenUtilisateur\Entity\Db\HistoriqueAwareInterface;
 use UnicaenUtilisateur\Entity\Db\HistoriqueAwareTrait;
 
@@ -29,6 +31,7 @@ use UnicaenUtilisateur\Entity\Db\HistoriqueAwareTrait;
  */
 class Etudiant implements ResourceInterface, HasAdresseInterface, HasEtatsInterface
 , HasSourceInterface, HistoriqueAwareInterface
+    , HasTagsInterface
 {
     const RESOURCE_ID = 'Etudiant';
     /**
@@ -45,6 +48,7 @@ class Etudiant implements ResourceInterface, HasAdresseInterface, HasEtatsInterf
     use HasDisponibilitesTrait;
     use HasContraintesCursusEtudiantsTrait;
     use HasEtatsTrait;
+    use HasTagsTrait;
 
     //TODO : transformer le numéro étudiant en String
     /**

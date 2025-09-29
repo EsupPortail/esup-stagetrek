@@ -5,6 +5,7 @@ namespace Application\Form\Contacts\Factory;
 
 
 use Application\Form\Contacts\ContactForm;
+use Application\Form\Contacts\Hydrator\ContactHydrator;
 use Doctrine\Laminas\Hydrator\DoctrineObject;
 use Doctrine\ORM\EntityManager;
 use Interop\Container\ContainerInterface;
@@ -33,8 +34,8 @@ class ContactFormFactory implements FactoryInterface
         $viewHelperManager = $container->get('ViewHelperManager');
         $form->setViewHelperManager($viewHelperManager);
 
-        /** @var DoctrineObject $hydrator */
-        $hydrator = $container->get('HydratorManager')->get(DoctrineObject::class);
+        /** @var ContactHydrator $hydrator */
+        $hydrator = $container->get('HydratorManager')->get(ContactHydrator::class);
         $form->setHydrator($hydrator);
 
         return $form;

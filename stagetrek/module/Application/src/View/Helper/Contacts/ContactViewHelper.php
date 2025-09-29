@@ -96,7 +96,7 @@ class ContactViewHelper  extends AbstractEntityActionViewHelper
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_AJOUTER, [], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::AJOUTER, Label::AJOUTER);
+        $libelle = ($libelle) ?? Label::render(Label::AJOUTER, Icone::AJOUTER);
         $attributes['title'] = ($attributes['title']) ??  "Ajouter un contact";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-success ajax-modal";
         if(!isset($attributes['data-event'])){$attributes['data-event'] = Controller::EVENT_AJOUTER;}
@@ -109,7 +109,7 @@ class ContactViewHelper  extends AbstractEntityActionViewHelper
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_MODIFIER,  ['contact' => $this->getContact()->getId()], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::MODIFIER, Label::MODIFIER);
+        $libelle = ($libelle) ?? Label::render(Label::MODIFIER, Icone::MODIFIER);
         $attributes['title'] = ($attributes['title']) ??"Modifier le contact";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-primary ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ?? Controller::EVENT_MODIFIER;
@@ -122,7 +122,7 @@ class ContactViewHelper  extends AbstractEntityActionViewHelper
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_SUPPRIMER, ['contact' => $this->getContact()->getId()], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::SUPPRIMER, Label::SUPPRIMER);
+        $libelle = Label::render(Label::SUPPRIMER, Icone::SUPPRIMER);
         $attributes['title'] = ($attributes['title']) ?? "Supprimer le contact";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-danger ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ??  Controller::EVENT_SUPPRIMER;
@@ -136,7 +136,7 @@ class ContactViewHelper  extends AbstractEntityActionViewHelper
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_IMPORTER, [], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::IMPORTER, Label::IMPORTER);
+        $libelle = ($libelle) ?? Label::render(Label::IMPORTER, Icone::IMPORTER);
         $attributes['title'] = ($attributes['title']) ??  "Importer des contacts";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-primary ajax-modal";
         if(!isset($attributes['data-event'])){$attributes['data-event'] = Controller::EVENT_IMPORTER;}

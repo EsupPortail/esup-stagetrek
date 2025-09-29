@@ -61,7 +61,7 @@ class NiveauEtudeViewHelper extends AbstractEntityActionViewHelper
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_AJOUTER, [], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::AJOUTER, Label::AJOUTER);
+        $libelle = ($libelle) ?? Label::render(Label::AJOUTER, Icone::AJOUTER);
         $attributes['title'] = ($attributes['title']) ?? "Ajouter un niveau d'étude";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-success ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ?? Controller::EVENT_AJOUTER;
@@ -76,7 +76,7 @@ class NiveauEtudeViewHelper extends AbstractEntityActionViewHelper
         }
         $niveau = $this->getNiveauEtude();
         $url = $this->getUrl(Controller::ROUTE_MODIFIER, ['niveauEtude' => $niveau->getId()], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::MODIFIER, Label::MODIFIER);
+        $libelle = ($libelle) ?? Label::render(Label::MODIFIER, Icone::MODIFIER);
         $attributes['title'] = ($attributes['title']) ?? "Modifier le niveau d'étude";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-primary ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ?? Controller::EVENT_MODIFIER;
@@ -90,7 +90,7 @@ class NiveauEtudeViewHelper extends AbstractEntityActionViewHelper
         }
         $niveau = $this->getNiveauEtude();
         $url = $this->getUrl(Controller::ROUTE_SUPPRIMER, ['niveauEtude' => $niveau->getId()], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::SUPPRIMER, Label::SUPPRIMER);
+        $libelle = Label::render(Label::SUPPRIMER, Icone::SUPPRIMER);
         $attributes['title'] = ($attributes['title']) ?? "Supprimer le niveau d'étude";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-danger ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ??  Controller::EVENT_SUPPRIMER;

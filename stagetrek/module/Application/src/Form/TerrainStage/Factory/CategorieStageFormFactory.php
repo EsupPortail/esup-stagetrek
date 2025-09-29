@@ -3,6 +3,7 @@
 namespace Application\Form\TerrainStage\Factory;
 
 use Application\Form\TerrainStage\CategorieStageForm;
+use Application\Form\TerrainStage\Hydrator\CategorieStageHydrator;
 use Doctrine\Laminas\Hydrator\DoctrineObject;
 use Doctrine\ORM\EntityManager;
 use Interop\Container\ContainerInterface;
@@ -35,8 +36,8 @@ class CategorieStageFormFactory implements FactoryInterface
         $viewHelperManager = $container->get('ViewHelperManager');
         $form->setViewHelperManager($viewHelperManager);
 
-        /** @var DoctrineObject $hydrator */
-        $hydrator = $container->get('HydratorManager')->get(DoctrineObject::class);
+        /** @var CategorieStageHydrator $hydrator */
+        $hydrator = $container->get('HydratorManager')->get(CategorieStageHydrator::class);
         $form->setHydrator($hydrator);
         return $form;
     }

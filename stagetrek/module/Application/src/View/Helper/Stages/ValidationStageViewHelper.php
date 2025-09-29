@@ -97,7 +97,7 @@ implements EtudiantActionViewHelperInterface
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_MODIFIER,  ['stage' => $this->getStage()->getId()], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::MODIFIER, Label::MODIFIER);
+        $libelle = ($libelle) ?? sprintf("%s %s", Icone::render(Icone::MODIFIER), Label::MODIFIER);
         $attributes['title'] = ($attributes['title']) ?? "Modifier la validation du stage";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-primary ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ?? Controller::EVENT_MODIFIER;

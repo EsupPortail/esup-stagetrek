@@ -7,7 +7,15 @@ namespace Application\Provider\Tag;
  */
 class CategorieTagProvider
 {
+    const ANNEE = 'annee';
+    const AFFECTATION = 'affectation';
+    const CATEGORIE_STAGE = 'categorie_stage';
+    const CONTACT_STAGE = 'contact_stage';
     const ETAT = 'etat';
-
+    const ETUDIANT = 'etudiant';
+    const GROUPE = 'groupe';
+    const SESSION_STAGE = 'session_stage';
+    const STAGE = 'stage';
+    const TERRAIN = 'terrain_stage';
 
 }

@@ -18,12 +18,10 @@ use Application\Form\Etudiant\Factory\EtudiantFieldsetFactory;
 use Application\Form\Etudiant\Factory\EtudiantFormFactory;
 use Application\Form\Etudiant\Factory\EtudiantHydratorFactory;
 use Application\Form\Etudiant\Factory\EtudiantRechercheFormFactory;
-use Application\Form\Etudiant\Factory\ImportEtudiantFormFactory;
 use Application\Form\Etudiant\Fieldset\DisponibiliteFieldset;
 use Application\Form\Etudiant\Fieldset\EtudiantFieldset;
 use Application\Form\Etudiant\Hydrator\DisponibiliteHydrator;
 use Application\Form\Etudiant\Hydrator\EtudiantHydrator;
-use Application\Form\Etudiant\ImportEtudiantForm;
 use Application\Form\Etudiant\Validator\DisponibiliteValidator;
 use Application\Form\Misc\Factory\SelectPickerFactory;
 use Application\Form\Preferences\Factory\PreferenceFieldsetFactory;
@@ -423,7 +421,6 @@ return [
         'factories' => [
             EtudiantForm::class => EtudiantFormFactory::class,
             EtudiantRechercheForm::class => EtudiantRechercheFormFactory::class,
-            ImportEtudiantForm::class => ImportEtudiantFormFactory::class,
             PreferenceForm::class => PreferenceFormFactory::class,
             DisponibiliteForm::class => DisponibiliteFormFactory::class,
 

@@ -22,7 +22,7 @@ trait  ProcedureAffectationFormAwareTrait
     public function getEditProcedureAffectationForm(): ProcedureAffectationForm
     {
         $form = $this->procedureAffectationForm;
-        $form->get($form::SUBMIT)->setLabel(sprintf("%s %s", Icone::SAVE, Label::MODIFIER));
+        $form->get($form::SUBMIT)->setLabel(Label::render(Label::MODIFIER, Icone::MODIFIER));
         $form->get($form::INPUT_SUBMIT)->setAttribute("class", "btn btn-primary");
         return $form;
     }

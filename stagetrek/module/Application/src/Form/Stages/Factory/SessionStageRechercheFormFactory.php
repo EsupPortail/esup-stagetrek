@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManager;
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Laminas\View\HelperPluginManager;
+use UnicaenTag\Service\Tag\TagService;
 
 /**
  * Class SessionStageRechercheFormFactory
@@ -35,6 +36,7 @@ class SessionStageRechercheFormFactory implements FactoryInterface
         $viewHelperManager = $container->get('ViewHelperManager');
         $form->setViewHelperManager($viewHelperManager);
 
+        $form->setTagService($container->get(TagService::class));
         return $form;
     }
 }

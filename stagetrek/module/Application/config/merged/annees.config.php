@@ -8,7 +8,9 @@ use Application\Form\Annees\Element\AnneeUniversitaireEtatSelectPicker;
 use Application\Form\Annees\Element\AnneeUniversitaireSelectPicker;
 use Application\Form\Annees\Factory\AnneeUniversitaireFieldsetFactory;
 use Application\Form\Annees\Factory\AnneeUniversitaireFormFactory;
+use Application\Form\Annees\Factory\AnneeUniversitaireHydratorFactory;
 use Application\Form\Annees\Fieldset\AnneeUniversitaireFieldset;
+use Application\Form\Annees\Hydrator\AnneeUniversitaireHydrator;
 use Application\Form\Misc\Factory\SelectPickerFactory;
 use Application\Misc\ArrayRessource;
 use Application\Provider\Privilege\AnneePrivileges;
@@ -266,7 +268,7 @@ return [
     ],
     'hydrators' => [
         'factories' => [
-
+            AnneeUniversitaireHydrator::class => AnneeUniversitaireHydratorFactory::class,
         ],
     ],
     'validators' => [

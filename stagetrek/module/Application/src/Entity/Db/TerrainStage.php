@@ -16,6 +16,8 @@ use Application\Entity\Traits\Terrain\HasCategorieStageTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
+use UnicaenTag\Entity\Db\HasTagsInterface;
+use UnicaenTag\Entity\Db\HasTagsTrait;
 
 /**
  * TerrainStage
@@ -23,6 +25,7 @@ use Laminas\Permissions\Acl\Resource\ResourceInterface;
 class TerrainStage implements ResourceInterface,
     HasCodeInterface, HasLibelleInterface,
     HasAdresseInterface
+    , HasTagsInterface
 {
     const RESOURCE_ID = 'TerrainStage';
 
@@ -54,6 +57,7 @@ class TerrainStage implements ResourceInterface,
     use HasCategorieStageTrait;
     use HasAdresseTrait;
     use HasContactsTerrainsTrait;
+    use HasTagsTrait;
 
     protected Collection $terrainsPrincipaux;
     protected Collection $terrainsSecondaires;

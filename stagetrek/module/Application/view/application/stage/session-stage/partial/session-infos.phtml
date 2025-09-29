@@ -99,3 +99,27 @@ $anneeVh = $this->anneeUniversitaire($sessionStage->getAnneeUniversitaire());
         </div>
     </div>
 </div>
+
+<div class="row">
+    <div class="col-md-12">
+        <?php $tags = $sessionStage->getTags(); ?>
+        <div class="card h-100 <?= (!$tags->isEmpty()) ? "card-primary" : "card-muted" ?>">
+            <div class="card-header">
+                Tags
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <?php foreach ($tags as $tag) {
+                            echo $this->unicaenTag($tag, ['display-libelle' => true, 'display-categorie' => false]);
+                        }
+                        if($tags->isEmpty()){
+                            echo "<span class='text-muted'>Aucun tag</span>";
+                        }
+                        ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -65,7 +65,7 @@ class ProcedureAffectationViewHelper extends AbstractEntityActionViewHelper
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_AFFICHER, ['procedureAffectation' => $this->getProcedureAffectation()->getId()], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::AFFICHER, Label::AFFICHER);
+        $libelle = ($libelle) ?? Label::render(Label::AFFICHER, Icone::AFFICHER);
         $attributes['title'] = ($attributes['title']) ??  "Afficher la procédure d'affectation";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-secondary ajax-modal";
         return $this->generateActionLink($url, $libelle, $attributes);
@@ -78,7 +78,7 @@ class ProcedureAffectationViewHelper extends AbstractEntityActionViewHelper
         }
         $procedure = $this->getProcedureAffectation();
         $url = $this->getUrl(Controller::ROUTE_MODIFIER, ['procedureAffectation' => $procedure->getId()], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::MODIFIER, Label::MODIFIER);
+        $libelle = ($libelle) ?? Label::render(Label::MODIFIER, Icone::MODIFIER);
         $attributes['title'] = ($attributes['title']) ??"Modifier la procédure";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-primary ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ?? Controller::EVENT_MODIFIER;

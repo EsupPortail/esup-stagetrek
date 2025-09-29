@@ -6,9 +6,11 @@ namespace Application\Form\Etudiant\Hydrator;
 use Application\Entity\Db\Etudiant;
 use Application\Form\Adresse\Fieldset\AdresseFieldset;
 use Application\Form\Etudiant\Fieldset\EtudiantFieldset;
+use Application\Form\Misc\Traits\TagInputAwareTrait;
 use DateTime;
 use Laminas\Hydrator\AbstractHydrator;
 use Laminas\Hydrator\HydratorInterface;
+use UnicaenTag\Entity\Db\Tag;
 use UnicaenUtilisateur\Entity\Db\User;
 
 /**
@@ -17,6 +19,7 @@ use UnicaenUtilisateur\Entity\Db\User;
  */
 class EtudiantHydrator extends AbstractHydrator implements HydratorInterface
 {
+    use TagInputAwareTrait;
     /**
      * Extract values from an object
      *
@@ -32,6 +35,12 @@ class EtudiantHydrator extends AbstractHydrator implements HydratorInterface
         $user = $etudiant->getUser();
         $idUser = ($user) ? $user->getId() : null;
         $dateNaissance = $etudiant->getDateNaissance();
+
+        foreach ($etudiant->getTags() as $t) {
+            $tags[] = $t->getId();
+        }
+
+
         return [
             EtudiantFieldset::ID => $etudiant->getId(),
             EtudiantFieldset::USER => $idUser,
@@ -41,6 +50,7 @@ class EtudiantHydrator extends AbstractHydrator implements HydratorInterface
             EtudiantFieldset::MAIL => $etudiant->getEmail(),
             EtudiantFieldset::DATE_NAISSANCE => $dateNaissance,
             AdresseFieldset::FIELDSET_NAME => $etudiant->getAdresse(),
+            EtudiantFieldset::TAGS => ($tags) ?? [],
         ];
     }
 
@@ -79,6 +89,22 @@ class EtudiantHydrator extends AbstractHydrator implements HydratorInterface
         if (isset($data[EtudiantFieldset::ADRESSE])) {
             $etudiant->setAdresse($data[EtudiantFieldset::ADRESSE]);
         }
+
+        if (isset($data[EtudiantFieldset::TAGS])) {
+            $tagsSelected = $data[EtudiantFieldset::TAGS];
+            /** @var Tag[] $tags */
+            $tags = $this->getTagService()->getTags();
+            $tags = array_filter($tags, function (Tag $t) use ($tagsSelected) {
+                return in_array($t->getId(), $tagsSelected);
+            });
+            $etudiant->getTags()->clear();
+            foreach ($tags as $t) {
+                $etudiant->addTag($t);
+            }
+        } else {
+            $etudiant->getTags()->clear();
+        }
+
         return $etudiant;
     }
 }

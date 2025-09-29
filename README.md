@@ -28,6 +28,7 @@ Une [`procédure d'installation`](documentation/install/install.md) est à votre
 - [import.md](documentation/Import/import.md)
 - [configuation.md](documentation/install/configuation.md)
 - [mails.md](documentation/Mails/mails.md)
+- [tags.md](documentation/Tag/tags.md)
 
 # Nous contacter
 

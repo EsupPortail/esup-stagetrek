@@ -89,7 +89,7 @@ class TerrainStageViewHelper extends AbstractEntityActionViewHelper
         if (!$this->actionAllowed(Controller::ACTION_LISTER)) {
             return "";
         }
-        $libelle = ($libelle) ?? sprintf("%s Liste des terrains", Icone::LISTE);
+        $libelle = ($libelle) ?? sprintf("%s Liste des terrains", Icone::render(Icone::LISTE));
         $url = $this->getUrl(Controller::ROUTE_INDEX, [], [], true);
         $attributes['title'] = ($attributes['title']) ??  "Listes des terrains de stages";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-secondary";
@@ -119,7 +119,7 @@ class TerrainStageViewHelper extends AbstractEntityActionViewHelper
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_AJOUTER, [], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::AJOUTER, Label::AJOUTER);
+        $libelle = ($libelle) ?? Label::render(Label::AJOUTER, Icone::AJOUTER);
         $attributes['title'] = ($attributes['title']) ??  "Ajouter  un terrain de stage";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-success";
         if(!isset($attributes['data-event'])){$attributes['data-event'] = Controller::EVENT_AJOUTER;}
@@ -132,7 +132,7 @@ class TerrainStageViewHelper extends AbstractEntityActionViewHelper
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_MODIFIER,  ['terrainStage' => $this->getTerrainStage()->getId()], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::MODIFIER, Label::MODIFIER);
+        $libelle = ($libelle) ?? sprintf("%s %s", Icone::render(Icone::MODIFIER), Label::MODIFIER);
         $attributes['title'] = ($attributes['title']) ??"Modifier le terrain de stage";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-primary ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ?? Controller::EVENT_MODIFIER;
@@ -145,7 +145,7 @@ class TerrainStageViewHelper extends AbstractEntityActionViewHelper
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_SUPPRIMER, ['terrainStage' => $this->getTerrainStage()->getId()], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::SUPPRIMER, Label::SUPPRIMER);
+        $libelle = Label::render(Label::SUPPRIMER, Icone::SUPPRIMER);
         $attributes['title'] = ($attributes['title']) ?? "Supprimer le terrain de stage";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-danger ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ??  Controller::EVENT_SUPPRIMER;
@@ -159,7 +159,7 @@ class TerrainStageViewHelper extends AbstractEntityActionViewHelper
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_IMPORTER, [], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::IMPORTER, Label::IMPORTER);
+        $libelle = ($libelle) ?? Label::render(Label::IMPORTER, Icone::IMPORTER);
         $attributes['title'] = ($attributes['title']) ?? "Importer des terrains de stage";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-primary ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ??  Controller::EVENT_IMPORTER;

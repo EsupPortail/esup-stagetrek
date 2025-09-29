@@ -74,8 +74,8 @@ services:
       - ./.env:/var/www/html/stagetrek/.env
       - ./deploy_configuration/apache/supervisor.conf:/supervisord.conf
 #      Si l'on veux que la conf apache soit dans un volume (le temps d'y faire des modification), a ne pas conserver en volume car replace_env qui est utiliser en mode SaaS Risque de modifier les fichier
-#      - ./deploy_configuration/apache/000-default.conf:/etc/apache2/sites-available/000-default.conf
-#      - ./deploy_configuration/apache/default-ssl.conf:/etc/apache2/sites-available/default-ssl.conf
+      - ./deploy_configuration/apache/000-default.conf:/etc/apache2/sites-available/000-default.conf
+      - ./deploy_configuration/apache/default-ssl.conf:/etc/apache2/sites-available/default-ssl.conf
 
     ports:
       - 8080:80

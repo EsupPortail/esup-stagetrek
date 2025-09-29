@@ -21,11 +21,14 @@ use Doctrine\Common\Collections\Criteria;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 use UnicaenEtat\Entity\Db\HasEtatsInterface;
 use UnicaenEtat\Entity\Db\HasEtatsTrait;
+use UnicaenTag\Entity\Db\HasTagsInterface;
+use UnicaenTag\Entity\Db\HasTagsTrait;
 
 /**
  * SessionStage
  */
 class SessionStage implements ResourceInterface, HasLibelleInterface, HasEtatsInterface
+    , HasTagsInterface
 {
     const RESOURCE_ID = 'SessionStage';
     /**
@@ -90,6 +93,7 @@ class SessionStage implements ResourceInterface, HasLibelleInterface, HasEtatsIn
 
     use HasAnneeUniversitaireTrait;
     use HasGroupeTrait;
+    use HasTagsTrait;
     /**
      * Get niveauEtude.
      *

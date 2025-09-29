@@ -219,14 +219,16 @@ $adresseFieldset = $fieldset->get($fieldset::ADRESSE);
             </div>
 
             <div class="tab-pane fade show border-0" id="form-complement"
-                 role="tabpanel" aria-labelledby="nav-complement">
+                 role="tabpanel" aria-labelledby="nav-complement"> <div class="row">
+                    <div class="col-md-6">
+                        <?= $fcg($fieldset->get(TerrainStageFieldset::TAGS)); ?>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-md-6">
                         <?= $fct($fieldset->get(TerrainStageFieldset::SERVICE)); ?>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-6">
                         <?= $fct($fieldset->get(TerrainStageFieldset::LIEN)); ?>
                     </div>
                 </div>

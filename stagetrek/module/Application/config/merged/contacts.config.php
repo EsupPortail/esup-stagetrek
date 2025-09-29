@@ -18,6 +18,7 @@ use Application\Form\Contacts\ContactTerrainForm;
 use Application\Form\Contacts\Element\ContactSelectPicker;
 use Application\Form\Contacts\Factory\ContactFieldsetFactory;
 use Application\Form\Contacts\Factory\ContactFormFactory;
+use Application\Form\Contacts\Factory\ContactHydratorFactory;
 use Application\Form\Contacts\Factory\ContactRechercheFormFactory;
 use Application\Form\Contacts\Factory\ContactStageFieldsetFactory;
 use Application\Form\Contacts\Factory\ContactStageFormFactory;
@@ -29,6 +30,7 @@ use Application\Form\Contacts\Factory\ContactTerrainHydratorFactory;
 use Application\Form\Contacts\Fieldset\ContactFieldset;
 use Application\Form\Contacts\Fieldset\ContactStageFieldset;
 use Application\Form\Contacts\Fieldset\ContactTerrainFieldset;
+use Application\Form\Contacts\Hydrator\ContactHydrator;
 use Application\Form\Contacts\Hydrator\ContactStageHydrator;
 use Application\Form\Contacts\Hydrator\ContactTerrainHydrator;
 use Application\Form\Contacts\Validator\ContactStageValidator;
@@ -610,6 +612,7 @@ return [
     ],
     'hydrators' => [
         'factories' => [
+            ContactHydrator::class => ContactHydratorFactory::class,
             ContactStageHydrator::class => ContactStageHydratorFactory::class,
             ContactTerrainHydrator::class => ContactTerrainHydratorFactory::class,
         ],

@@ -20,7 +20,7 @@ trait ContactTerrainFormAwareTrait
     public function getAddContactTerrainForm(): ContactTerrainForm
     {
         $form = $this->contactTerrainForm;
-        $form->get($form::SUBMIT)->setLabel(sprintf("%s %s", Icone::SAVE, Label::AJOUTER));
+        $form->get($form::SUBMIT)->setLabel(Label::render(Label::AJOUTER, Icone::AJOUTER));
         return $form;
     }
 
@@ -31,7 +31,7 @@ trait ContactTerrainFormAwareTrait
     public function getEditContactTerrainForm(): ContactTerrainForm
     {
         $form = $this->contactTerrainForm;
-        $form->get($form::SUBMIT)->setLabel(sprintf("%s %s", Icone::SAVE, Label::MODIFIER));
+        $form->get($form::SUBMIT)->setLabel(Label::render(Label::MODIFIER, Icone::MODIFIER));
         $form->get($form::INPUT_SUBMIT)->setAttribute("class", "btn btn-primary");
         $form->setModeEdition();
         return $form;

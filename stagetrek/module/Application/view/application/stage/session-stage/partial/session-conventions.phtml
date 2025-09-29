@@ -130,10 +130,10 @@ $conventionVh = $this->convention();
             </td>
             <?php if ($canSeeStage) : ?>
                 <td class="text-end">
-                    <?= $stageVh->lienAfficher(Icone::AFFICHER, ['class' => 'text-primary']) ?>
-                    <?= $conventionVh->lienGenerer(Icone::RUN_PROCESS, ['class' => 'text-primary']) ?>
-                    <?= $conventionVh->lienTeleverser(Icone::TELEVERSER, ['class' => 'text-primary']) ?>
-                    <?= $conventionVh->lienTelecharger(Icone::TELECHARGER, ['class' => 'text-success']) ?>
+                    <?= $stageVh->lienAfficher(Icone::render(Icone::AFFICHER), ['class' => 'text-primary']) ?>
+                    <?= $conventionVh->lienGenerer(Icone::render(Icone::RUN_PROCESS), ['class' => 'text-primary']) ?>
+                    <?= $conventionVh->lienTeleverser(Icone::render(Icone::TELEVERSER), ['class' => 'text-primary']) ?>
+                    <?= $conventionVh->lienTelecharger(Icone::render(Icone::TELECHARGER), ['class' => 'text-success']) ?>
                 </td>
             <?php endif ?>
         </tr>

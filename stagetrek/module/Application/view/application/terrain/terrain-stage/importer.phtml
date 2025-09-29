@@ -34,7 +34,7 @@ $fcg = $this->formControlGroup();
                 <div class="col-md-8 text-muted text-small">
                     <ul>
                         <li>Le fichier CSV doit utiliser comme séparateur le '
-                            <?= CSVService::SEPARATOR ?>' et avoir les champs suivant : <br/>
+                            <?= CSVService::SEPARATOR ?>' et avoir les champs suivants : <br/>
                             <?php $h = "";
                             foreach (TerrainStageCsvImportValidator::getImportHeader() as $key) {
                                 $h .= sprintf("<strong><span class='mx-2'>%s</span></strong>; ", $key);

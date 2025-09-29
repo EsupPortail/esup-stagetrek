@@ -19,11 +19,14 @@ use Doctrine\Common\Collections\Collection;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 use UnicaenEtat\Entity\Db\HasEtatsInterface;
 use UnicaenEtat\Entity\Db\HasEtatsTrait;
+use UnicaenTag\Entity\Db\HasTagsInterface;
+use UnicaenTag\Entity\Db\HasTagsTrait;
 
 /**
  * Stage
  */
 class Stage implements ResourceInterface, HasEtatsInterface
+    , HasTagsInterface
 {
     const RESOURCE_ID = 'Stage';
     /**
@@ -56,6 +59,7 @@ class Stage implements ResourceInterface, HasEtatsInterface
     use HasConventionStageTrait;
     use HasContactsStagesTrait;
     use HasConventionStageSignatairesTrait;
+    use HasTagsTrait;
     /**
      * @var Stage|null $stagePrincipal
      * @var Stage|null $stageSecondaire

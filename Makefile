@@ -32,8 +32,6 @@ help:
 	@echo "Utilisez 'make <commande>' avec une des commandes ci-dessus."
 .PHONY: help
 
-
-
 install: ## Build des conteneurs de l'application
 	docker compose $(PROFILS) up -d
 .PHONY: install

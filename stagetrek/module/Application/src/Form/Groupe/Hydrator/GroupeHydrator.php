@@ -7,11 +7,14 @@ use Application\Entity\Db\AnneeUniversitaire;
 use Application\Entity\Db\Groupe;
 use Application\Entity\Db\NiveauEtude;
 use Application\Entity\Db\ReferentielPromo;
+use Application\Form\Contacts\Fieldset\ContactFieldset;
 use Application\Form\Groupe\Fieldset\GroupeFieldset;
 use DoctrineModule\Persistence\ObjectManagerAwareInterface;
 use DoctrineModule\Persistence\ProvidesObjectManager;
 use Laminas\Hydrator\AbstractHydrator;
 use Laminas\Hydrator\HydratorInterface;
+use UnicaenTag\Entity\Db\Tag;
+use UnicaenTag\Service\Tag\TagServiceAwareTrait;
 
 /**
  * Class GroupeHydrator
@@ -20,6 +23,7 @@ use Laminas\Hydrator\HydratorInterface;
 class GroupeHydrator extends AbstractHydrator implements HydratorInterface, ObjectManagerAwareInterface
 {
     use ProvidesObjectManager;
+    use TagServiceAwareTrait;
 
     /**
      * Extract values from an object
@@ -49,6 +53,9 @@ class GroupeHydrator extends AbstractHydrator implements HydratorInterface, Obje
                 $data[GroupeFieldset::REFERENTIELS][] = $r->getId();
             }
         }
+        foreach ($groupe->getTags() as $t) {
+            $data[GroupeFieldset::TAGS][] = $t->getId();
+        }
         return $data;
     }
 
@@ -66,7 +73,7 @@ class GroupeHydrator extends AbstractHydrator implements HydratorInterface, Obje
             $groupe->setCode($data[GroupeFieldset::CODE]);
         }
         else {
-        $groupe->setCode(null);
+            $groupe->setCode(null);
         }
         if(isset($data[GroupeFieldset::LIBELLE])){
             $groupe->setLibelle($data[GroupeFieldset::LIBELLE]);
@@ -93,6 +100,22 @@ class GroupeHydrator extends AbstractHydrator implements HydratorInterface, Obje
             }
         } else {
             $groupe->getReferentielsPromos()->clear();
+        }
+
+
+        if (isset($data[GroupeFieldset::TAGS])) {
+            $tagsSelected = $data[GroupeFieldset::TAGS];
+            /** @var Tag[] $tags */
+            $tags = $this->getTagService()->getTags();
+            $tags = array_filter($tags, function (Tag $t) use ($tagsSelected) {
+                return in_array($t->getId(), $tagsSelected);
+            });
+            $groupe->getTags()->clear();
+            foreach ($tags as $t) {
+                $groupe->addTag($t);
+            }
+        } else {
+            $groupe->getTags()->clear();
         }
 
         return $groupe;

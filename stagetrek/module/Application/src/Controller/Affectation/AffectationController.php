@@ -179,8 +179,15 @@ class AffectationController extends AbstractActionController
                     }
                 }
                 try {
-                    $this->getAffectationStageService()->updateMultiple($affectationsUpdated);
+                    $affectations = $this->getAffectationStageService()->updateMultiple($affectationsUpdated);
                     $this->sendSuccessMessage("Les affectations de stages ont été mise à jours");
+                    $cpt=0;
+                    foreach ($affectations as $affectation){
+                        if($affectation->hasEtatValidee()){//on planifie l'envoie des mails pour le signaler aux étudiants
+                            $cpt++;
+                            $this->getMailAutoAffectationEvenementService()->create($affectation->getStage());
+                        }
+                    }
                     //Rechargement des données
                     $this->getObjectManager()->clear();
                     $sessionStage = $this->getSessionStageFromRoute();

@@ -78,7 +78,7 @@ class GroupeAssertion extends AbstractAssertion
     protected function assertAjouter(?AnneeUniversitaire $annee): bool
     {
         if(!isset($annee)){return false;}
-        if($annee->isAnneeVerrouillee()){return false;}
+        if($annee->isLocked()){return false;}
         return true;
     }
 
@@ -99,7 +99,7 @@ class GroupeAssertion extends AbstractAssertion
         if(!isset($groupe)){return false;}
         $annee = $groupe->getAnneeUniversitaire();
         if(!isset($annee)){return false;}
-        if($annee->isAnneeVerrouillee()){return false;}
+        if($annee->isLocked()){return false;}
         /** @var Etudiant $etudiant */
         foreach ($groupe->getEtudiants() as $etudiant) {
             /** @var Stage $stage */

@@ -9,6 +9,7 @@ use Application\Form\Etudiant\Hydrator\EtudiantHydrator;
 use Doctrine\ORM\EntityManager;
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
+use UnicaenTag\Service\Tag\TagService;
 
 /**
  * Class EtudiantFieldsetFactory
@@ -38,6 +39,8 @@ class EtudiantFieldsetFactory implements FactoryInterface
         $hydrator = $container->get('HydratorManager')->get(EtudiantHydrator::class);
         $fieldset->setHydrator($hydrator);
         $fieldset->setObject(new Etudiant());
+
+        $fieldset->setTagService($container->get(TagService::class));
 
         return $fieldset;
     }

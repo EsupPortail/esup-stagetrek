@@ -31,7 +31,7 @@ $groupeVh->setGroupe($session->getGroupe());
     <div class="card-header">Session <?= $session->getLibelle() ?></div>
     <?php if ($canSeeSession|| $canEditSession || $canDeleteSession) : ?>
         <div class="card-header card-sub-header">
-            <?= ($canSeeSession) ? $sessionVh->lienAfficher(Icone::AFFICHER. " Afficher", ['class'=>'btn btn-secondary']) : ""?>
+            <?= ($canSeeSession) ? $sessionVh->lienAfficher(Icone::render(Icone::AFFICHER). " Afficher", ['class'=>'btn btn-secondary']) : ""?>
             <?= ($canEditSession) ? $sessionVh->lienModifier()  : ""?>
             <?= ($canDeleteSession) ? $sessionVh->lienSupprimer()  : "" ?>
         </div>

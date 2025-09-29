@@ -161,7 +161,7 @@ class AnneeUniversitaireController extends AbstractActionController
         $title = "Modifier l'année";
         /** @var AnneeUniversitaire $annee */
         $annee = $this->getAnneeUniversitaireFromRoute();
-        if($annee->isAnneeVerrouillee()){
+        if($annee->isLocked()){
             $msg = sprintf("L'année %s est validée", $annee->getLibelle());
             return $this->failureAction($title, $msg);
         }
@@ -224,7 +224,7 @@ class AnneeUniversitaireController extends AbstractActionController
         $title = "Valider l'année";
         /** @var AnneeUniversitaire $annee */
         $annee = $this->getAnneeUniversitaireFromRoute();
-        if($annee->isAnneeVerrouillee()){
+        if($annee->isLocked()){
             $msg = sprintf("L'année %s est déjà validée", $annee->getLibelle());
             return $this->failureAction($title, $msg);
         }
@@ -239,7 +239,8 @@ class AnneeUniversitaireController extends AbstractActionController
 
         if ($this->actionConfirmed()) {
             try {
-                $anneeService->validerAnnee($annee);
+//                $anneeService->validerAnnee($annee);
+                $anneeService->lock($annee);
                 $msg = sprintf("L'année %s a été validée.",
                     $annee->getLibelle()
                 );
@@ -260,7 +261,7 @@ class AnneeUniversitaireController extends AbstractActionController
         $title = "Déverrouiller l'année";
         /** @var AnneeUniversitaire $annee */
         $annee = $this->getAnneeUniversitaireFromRoute();
-        if(!$annee->isAnneeVerrouillee()){
+        if(!$annee->isLocked()){
             $msg = sprintf("L'année %s n'est pas validée", $annee->getLibelle());
             return $this->failureAction($title, $msg);
         }
@@ -274,7 +275,7 @@ class AnneeUniversitaireController extends AbstractActionController
         $form->setConfirmationQuestion($question);
         if ($this->actionConfirmed()) {
             try {
-                $anneeService->deverouillerAnnee($annee);
+                $anneeService->unlock($annee);
                 $msg =  sprintf("L'année %s a été dévérouillée.",
                     $annee->getLibelle()
                 );

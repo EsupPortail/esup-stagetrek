@@ -3,10 +3,11 @@
 namespace Application\Service\Contact;
 
 use Application\Entity\Db\Contact;
+use Application\Entity\Db\Etudiant;
+use Application\Form\Contacts\ContactRechercheForm as FormRecherche;
 use Application\Service\Misc\CommonEntityService;
 use Application\Service\Misc\Traits\CSVServiceAwareTrait;
 use Application\Validator\Import\ContactCsvImportValidator;
-use Exception;
 use UnicaenAuthentification\Service\Traits\UserContextServiceAwareTrait;
 
 class ContactService extends CommonEntityService
@@ -32,87 +33,120 @@ class ContactService extends CommonEntityService
     public function search(array $criteria): array
     {
 
-        $keys = [
-            'code',
-            'libelle',
-            'nom',
-            'mail',
-            'telephone',
-            'only_actif',
-            'actif'
-        ];
-        $C="c";
-        $where = '';
-        foreach ($keys as $k) {
-            $$k = ($criteria[$k]) ?? null;
-        }
-        /** @var string $sourceId */
-        foreach ($criteria as $k => $v) {
-            $sql = '';
-            switch ($k) {
-                case 'code':
-                    $sql = isset($code)
-                        ? "lower($C.code) like :$k" : "";
-                    break;
-                case 'libelle':
-                    $sql = isset($libelle)
-                        ? "lower($C.libelle) like :$k" : "";
-                    break;
-                case 'nom':
-                    //Split sur le nom pour faire la recherche sans ordre entre les espaces ...
-                    if(isset($nom)){
-                        $split = explode(' ', $nom);
-                        foreach ($split as $i => $sub){
-                            $sql .= "lower($C.display_name) like :$k$i AND ";
-                        }
-                        $sql = substr($sql,0, -5);
-                    }
-                    break;
-                case 'mail':
-                    $sql = isset($mail)
-                        ? "lower($C.mail) like :$k" : "";
-                    break;
-                case 'telephone':
-                    $sql = isset($telephone)
-                        ? "lower($C.telephone) like :$k" : "";
-                    break;
-                case 'actif':
-                    $sql = (isset($actif) && $actif=="true")
-                        ? "$C.actif = true" : "";
-                    break;
-            }
-            if($sql) {
-                $where .= !$where ? $sql : ' AND ' . $sql;
-            }
-        } // construction de la requête finale
-        $where = ($where) ? "WHERE $where" : $where;
-        $sql = "SELECT id from contact $C
-            $where";
 
-        $params = [
-            "code"                   => trim(strtolower(($code) ?? ""))."%",
-            "libelle"                => trim(strtolower(($libelle) ?? ""))."%",
-            "mail"  => trim(strtolower(($mail) ?? ""))."%",
-            "telephone"  => trim(strtolower(($telephone) ?? ""))."%",
-        ];
-        //Cas du split sur le displayName
-        if(isset($nom)){
-            $split = explode(' ', $nom);
-            foreach ($split as $i => $sub){
-                $params['nom'.$i] = "%".trim(strtolower($sub))."%";
-            }
+        $qb = $this->getObjectRepository()->createQueryBuilder($alias = 'e');
+        if (!empty($criteria[FormRecherche::INPUT_CODE])) {
+            $qb->andWhere($qb->expr()->like($qb->expr()->upper("$alias.code"), $qb->expr()->upper(':code')));
+            $qb->setParameter('code', "{$criteria[FormRecherche::INPUT_CODE]}%");
         }
-        $ids = $this->getObjectManager()->getConnection()->executeQuery($sql, $params);
-        $contacts=[];
-        while ($line = $ids->fetchAssociative()) {
-            $id = $line['id'];
-            /** @var Contact $contact */
-            $contact = $this->getObjectManager()->getRepository(Contact::class)->find($id);
-            if($contact) {
-                $contacts[$id] = $contact;
-            }
+        if (!empty($criteria[FormRecherche::INPUT_LIBELLE])) {
+            $qb->andWhere($qb->expr()->like($qb->expr()->upper("$alias.libelle"), $qb->expr()->upper(':libelle')));
+            $qb->setParameter('libelle', "{$criteria[FormRecherche::INPUT_LIBELLE]}%");
         }
-        return $contacts;
+        if (!empty($criteria[FormRecherche::INPUT_MAIL])) {
+            $qb->andWhere($qb->expr()->like($qb->expr()->upper("$alias.email"), $qb->expr()->upper(':mail')));
+            $qb->setParameter('mail', "{$criteria[FormRecherche::INPUT_MAIL]}%");
+        }
+        if (!empty($criteria[FormRecherche::INPUT_TELEPHONE])) {
+            $qb->andWhere($qb->expr()->like($qb->expr()->upper("$alias.telephone"), $qb->expr()->upper(':telephone')));
+            $qb->setParameter('telephone', "{$criteria[FormRecherche::INPUT_TELEPHONE]}%");
+        }
+        if (!empty($criteria[FormRecherche::INPUT_DISPLAY_NAME])) {
+            $qb->andWhere($qb->expr()->like($qb->expr()->upper("$alias.displayName"), $qb->expr()->upper(':displayName')));
+            $qb->setParameter('displayName', "%{$criteria[FormRecherche::INPUT_DISPLAY_NAME]}%");
+        }
+        if (!empty($criteria[FormRecherche::INPUT_ACTIF])) {
+            $actif = boolval($criteria[FormRecherche::INPUT_ACTIF]);
+            $qb->andWhere($qb->expr()->eq("$alias.actif", ':actif'));
+            $qb->setParameter('actif', $actif);
+        }
+
+        if(isset($criteria[FormRecherche::TAGS])){
+            $qb = Etudiant::decorateWithTags($qb, $alias, $criteria['tags']);
+        }
+        return $qb->getQuery()->getResult();
+
+//        $keys = [
+//            'code',
+//            'libelle',
+//            'nom',
+//            'mail',
+//            'telephone',
+//            'only_actif',
+//            'actif'
+//        ];
+//        $C="c";
+//        $where = '';
+//        foreach ($keys as $k) {
+//            $$k = ($criteria[$k]) ?? null;
+//        }
+//        /** @var string $sourceId */
+//        foreach ($criteria as $k => $v) {
+//            $sql = '';
+//            switch ($k) {
+//                case 'code':
+//                    $sql = isset($code)
+//                        ? "lower($C.code) like :$k" : "";
+//                    break;
+//                case 'libelle':
+//                    $sql = isset($libelle)
+//                        ? "lower($C.libelle) like :$k" : "";
+//                    break;
+//                case 'nom':
+//                    //Split sur le nom pour faire la recherche sans ordre entre les espaces ...
+//                    if(isset($nom)){
+//                        $split = explode(' ', $nom);
+//                        foreach ($split as $i => $sub){
+//                            $sql .= "lower($C.display_name) like :$k$i AND ";
+//                        }
+//                        $sql = substr($sql,0, -5);
+//                    }
+//                    break;
+//                case 'mail':
+//                    $sql = isset($mail)
+//                        ? "lower($C.mail) like :$k" : "";
+//                    break;
+//                case 'telephone':
+//                    $sql = isset($telephone)
+//                        ? "lower($C.telephone) like :$k" : "";
+//                    break;
+//                case 'actif':
+//                    $sql = (isset($actif) && $actif=="true")
+//                        ? "$C.actif = true" : "";
+//                    break;
+//            }
+//            if($sql) {
+//                $where .= !$where ? $sql : ' AND ' . $sql;
+//            }
+//        } // construction de la requête finale
+//        $where = ($where) ? "WHERE $where" : $where;
+//        $sql = "SELECT id from contact $C
+//            $where";
+//
+//        $params = [
+//            "code"                   => trim(strtolower(($code) ?? ""))."%",
+//            "libelle"                => trim(strtolower(($libelle) ?? ""))."%",
+//            "mail"  => trim(strtolower(($mail) ?? ""))."%",
+//            "telephone"  => trim(strtolower(($telephone) ?? ""))."%",
+//        ];
+//        //Cas du split sur le displayName
+//        if(isset($nom)){
+//            $split = explode(' ', $nom);
+//            foreach ($split as $i => $sub){
+//                $params['nom'.$i] = "%".trim(strtolower($sub))."%";
+//            }
+//        }
+//        $ids = $this->getObjectManager()->getConnection()->executeQuery($sql, $params);
+//        $contacts=[];
+//        while ($line = $ids->fetchAssociative()) {
+//            $id = $line['id'];
+//            /** @var Contact $contact */
+//            $contact = $this->getObjectManager()->getRepository(Contact::class)->find($id);
+//            if($contact) {
+//                $contacts[$id] = $contact;
+//            }
+//        }
+//        return $contacts;
     }
 
 

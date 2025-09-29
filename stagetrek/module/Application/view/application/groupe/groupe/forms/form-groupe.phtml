@@ -46,14 +46,18 @@ $fieldset = $form->getEntityFieldset();
     <div class="col-md-4">
         <?= $fcg($fieldset->get(GroupeFieldset::ANNEE_UNIVERSITAIRE)); ?>
     </div>
-</div>
-<div class="row">
     <div class="col-md-4">
         <?= $fcg($fieldset->get(GroupeFieldset::NIVEAU_ETUDE)); ?>
     </div>
+</div>
+<hr/>
+<div class="row">
     <div class="col-md-4">
         <?= $fcg($fieldset->get(GroupeFieldset::REFERENTIELS)); ?>
     </div>
+            <div class="col-md-4">
+                <?= $fcg($fieldset->get($fieldset::TAGS)); ?>
+            </div>
 </div>
 
 <div class="row">

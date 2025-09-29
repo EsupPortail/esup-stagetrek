@@ -66,6 +66,12 @@ $fieldset = $form->getEntityFieldset();
         </div>
     </div>
 
+    <hr/>
+    <div class="row">
+        <div class="col-md-6">
+            <?= $fcg($fieldset->get($fieldset::TAGS)); ?>
+        </div>
+    </div>
 
     <div class="row">
         <div class="col-md-12">
@@ -75,3 +81,10 @@ $fieldset = $form->getEntityFieldset();
     <?= $this->formHidden($form->get($form::CSRF)); ?>
     <?= $this->form()->closeTag(); ?>
 </div>
+
+
+<script>
+    $(function () {
+        $('.selectpicker').selectpicker('render');
+    })
+</script>

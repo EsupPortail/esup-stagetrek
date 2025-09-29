@@ -125,7 +125,7 @@ class GroupeViewHelper extends AbstractEntityActionViewHelper
         if(!$this->hasGroupe() || $this->getGroupe()->getGroupePrecedent() === null){return "";}
         $groupe = $this->getGroupe()->getGroupePrecedent();
         $url = $this->getUrl(Controller::ROUTE_AFFICHER, ['groupe' => $groupe->getId()], [], true);
-        $libelle= Icone::PRECEDENT;
+        $libelle= Icone::render(Icone::PRECEDENT);
         $attributes['class'] = "btn btn-secondary btn-sm m-1";
         $attributes['title'] = "Fiche du groupe précédent";
         return $this->generateActionLink($url, $libelle, $attributes);
@@ -137,7 +137,7 @@ class GroupeViewHelper extends AbstractEntityActionViewHelper
         if(!$this->hasGroupe() || $this->getGroupe()->getGroupeSuivant() === null){return "";}
         $groupe = $this->getGroupe()->getGroupeSuivant();
         $url = $this->getUrl(Controller::ROUTE_AFFICHER, ['groupe' => $groupe->getId()], [], true);
-        $libelle= Icone::SUIVANT;
+        $libelle= Icone::render(Icone::SUIVANT);
         $attributes['class'] = "btn btn-secondary btn-sm m-1";
         $attributes['title'] = "Fiche du groupe suivant";
         return $this->generateActionLink($url, $libelle, $attributes);
@@ -149,7 +149,7 @@ class GroupeViewHelper extends AbstractEntityActionViewHelper
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_AJOUTER, ['anneeUniversitaire' => $this->getAnneeUniversitaire()->getId()], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::AJOUTER, Label::AJOUTER);
+        $libelle = ($libelle) ?? Label::render(Label::AJOUTER, Icone::AJOUTER);
         $attributes['title'] = ($attributes['title']) ??  "Ajouter un groupe";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-success ajax-modal";
         if(!isset($attributes['data-event'])){$attributes['data-event'] = Controller::EVENT_AJOUTER;}
@@ -162,7 +162,7 @@ class GroupeViewHelper extends AbstractEntityActionViewHelper
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_MODIFIER,  ['groupe' => $this->getGroupe()->getId()], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::MODIFIER, Label::MODIFIER);
+        $libelle = ($libelle) ?? Label::render(Label::MODIFIER, Icone::MODIFIER);
         $attributes['title'] = ($attributes['title']) ??"Modifier le groupe";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-primary ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ?? Controller::EVENT_MODIFIER;
@@ -175,7 +175,7 @@ class GroupeViewHelper extends AbstractEntityActionViewHelper
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_SUPPRIMER, ['groupe' => $this->getGroupe()->getId()], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::SUPPRIMER, Label::SUPPRIMER);
+        $libelle = Label::render(Label::SUPPRIMER, Icone::SUPPRIMER);
         $attributes['title'] = ($attributes['title']) ?? "Supprimer le groupe";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-danger ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ??  Controller::EVENT_SUPPRIMER;
@@ -189,7 +189,7 @@ class GroupeViewHelper extends AbstractEntityActionViewHelper
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_AJOUTER_ETUDIANTS, ['groupe' => $this->getGroupe()->getId()], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::AJOUTER, "Ajouter des étudiants");
+        $libelle = ($libelle) ?? sprintf("%s %s", Icone::render(Icone::AJOUTER), "Ajouter des étudiants");
         $attributes['title'] = ($attributes['title']) ??  "Ajouter des étudiants";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-success";
         return $this->generateActionLink($url, $libelle, $attributes);
@@ -201,7 +201,7 @@ class GroupeViewHelper extends AbstractEntityActionViewHelper
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_RETIRER_ETUDIANTS, ['groupe' => $this->getGroupe()->getId()], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::RETIRER, "Retirer des étudiants");
+        $libelle = ($libelle) ?? Label::render("Retirer des étudiants", Icone::render(Icone::RETIRER));
         $attributes['title'] = ($attributes['title']) ??  "Retirer des étudiants";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-danger";
         return $this->generateActionLink($url, $libelle, $attributes);

@@ -14,9 +14,8 @@ trait HasLockTrait
     /**
      * @throws \Exception
      */
-    public function lock(... $param) : static
+    public function lock(Tag $tag) : static
     {
-        $tag = ($param[0]) ?? null;
         if(!$tag instanceof Tag || $tag->getCode() != TagProvider::ETAT_LOCK){
             throw new Exception("Le tag pour vérrouiller l'entité n'est pas valide");
         }

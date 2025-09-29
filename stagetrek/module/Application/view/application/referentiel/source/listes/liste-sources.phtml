@@ -41,8 +41,8 @@ $actionMenu = $canEdit||$canDelete;
                     <?php if($actionMenu) :?>
                         <td class="text-end">
                             <?= ($source->isLock()) ? "<span class='fas fa-lock text-danger' title='Cette source ne peux pas être modifiée'>": ""?>
-                            <?= $vh->lienModifier(Icone::MODIFIER, ['class' => 'text-primary ajax-modal']) ?>
-                            <?=  $vh->lienSupprimer(Icone::SUPPRIMER, ['class' => 'text-danger ajax-modal']) ?>
+                            <?= $vh->lienModifier(Icone::render(Icone::MODIFIER), ['class' => 'text-primary ajax-modal']) ?>
+                            <?=  $vh->lienSupprimer(Icone::render(Icone::SUPPRIMER), ['class' => 'text-danger ajax-modal']) ?>
                         </td>
                     <?php endif; ?>
                 </tr>

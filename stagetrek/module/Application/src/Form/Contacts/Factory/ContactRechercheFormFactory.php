@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManager;
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Laminas\View\HelperPluginManager;
+use UnicaenTag\Service\Tag\TagService;
 
 class ContactRechercheFormFactory implements FactoryInterface
 {
@@ -30,6 +31,8 @@ class ContactRechercheFormFactory implements FactoryInterface
         /** @var HelperPluginManager $viewHelperManager */
         $viewHelperManager = $container->get('ViewHelperManager');
         $form->setViewHelperManager($viewHelperManager);
+
+        $form->setTagService($container->get(TagService::class));
 
         return $form;
     }

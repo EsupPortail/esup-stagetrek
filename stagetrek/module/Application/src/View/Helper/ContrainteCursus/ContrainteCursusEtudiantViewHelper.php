@@ -104,7 +104,7 @@ class ContrainteCursusEtudiantViewHelper extends AbstractEntityActionViewHelper
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_MODIFIER, ['contrainteCursusEtudiant' =>  $this->getContrainteCursusEtudiant()->getId()], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::MODIFIER, Label::MODIFIER);
+        $libelle = ($libelle) ?? Label::render(Label::MODIFIER, Icone::MODIFIER);
         $attributes['title'] = ($attributes['title']) ??"Modifier la contrainte pour l'étudiant";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-primary ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ?? Controller::EVENT_MODIFIER;
@@ -117,7 +117,7 @@ class ContrainteCursusEtudiantViewHelper extends AbstractEntityActionViewHelper
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_ACTIVER, ['contrainteCursusEtudiant' =>  $this->getContrainteCursusEtudiant()->getId()], [], true);
-        $libelle = ($libelle) ?? sprintf("%s Activer", Icone::AJOUTER);
+        $libelle = ($libelle) ?? sprintf("%s Activer", Icone::render(Icone::AJOUTER));
         $attributes['title'] = ($attributes['title']) ??"Activer la contrainte pour l'étudiant";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-success ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ?? Controller::EVENT_MODIFIER;

@@ -173,7 +173,7 @@ class SessionStageValidator extends AbstractValidator implements ObjectManagerAw
             $this->error(self::GROUPE_CANT_BE_REDEFIND);
             return false;
         }
-        else if(!isset($session) && $groupe->getAnneeUniversitaire()->isAnneeVerrouillee()){
+        else if(!isset($session) && $groupe->getAnneeUniversitaire()->isLocked()){
             $this->error(self::ANNEE_VALIDEE_ERROR);
             return false;
         }
@@ -256,7 +256,7 @@ class SessionStageValidator extends AbstractValidator implements ObjectManagerAw
     {
         if(!isset($value)){return false;}
         $groupe = $this->getGroupe($context);
-        if($groupe && $groupe->getAnneeUniversitaire()->isAnneeVerrouillee()){
+        if($groupe && $groupe->getAnneeUniversitaire()->isLocked()){
             $session = $this->getSessionStage($context);
             $date = (isset($context[SessionStageFieldset::DATE_DEBUT_STAGE])) ?
                 new DateTime($context[SessionStageFieldset::DATE_DEBUT_STAGE]) : new DateTime();
@@ -294,7 +294,7 @@ class SessionStageValidator extends AbstractValidator implements ObjectManagerAw
         /** @var Groupe $groupe */
         $groupe = ($groupeId!=0) ? $this->getObjectManager()->getRepository(Groupe::class)->find($groupeId) : null;
         /** @var DateTime $date */
-        if($groupe && $groupe->getAnneeUniversitaire()->isAnneeVerrouillee()){
+        if($groupe && $groupe->getAnneeUniversitaire()->isLocked()){
             $session = $this->getSessionStage($context);
             $date = (isset($context[SessionStageFieldset::DATE_FIN_STAGE])) ?
                 new DateTime($context[SessionStageFieldset::DATE_FIN_STAGE]) : new DateTime();

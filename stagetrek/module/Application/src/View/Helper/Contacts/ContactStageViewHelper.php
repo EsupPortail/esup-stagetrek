@@ -84,7 +84,7 @@ class ContactStageViewHelper extends AbstractEntityActionViewHelper
         $data =['contact' => ($contact) ? $contact->getId() : 0, ($stage) ? $stage->getId() : null];
         $url = $this->getUrl(Controller::ROUTE_AJOUTER, $data, [], true);
 
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::AJOUTER, Label::AJOUTER);
+        $libelle = ($libelle) ?? Label::render(Label::AJOUTER, Icone::AJOUTER);
         $attributes['title'] = ($attributes['title']) ??  "Ajouter un contact de stage";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-success ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ?? Controller::EVENT_AJOUTER;
@@ -97,7 +97,7 @@ class ContactStageViewHelper extends AbstractEntityActionViewHelper
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_MODIFIER,  ['contactStage' => $this->getContactStage()->getId()], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::MODIFIER, Label::MODIFIER);
+        $libelle = ($libelle) ?? Label::render(Label::MODIFIER, Icone::MODIFIER);
         $attributes['title'] = ($attributes['title']) ?? "Modifier le lien entre le contact et le stage";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-primary ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ?? Controller::EVENT_MODIFIER;
@@ -110,7 +110,7 @@ class ContactStageViewHelper extends AbstractEntityActionViewHelper
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_SUPPRIMER,  ['contactStage' => $this->getContactStage()->getId()], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::SUPPRIMER, Label::SUPPRIMER);
+        $libelle = Label::render(Label::SUPPRIMER, Icone::SUPPRIMER);
         $attributes['title'] = ($attributes['title']) ?? "Supprimer le contact du stage";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-danger ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ??  Controller::EVENT_SUPPRIMER;
@@ -124,7 +124,7 @@ class ContactStageViewHelper extends AbstractEntityActionViewHelper
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_SEND_MAIL_VALIDATION,  ['contactStage' => $this->getContactStage()->getId()], [], true);
-        $libelle = ($libelle) ?? sprintf("%s Lien de validation", Icone::MAIL);
+        $libelle = ($libelle) ?? Label::render("Lien de validation", Icone::MAIL);
         $attributes['title'] = ($attributes['title']) ?? "Envoyer un lien de validation pour le stage";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-sm btn-secondary ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ??  Controller::EVENT_SEND_LIEN_VALIDATION;

@@ -4,11 +4,14 @@ namespace Application\Service\AnneeUniversitaire;
 
 
 use Application\Entity\Db\AnneeUniversitaire;
+use Application\Entity\Interfaces\LockableEntityInterface;
 use Application\Provider\EtatType\AnneeEtatTypeProvider;
 use Application\Provider\Tag\TagProvider;
 use Application\Service\Groupe\Traits\GroupeServiceAwareTrait;
 use Application\Service\Misc\CommonEntityService;
+use Application\Service\Misc\Interfaces\LockableEntityServiceInterface;
 use Application\Service\Misc\Traits\EntityEtatServiceAwareTrait;
+use Application\Service\Misc\Traits\LockableEntityServiceTrait;
 use Application\Service\Stage\Traits\SessionStageServiceAwareTrait;
 use Application\Service\Stage\Traits\StageServiceAwareTrait;
 use DateTime;
@@ -17,6 +20,7 @@ use UnicaenEtat\Entity\Db\HasEtatsInterface;
 use UnicaenTag\Service\Tag\TagServiceAwareTrait;
 
 class AnneeUniversitaireService extends CommonEntityService
+    implements LockableEntityServiceInterface
 {
     use GroupeServiceAwareTrait;
     use SessionStageServiceAwareTrait;
@@ -107,7 +111,7 @@ class AnneeUniversitaireService extends CommonEntityService
     public function delete(mixed $entity, string $serviceEntityClass = null) : static
     {
         //Sécurité
-        if($entity->isAnneeVerrouillee()){throw new Exception("L'année ne doit pas être vérouillée pour être supprimée.");}
+        if($entity->isLocked()){throw new Exception("L'année ne doit pas être vérouillée pour être supprimée.");}
         if(!empty($entity->getSessionsStages())){throw new Exception("L'année ne doit pas avoir de session pour être supprimée.");}
         if(!$entity->getGroupes()->isEmpty()){throw new Exception("L'année ne doit pas avoir de groupe pour être supprimée.");}
 
@@ -117,65 +121,35 @@ class AnneeUniversitaireService extends CommonEntityService
         return $this;
     }
 
-    /**
-     * @param AnneeUniversitaire $annee
-     * @return \Application\Entity\Db\AnneeUniversitaire
-     * @throws \Doctrine\ORM\Exception\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
-     * @throws \Exception
-     */
-    public function validerAnnee(AnneeUniversitaire $annee): AnneeUniversitaire
-    {
-        $annee->setAnneeVerrouillee(true);
-        $tag = $this->getTagService()->getTagByCode(TagProvider::ETAT_LOCK);
-        $annee->lock($tag);
-
-        $this->getObjectManager()->persist($annee);
-        if ($this->hasUnitOfWorksChange()) {
-            $this->getObjectManager()->flush();
-            $this->updateEtat($annee);
-            $sessions = $annee->getSessionsStages();
-            $stages = [];
-            foreach ($sessions as $session) {
-                foreach ($session->getStages() as $stage) {
-                    $stages[] = $stage;
-                }
-            }
-            $this->getStageService()->updateEtats($stages);
-            $this->getSessionStageService()->updateEtats($sessions);
-        }
-        return $annee;
+    use LockableEntityServiceTrait {
+        lock as protected _lock;
+        unlock as protected _unlock;
     }
 
     /**
-     * @param AnneeUniversitaire $annee
+     * @param \Application\Entity\Db\AnneeUniversitaire $entity
      * @return \Application\Entity\Db\AnneeUniversitaire
-     * @throws \Doctrine\ORM\Exception\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Exception
      */
-    public function deverouillerAnnee(AnneeUniversitaire $annee) : AnneeUniversitaire
+    public function lock(LockableEntityInterface $entity): AnneeUniversitaire
     {
-        $annee->setAnneeVerrouillee(false);
-        $annee->unlock();
-        $this->getObjectManager()->persist($annee);
-        if ($this->hasUnitOfWorksChange()) {
-            $this->getObjectManager()->flush();
-            $this->updateEtat($annee);
-            $sessions = $annee->getSessionsStages();
-            $this->getSessionStageService()->updateEtats($sessions);
+        $this->_lock($entity);
+        $this->getObjectManager()->flush();
+        $this->triggerUpdateEtat($entity);
+        return $entity;
+    }
 
-            $sessions = $annee->getSessionsStages();
-            $stages = [];
-            foreach ($sessions as $session) {
-                foreach ($session->getStages() as $stage) {
-                    $stages[] = $stage;
-                }
-            }
-            $this->getStageService()->updateEtats($stages);
-            $this->getSessionStageService()->updateEtats($sessions);
-        }
-        return $annee;
+    /**
+     * @param \Application\Entity\Db\AnneeUniversitaire $entity
+     * @return \Application\Entity\Db\AnneeUniversitaire
+     * @throws \Exception
+     */
+    public function unlock(LockableEntityInterface $entity): AnneeUniversitaire
+    {
+        $this->_unlock($entity);
+        $this->getObjectManager()->flush();
+        $this->triggerUpdateEtat($entity);
+        return $entity;
     }
 
     /**
@@ -221,6 +195,29 @@ class AnneeUniversitaireService extends CommonEntityService
     }
 
     use EntityEtatServiceAwareTrait;
+
+    /**
+     * @desc : provoque la mise à jour de l'état de l'année, mais aussi des sessions et des stages en liens
+     * @throws \Exception
+     */
+    protected function triggerUpdateEtat(AnneeUniversitaire $annee) : AnneeUniversitaire
+    {
+        $this->updateEtat($annee);
+        $sessions = $annee->getSessionsStages();
+        $this->getSessionStageService()->updateEtats($sessions);
+
+        $sessions = $annee->getSessionsStages();
+        $stages = [];
+        foreach ($sessions as $session) {
+            foreach ($session->getStages() as $stage) {
+                $stages[] = $stage;
+            }
+        }
+        $this->getStageService()->updateEtats($stages);
+        $this->getSessionStageService()->updateEtats($sessions);
+        return $annee;
+    }
+
     protected function computeEtat(HasEtatsInterface $entity): string
     {
         if(!$entity instanceof AnneeUniversitaire){
@@ -228,19 +225,18 @@ class AnneeUniversitaireService extends CommonEntityService
         }
         $annee = $entity;
         $today = new DateTime();
-        if(!$annee->isAnneeVerrouillee() &&  $annee->getDateDebut() < $today){
+        if(!$annee->isLocked() &&  $annee->getDateDebut() < $today){
             $msg = sprintf("L'année universitaire n'est pas validée alors qu'elle est %s", ($today < $annee->getDateFin()) ? "en cours" : "terminée");
             $this->setEtatInfo($msg);
             return AnneeEtatTypeProvider::NON_VAlIDE;
         }
 
         return match (true) {
-            !$annee->isAnneeVerrouillee() => AnneeEtatTypeProvider::EN_CONSTRUCTION,
+            !$annee->isLocked() => AnneeEtatTypeProvider::EN_CONSTRUCTION,
             $annee->getDateFin() < $today => AnneeEtatTypeProvider::TERMINE,
             $today < $annee->getDateDebut() => AnneeEtatTypeProvider::FURTUR,
             default => AnneeEtatTypeProvider::EN_COURS,
         };
-
     }
 
 }

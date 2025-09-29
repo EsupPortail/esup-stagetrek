@@ -51,7 +51,7 @@ $canDelete = $vh->hasPrivilege(TerrainPrivileges::CATEGORIE_STAGE_SUPPRIMER);
                     <td class="text-center"><?= $categorie->getOrdre() ?></td>
                     <?php if ($canEdit || $canDelete) : ?>
                         <td class="text-end">
-                            <?= $vh->lienAfficher(Icone::AFFICHER, ['class' => 'text-primary']) ?>
+                            <?= $vh->lienAfficher(Icone::render(Icone::AFFICHER), ['class' => 'text-primary']) ?>
                         </td>
                     <?php endif; ?>
                 </tr>

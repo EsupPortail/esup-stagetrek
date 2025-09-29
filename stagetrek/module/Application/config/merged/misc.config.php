@@ -4,6 +4,8 @@ namespace Application;
 
 use Application\Entity\Hydrator\EtudiantHydrator;
 use Application\Form\Misc\Element\EtatTypeSelectPicker;
+use Application\Form\Misc\Element\RoleSelectPicker;
+use Application\Form\Misc\Element\TagSelectPicker;
 use Application\Form\Misc\Factory\SelectPickerFactory;
 use Application\Form\Misc\Validator\AcronymeValidator;
 use Application\Form\Misc\Validator\AcronymeValidatorFactory;
@@ -14,7 +16,9 @@ use Application\Form\Misc\Validator\LibelleValidatorFactory;
 use Application\Misc\ArrayRessource;
 use Application\ORM\Event\Listeners\Factory\CodeListenerFactory;
 use Application\ORM\Event\Listeners\CodeListener;
+use Application\ORM\Event\Listeners\Factory\LockListenerFactory;
 use Application\ORM\Event\Listeners\Factory\SourceListenerFactory;
+use Application\ORM\Event\Listeners\LockListener;
 use Application\ORM\Event\Listeners\SourceListener;
 use Application\Provider\Roles\IdentityProvider;
 use Application\Provider\Roles\IdentityProviderFactory;
@@ -74,6 +78,7 @@ return [
             AdresseTypeService::class => AdresseTypeServiceFactory::class,
             CodeListener::class => CodeListenerFactory::class,
             SourceListener::class => SourceListenerFactory::class,
+            LockListener::class => LockListenerFactory::class,
         ],
     ],
     /**
@@ -82,6 +87,7 @@ return [
     'form_elements' => [
         'factories' => [
             EtatTypeSelectPicker::class => SelectPickerFactory::class,
+            TagSelectPicker::class => SelectPickerFactory::class,
         ],
     ],
     'doctrine' => [
@@ -91,6 +97,7 @@ return [
                     HistoriqueListener::class,
                     CodeListener::class,
                     SourceListener::class,
+                    LockListener::class,
                 ],
             ],
         ],

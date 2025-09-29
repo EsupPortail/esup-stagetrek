@@ -122,7 +122,7 @@ class AnneeUniversitaireViewHelper extends AbstractEntityActionViewHelper
         if (!$isAllowed) return "";
 
         $url = $this->getUrl(Controller::ROUTE_AFFICHER, ['anneeUniversitaire' => $anneePrecedente->getId()], [], true);
-        $libelle= Icone::PRECEDENT;
+        $libelle= Icone::render(Icone::PRECEDENT);
         $attributes['class'] = "btn btn-secondary btn-sm m-1";
         $attributes['title'] = "Fiche de l'année précédente";
         return $this->generateActionLink($url, $libelle, $attributes);
@@ -140,7 +140,7 @@ class AnneeUniversitaireViewHelper extends AbstractEntityActionViewHelper
         if (!$isAllowed) return "";
 
         $url = $this->getUrl(Controller::ROUTE_AFFICHER, ['anneeUniversitaire' => $anneeSuivante->getId()], [], true);
-        $libelle= Icone::SUIVANT;
+        $libelle= Icone::render(Icone::SUIVANT);
         $attributes['class'] = "btn btn-secondary btn-sm m-1";
         $attributes['title'] = "Fiche de l'année suivante";
         return $this->generateActionLink($url, $libelle, $attributes);
@@ -152,7 +152,7 @@ class AnneeUniversitaireViewHelper extends AbstractEntityActionViewHelper
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_AJOUTER, [], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::AJOUTER, Label::AJOUTER);
+        $libelle = ($libelle) ?? Label::render(Label::AJOUTER, Icone::AJOUTER);
         $attributes['title'] = ($attributes['title']) ??  "Ajouter une année universitaire";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-success ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ?? Controller::EVENT_AJOUTER;
@@ -166,7 +166,7 @@ class AnneeUniversitaireViewHelper extends AbstractEntityActionViewHelper
         }
         $annee = $this->getAnneeUniversitaire();
         $url = $this->getUrl(Controller::ROUTE_MODIFIER, ['anneeUniversitaire' => $annee->getId()], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::MODIFIER, Label::MODIFIER);
+        $libelle = ($libelle) ?? Label::render(Label::MODIFIER, Icone::MODIFIER);
         $attributes['title'] = ($attributes['title']) ??"Modifier l'année universitaire";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-primary ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ?? Controller::EVENT_MODIFIER;
@@ -179,7 +179,7 @@ class AnneeUniversitaireViewHelper extends AbstractEntityActionViewHelper
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_SUPPRIMER, ['anneeUniversitaire' => $this->getAnneeUniversitaire()->getId()], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::SUPPRIMER, Label::SUPPRIMER);
+        $libelle = Label::render(Label::SUPPRIMER, Icone::SUPPRIMER);
         $attributes['title'] = ($attributes['title']) ?? "Supprimer l'année universitaire";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-danger ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ??  Controller::EVENT_SUPPRIMER;
@@ -196,7 +196,7 @@ class AnneeUniversitaireViewHelper extends AbstractEntityActionViewHelper
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_VALIDER, ['anneeUniversitaire' => $this->getAnneeUniversitaire()->getId()], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", "<i class='fas fa-lock-open'></i>", Label::VALIDER);
+        $libelle = ($libelle) ?? Label::render(Label::VALIDER, Icone::render(Icone::FA_UNLOCK));
         $attributes['title'] = ($attributes['title']) ??  "Valider l'année universitaire";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-success ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ?? Controller::EVENT_VALIDER;

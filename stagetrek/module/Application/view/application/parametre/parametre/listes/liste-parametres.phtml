@@ -46,7 +46,7 @@ $canEdit = $vh->hasPrivilege(ParametrePrivileges::PARAMETRE_MODIFIER);
                     <td class=""><?= $parametre->getValue() ?></td>
                     <?php if($canEdit) :?>
                     <td class="text-end">
-                        <?= $vh->lienModifier(Icone::MODIFIER, ['class' => 'text-primary ajax-modal']) ?>
+                        <?= $vh->lienModifier(Icone::render(Icone::MODIFIER), ['class' => 'text-primary ajax-modal']) ?>
                     </td>
                     <?php endif; ?>
                 </tr>

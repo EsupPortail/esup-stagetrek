@@ -27,7 +27,7 @@ class AnneeUniversitaireAssertion extends AbstractAssertion
             Controller::ACTION_AFFICHER_CALENDRIER => $this->assertAfficher($annee),
             Controller::ACTION_AJOUTER => $this->assertAjouter(),
             Controller::ACTION_MODIFIER => $this->assertModifier($annee),
-            Controller::ACTION_SUPPRIMER => $this->assertSupprimer($annee),
+            Controller::ACTION_SUPPRIMER =>  $this->assertSupprimer($annee),
             Controller::ACTION_VALIDER => $this->assertValider($annee),
             Controller::ACTION_DEVEROUILLER => $this->assertDeverouiller($annee),
             default => false,
@@ -72,14 +72,14 @@ class AnneeUniversitaireAssertion extends AbstractAssertion
     private function assertModifier(?AnneeUniversitaire $annee) : bool
     {
         if(!isset($annee)){return false;}
-        if($annee->isAnneeVerrouillee()){return false;}
+        if($annee->isLocked()){return false;}
         return true;
     }
 
     protected function assertSupprimer(?AnneeUniversitaire $annee): bool
     {
         if(!isset($annee)){return false;}
-        if($annee->isAnneeVerrouillee()){return false;}
+        if($annee->isLocked()){return false;}
         if(!$annee->getGroupes()->isEmpty()){return false;}
         if(!empty($annee->getSessionsStages())){return false;}
         return true;
@@ -87,7 +87,7 @@ class AnneeUniversitaireAssertion extends AbstractAssertion
     protected function assertValider(?AnneeUniversitaire $annee): bool
     {
         if(!isset($annee)){return false;}
-        if($annee->isAnneeVerrouillee()){return false;}
+        if($annee->isLocked()){return false;}
         if($annee->getGroupes()->isEmpty()){return false;}
         /** @var \Application\Entity\Db\Groupe $g */
         foreach ($annee->getGroupes() as $g){
@@ -98,7 +98,7 @@ class AnneeUniversitaireAssertion extends AbstractAssertion
     protected function assertDeverouiller(?AnneeUniversitaire $annee): bool
     {
         if(!isset($annee)){return false;}
-        if(!$annee->isAnneeVerrouillee()){return false;}
+        if(!$annee->isLocked()){return false;}
         return true;
     }
 

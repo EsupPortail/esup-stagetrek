@@ -12,12 +12,15 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 use UnicaenEtat\Entity\Db\HasEtatsInterface;
 use UnicaenEtat\Entity\Db\HasEtatsTrait;
+use UnicaenTag\Entity\Db\HasTagsInterface;
+use UnicaenTag\Entity\Db\HasTagsTrait;
 
 /**
  * AffectationStage
  */
 class AffectationStage implements ResourceInterface,
  HasEtatsInterface
+    , HasTagsInterface
 {
     const RESOURCE_ID = 'AffectationStage';
 
@@ -40,6 +43,7 @@ class AffectationStage implements ResourceInterface,
     use HasTerrainStageTrait;
     use HasTerrainStageSecondaireTrait;
     use HasEtatsTrait;
+    use HasTagsTrait;
     /** Fonction annexe de simplification */
     public function getSessionStage() : ?SessionStage
     {
