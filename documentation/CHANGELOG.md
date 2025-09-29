@@ -3,6 +3,7 @@ CHANGELOG
 1.4.2 (26/09/2025)
 ------------------
 - [UnicaenTag] : mise en place de UnicaenTag
+- [Bug fixe] : Cron et logrotate
 
 1.4.1 (25/09/2025)
 ------------------
