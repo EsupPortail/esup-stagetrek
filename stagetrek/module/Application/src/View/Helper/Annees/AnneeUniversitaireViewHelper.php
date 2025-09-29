@@ -196,7 +196,7 @@ class AnneeUniversitaireViewHelper extends AbstractEntityActionViewHelper
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_VALIDER, ['anneeUniversitaire' => $this->getAnneeUniversitaire()->getId()], [], true);
-        $libelle = ($libelle) ?? Label::render(Label::VALIDER, Icone::render(Icone::FA_UNLOCK));
+        $libelle = ($libelle) ?? Label::render(Label::VALIDER, Icone::FA_UNLOCK);
         $attributes['title'] = ($attributes['title']) ??  "Valider l'année universitaire";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-success ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ?? Controller::EVENT_VALIDER;
