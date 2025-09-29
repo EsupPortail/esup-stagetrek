@@ -111,7 +111,7 @@ if(isset($refExteneCode) && $refExteneCode != ""){
 
 if($ldapActif){
     $config['referentiels']['forms'][Source::LDAP] = ReferentielImportEtudiantsForm::class;
-    $referentiels['referentiels']['import_services'][Source::LDAP] = LdapEtudiantService::class;
+    $config['referentiels']['import_services'][Source::LDAP] = LdapEtudiantService::class;
 }
 
 $config['referentiels']['forms'][Source::CSV] = CSVImportEtudiantsForm::class;
