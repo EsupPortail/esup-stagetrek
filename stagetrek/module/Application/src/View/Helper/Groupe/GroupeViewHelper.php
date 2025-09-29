@@ -201,9 +201,10 @@ class GroupeViewHelper extends AbstractEntityActionViewHelper
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_RETIRER_ETUDIANTS, ['groupe' => $this->getGroupe()->getId()], [], true);
-        $libelle = ($libelle) ?? Label::render("Retirer des étudiants", Icone::render(Icone::RETIRER));
+        $libelle = ($libelle) ?? Label::render("Retirer des étudiants", Icone::RETIRER);
         $attributes['title'] = ($attributes['title']) ??  "Retirer des étudiants";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-danger";
+
         return $this->generateActionLink($url, $libelle, $attributes);
     }
 

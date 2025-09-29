@@ -2,19 +2,12 @@
 
 namespace Application\ORM\Event\Listeners;
 
-use Application\Entity\Db\Source;
-use Application\Entity\Interfaces\HasCodeInterface;
-use Application\Entity\Interfaces\HasSourceInterface;
 use Application\Entity\Interfaces\LockableEntityInterface;
 use Doctrine\Common\EventSubscriber;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Event\PrePersistEventArgs;
-use Doctrine\ORM\Event\PreUpdateEventArgs;
+use Doctrine\ORM\Event\PreRemoveEventArgs;
 use Doctrine\ORM\Events;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Exception;
-use RuntimeException;
-use UnicaenUtilisateur\Entity\Db\HistoriqueAwareInterface;
 
 /**
  * @desc Interdit la destruction d'une entité ayant le tag LOCK
@@ -34,8 +27,16 @@ class LockListener implements EventSubscriber
             }
         }
         return true;
-
     }
+
+    /**
+     * @throws \Doctrine\ORM\Exception\NotSupported
+     */
+    public function preRemove(PreRemoveEventArgs $args)
+    {
+        $this->assertDelete($args);
+    }
+
     public function getSubscribedEvents(): array
     {
         return [Events::preRemove];
