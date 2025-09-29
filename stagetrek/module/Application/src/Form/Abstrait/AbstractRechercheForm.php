@@ -60,7 +60,17 @@ abstract class AbstractRechercheForm extends Form
         $this->setAttribute('class', 'rechercherForm');
 
 
-        $this->add(new Csrf(self::CSRF));
+        $this->add(
+            [
+                'type' => Csrf::class,
+                'name' => self::CSRF,
+                'options' => [
+                    'csrf_options' => [
+                        'timeout' => 60*10, //on autorise 10 min pour les formulaires de recherche
+                    ],
+                ],
+            ]
+        );
 
         $this->add([
             'type' => Button::class,
