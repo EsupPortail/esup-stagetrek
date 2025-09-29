@@ -128,7 +128,7 @@ class PreferenceViewHelper  extends AbstractEntityActionViewHelper
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_MODIFIER_PREFERENCES,  ['stage' => $this->getStage()->getId()], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::MODIFIER, Label::MODIFIER);
+        $libelle = ($libelle) ?? Label::render(Label::MODIFIER, Icone::MODIFIER);
         $attributes['title'] = ($attributes['title']) ??"Modifier les préférences du stages";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-primary";
         return $this->generateActionLink($url, $libelle, $attributes);
@@ -141,7 +141,7 @@ class PreferenceViewHelper  extends AbstractEntityActionViewHelper
         }
 
         $url = $this->getUrl(Controller::ROUTE_AJOUTER, ['stage' => $this->getStage()->getId()], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::AJOUTER, Label::AJOUTER);
+        $libelle = ($libelle) ?? Label::render(Label::AJOUTER, Icone::AJOUTER);
         $attributes['title'] = ($attributes['title']) ??  "Ajouter une préférence";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-success ajax-modal";
         if(!isset($attributes['data-event'])){$attributes['data-event'] = Controller::EVENT_AJOUTER;}
@@ -154,7 +154,7 @@ class PreferenceViewHelper  extends AbstractEntityActionViewHelper
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_MODIFIER,  ['preference' => $this->getPreference()->getId()], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::MODIFIER, Label::MODIFIER);
+        $libelle = ($libelle) ?? Label::render(Label::MODIFIER, Icone::MODIFIER);
         $attributes['title'] = ($attributes['title']) ??"Modifier la préférence";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-primary ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ?? Controller::EVENT_MODIFIER;
@@ -167,7 +167,7 @@ class PreferenceViewHelper  extends AbstractEntityActionViewHelper
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_SUPPRIMER, ['preference' => $this->getPreference()->getId()], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::SUPPRIMER, Label::SUPPRIMER);
+        $libelle = ($libelle) ?? sprintf("%s %s", Icone::render(Icone::SUPPRIMER), Label::SUPPRIMER);
         $attributes['title'] = ($attributes['title']) ?? "Supprimer la préférence";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-danger ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ??  Controller::EVENT_SUPPRIMER;

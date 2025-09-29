@@ -8,6 +8,7 @@ use Application\Form\Affectation\Hydrator\AffectationStageHydrator;
 use Doctrine\ORM\EntityManager;
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
+use UnicaenTag\Service\Tag\TagService;
 
 /**
  * Class AffectationStageFieldsetFactory
@@ -37,6 +38,8 @@ class AffectationStageFieldsetFactory implements FactoryInterface
         $hydrator = $container->get('HydratorManager')->get(AffectationStageHydrator::class);
         $fieldset->setHydrator($hydrator);
         $fieldset->setObject(new AffectationStage());
+
+        $fieldset->setTagService($container->get(TagService::class));
 
         return $fieldset;
     }

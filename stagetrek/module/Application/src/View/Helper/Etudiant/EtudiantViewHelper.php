@@ -130,7 +130,7 @@ class EtudiantViewHelper extends AbstractEntityActionViewHelper
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_AJOUTER, [], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::AJOUTER, Label::AJOUTER);
+        $libelle = ($libelle) ?? Label::render(Label::AJOUTER, Icone::AJOUTER);
         $attributes['title'] = ($attributes['title']) ??  "Ajouter un étudiant";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-success ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ?? Controller::EVENT_AJOUTER;
@@ -144,7 +144,7 @@ class EtudiantViewHelper extends AbstractEntityActionViewHelper
         }
         $etudiant = $this->getEtudiant();
         $url = $this->getUrl(Controller::ROUTE_MODIFIER, ['etudiant' => $etudiant->getId()], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::MODIFIER, Label::MODIFIER);
+        $libelle = ($libelle) ?? Label::render(Label::MODIFIER, Icone::MODIFIER);
         $attributes['title'] = ($attributes['title']) ??"Modifier les informations sur l'étudiant";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-primary ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ?? Controller::EVENT_MODIFIER;
@@ -158,7 +158,7 @@ class EtudiantViewHelper extends AbstractEntityActionViewHelper
         }
         $etudiant = $this->getEtudiant();
         $url = $this->getUrl(Controller::ROUTE_SUPPRIMER, ['etudiant' => $etudiant->getId()], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::SUPPRIMER, Label::SUPPRIMER);
+        $libelle = Label::render(Label::SUPPRIMER, Icone::SUPPRIMER);
         $attributes['title'] = ($attributes['title']) ?? "Supprimer l'étudiant";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-danger ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ??  Controller::EVENT_SUPPRIMER;
@@ -173,7 +173,7 @@ class EtudiantViewHelper extends AbstractEntityActionViewHelper
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_IMPORTER, [], [], true);
-        $libelle = ($libelle) ?? sprintf("%s Importer", Icone::IMPORTER);
+        $libelle = ($libelle) ?? sprintf("%s Importer", Icone::render(Icone::IMPORTER));
         $attributes['title'] = ($attributes['title']) ?? "Importer des étudiants";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-primary ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ??  Controller::EVENT_IMPORTER;

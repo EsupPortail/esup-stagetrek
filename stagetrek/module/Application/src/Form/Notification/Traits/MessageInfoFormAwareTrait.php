@@ -4,6 +4,7 @@
 namespace Application\Form\Notification\Traits;
 
 use Application\Form\Notification\MessageInfoForm;
+use Application\Provider\Misc\Label;
 
 /**
  * Traits MessageInfoFormAwareTrait
@@ -24,7 +25,7 @@ trait MessageInfoFormAwareTrait
     public function getAddMessageInfoForm(): MessageInfoForm
     {
         $form = $this->messageInfoForm;
-        $form->get($form::SUBMIT)->setLabel("<i class='fas fa-save'></i> Ajouter");
+        $form->get($form::SUBMIT)->setLabel(Label::LABEL_AJOUTER);
         return $form;
     }
 

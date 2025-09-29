@@ -86,7 +86,7 @@ class ContactTerrainViewHelper extends AbstractEntityActionViewHelper
         $terrain = $this->getTerrainStage();
         $data =['contact' => (isset($contact)) ? $contact->getId() : 0, 'terrainStage' => (isset($terrain)) ? $terrain->getId() : null];
         $url = $this->getUrl(Controller::ROUTE_AJOUTER, $data, [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::AJOUTER, Label::AJOUTER);
+        $libelle = ($libelle) ?? Label::render(Label::AJOUTER, Icone::AJOUTER);
         $attributes['title'] = ($attributes['title']) ??  "Ajouter un contact de terrain";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-success ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ?? Controller::EVENT_AJOUTER;
@@ -99,7 +99,7 @@ class ContactTerrainViewHelper extends AbstractEntityActionViewHelper
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_MODIFIER,  ['contactTerrain' => $this->getContactTerrain()->getId()], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::MODIFIER, Label::MODIFIER);
+        $libelle = ($libelle) ?? Label::render(Label::MODIFIER, Icone::MODIFIER);
         $attributes['title'] = ($attributes['title']) ??"Modifier le contact du terrain";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-primary ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ?? Controller::EVENT_MODIFIER;
@@ -112,7 +112,7 @@ class ContactTerrainViewHelper extends AbstractEntityActionViewHelper
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_SUPPRIMER,  ['contactTerrain' => $this->getContactTerrain()->getId()], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::SUPPRIMER, Label::SUPPRIMER);
+        $libelle = Label::render(Label::SUPPRIMER, Icone::SUPPRIMER);
         $attributes['title'] = ($attributes['title']) ?? "Supprimer le contact du terrain";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-danger ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ??  Controller::EVENT_SUPPRIMER;
@@ -126,7 +126,7 @@ class ContactTerrainViewHelper extends AbstractEntityActionViewHelper
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_IMPORTER, [], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::IMPORTER, Label::IMPORTER);
+        $libelle = ($libelle) ?? Label::render(Label::IMPORTER, Icone::IMPORTER);
         $attributes['title'] = ($attributes['title']) ??  "Importer des contacts de terrains";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-primary ajax-modal";
         if(!isset($attributes['data-event'])){$attributes['data-event'] = Controller::EVENT_IMPORTER;}

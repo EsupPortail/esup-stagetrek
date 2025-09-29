@@ -7,6 +7,7 @@ namespace Application\Form\Affectation;
 use Application\Entity\Db\AffectationStage;
 use Application\Form\Abstrait\AbstractEntityForm;
 use Application\Form\Affectation\Fieldset\AffectationStageFieldset;
+use Application\Provider\Misc\Label;
 
 /**
  * Class AffectationStageForm
@@ -14,15 +15,12 @@ use Application\Form\Affectation\Fieldset\AffectationStageFieldset;
  */
 class AffectationStageForm extends AbstractEntityForm
 {
-
-    const LABEL_SUBMIT_AFFECTER = "Affecter";
-
     public function init(): static
     {
         parent::init();
         $fieldset = $this->getFormFactory()->getFormElementManager()->get(AffectationStageFieldset::class);
         $this->setEntityFieldset($fieldset);
-       $this->get(self::INPUT_SUBMIT)->setLabel(self::LABEL_SUBMIT_AFFECTER);
+       $this->get(self::INPUT_SUBMIT)->setLabel(Label::render(Label::AFFECTER));
        return $this;
     }
 

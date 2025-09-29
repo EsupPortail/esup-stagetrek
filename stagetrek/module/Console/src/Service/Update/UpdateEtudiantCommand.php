@@ -5,7 +5,9 @@ namespace Console\Service\Update;
 use Application\Entity\Db\Etudiant;
 use Application\Service\Etudiant\EtudiantService;
 use Console\Service\Update\Interfaces\AbstractUpdateEntityCommand;
+use Error;
 use Exception;
+use RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -58,7 +60,7 @@ class UpdateEtudiantCommand extends AbstractUpdateEntityCommand
             $this->renderLog();
             $io->success("Maj terminée");
 
-        }catch (Exception $e){
+        }catch (Error|RuntimeException|Exception $e){
             $io->error($e->getMessage());
             return self::FAILURE;
         }

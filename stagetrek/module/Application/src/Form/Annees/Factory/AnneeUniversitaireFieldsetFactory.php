@@ -5,6 +5,7 @@ namespace Application\Form\Annees\Factory;
 
 use Application\Entity\Db\AnneeUniversitaire;
 use Application\Form\Annees\Fieldset\AnneeUniversitaireFieldset;
+use Application\Form\Annees\Hydrator\AnneeUniversitaireHydrator;
 use Application\Form\Misc\Validator\CodeValidator;
 use Application\Form\Misc\Validator\LibelleValidator;
 use Application\Service\AnneeUniversitaire\AnneeUniversitaireService;
@@ -14,6 +15,7 @@ use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Laminas\ServiceManager\ServiceManager;
 use Laminas\Validator\ValidatorPluginManager;
+use UnicaenTag\Service\Tag\TagService;
 
 class AnneeUniversitaireFieldsetFactory implements FactoryInterface
 {
@@ -35,8 +37,8 @@ class AnneeUniversitaireFieldsetFactory implements FactoryInterface
         $entityManager = $container->get(EntityManager::class);
         $fieldset->setObjectManager($entityManager);
 
-        /** @var DoctrineObject $hydrator */
-        $hydrator = $container->get('HydratorManager')->get(DoctrineObject::class);
+        /** @var AnneeUniversitaireHydrator $hydrator */
+        $hydrator = $container->get('HydratorManager')->get(AnneeUniversitaireHydrator::class);
         $fieldset->setHydrator($hydrator);
         $fieldset->setObject(new AnneeUniversitaire());
 
@@ -53,6 +55,8 @@ class AnneeUniversitaireFieldsetFactory implements FactoryInterface
         $libelleValidator = $container->get(ValidatorPluginManager::class)->get(LibelleValidator::class);
         $libelleValidator->setEntityService($anneeUniversitaireService);
         $fieldset->setLibelleValidator($libelleValidator);
+
+        $fieldset->setTagService($container->get(TagService::class));
 
         return $fieldset;
     }

@@ -81,9 +81,6 @@ class EtudiantControllerFactory implements FactoryInterface
         $etudiantRechercheForm = $container->get(FormElementManager::class)->get(EtudiantRechercheForm::class);
         $controller->setEtudiantRechercheForm($etudiantRechercheForm);
 
-//        $importEtudiantForm = $container->get(FormElementManager::class)->get(ImportEtudiantForm::class);
-//        $controller->setImportEtudiantForm($importEtudiantForm);
-
         $config = $container->get('Config');
         if(isset($config['referentiels']['forms'])) {
             foreach ($config['referentiels']['forms'] as $sourceCode => $formClass) {

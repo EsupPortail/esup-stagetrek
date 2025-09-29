@@ -8,7 +8,6 @@ use Application\Entity\Db\Etudiant;
 use Application\Entity\Traits\Etudiant\HasEtudiantTrait;
 use Application\Entity\Traits\Groupe\HasGroupeTrait;
 use Application\Form\Etudiant\Traits\EtudiantFormAwareTrait;
-use Application\Form\Etudiant\Traits\ImportEtudiantFormAwareTrait;
 use Application\Form\Misc\Traits\ConfirmationFormAwareTrait;
 use Application\Form\Referentiel\Interfaces\AbstractImportEtudiantsForm;
 use Application\Form\Referentiel\Interfaces\ImportEtudiantsFormInterface;
@@ -203,7 +202,6 @@ class EtudiantController extends AbstractActionController
     use ImportValidatorTrait;
     use GroupeServiceAwareTrait;
     use HasGroupeTrait;
-    use ImportEtudiantFormAwareTrait;
 
     /** TODO : a revoir */
     use ReferentielPromoServiceAwareTrait;

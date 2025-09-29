@@ -57,6 +57,20 @@ $vh = $this->contact($contact);
     </div>
 </div>
 
+<div class="row">
+    <div class="col-md-2"><strong>Tags</strong></div>
+    <div class="col-md-10">
+        <?php $tags = $contact->getTags();
+        foreach ($tags as $tag) {
+            echo $this->unicaenTag($tag, ['display-libelle' => true, 'display-categorie' => false]);
+        }
+        if($tags->isEmpty()){
+            echo "<span class='text-muted'>Aucun tag</span>";
+        }
+        ?>
+    </div>
+</div>
+
 <?php
 if ($contact->isActif() && $contact->getContactsTerrains()->isEmpty()): ?>
     <div class="row">

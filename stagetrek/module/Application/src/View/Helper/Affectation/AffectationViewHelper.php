@@ -97,7 +97,7 @@ class AffectationViewHelper extends AbstractEntityActionViewHelper
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_AFFICHER, ['affectationStage' => $this->getAffectationStage()->getId()], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::AFFICHER, Label::AFFICHER);
+        $libelle = ($libelle) ?? Label::render(Label::AFFICHER, Icone::AFFICHER);
         $attributes['title'] = ($attributes['title']) ??  "Afficher l'affectation de stage";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-secondary ajax-modal";
         return $this->generateActionLink($url, $libelle, $attributes);
@@ -110,7 +110,7 @@ class AffectationViewHelper extends AbstractEntityActionViewHelper
         }
         $affectation = $this->getAffectationStage();
         $url = $this->getUrl(Controller::ROUTE_MODIFIER, ['affectationStage' => $affectation->getId()], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::MODIFIER, Label::MODIFIER);
+        $libelle = ($libelle) ?? Label::render(Label::MODIFIER, Icone::MODIFIER);
         $attributes['title'] = ($attributes['title']) ??"Modifier l'affectation du stage";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-primary ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ?? Controller::EVENT_MODIFIER;
@@ -124,7 +124,7 @@ class AffectationViewHelper extends AbstractEntityActionViewHelper
         }
         $session = $this->getSessionStage();
         $url = $this->getUrl(Controller::ROUTE_MODIFIER_AFFECTATIONS, ['sessionStage' => $session->getId()], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::MODIFIER, Label::MODIFIER);
+        $libelle = ($libelle) ?? Label::render(Label::MODIFIER, Icone::MODIFIER);
         $attributes['title'] = ($attributes['title']) ??"Modifier les affecations de la sessions";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-primary";
         return $this->generateActionLink($url, $libelle, $attributes);
@@ -137,7 +137,7 @@ class AffectationViewHelper extends AbstractEntityActionViewHelper
         }
         $session = $this->getSessionStage();
         $url = $this->getUrl(Controller::ROUTE_EXPORTER, ['sessionStage' => $session->getId()], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::EXPORTER, Label::EXPORTER);
+        $libelle = ($libelle) ?? Label::render(Label::EXPORTER, Icone::EXPORTER);
         $attributes['title'] = ($attributes['title']) ??"Exporter les affectations";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-primary";
         return $this->generateActionLink($url, $libelle, $attributes);

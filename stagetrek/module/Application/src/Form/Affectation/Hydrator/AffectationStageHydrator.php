@@ -7,10 +7,13 @@ use Application\Entity\Db\AffectationStage;
 use Application\Entity\Db\Stage;
 use Application\Entity\Db\TerrainStage;
 use Application\Form\Affectation\Fieldset\AffectationStageFieldset;
+use Application\Form\Etudiant\Fieldset\EtudiantFieldset;
 use DoctrineModule\Persistence\ObjectManagerAwareInterface;
 use DoctrineModule\Persistence\ProvidesObjectManager;
 use Laminas\Hydrator\AbstractHydrator;
 use Laminas\Hydrator\HydratorInterface;
+use UnicaenTag\Entity\Db\Tag;
+use UnicaenTag\Service\Tag\TagServiceAwareTrait;
 
 /**
  * Class AffectationStageHydrator
@@ -19,6 +22,7 @@ use Laminas\Hydrator\HydratorInterface;
 class AffectationStageHydrator extends AbstractHydrator implements HydratorInterface, ObjectManagerAwareInterface
 {
     use ProvidesObjectManager;
+    use TagServiceAwareTrait;
 
     /**
      * @param object $object
@@ -29,6 +33,8 @@ class AffectationStageHydrator extends AbstractHydrator implements HydratorInter
         /** @var AffectationStage $affectation */
         $affectation = $object;
         $data = [];
+
+
         $data[AffectationStageFieldset::ID] = $affectation->getId();
         $data[AffectationStageFieldset::STAGE] = $affectation->getStage()->getId();
         $data[AffectationStageFieldset::TERRAIN_STAGE] = ($affectation->getTerrainStage()) ? $affectation->getTerrainStage()->getId() : 0;
@@ -41,6 +47,11 @@ class AffectationStageHydrator extends AbstractHydrator implements HydratorInter
         $data[AffectationStageFieldset::PRE_VALIDER] = ($affectation->isPreValidee());
         $data[AffectationStageFieldset::VALIDER] = false; //On force ainsi a revalider l'affectation
         $data[AffectationStageFieldset::SEND_MAIL] = false; //par défaut
+
+        foreach ($affectation->getTags() as $t) {
+            $data[AffectationStageFieldset::TAGS][] = $t->getId();
+        }
+
         return $data;
     }
 
@@ -88,6 +99,22 @@ class AffectationStageHydrator extends AbstractHydrator implements HydratorInter
         $affectation->setInformationsComplementaires($infos);
         $affectation->setPreValidee($preValidee);
         $affectation->setValidee($validee);
+
+
+        if (isset($data[AffectationStageFieldset::TAGS])) {
+            $tagsSelected = $data[AffectationStageFieldset::TAGS];
+            /** @var Tag[] $tags */
+            $tags = $this->getTagService()->getTags();
+            $tags = array_filter($tags, function (Tag $t) use ($tagsSelected) {
+                return in_array($t->getId(), $tagsSelected);
+            });
+            $affectation->getTags()->clear();
+            foreach ($tags as $t) {
+                $affectation->addTag($t);
+            }
+        } else {
+            $affectation->getTags()->clear();
+        }
 
         return $affectation;
     }

@@ -6,7 +6,9 @@ namespace Application\Form\Stages\Hydrator;
 use Application\Entity\Db\Groupe;
 use Application\Entity\Db\Parametre;
 use Application\Entity\Db\SessionStage;
+use Application\Form\Contacts\Fieldset\ContactFieldset;
 use Application\Form\Stages\Fieldset\SessionStageFieldset;
+use Application\Form\TerrainStage\Fieldset\TerrainStageFieldset;
 use Application\Service\AnneeUniversitaire\Traits\AnneeUniversitaireServiceAwareTrait;
 use Application\Service\Groupe\Traits\GroupeServiceAwareTrait;
 use Application\Service\Parametre\Traits\ParametreServiceAwareTrait;
@@ -14,6 +16,8 @@ use DateInterval;
 use DateTime;
 use Laminas\Hydrator\AbstractHydrator;
 use Laminas\Hydrator\HydratorInterface;
+use UnicaenTag\Entity\Db\Tag;
+use UnicaenTag\Service\Tag\TagServiceAwareTrait;
 
 /**
  * Class SessionStageHydrator
@@ -23,6 +27,7 @@ class SessionStageHydrator extends AbstractHydrator implements HydratorInterface
 {
     use AnneeUniversitaireServiceAwareTrait;
     use GroupeServiceAwareTrait;
+    use TagServiceAwareTrait;
     use ParametreServiceAwareTrait;
 
     /**
@@ -37,6 +42,9 @@ class SessionStageHydrator extends AbstractHydrator implements HydratorInterface
         $session = $object;
 
         $defaultDates = $this->computeDefaultDate($session);
+        foreach ($session->getTags() as $t) {
+            $tags[] = $t->getId();
+        }
         return [
             SessionStageFieldset::ID => $session->getId(),
             SessionStageFieldset::LIBELLE => $session->getLibelle(),
@@ -62,6 +70,7 @@ class SessionStageHydrator extends AbstractHydrator implements HydratorInterface
             SessionStageFieldset::DATE_FIN_EVALUATION => ($session->getDateFinEvaluation()) ?
                 $session->getDateFinEvaluation()->format('Y-m-d') : $defaultDates[SessionStageFieldset::DATE_FIN_EVALUATION],
             SessionStageFieldset::INPUT_SESSION_RATTRAPAGE => $session->isSessionRattrapge(),
+            SessionStageFieldset::TAGS => ($tags) ?? [],
         ];
     }
 
@@ -266,6 +275,23 @@ class SessionStageHydrator extends AbstractHydrator implements HydratorInterface
         }
         $rattrapage = boolval(($data[SessionStageFieldset::INPUT_SESSION_RATTRAPAGE]) ?? 0);
         $session->setSessionRattrapage($rattrapage);
+
+
+        if (isset($data[SessionStageFieldset::TAGS])) {
+            $tagsSelected = $data[SessionStageFieldset::TAGS];
+            /** @var Tag[] $tags */
+            $tags = $this->getTagService()->getTags();
+            $tags = array_filter($tags, function (Tag $t) use ($tagsSelected) {
+                return in_array($t->getId(), $tagsSelected);
+            });
+            $session->getTags()->clear();
+            foreach ($tags as $t) {
+                $session->addTag($t);
+            }
+        } else {
+            $session->getTags()->clear();
+        }
+
         return $session;
     }
 

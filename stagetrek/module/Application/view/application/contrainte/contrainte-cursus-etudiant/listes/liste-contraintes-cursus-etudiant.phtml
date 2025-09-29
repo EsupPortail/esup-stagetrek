@@ -85,11 +85,11 @@ $hasAction = $canSee||$canEdit||$canActiver||$canDesactiver||$canValider||$canIn
                 </td>
                 <?php if($hasAction) :?>
                 <td class="text-end">
-                    <?= $vh->lienAfficher(Icone::AFFICHER, ['title'=> "Afficher les détails de la contrainte pour l'étudiant", 'class'=>'text-primary ajax-modal']) ?>
-                    <?= $vh->lienModifier(Icone::MODIFIER, ['class'=>'text-primary ajax-modal'])?>
+                    <?= $vh->lienAfficher(Icone::render(Icone::AFFICHER), ['title'=> "Afficher les détails de la contrainte pour l'étudiant", 'class'=>'text-primary ajax-modal']) ?>
+                    <?= $vh->lienModifier(Icone::render(Icone::MODIFIER), ['class'=>'text-primary ajax-modal'])?>
                     <?= $vh->lienValider("<span class='fas fa-check-square'></span>", ['class' => 'text-success ajax-modal']) ?>
                     <?= $vh->lienInvalider("<span class='fas fa-times-rectangle'></span>",['class' => 'text-danger ajax-modal']) ?>
-                    <?= $vh->lienActiver(Icone::AJOUTER, ['class' => 'text-success ajax-modal']) ?>
+                    <?= $vh->lienActiver(Icone::render(Icone::AJOUTER), ['class' => 'text-success ajax-modal']) ?>
                     <?= $vh->lienDesactiver("<span class='fas fa-times-square'></span>", ['class' => 'text-muted ajax-modal']) ?>
 
                 </td>

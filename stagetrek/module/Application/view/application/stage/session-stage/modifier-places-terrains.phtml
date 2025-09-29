@@ -105,7 +105,7 @@ $nbStages = sizeof($stages);
         >
             <?= $vh->lienImporterPlaces() ?>
             <button type="button" class="btn btn-secondary mx-1" data-bs-toggle="dropdown" aria-expanded="false">
-                <?= Icone::RUN_PROCESS ?> Actions sur tous les terrains
+                <?= Icone::render(Icone::RUN_PROCESS) ?> Actions sur tous les terrains
             </button>
             <ul class="dropdown-menu">
                 <li class="dropdown-item select-aide-all pointer-hover"
@@ -156,7 +156,7 @@ $nbStages = sizeof($stages);
             </ul>
 
             <button name=submit" id="submit" type="submit" class="btn btn-success">
-                <?= Icone::SAVE ?> Valider les modifications
+                <?= Icone::render(Icone::SAVE) ?> Valider les modifications
         </form>
     </div>
     <div class="card-body">

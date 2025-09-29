@@ -9,6 +9,7 @@ use Application\Form\Stages\Hydrator\SessionStageHydrator;
 use Doctrine\ORM\EntityManager;
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
+use UnicaenTag\Service\Tag\TagService;
 
 /**
  * Class SessionStageFieldsetFactory
@@ -38,6 +39,8 @@ class SessionStageFieldsetFactory implements FactoryInterface
         $hydrator = $container->get('HydratorManager')->get(SessionStageHydrator::class);
         $fieldset->setHydrator($hydrator);
         $fieldset->setObject(new SessionStage());
+
+        $fieldset->setTagService($container->get(TagService::class));
 
         return $fieldset;
     }

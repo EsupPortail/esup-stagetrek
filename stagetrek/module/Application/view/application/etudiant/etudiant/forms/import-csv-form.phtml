@@ -31,14 +31,20 @@ $validator = $form->getImportValidator();
         </div>
         <div class="col-md-8 text-muted text-small">
             <ul>
-                <li>Le fichier CSV doit utiliser comme séparateur le '
-                    <?= CSVService::SEPARATOR ?>' et avoir les champs suivant : <br/>
+                <li>Le fichier CSV doit :
+                    <ul>
+                    <li> utiliser comme séparateur le '<?= CSVService::SEPARATOR ?>'</li>
+                    <li> être encodé en utf8</li>
+                        <?php  $ob = "<sup title='Champs obligatoire'>*</sup>"; ?>
+                    <li> avoir les champs suivants : (<?=$ob?> = Champs obligatoires)<br/>
                     <?php $h = "";
                     foreach (EtudiantCsvImportValidator::getImportHeader() as $key) {
-                        $h .= sprintf("<strong><span class='mx-2'>%s</span></strong>; ", $key);
+                        $obligatoire =  EtudiantCsvImportValidator::isChampsObligatoire($key);
+                        $h .= sprintf("<strong><span class='mx-2'>%s %s </span></strong>; ", $key, (($obligatoire) ? $ob : ''));
                     }
                     echo $h;
                     ?>
+                    </ul>
                 </li>
                 <li>
                     Les champs <strong><?= $validator::HEADER_NUM_ETUDIANT ?></strong>
@@ -63,7 +69,7 @@ $validator = $form->getImportValidator();
             <div class="alert alert-info">
                 Lors de l'ajout d'un étudiants
                 <ul>
-                    <li> Si un groupe est spécifiée et que l'étudiant n'est pas déjà inscrit dans un groupe de la même année, il
+                    <li> Si un groupe est spécifié et que l'étudiant n'est pas déjà inscrit dans un groupe de la même année, il
                         sera inscrit dans ce groupe.
                     </li>
                     <li>

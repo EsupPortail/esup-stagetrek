@@ -101,7 +101,7 @@ RUN a2ensite default-ssl
 RUN mkdir /var/www/html/stagetrek
 WORKDIR /var/www/html/stagetrek/
 COPY ./stagetrek /var/www/html/stagetrek/
-WORKDIR /var/www/html/stagetrek/public
+WORKDIR /var/www/html/stagetrek
 
 #Clean the Proxy env
 ENV HTTP_PROXY ""

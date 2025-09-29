@@ -112,7 +112,7 @@ $today = new DateTime();
                     </td>
                     <?php if($canSeeAffectation) : ?>
                         <td class="text-end">
-                            <?= $vh->lienAfficher(ICONE::AFFICHER, ['class' => 'text-primary ajax-modal']) ?>
+                            <?= $vh->lienAfficher(Icone::render(Icone::AFFICHER), ['class' => 'text-primary ajax-modal']) ?>
                         </td>
                     <?php endif; ?>
                 </tr>

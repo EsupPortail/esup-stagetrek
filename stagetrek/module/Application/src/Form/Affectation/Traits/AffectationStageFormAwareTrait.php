@@ -23,7 +23,7 @@ trait  AffectationStageFormAwareTrait
     public function getAddAffectationStageForm(): AffectationStageForm
     {
         $form = $this->affectationStageForm;
-        $form->get($form::SUBMIT)->setLabel(sprintf("%s %s", Icone::CHECK, Label::AFFECTER));
+        $form->get($form::SUBMIT)->setLabel(Label::render(Label::AFFECTER, Icone::CHECK));
         return $form;
     }
 
@@ -33,7 +33,8 @@ trait  AffectationStageFormAwareTrait
     public function getEditAffectationStageForm(): AffectationStageForm
     {
         $form = $this->affectationStageForm;
-        $form->get($form::SUBMIT)->setLabel(sprintf("%s %s", Icone::SAVE, Label::MODIFIER));
+        $form->get($form::SUBMIT)->setLabel(Label::render(Label::MODIFIER, Icone::MODIFIER));
+
         $form->get($form::INPUT_SUBMIT)->setAttribute("class", "btn btn-primary");
         return $form;
     }

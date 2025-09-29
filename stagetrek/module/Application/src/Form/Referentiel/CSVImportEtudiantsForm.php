@@ -18,7 +18,7 @@ use Laminas\Validator\File\Size;
 use Laminas\Validator\File\UploadFile;
 
 /**
- * Class ImportEtudiantForm
+ * Class CSVImportEtudiantsForm
  * @package Application\Form\Etudiant
  */
 class CSVImportEtudiantsForm extends AbstractImportEtudiantsForm

@@ -490,7 +490,7 @@ class StageService extends CommonEntityService
         }
 
         $annee = $stage->getAnneeUniversitaire();
-        if($annee->isNonValidee()){
+        if(!$annee->isLocked()){
             $this->setEtatInfo(sprintf("L'année universitaire %s est en cours de modification.", $annee->getLibelle()));
             return StageEtatTypeProvider::DESACTIVE;
         }

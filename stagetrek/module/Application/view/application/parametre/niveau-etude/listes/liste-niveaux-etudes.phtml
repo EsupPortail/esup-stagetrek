@@ -46,8 +46,8 @@ $actionMenu = $canEdit || $canDelete;
                     <td><?= ($niveau->getNiveauEtudeParent()) ? $niveau->getNiveauEtudeParent()->getLibelle() : "" ?> </td>
                     <?php if ($actionMenu) : ?>
                         <td class="text-end">
-                            <?= $vh->lienModifier(Icone::MODIFIER, ['class' => 'text-primary ajax-modal']) ?>
-                            <?= $vh->lienSupprimer(Icone::SUPPRIMER, ['class' => 'text-danger ajax-modal']) ?>
+                            <?= $vh->lienModifier(Icone::render(Icone::MODIFIER), ['class' => 'text-primary ajax-modal']) ?>
+                            <?= $vh->lienSupprimer(Icone::render(Icone::SUPPRIMER), ['class' => 'text-danger ajax-modal']) ?>
                         </td>
                     <?php endif; ?>
                 </tr>

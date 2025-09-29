@@ -108,7 +108,7 @@ $vh->setContact($contact);
                         <?= $vh->getTokenValidationEtatIcon($cs) ?>
                     </td>
                     <td class="text-end">
-                        <?= $stageVh->lienAfficher(Icone::AFFICHER, ['class' => 'text-primary me-1']) ?>
+                        <?= $stageVh->lienAfficher(Icone::render(Icone::AFFICHER), ['class' => 'text-primary me-1']) ?>
                     </td>
                 </tr>
             <?php endforeach; ?>

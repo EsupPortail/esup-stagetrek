@@ -96,15 +96,17 @@ $anneeEtat = $annee->getEtatActif();
             </div>
         </div>
     </div>
+</div>
 
-    <div class="col my-3">
-        <div class="card h-100">
+<div class="row row-cols-1 row-cols-md-2">
+    <div class="col">
+        <?php $referentiels = $groupe->getReferentielsPromos(); ?>
+        <div class="card h-100 <?= ($referentiels->isEmpty()) ? 'card-muted' : null ?>">
             <div class="card-header">
                 Référentiels
             </div>
             <div class="card-body">
                 <?php
-                $referentiels = $groupe->getReferentielsPromos();
                 if (!isset($referentiels) || $referentiels->isEmpty()): ?>
                     <div class="row">
                         <div class="col-md-12">
@@ -126,11 +128,35 @@ $anneeEtat = $annee->getEtatActif();
                     </div>
                     <div class="row">
                         <div class="col-md-12 text-small text-muted">
-                            Lors d'un import depuis l'un de ces référentiels, les étudiants seront automatiquement ajoutés dans ce groupe
+                            Lors d'un import depuis l'un de ces référentiels, les étudiants seront automatiquement
+                            ajoutés dans ce groupe
                         </div>
                     </div>
                 <?php endif; ?>
             </div>
         </div>
     </div>
-</div>
+
+        <div class="col">
+            <?php $tags = $groupe->getTags(); ?>
+            <div class="card h-100 <?= ($tags->isEmpty()) ? 'card-muted' : null ?>">
+                <div class="card-header">
+                    Tags
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <?php
+                            foreach ($tags as $tag) {
+                                echo $this->unicaenTag($tag, ['display-libelle' => true, 'display-categorie' => false]);
+                            }
+                            if ($tags->isEmpty()) {
+                                echo "<span class='text-muted'>Aucun tag</span>";
+                            }
+                            ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

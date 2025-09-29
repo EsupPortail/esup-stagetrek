@@ -46,7 +46,7 @@ $canAdd = $vh->actionAllowed(ModeleConventionController::ACTION_AJOUTER);
                <?= $modele->getTerrainsStages()->count() ?> <span class="icon icon-batiment"></span>
             </td>
             <td class="text-end">
-                <?= $vh->lienAfficher(Icone::AFFICHER, ['class'=>"text-primary"]) ?>
+                <?= $vh->lienAfficher(Icone::render(Icone::AFFICHER), ['class'=>"text-primary"]) ?>
             </td>
         </tr>
     <?php endforeach; ?>

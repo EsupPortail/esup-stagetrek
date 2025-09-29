@@ -70,6 +70,9 @@ class GroupeService extends CommonEntityService
             $qb->andWhere($qb->expr()->in("type.id", ":etatType"));
             $qb->setParameter('etatType', $criteria[FormRecherche::INPUT_ETAT]);
         }
+        if(isset($criteria[FormRecherche::TAGS])){
+            $qb = Etudiant::decorateWithTags($qb, $alias, $criteria['tags']);
+        }
         return $qb->getQuery()->getResult();
     }
 

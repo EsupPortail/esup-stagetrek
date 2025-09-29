@@ -79,7 +79,7 @@ class SessionStageAssertion extends AbstractAssertion
     private function assertAjouter(?AnneeUniversitaire $annee) : bool
     {   //L'ajout d'une session de stages doit nécessairement se faire sur une année existante
         if(!isset($annee)){ return false;}
-        if($annee->isAnneeVerrouillee()){return false;}
+        if($annee->isLocked()){return false;}
         if($annee->getGroupes()->isEmpty()){return false;}
         return true;
     }
@@ -101,7 +101,7 @@ class SessionStageAssertion extends AbstractAssertion
     {
         if(!isset($sessionStage)){return false;}
         $annee = $sessionStage->getAnneeUniversitaire();
-        if($annee->isAnneeVerrouillee()){return false;}
+        if($annee->isLocked()){return false;}
         /** @var AffectationStage $affectation */
         foreach ($sessionStage->getAffectations() as $affectation) {
             if ($affectation->hasEtatValidee()) {

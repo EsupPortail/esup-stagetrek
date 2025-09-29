@@ -24,7 +24,7 @@ trait DisponibiliteFormAwareTrait
     public function getAddDisponibiliteForm(): DisponibiliteForm
     {
         $form = $this->disponibiliteForm;
-        $form->get($form::SUBMIT)->setLabel(sprintf("%s %s", Icone::SAVE, Label::AJOUTER));
+        $form->get($form::SUBMIT)->setLabel(Label::render(Label::AJOUTER, Icone::AJOUTER));
         return $form;
     }
 
@@ -35,7 +35,7 @@ trait DisponibiliteFormAwareTrait
     public function getEditDisponibiliteForm(): DisponibiliteForm
     {
         $form = $this->disponibiliteForm;
-        $form->get($form::SUBMIT)->setLabel(sprintf("%s %s", Icone::SAVE, Label::MODIFIER));
+        $form->get($form::SUBMIT)->setLabel(Label::render(Label::MODIFIER, Icone::MODIFIER));
         $form->get($form::INPUT_SUBMIT)->setAttribute("class", "btn btn-primary");
         return $form;
     }

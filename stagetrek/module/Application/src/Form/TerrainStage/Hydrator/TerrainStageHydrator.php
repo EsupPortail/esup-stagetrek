@@ -6,11 +6,15 @@ use Application\Entity\Db\CategorieStage;
 use Application\Entity\Db\ModeleConventionStage;
 use Application\Entity\Db\NiveauEtude;
 use Application\Entity\Db\TerrainStage;
+use Application\Form\Contacts\Fieldset\ContactFieldset;
+use Application\Form\Groupe\Fieldset\GroupeFieldset;
 use Application\Form\TerrainStage\Fieldset\TerrainStageFieldset;
 use DoctrineModule\Persistence\ObjectManagerAwareInterface;
 use DoctrineModule\Persistence\ProvidesObjectManager;
 use Laminas\Hydrator\AbstractHydrator;
 use Laminas\Hydrator\HydratorInterface;
+use UnicaenTag\Entity\Db\Tag;
+use UnicaenTag\Service\Tag\TagServiceAwareTrait;
 
 /**
  * Class TerrainStageHydrator
@@ -19,6 +23,7 @@ use Laminas\Hydrator\HydratorInterface;
 class TerrainStageHydrator extends AbstractHydrator implements HydratorInterface, ObjectManagerAwareInterface
 {
     use ProvidesObjectManager;
+    use TagServiceAwareTrait;
 
     /**
      * Extract values from an object
@@ -43,6 +48,11 @@ class TerrainStageHydrator extends AbstractHydrator implements HydratorInterface
         foreach ($terrain->getNiveauxEtudesContraints() as $n) {
             $data[TerrainStageFieldset::RESTRICTIONS_TERRAIN_NIVEAU_ETUDE][] = $n->getId();
         }
+
+        foreach ($terrain->getTags() as $t) {
+            $data[ContactFieldset::TAGS][] = $t->getId();
+        }
+
         return $data;
     }
 
@@ -129,6 +139,23 @@ class TerrainStageHydrator extends AbstractHydrator implements HydratorInterface
         } else {//Aucune contraintes, on retire les contraintes existantes
             $terrain->getNiveauxEtudesContraints()->clear();
         }
+
+
+        if (isset($data[TerrainStageFieldset::TAGS])) {
+            $tagsSelected = $data[TerrainStageFieldset::TAGS];
+            /** @var Tag[] $tags */
+            $tags = $this->getTagService()->getTags();
+            $tags = array_filter($tags, function (Tag $t) use ($tagsSelected) {
+                return in_array($t->getId(), $tagsSelected);
+            });
+            $terrain->getTags()->clear();
+            foreach ($tags as $t) {
+                $terrain->addTag($t);
+            }
+        } else {
+            $terrain->getTags()->clear();
+        }
+
         return $terrain;
     }
 }

@@ -13,7 +13,7 @@ use Laminas\Filter\ToInt;
 use Laminas\Filter\ToNull;
 
 /**
- * Class ImportEtudiantForm
+ * Class ReferentielImportEtudiantsForm
  * @package Application\Form\Etudiant
  */
 class ReferentielImportEtudiantsForm extends AbstractImportEtudiantsForm

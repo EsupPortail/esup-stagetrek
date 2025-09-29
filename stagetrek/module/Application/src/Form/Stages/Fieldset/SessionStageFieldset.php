@@ -9,21 +9,27 @@ use Application\Entity\Traits\AnneeUniversitaire\HasAnneeUniversitaireTrait;
 use Application\Entity\Traits\Groupe\HasGroupeTrait;
 use Application\Form\Groupe\Element\GroupeSelectPicker;
 use Application\Form\Misc\Abstracts\AbstractEntityFieldset;
+use Application\Form\Misc\Interfaces\HasTagInputInterface;
 use Application\Form\Misc\Traits\IdInputAwareTrait;
 use Application\Form\Misc\Traits\LibelleInputAwareTrait;
+use Application\Form\Misc\Traits\TagInputAwareTrait;
 use Application\Form\Stages\Validator\SessionStageValidator;
+use Application\Provider\Tag\CategorieTagProvider;
 use Laminas\Filter\DateTimeSelect;
 use Laminas\Form\Element\Checkbox;
 use Laminas\Form\Element\Date;
+use UnicaenTag\Entity\Db\Tag;
 
 /**
  * Class SessionStageFieldset
  * @package Application\Form\SessionsStages\Fieldset
  */
 class SessionStageFieldset extends AbstractEntityFieldset
+    implements HasTagInputInterface
 {
     use IdInputAwareTrait;
     use LibelleInputAwareTrait;
+    use TagInputAwareTrait;
 
 
     public function init() : static
@@ -33,6 +39,7 @@ class SessionStageFieldset extends AbstractEntityFieldset
         $this->initGroupeInput();
         $this->initDatesInputs();
         $this->initPropertiesInputs();
+        $this->initTagsInputs();
         return $this;
     }
     use HasGroupeTrait;
@@ -289,6 +296,35 @@ class SessionStageFieldset extends AbstractEntityFieldset
                 'class' => 'form-check-input'
             ],
         ]);
+    }
+
+
+    public function getTagsAvailables(): array
+    {
+        $tags = $this->getTagService()->getTags();
+        usort($tags, function (Tag $t1, Tag $t2) {
+            $c1 = $t1->getCategorie();
+            $c2 = $t2->getCategorie();
+            if ($c1->getId() !== $c2->getId()) {
+                if ($c1->getCode() == CategorieTagProvider::SESSION_STAGE
+                    || $c1->getCode() == CategorieTagProvider::STAGE
+                ) {
+                    return -1;
+                }
+                if ($c2->getCode() == CategorieTagProvider::SESSION_STAGE
+                || $c2->getCode() == CategorieTagProvider::STAGE
+                ) {
+                    return 1;
+                }
+                if ($c1->getOrdre() < $c2->getOrdre()) return -1;
+                if ($c2->getOrdre() < $c1->getOrdre()) return 1;
+                return ($c1->getId() < $c2->getId()) ? -1 : 1;
+            }
+            if ($t1->getOrdre() < $t2->getOrdre()) return -1;
+            if ($t2->getOrdre() < $t1->getOrdre()) return 1;
+            return ($t1->getId() < $t2->getId()) ? -1 : 1;
+        });
+        return $tags;
     }
 
 

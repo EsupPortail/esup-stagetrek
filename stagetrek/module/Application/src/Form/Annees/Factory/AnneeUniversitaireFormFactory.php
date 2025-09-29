@@ -3,6 +3,7 @@
 namespace Application\Form\Annees\Factory;
 
 use Application\Form\Annees\AnneeUniversitaireForm;
+use Application\Form\Annees\Hydrator\AnneeUniversitaireHydrator;
 use Doctrine\Laminas\Hydrator\DoctrineObject;
 use Doctrine\ORM\EntityManager;
 use Interop\Container\ContainerInterface;
@@ -32,7 +33,7 @@ class AnneeUniversitaireFormFactory implements FactoryInterface
         $form->setViewHelperManager($viewHelperManager);
 
         /** @var DoctrineObject $hydrator */
-        $hydrator = $container->get('HydratorManager')->get(DoctrineObject::class);
+        $hydrator = $container->get('HydratorManager')->get(AnneeUniversitaireHydrator::class);
         $form->setHydrator($hydrator);
         return $form;
     }

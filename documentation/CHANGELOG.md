@@ -1,5 +1,14 @@
 CHANGELOG
 =========
+1.4.2 (26/09/2025)
+------------------
+- [UnicaenTag] : mise en place de UnicaenTag
+
+1.4.1 (25/09/2025)
+------------------
+- Mise à jours automatiques des états des événements
+- [Bug fixe] Planification des mails lors de la validations des affectations de stages y compris a postériori
+
 1.4.0 (24/09/2025)
 ------------------
 - [Documentations] : Mise au propre de la documentation

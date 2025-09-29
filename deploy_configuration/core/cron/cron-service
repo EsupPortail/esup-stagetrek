@@ -20,8 +20,11 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 */5 * * * * root (/bin/stagetrek/traiter_evenements | ts) >> /var/log/stagetrek/evenements.log 2>&1
 
 #Clear des logs
-0 3 * * * root /var/www/html/vendor/bin/laminas evenement:purger-journal >> /var/log/stagetrek/clear.log 2>&1
-0 3 * * * root /var/www/html/vendor/bin/laminas evenement:purger-evenement >> /var/log/stagetrek/clear.log 2>&1
-0 3 * * * root /var/www/html/vendor/bin/laminas mail:purge >> /var/log/stagetrek/clear.log 2>&1
+0 3 * * * root /bin/stagetrek/console evenement:purger-journal >> /var/log/stagetrek/clear.log 2>&1
+10 3 * * * root /bin/stagetrek/console evenement:purger-evenement >> /var/log/stagetrek/clear.log 2>&1
+20 3 * * * root /bin/stagetrek/console mail:purge >> /var/log/stagetrek/clear.log 2>&1
+
+#Déclencehement de logrotate (au cas ou)
+30 3    * * *   root logrotate -f /etc/logrotate.d/stagetrek >>  /var/log/stagetrek/clear.log 2>&1
 
 ### !!! important : finir par un saut de ligne

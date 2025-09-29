@@ -57,7 +57,7 @@ class ParametreViewHelper extends AbstractEntityActionViewHelper
         }
         $parametre = $this->getParametre();
         $url = $this->getUrl(Controller::ROUTE_MODIFIER, ['parametre' => $parametre->getId()], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::MODIFIER, Label::MODIFIER);
+        $libelle = ($libelle) ?? Label::render(Label::MODIFIER, Icone::MODIFIER);
         $attributes['title'] = ($attributes['title']) ??"Modifier le parametre";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-primary ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ?? Controller::EVENT_MODIFIER;

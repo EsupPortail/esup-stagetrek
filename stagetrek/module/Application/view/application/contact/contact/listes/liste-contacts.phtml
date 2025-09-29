@@ -34,7 +34,7 @@ $canImportCT = $ctVh->actionAllowed(ContactTerrainController::ACTION_IMPORTER);
         <?php if($canImportC || $canImportCT) :?>
         <button type="button" class="btn btn-primary mx-1" data-bs-toggle="dropdown"
         aria-expanded="false">
-        <?= Icone::IMPORTER ?> Importer
+        <?= Icone::render(Icone::IMPORTER) ?> Importer
         </button>
         <div class="dropdown-menu">
             <?php if($canImportC) :?>
@@ -88,7 +88,7 @@ $canImportCT = $ctVh->actionAllowed(ContactTerrainController::ACTION_IMPORTER);
                     <td><?= $contact->getEmail() ?></td>
                     <td><?= $contact->getTelephone() ?></td>
                     <td class="text-end">
-                        <?= $vh->lienAfficher(Icone::AFFICHER, ['class'=>'text-primary']) ?>
+                        <?= $vh->lienAfficher(Icone::render(Icone::AFFICHER), ['class'=>'text-primary']) ?>
                     </td>
                 </tr>
             <?php endforeach; ?>

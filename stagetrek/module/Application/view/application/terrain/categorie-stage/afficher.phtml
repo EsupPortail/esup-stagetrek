@@ -85,6 +85,21 @@ $canDelete = $vh->actionAllowed(CategorieStageController::ACTION_SUPPRIMER);
                     <?= $categorieStage->getOrdre() ?>
                 </div>
             </div>
+
+            <hr/>
+            <div class="row">
+                <div class="col-md-2"><strong>Tags</strong></div>
+                <div class="col-md-10">
+                    <?php $tags = $categorieStage->getTags();
+                    foreach ($tags as $tag) {
+                        echo $this->unicaenTag($tag, ['display-libelle' => true, 'display-categorie' => false]);
+                    }
+                    if($tags->isEmpty()){
+                        echo "<span class='text-muted'>Aucun tag</span>";
+                    }
+                    ?>
+                </div>
+            </div>
         </div>
         <div class="card-footer">
             <?= $this->backButton("Liste des categories")->backTo($this->url(CategorieStageController::ROUTE_INDEX, [], [], true)) ?>

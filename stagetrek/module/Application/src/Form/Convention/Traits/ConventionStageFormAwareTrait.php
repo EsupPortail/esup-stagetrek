@@ -13,7 +13,7 @@ trait ConventionStageFormAwareTrait
     public function getConventionStageTeleversementForm(): ?ConventionStageTeleversementForm
     {
         $form = $this->conventionStageTeleversementForm;
-        $form->get($form::SUBMIT)->setLabel(sprintf("%s %s", Icone::TELEVERSER, Label::TELEVERSE));
+        $form->get($form::SUBMIT)->setLabel(Label::render(Label::TELEVERSER, Icone::TELEVERSER));
         return $form;
     }
 

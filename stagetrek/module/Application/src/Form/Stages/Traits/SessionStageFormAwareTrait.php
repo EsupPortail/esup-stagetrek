@@ -28,7 +28,7 @@ trait SessionStageFormAwareTrait
     public function getAddSessionStageForm(): SessionStageForm
     {
         $form = $this->sessionStageForm;
-        $form->get($form::SUBMIT)->setLabel(sprintf("%s %s", Icone::SAVE, Label::AJOUTER));
+        $form->get($form::SUBMIT)->setLabel(Label::render(Label::AJOUTER, Icone::AJOUTER));
         $form->getBaseFieldset()->get(SessionStageFieldset::INPUT_CALCUL_AUTOMATIQUE_DATE)->setValue(true);
         return $form;
     }
@@ -39,7 +39,7 @@ trait SessionStageFormAwareTrait
     public function getEditSessionStageForm(): SessionStageForm
     {
         $form = $this->sessionStageForm;
-        $form->get($form::SUBMIT)->setLabel(sprintf("%s %s", Icone::SAVE, Label::MODIFIER));
+        $form->get($form::SUBMIT)->setLabel(Label::render(Label::MODIFIER, Icone::MODIFIER));
         $form->get($form::INPUT_SUBMIT)->setAttribute("class", "btn btn-primary");
         return $form;
     }

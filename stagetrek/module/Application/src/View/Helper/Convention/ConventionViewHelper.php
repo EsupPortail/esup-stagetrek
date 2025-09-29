@@ -101,7 +101,7 @@ class ConventionViewHelper extends AbstractEntityActionViewHelper
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_TELEVERSER,  ['stage' => $this->getStage()->getId()], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::TELEVERSER , "Téléverser");
+        $libelle = ($libelle) ?? Label::render(Label::TELEVERSER, Icone::TELEVERSER);
         $attributes['title'] = ($attributes['title']) ?? "Télèverser la convention de stage";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-success ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ??  Controller::EVENT_TELEVERSER;
@@ -117,7 +117,7 @@ class ConventionViewHelper extends AbstractEntityActionViewHelper
 
         $data = ["stage" => $this->getStage()->getId()];
         $url = $this->getUrl(Controller::ROUTE_GENERER,  $data, [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::RUN_PROCESS, "Générer");
+        $libelle = ($libelle) ?? sprintf("%s %s", Icone::render(Icone::render(Icone::RUN_PROCESS)), "Générer");
         $attributes['title'] = ($attributes['title']) ?? "Générer la convention de stage depuis un modéle";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-primary ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ??  Controller::EVENT_GENERER;
@@ -131,7 +131,7 @@ class ConventionViewHelper extends AbstractEntityActionViewHelper
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_SUPPRIMER,  ['stage' => $this->getStage()->getId()], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::SUPPRIMER, Label::SUPPRIMER);
+        $libelle = Label::render(Label::SUPPRIMER, Icone::SUPPRIMER);
         $attributes['title'] = ($attributes['title']) ?? "Supprimer la convention de stage";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-danger ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ??  Controller::EVENT_SUPPRIMER;
@@ -145,7 +145,7 @@ class ConventionViewHelper extends AbstractEntityActionViewHelper
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_TELECHARGER,  ['stage' => $this->getStage()->getId()], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::TELECHARGER, Label::TELECHARGER);
+        $libelle = ($libelle) ?? Label::render(Label::TELECHARGER, Icone::TELECHARGER);
         $attributes['title'] = ($attributes['title']) ?? "Télécharger la convention de stage";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-success";
 

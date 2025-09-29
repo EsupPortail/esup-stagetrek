@@ -155,59 +155,59 @@ class AnneeUniversitaire implements ResourceInterface, HasLibelleInterface, HasE
     }
 
 
-    /**
-     * Get anneeVerrouillee.
-     * @return bool
-     * @deprecated Passage au système de lock par tag
-     */
-    public function getAnneeVerrouillee(): bool
-    {
-        return $this->anneeVerrouillee;
-    }
+//    /**
+//     * Get anneeVerrouillee.
+//     * @return bool
+//     * @deprecated Passage au système de lock par tag
+//     */
+//    public function getAnneeVerrouillee(): bool
+//    {
+//        return $this->anneeVerrouillee;
+//    }
 
-    /**
-     * Get anneeVerrouillee.
-     * @return bool
-     * @deprecated Passage au système de lock par tag
-     */
-    public function isAnneeVerrouillee(): bool
-    {
-        return $this->anneeVerrouillee;
-    }
+//    /**
+//     * Get anneeVerrouillee.
+//     * @return bool
+//     * @deprecated Passage au système de lock par tag
+//     */
+//    public function isAnneeVerrouillee(): bool
+//    {
+//        return $this->anneeVerrouillee;
+//    }
 
     use HasTagsTrait;
     use HasLockTrait;
 
-    /**
-     * Get anneeVerrouillee.
-     * @deprecated Passage au système de lock par tag
-     */
-    public function isValidee(): bool
-    {
-        return $this->isAnneeVerrouillee();
-    }
+//    /**
+//     * Get anneeVerrouillee.
+//     * @deprecated Passage au système de lock par tag
+//     */
+//    public function isValidee(): bool
+//    {
+//        return $this->isAnneeVerrouillee();
+//    }
 
-    /**
-     * Get anneeVerrouillee.
-     * @deprecated Passage au système de lock par tag
-     */
-    public function isNonValidee(): bool
-    {
-        return !$this->isAnneeVerrouillee();
-    }
+//    /**
+//     * Get anneeVerrouillee.
+//     * @deprecated Passage au système de lock par tag
+//     */
+//    public function isNonValidee(): bool
+//    {
+//        return !$this->isAnneeVerrouillee();
+//    }
 
-    /**
-     * Set anneeVerrouillee.
-     *
-     * @param bool $anneeVerrouillee
-     * @return \Application\Entity\Db\AnneeUniversitaire
-     * @deprecated Passage au système de lock par tag
-     */
-    public function setAnneeVerrouillee(bool $anneeVerrouillee): static
-    {
-        $this->anneeVerrouillee = $anneeVerrouillee;
-        return $this;
-    }
+//    /**
+//     * Set anneeVerrouillee.
+//     *
+//     * @param bool $anneeVerrouillee
+//     * @return \Application\Entity\Db\AnneeUniversitaire
+//     * @deprecated Passage au système de lock par tag
+//     */
+//    public function setAnneeVerrouillee(bool $anneeVerrouillee): static
+//    {
+//        $this->anneeVerrouillee = $anneeVerrouillee;
+//        return $this;
+//    }
 
 
     /**

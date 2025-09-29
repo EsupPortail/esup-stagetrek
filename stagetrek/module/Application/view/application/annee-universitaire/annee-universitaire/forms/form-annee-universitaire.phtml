@@ -3,7 +3,7 @@
 use Application\Controller\AnneeUniversitaire\AnneeUniversitaireController;
 use Application\Form\Annees\AnneeUniversitaireForm;
 use Application\Form\Annees\Fieldset\AnneeUniversitaireFieldset;
-
+use Application\Provider\Tag\TagProvider;
 
 /**
  * @see AnneeUniversitaireController::ajouterAction();
@@ -42,6 +42,17 @@ $fieldset = $form->getEntityFieldset();
     </div>
 
     <div class="row">
+        <div class="col-md-6">
+            <?= $fcg($fieldset->get(AnneeUniversitaireFieldset::TAGS)); ?>
+        </div>
+        <div class="col-md-6">
+            <div class="alert alert-warning">
+                Ajouter le tag <?= $this->unicaenTag()->renderTag(TagProvider::ETAT_LOCK, ['display-libelle' => true]) ?> validera automatiquement l'année
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
         <div class="col-md-10">
             <?= $fcg($form->get(AnneeUniversitaireForm::INPUT_SUBMIT)); ?>
         </div>
@@ -49,3 +60,9 @@ $fieldset = $form->getEntityFieldset();
 
 <?= $this->formHidden($form->get(AnneeUniversitaireForm::CSRF)); ?>
 <?= $this->form()->closeTag(); ?>
+
+<script>
+    $(function () {
+        $('select').selectpicker();
+    })
+</script>

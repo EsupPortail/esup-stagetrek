@@ -5,6 +5,7 @@ namespace Application\Form\Contacts\Factory;
 
 use Application\Entity\Db\Contact;
 use Application\Form\Contacts\Fieldset\ContactFieldset;
+use Application\Form\Contacts\Hydrator\ContactHydrator;
 use Application\Form\Misc\Validator\CodeValidator;
 use Application\Form\Misc\Validator\LibelleValidator;
 use Application\Service\Contact\ContactService;
@@ -14,6 +15,7 @@ use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Laminas\ServiceManager\ServiceManager;
 use Laminas\Validator\ValidatorPluginManager;
+use UnicaenTag\Service\Tag\TagService;
 
 class ContactFieldsetFactory implements FactoryInterface
 {
@@ -36,8 +38,8 @@ class ContactFieldsetFactory implements FactoryInterface
         $fieldset->setObjectManager($entityManager);
 
 
-        /** @var DoctrineObject $hydrator */
-        $hydrator = $container->get('HydratorManager')->get(DoctrineObject::class);
+        /** @var ContactHydrator $hydrator */
+        $hydrator = $container->get('HydratorManager')->get(ContactHydrator::class);
         $fieldset->setHydrator($hydrator);
         $fieldset->setObject(new Contact());
 
@@ -54,6 +56,9 @@ class ContactFieldsetFactory implements FactoryInterface
         $libelleValidator = $container->get(ValidatorPluginManager::class)->get(LibelleValidator::class);
         $libelleValidator->setEntityService($contactService);
         $fieldset->setLibelleValidator($libelleValidator);
+
+
+        $fieldset->setTagService($container->get(TagService::class));
 
         return $fieldset;
     }

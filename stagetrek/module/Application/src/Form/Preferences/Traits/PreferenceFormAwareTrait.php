@@ -24,7 +24,7 @@ trait  PreferenceFormAwareTrait
     public function getAddPreferenceForm(): PreferenceForm
     {
         $form = $this->preferenceForm;
-        $form->get($form::SUBMIT)->setLabel(sprintf("%s %s", Icone::SAVE, Label::AJOUTER));
+        $form->get($form::SUBMIT)->setLabel(Label::render(Label::AJOUTER, Icone::AJOUTER));
         return $form;
     }
 
@@ -34,7 +34,7 @@ trait  PreferenceFormAwareTrait
     public function getEditPreferenceForm(): PreferenceForm
     {
         $form = $this->preferenceForm;
-        $form->get($form::SUBMIT)->setLabel(sprintf("%s %s", Icone::SAVE, Label::MODIFIER));
+        $form->get($form::SUBMIT)->setLabel(Label::render(Label::MODIFIER, Icone::MODIFIER));
         $form->get($form::INPUT_SUBMIT)->setAttribute("class", "btn btn-primary");
         return $form;
     }

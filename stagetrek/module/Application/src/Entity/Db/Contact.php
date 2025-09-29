@@ -10,12 +10,15 @@ use Application\Entity\Traits\InterfaceImplementation\HasCodeTrait;
 use Application\Entity\Traits\InterfaceImplementation\HasIdTrait;
 use Application\Entity\Traits\InterfaceImplementation\HasLibelleTrait;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
+use UnicaenTag\Entity\Db\HasTagsInterface;
+use UnicaenTag\Entity\Db\HasTagsTrait;
 
 /**
  * Contact
  */
 class Contact implements ResourceInterface
     , HasCodeInterface, HasLibelleInterface
+    , HasTagsInterface
 {
     const RESOURCE_ID = 'Contact';
     const CODE_ASSISTANCE = 'assistance';
@@ -54,6 +57,7 @@ class Contact implements ResourceInterface
 
     use HasContactsStagesTrait;
     use HasContactsTerrainsTrait;
+    use HasTagsTrait;
 
     /**
      * @var string|null

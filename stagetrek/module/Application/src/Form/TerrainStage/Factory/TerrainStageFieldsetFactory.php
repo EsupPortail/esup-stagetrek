@@ -14,6 +14,7 @@ use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Laminas\ServiceManager\ServiceManager;
 use Laminas\Validator\ValidatorPluginManager;
+use UnicaenTag\Service\Tag\TagService;
 
 /**
  * Class TerrainStageFieldsetFactory
@@ -57,6 +58,8 @@ class TerrainStageFieldsetFactory  implements FactoryInterface
         $codeValidator = $container->get(ValidatorPluginManager::class)->get(CodeValidator::class);
         $codeValidator->setEntityService($terrainStageService);
         $fieldset->setCodeValidator($codeValidator);
+
+        $fieldset->setTagService($container->get(TagService::class));
 
         return $fieldset;
     }

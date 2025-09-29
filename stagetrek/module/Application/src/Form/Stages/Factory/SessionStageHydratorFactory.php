@@ -9,6 +9,7 @@ use Application\Service\Parametre\ParametreService;
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Laminas\ServiceManager\ServiceManager;
+use UnicaenTag\Service\Tag\TagService;
 
 /**
  * Class SessionStageHydratorFactory
@@ -40,6 +41,7 @@ class SessionStageHydratorFactory implements FactoryInterface
         $parametreService = $container->get(ServiceManager::class)->get(ParametreService::class);
         $hydrator->setParametreService($parametreService);
 
+        $hydrator->setTagService($container->get(TagService::class));
         return $hydrator;
     }
 }

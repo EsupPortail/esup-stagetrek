@@ -8,6 +8,7 @@ use Application\Form\Misc\Validator\AcronymeValidator;
 use Application\Form\Misc\Validator\CodeValidator;
 use Application\Form\Misc\Validator\LibelleValidator;
 use Application\Form\TerrainStage\Fieldset\CategorieStageFieldset;
+use Application\Form\TerrainStage\Hydrator\CategorieStageHydrator;
 use Application\Service\TerrainStage\CategorieStageService;
 use Doctrine\Laminas\Hydrator\DoctrineObject;
 use Doctrine\ORM\EntityManager;
@@ -15,6 +16,7 @@ use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Laminas\ServiceManager\ServiceManager;
 use Laminas\Validator\ValidatorPluginManager;
+use UnicaenTag\Service\Tag\TagService;
 
 /**
  * Class CategorieStageFieldset
@@ -45,8 +47,8 @@ class CategorieStageFieldsetFactory implements FactoryInterface
          */
         $categorieStageService = $container->get(ServiceManager::class)->get(CategorieStageService::class);
 
-        /** @var DoctrineObject $hydrator */
-        $hydrator = $container->get('HydratorManager')->get(DoctrineObject::class);
+        /** @var CategorieStageHydrator $hydrator */
+        $hydrator = $container->get('HydratorManager')->get(CategorieStageHydrator::class);
         $fieldset->setHydrator($hydrator);
         $fieldset->setObject(new CategorieStage());
 
@@ -65,6 +67,8 @@ class CategorieStageFieldsetFactory implements FactoryInterface
         $acronymeValidator = $container->get(ValidatorPluginManager::class)->get(AcronymeValidator::class);
         $acronymeValidator->setEntityService($categorieStageService);
         $fieldset->setAcronymeValidator($acronymeValidator);
+
+        $fieldset->setTagService($container->get(TagService::class));
 
         return $fieldset;
     }

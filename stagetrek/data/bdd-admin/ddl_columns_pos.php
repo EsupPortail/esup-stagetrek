@@ -702,6 +702,46 @@ return [
         'annee_universitaire_id',
         'tag_id',
     ],
+    'categorie_stage_tag_linker'                   => [
+        'categorie_stage_id',
+        'tag_id',
+    ],
+    'contact_stage_tag_linker'                     => [
+        'contact_stage_id',
+        'tag_id',
+    ],
+    'contact_tag_linker'                           => [
+        'contact_id',
+        'tag_id',
+    ],
+    'contact_terrain_tag_linker'                   => [
+        'contact_terrain_id',
+        'tag_id',
+    ],
+    'etudiant_tag_linker'                          => [
+        'etudiant_id',
+        'tag_id',
+    ],
+    'groupe_tag_linker'                            => [
+        'groupe_id',
+        'tag_id',
+    ],
+    'session_stage_tag_linker'                     => [
+        'session_stage_id',
+        'tag_id',
+    ],
+    'stage_tag_linker'                             => [
+        'stage_id',
+        'tag_id',
+    ],
+    'terrain_stage_tag_linker'                     => [
+        'terrain_stage_id',
+        'tag_id',
+    ],
+    'affectation_stage_tag_linker'                 => [
+        'affectation_stage_id',
+        'tag_id',
+    ],
 ];
 
 //@formatter:on

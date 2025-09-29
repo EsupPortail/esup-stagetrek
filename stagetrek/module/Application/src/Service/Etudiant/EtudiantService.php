@@ -17,6 +17,7 @@ use DateTime;
 use Exception;
 use RuntimeException;
 use UnicaenEtat\Entity\Db\HasEtatsInterface;
+use UnicaenTag\Entity\Db\Tag;
 use UnicaenUtilisateur\Entity\Db\RoleInterface;
 use UnicaenUtilisateur\Service\Role\RoleServiceAwareTrait;
 use UnicaenUtilisateur\Service\User\UserServiceAwareTrait;
@@ -85,6 +86,9 @@ class EtudiantService extends CommonEntityService
         }
         if (!empty($criteria[FormRecherche::INPUT_ETAT])) {
             $qb = Etudiant::decorateWithEtats($qb, $alias, $criteria['etat']);
+        }
+        if(isset($criteria[FormRecherche::TAGS])){
+            $qb = Etudiant::decorateWithTags($qb, $alias, $criteria['tags']);
         }
         return $qb->getQuery()->getResult();
     }

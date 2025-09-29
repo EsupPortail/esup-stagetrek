@@ -146,7 +146,7 @@ implements EtudiantActionViewHelperInterface
 
 
         $url = $this->getUrl($route, ['stage' => $stagePrecedent->getId()], [], true);
-        $libelle= Icone::PRECEDENT;
+        $libelle= Icone::render(Icone::PRECEDENT);
         $attributes['class'] = "btn btn-secondary btn-sm m-1";
         $attributes['title'] = "Fiche du stage précédent";
         return $this->generateActionLink($url, $libelle, $attributes);
@@ -175,7 +175,7 @@ implements EtudiantActionViewHelperInterface
         if (!isset($stageSuivant) || !$isAllowed) return "";
 
         $url = $this->getUrl($route, ['stage' => $stageSuivant->getId()], [], true);
-        $libelle= Icone::SUIVANT;
+        $libelle= Icone::render(Icone::SUIVANT);
         $attributes['class'] = "btn btn-secondary btn-sm m-1";
         $attributes['title'] = "Fiche du stage suivant";
         return $this->generateActionLink($url, $libelle, $attributes);
@@ -219,7 +219,7 @@ implements EtudiantActionViewHelperInterface
         }
         $data = ['sessionStage' => $this->getSessionStage()->getId()];
         $url = $this->getUrl(Controller::ROUTE_AJOUTER_STAGES, $data, [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::AJOUTER, Label::AJOUTER);
+        $libelle = ($libelle) ?? Label::render(Label::AJOUTER, Icone::AJOUTER);
         $attributes['title'] = ($attributes['title']) ??  "Ajouter des stages";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-success";
         return $this->generateActionLink($url, $libelle, $attributes);
@@ -233,7 +233,7 @@ implements EtudiantActionViewHelperInterface
         }
         $data = ['sessionStage' => $this->getSessionStage()->getId()];
         $url = $this->getUrl(Controller::ROUTE_SUPPRIMER_STAGES, $data, [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::SUPPRIMER, "Supprimer des stages");
+        $libelle = ($libelle) ?? sprintf("%s %s", Icone::render(Icone::SUPPRIMER), "Supprimer des stages");
         $attributes['title'] = ($attributes['title']) ??  "Supprimer des stages";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-danger";
         return $this->generateActionLink($url, $libelle, $attributes);

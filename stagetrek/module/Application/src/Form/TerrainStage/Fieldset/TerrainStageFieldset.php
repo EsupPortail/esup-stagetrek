@@ -6,13 +6,16 @@ namespace Application\Form\TerrainStage\Fieldset;
 use Application\Form\Adresse\Fieldset\AdresseFieldset;
 use Application\Form\Convention\Element\ModeleConventionStageSelectPicker;
 use Application\Form\Misc\Abstracts\AbstractEntityFieldset;
+use Application\Form\Misc\Interfaces\HasTagInputInterface;
 use Application\Form\Misc\Traits\CodeInputAwareTrait;
 use Application\Form\Misc\Traits\IdInputAwareTrait;
 use Application\Form\Misc\Traits\LibelleInputAwareTrait;
+use Application\Form\Misc\Traits\TagInputAwareTrait;
 use Application\Form\Parametre\Element\NiveauEtudeSelectPicker;
 use Application\Form\TerrainStage\Element\CategorieStageSelectPicker;
 use Application\Form\TerrainStage\Element\TerrainStagePrincipalSelectPicker;
 use Application\Form\TerrainStage\Element\TerrainStageSecondaireSelectPicker;
+use Application\Provider\Tag\CategorieTagProvider;
 use Laminas\Filter\StringTrim;
 use Laminas\Filter\StripTags;
 use Laminas\Filter\ToInt;
@@ -23,17 +26,21 @@ use Laminas\Form\Element\Text;
 use Laminas\Form\Element\Textarea;
 use Laminas\Validator\Callback;
 use Laminas\Validator\StringLength;
+use UnicaenTag\Entity\Db\Tag;
 
 /**
  * Class TerrainStageFieldset
  * @package Application\Form\TerrainStage\Fieldset
  */
 class TerrainStageFieldset extends AbstractEntityFieldset
+    implements HasTagInputInterface
 {
 
     use IdInputAwareTrait;
     use CodeInputAwareTrait;
     use LibelleInputAwareTrait;
+    use TagInputAwareTrait;
+
     public function init() : static
     {
         $this->initIdInput();
@@ -46,6 +53,7 @@ class TerrainStageFieldset extends AbstractEntityFieldset
         $this->initContraintesInput();
         $this->initTerrainLinkerInput();
         $this->initModeleConventionInput();
+        $this->initTagsInputs();
         return $this;
     }
 
@@ -480,5 +488,34 @@ class TerrainStageFieldset extends AbstractEntityFieldset
             "name" => self::MODELE_CONVENTION,
             'required' => false,
         ]);
+    }
+
+    public function getTagsAvailables(): array
+    {
+        $tags = $this->getTagService()->getTags();
+        usort($tags, function (Tag $t1, Tag $t2) {
+            $c1 = $t1->getCategorie();
+            $c2 = $t2->getCategorie();
+            if ($c1->getId() !== $c2->getId()) {
+                //Trie spécifique : on met d'abord la catégorie Années
+                if ($c1->getCode() == CategorieTagProvider::TERRAIN
+                    || $c1->getCode() == CategorieTagProvider::CATEGORIE_STAGE
+                ) {
+                    return -1;
+                }
+                if ($c2->getCode() == CategorieTagProvider::TERRAIN
+                    || $c2->getCode() == CategorieTagProvider::CATEGORIE_STAGE
+                ) {
+                    return 1;
+                }
+                if ($c1->getOrdre() < $c2->getOrdre()) return -1;
+                if ($c2->getOrdre() < $c1->getOrdre()) return 1;
+                return ($c1->getId() < $c2->getId()) ? -1 : 1;
+            }
+            if ($t1->getOrdre() < $t2->getOrdre()) return -1;
+            if ($t2->getOrdre() < $t1->getOrdre()) return 1;
+            return ($t1->getId() < $t2->getId()) ? -1 : 1;
+        });
+        return $tags;
     }
 }

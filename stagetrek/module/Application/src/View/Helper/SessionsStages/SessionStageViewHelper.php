@@ -166,7 +166,7 @@ class SessionStageViewHelper extends AbstractEntityActionViewHelper
         if(!$this->hasSessionStage() || $this->getSessionStage()->getSessionPrecedente() === null){return "";}
         $session = $this->getSessionStage()->getSessionPrecedente();
         $url = $this->getUrl(Controller::ROUTE_AFFICHER, ['sessionStage' => $session->getId()], [], true);
-        $libelle= Icone::PRECEDENT;
+        $libelle= Icone::render(Icone::PRECEDENT);
         $attributes['class'] = "btn btn-secondary btn-sm m-1";
         $attributes['title'] = "Fiche de la session precedente";
         return $this->generateActionLink($url, $libelle, $attributes);
@@ -177,7 +177,7 @@ class SessionStageViewHelper extends AbstractEntityActionViewHelper
         if(!$this->hasSessionStage() || $this->getSessionStage()->getSessionSuivante() === null){return "";}
         $session = $this->getSessionStage()->getSessionSuivante();
         $url = $this->getUrl(Controller::ROUTE_AFFICHER, ['sessionStage' => $session->getId()], [], true);
-        $libelle= Icone::SUIVANT;
+        $libelle= Icone::render(Icone::SUIVANT);
         $attributes['class'] = "btn btn-secondary btn-sm m-1";
         $attributes['title'] = "Fiche de la session suivante";
         return $this->generateActionLink($url, $libelle, $attributes);
@@ -189,7 +189,7 @@ class SessionStageViewHelper extends AbstractEntityActionViewHelper
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_AJOUTER, ['anneeUniversitaire' => $this->getAnneeUniversitaire()->getId()], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::AJOUTER, Label::AJOUTER);
+        $libelle = ($libelle) ?? Label::render(Label::AJOUTER, Icone::AJOUTER);
         $attributes['title'] = ($attributes['title']) ??  "Ajouter une session de stage";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-success ajax-modal";
         if(!isset($attributes['data-event'])){$attributes['data-event'] = Controller::EVENT_AJOUTER;}
@@ -202,7 +202,7 @@ class SessionStageViewHelper extends AbstractEntityActionViewHelper
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_MODIFIER,  ['sessionStage' => $this->getSessionStage()->getId()], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::MODIFIER, Label::MODIFIER);
+        $libelle = ($libelle) ?? Label::render(Label::MODIFIER, Icone::MODIFIER);
         $attributes['title'] = ($attributes['title']) ??"Modifier la session de stage";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-primary ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ?? Controller::EVENT_MODIFIER;
@@ -215,7 +215,7 @@ class SessionStageViewHelper extends AbstractEntityActionViewHelper
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_SUPPRIMER, ['sessionStage' => $this->getSessionStage()->getId()], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::SUPPRIMER, Label::SUPPRIMER);
+        $libelle = Label::render(Label::SUPPRIMER, Icone::SUPPRIMER);
         $attributes['title'] = ($attributes['title']) ?? "Supprimer la session de stage";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-danger ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ??  Controller::EVENT_SUPPRIMER;
@@ -229,7 +229,7 @@ class SessionStageViewHelper extends AbstractEntityActionViewHelper
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_MODIFIER_PLACES_TERRAIN,  ['sessionStage' => $this->getSessionStage()->getId()], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::MODIFIER, "Modifier le nombre de place(s)");
+        $libelle = ($libelle) ?? sprintf("%s %s", Icone::render(Icone::AJOUTER), "Modifier le nombre de place(s)");
         $attributes['title'] = ($attributes['title']) ??"Modifier le nombre de place(s) proposée(s)";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-primary";
         return $this->generateActionLink($url, $libelle, $attributes);
@@ -253,7 +253,7 @@ class SessionStageViewHelper extends AbstractEntityActionViewHelper
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_IMPORTER_PLACES_TERRAIN,  ['sessionStage' => $this->getSessionStage()->getId()], [], true);
-        $libelle = ($libelle) ?? sprintf("%s %s", Icone::IMPORTER,  Label::IMPORTER);
+        $libelle = ($libelle) ?? Label::render(Label::IMPORTER, Icone::IMPORTER);
         $attributes['title'] = ($attributes['title']) ??"Importer le nombre de place(s) ouverte(s)";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-primary ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ?? Controller::EVENT_MODIFIER;

@@ -14,12 +14,15 @@ use Application\Entity\Traits\Referentiel\HasReferentielPromoTrait;
 use Application\Entity\Traits\Referentiel\HasReferentielsPromosTrait;
 use Application\Entity\Traits\Stage\HasSessionsStagesTrait;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
+use UnicaenTag\Entity\Db\HasTagsInterface;
+use UnicaenTag\Entity\Db\HasTagsTrait;
 
 /**
  * Groupe
  */
 class Groupe implements ResourceInterface,
     HasLibelleInterface, HasCodeInterface
+    , HasTagsInterface
 {
     const RESOURCE_ID = 'Groupe';
     /**
@@ -46,6 +49,7 @@ class Groupe implements ResourceInterface,
     use HasSessionsStagesTrait;
 
     use HasReferentielsPromosTrait;
+    use HasTagsTrait;
 
     /**
      * @var \Application\Entity\Db\Groupe|null

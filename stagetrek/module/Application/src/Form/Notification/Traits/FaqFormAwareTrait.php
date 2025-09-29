@@ -32,7 +32,7 @@ trait FaqFormAwareTrait
     public function getAddFaqQuestionForm(): FaqQuestionForm
     {
         $form = $this->faqQuestionForm;
-        $form->get($form::SUBMIT)->setLabel(sprintf("%s %s", Icone::SAVE, Label::AJOUTER));
+        $form->get($form::SUBMIT)->setLabel(Label::render(Label::AJOUTER, Icone::AJOUTER));
         return $form;
     }
 
@@ -42,7 +42,7 @@ trait FaqFormAwareTrait
     public function getEditFaqQuestionForm(): FaqQuestionForm
     {
         $form = $this->faqQuestionForm;
-        $form->get($form::SUBMIT)->setLabel(sprintf("%s %s", Icone::SAVE, Label::MODIFIER));
+        $form->get($form::SUBMIT)->setLabel(Label::render(Label::MODIFIER, Icone::MODIFIER));
         $form->get($form::SUBMIT)->setAttribute("class", "btn btn-primary");
         return $form;
     }
@@ -64,7 +64,7 @@ trait FaqFormAwareTrait
     public function getAddFaqCategorieQuestionForm(): FaqCategorieQuestionForm
     {
         $form = $this->faqCategorieQuestionForm;
-        $form->get($form::SUBMIT)->setLabel(sprintf("%s %s", Icone::SAVE, Label::AJOUTER));
+        $form->get($form::SUBMIT)->setLabel(Label::render(Label::AJOUTER, Icone::AJOUTER));
         return $form;
     }
 
@@ -74,7 +74,7 @@ trait FaqFormAwareTrait
     public function getEditFaqCategorieQuestionForm(): FaqCategorieQuestionForm
     {
         $form = $this->faqCategorieQuestionForm;
-        $form->get($form::SUBMIT)->setLabel(sprintf("%s %s", Icone::SAVE, Label::MODIFIER));
+        $form->get($form::SUBMIT)->setLabel(Label::render(Label::MODIFIER, Icone::MODIFIER));
         $form->get($form::SUBMIT)->setAttribute("class", "btn btn-primary");
         return $form;
     }

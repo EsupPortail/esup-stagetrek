@@ -76,6 +76,14 @@ $form->setAttribute('id', $formId);
     </div>
 </div>
 
+<hr/>
+<div class="row">
+    <div class="col-md-4">
+        <?= $fcg($fieldset->get($fieldset::TAGS)); ?>
+    </div>
+</div>
+
+
 <div class="mt-3 row">
     <div class="col-md-3">
         <?= $fcg($form->get($form::INPUT_SUBMIT)); ?>
@@ -86,6 +94,8 @@ $form->setAttribute('id', $formId);
 
 <script type="text/javascript">
     $(function () {
+        $('select').selectpicker();
+
         let autocompAdresse = $("#<?=$adresseFieldset::INPUT_VILLE?>");
         // ville de naissance
         autocompAdresse.autocompleteUnicaen({

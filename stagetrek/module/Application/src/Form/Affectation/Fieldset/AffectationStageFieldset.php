@@ -8,10 +8,13 @@ use Application\Entity\Db\Preference;
 use Application\Entity\Db\TerrainStage;
 use Application\Entity\Traits\Stage\HasAffectationStageTrait;
 use Application\Form\Misc\Abstracts\AbstractEntityFieldset;
+use Application\Form\Misc\Interfaces\HasTagInputInterface;
 use Application\Form\Misc\Traits\IdInputAwareTrait;
+use Application\Form\Misc\Traits\TagInputAwareTrait;
 use Application\Form\TerrainStage\Element\TerrainStagePrincipalSelectPicker;
 use Application\Form\TerrainStage\Element\TerrainStageSecondaireSelectPicker;
 use Application\Form\TerrainStage\Element\TerrainStageSelectPicker;
+use Application\Provider\Tag\CategorieTagProvider;
 use Laminas\Filter\StringTrim;
 use Laminas\Filter\StripTags;
 use Laminas\Filter\ToFloat;
@@ -22,12 +25,14 @@ use Laminas\Form\Element\Hidden;
 use Laminas\Form\Element\Number;
 use Laminas\Form\Element\Textarea;
 use Laminas\Validator\Callback;
+use UnicaenTag\Entity\Db\Tag;
 
 /**
  * Class AffectationStageFieldset
  * @package Application\Form\AffectationStage\Fieldset;
  */
 class AffectationStageFieldset  extends AbstractEntityFieldset
+    implements HasTagInputInterface
 {
     use IdInputAwareTrait;
 
@@ -49,6 +54,7 @@ class AffectationStageFieldset  extends AbstractEntityFieldset
         $this->initCoutsAffectationInputs();
         $this->initEtatsInputs();
         $this->initPropertiesInputs();
+        $this->initTagsInputs();
         return $this;
     }
 
@@ -450,5 +456,29 @@ class AffectationStageFieldset  extends AbstractEntityFieldset
         return sprintf("<span class='mx-1 badge %s'>%s / %s</span>",
             $badgeClass, $nbPreAffectations, $nbPlacesOuvertes
         );
+    }
+
+    use TagInputAwareTrait;
+
+    public function getTagsAvailables() : array
+    {
+        $tags = $this->getTagService()->getTags();
+
+        usort($tags, function (Tag $t1, Tag $t2) {
+            $c1 = $t1->getCategorie();
+            $c2 = $t2->getCategorie();
+            if($c1->getId() !== $c2->getId()){
+                //Trie spécifique : on met d'abord la catégorie Années
+                if($c1->getCode()== CategorieTagProvider::AFFECTATION){return -1;}
+                if($c2->getCode()== CategorieTagProvider::AFFECTATION){return 1;}
+                if($c1->getOrdre() < $c2->getOrdre()) return -1;
+                if($c2->getOrdre() < $c1->getOrdre()) return 1;
+                return ($c1->getId() < $c2->getId()) ? -1 : 1;
+            }
+            if($t1->getOrdre() < $t2->getOrdre()) return -1;
+            if($t2->getOrdre() < $t1->getOrdre()) return 1;
+            return ($t1->getId() < $t2->getId()) ? -1 : 1;
+        });
+        return $tags;
     }
 }

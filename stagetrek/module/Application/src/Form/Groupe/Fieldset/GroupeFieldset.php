@@ -8,27 +8,33 @@ use Application\Entity\Db\Groupe;
 use Application\Entity\Db\ReferentielPromo;
 use Application\Form\Annees\Element\AnneeUniversitaireSelectPicker;
 use Application\Form\Misc\Abstracts\AbstractEntityFieldset;
+use Application\Form\Misc\Interfaces\HasTagInputInterface;
 use Application\Form\Misc\Traits\CodeInputAwareTrait;
 use Application\Form\Misc\Traits\IdInputAwareTrait;
 use Application\Form\Misc\Traits\LibelleInputAwareTrait;
+use Application\Form\Misc\Traits\TagInputAwareTrait;
 use Application\Form\Parametre\Element\NiveauEtudeSelectPicker;
 use Application\Form\Referentiel\Element\ReferentielPromoSelectPicker;
+use Application\Provider\Tag\CategorieTagProvider;
 use Laminas\Filter\StringTrim;
 use Laminas\Filter\StripTags;
 use Laminas\Filter\ToInt;
 use Laminas\Form\Element\Text;
 use Laminas\Validator\Callback;
 use Laminas\Validator\StringLength;
+use UnicaenTag\Entity\Db\Tag;
 
 /**
  * Class GroupeFieldset
  * @package Application\Form\Groupe\Fieldset
  */
 class GroupeFieldset extends AbstractEntityFieldset
+    implements HasTagInputInterface
 {
     use IdInputAwareTrait;
     use LibelleInputAwareTrait;
     use CodeInputAwareTrait;
+    use TagInputAwareTrait;
 
 
     /**
@@ -42,6 +48,7 @@ class GroupeFieldset extends AbstractEntityFieldset
         $this->initAnneeInput();
         $this->initNiveauInput();
         $this->initReferentielsInput();
+        $this->initTagsInputs();
         return $this;
 
     }
@@ -176,7 +183,7 @@ class GroupeFieldset extends AbstractEntityFieldset
                             /** @var AnneeUniversitaire $annee */
                             $annee = $this->getObjectManager()->getRepository(AnneeUniversitaire::class)->find($value);
                             if (!$annee) return true; //Erreur mais pas du fait l'année non trouvé
-                            return !$annee->isAnneeVerrouillee();
+                            return !$annee->isLocked();
                         },
                         'break_chain_on_failure' => true,
                     ],
@@ -186,6 +193,30 @@ class GroupeFieldset extends AbstractEntityFieldset
     }
 
 
+    public function getTagsAvailables(): array
+    {
+        $tags = $this->getTagService()->getTags();
+        usort($tags, function (Tag $t1, Tag $t2) {
+            $c1 = $t1->getCategorie();
+            $c2 = $t2->getCategorie();
+            if ($c1->getId() !== $c2->getId()) {
+                //Trie spécifique : on met d'abord la catégorie Années
+                if ($c1->getCode() == CategorieTagProvider::CONTACT_STAGE) {
+                    return -1;
+                }
+                if ($c2->getCode() == CategorieTagProvider::CONTACT_STAGE) {
+                    return 1;
+                }
+                if ($c1->getOrdre() < $c2->getOrdre()) return -1;
+                if ($c2->getOrdre() < $c1->getOrdre()) return 1;
+                return ($c1->getId() < $c2->getId()) ? -1 : 1;
+            }
+            if ($t1->getOrdre() < $t2->getOrdre()) return -1;
+            if ($t2->getOrdre() < $t1->getOrdre()) return 1;
+            return ($t1->getId() < $t2->getId()) ? -1 : 1;
+        });
+        return $tags;
+    }
 
     /**
      * @param \Application\Entity\Db\AnneeUniversitaire|null $annee
@@ -209,7 +240,7 @@ class GroupeFieldset extends AbstractEntityFieldset
         //Rajout de l'attribut disabled pour les années universitaires vérouillez
         /** @var AnneeUniversitaire $a */
         foreach ($annees as $a){
-            if($a->isAnneeVerrouillee()) {
+            if($a->isLocked()) {
                 if(isset($annee) && $annee->getId()==$a->getId()){
                     continue;
                 }

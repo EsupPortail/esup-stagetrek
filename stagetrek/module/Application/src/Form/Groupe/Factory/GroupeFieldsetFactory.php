@@ -12,6 +12,7 @@ use Doctrine\ORM\EntityManager;
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Laminas\Validator\ValidatorPluginManager;
+use UnicaenTag\Service\Tag\TagService;
 
 /**
  * Class GroupeFieldsetFactory
@@ -47,6 +48,8 @@ class GroupeFieldsetFactory implements FactoryInterface
         $hydrator = $container->get('HydratorManager')->get(GroupeHydrator::class);
         $fieldset->setHydrator($hydrator);
         $fieldset->setObject(new Groupe());
+
+        $fieldset->setTagService($container->get(TagService::class));
 
         return $fieldset;
     }

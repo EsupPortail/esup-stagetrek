@@ -2,8 +2,7 @@
 
 namespace Application\Entity\Interfaces;
 
-
-use Application\Entity\Db\Source;
+use UnicaenTag\Entity\Db\Tag;
 
 /**
  * Entité pouvant avoir un "verroux" empêchant par exemple des suppression par erreur
@@ -11,7 +10,7 @@ use Application\Entity\Db\Source;
  */
 interface LockableEntityInterface
 {
-    public function lock(...$param) : static;
+    public function lock(Tag $tag) : static;
     public function unlock() : static;
     public function isLocked() : bool;
 }

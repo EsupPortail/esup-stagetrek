@@ -81,7 +81,7 @@ $canAdd = $vh->actionAllowed(ContactTerrainController::ACTION_AJOUTER);
                     <td class="text-end">
                         <?php $terrainVh = $this->terrainStage();
                             $terrainVh->setTerrainStage($terrain);
-                            echo $terrainVh->lienAfficher(Icone::AFFICHER, ['class' => "text-primary"]);
+                            echo $terrainVh->lienAfficher(Icone::render(Icone::AFFICHER), ['class' => "text-primary"]);
                          ?>
                     </td>
                 </tr>

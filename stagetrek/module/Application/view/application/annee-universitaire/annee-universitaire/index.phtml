@@ -2,6 +2,7 @@
 
 use Application\Controller\AnneeUniversitaire\AnneeUniversitaireController;
 use Application\Entity\Db\AnneeUniversitaire;
+use Application\Provider\Misc\Icone;
 use Application\View\Helper\Annees\AnneeUniversitaireViewHelper;
 
 /**
@@ -16,7 +17,7 @@ $vh = $this->anneeUniversitaire();
 
 <h1 class="page-header">
     <span class="icon">
-        <i class="fas fa-calendar-alt"></i>
+        <i class="<?= Icone::ANNEE?>"></i>
     <?= $title ?>
     </span>
 </h1>
