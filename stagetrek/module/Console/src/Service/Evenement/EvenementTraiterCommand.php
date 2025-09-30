@@ -4,9 +4,11 @@ namespace Console\Service\Evenement;
 
 use Application\Misc\Util;
 use Application\Provider\Misc\EnvironnementProvider;
+use DateInterval;
 use DateTime;
 use Evenement\Provider\EvenementEtatProvider;
 use Exception;
+use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -134,14 +136,21 @@ class EvenementTraiterCommand extends Command
         $nbError = 0;
 
         $this->io->progressStart(sizeof($evenements));
+        $annule = $this->getEtatEvenementService()->findByCode(Etat::ANNULE);
         $cpt = 0;
         /** @var Evenement $evenement */
         foreach ($evenements as $evenement) {
+            try {
+                $dateFinMax = DateTime::createFromFormat('d/m/Y H:i:s', $start->format('d/m/Y H:i:s'));
+                $dateFinMax->add(new DateInterval($this->maxExecutionTime));
+            } catch (Exception $e) {
+                throw new RuntimeException("Impossible de calcul la date limite de traitement",0,$e);
+            }
+
             // calcul du temps d'exécution
-            $executionTime = (new DateTime())->getTimestamp() - $start->getTimestamp();
-            if ($executionTime >= $this->maxExecutionTime) {
+            if ($dateFinMax <= new DateTime()) {
                 $this->io->writeln("");
-                $this->io->warning("Arrêts du traitement des événements\n Temps d'execution > " . $this->maxExecutionTime . "s");
+                $this->io->warning("Arrêts du traitement des événements\n Temps d'execution trop long");
                 // si le temps d'exécution maximal est dépassé on quitte la procédure
                 break;
             }
@@ -150,6 +159,26 @@ class EvenementTraiterCommand extends Command
                 if ($evenement !== null) {
                     $msg = sprintf("Début du traitement de l'événement #%s - %s", $evenement->getId(), $evenement->getType()->getLibelle());
                     $texte .= $msg . " <br/>";
+
+                    if ($this->delaiPeremption !== null) {
+                        try {
+                            $dateLimiteTraitement = DateTime::createFromFormat('d/m/Y H:i:s', $evenement->getDatePlanification()->format('d/m/Y H:i:s'));
+                            $dateLimiteTraitement->add(new DateInterval($this->delaiPeremption));
+                        } catch (Exception $e) {
+                            throw new RuntimeException("Impossible de calcul la date limite de traitement",0,$e);
+                        }
+
+                        if ($dateLimiteTraitement < new DateTime()) {
+                            $evenement->setEtat($annule);
+                            $evenement->setLog("Date Limite de Traitement dépassée, événement annulé");
+                            $msg = sprintf("Annulation due traitement de l'événement #%s - %s : délai dépassé", $evenement->getId(), $evenement->getType()->getLibelle());
+                            $this->io->writeln("");
+                            $this->io->info($msg);
+                            $this->evenementService->update($evenement);
+                            break;
+                        }
+                    }
+
                     if(!$this->hasToSimultateTraitement()){
                         $evenement = $this->evenementGestionService->traiterEvent($evenement);
                     }
@@ -228,15 +257,29 @@ class EvenementTraiterCommand extends Command
      * vraleur par défaut : 300s
      * @file /etc/crontab
      */
-    protected int $maxExecutionTime = 300;
-    public function getMaxExecutionTime(): int
+    protected ?string $maxExecutionTime = null;
+    public function getMaxExecutionTime(): string
     {
         return $this->maxExecutionTime;
     }
-    public function setMaxExecutionTime(int $maxExecutionTime): void
+    public function setMaxExecutionTime(string $maxExecutionTime): void
     {
         $this->maxExecutionTime = $maxExecutionTime;
     }
+
+    protected ?string $delaiPeremption = null;
+
+    public function getDelaiPeremption(): ?string
+    {
+        return $this->delaiPeremption;
+    }
+
+    public function setDelaiPeremption(?string $delaiPeremption): void
+    {
+        $this->delaiPeremption = $delaiPeremption;
+    }
+
+
 
     /** @var string|null $environnement */
     protected ?string $environnement = null;

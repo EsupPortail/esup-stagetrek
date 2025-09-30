@@ -21,7 +21,7 @@
         "unicaen/mail": "7.3.0",
         "unicaen/renderer": "^7.1.0",
         "unicaen/pdf": "6.1.1",
-        "unicaen/evenement": "6.0.17",
+        "unicaen/evenement": "6.1.0",
         "unicaen/etat": "6.1.6",
         "unicaen/bddadmin": "1.5.0",
         "unicaen/db-import": "7.3.2",
