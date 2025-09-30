@@ -4,6 +4,7 @@ namespace Console\Service\Evenement\Factory;
 
 use Application\Provider\Misc\EnvironnementProvider;
 use Console\Service\Evenement\EvenementTraiterCommand;
+use DateInterval;
 use Evenement\Service\Evenement\EvenementService;
 use Laminas\ServiceManager\ServiceManager;
 use Psr\Container\ContainerInterface;
@@ -19,6 +20,7 @@ class EvenementTraiterCommandFactory extends Command
      *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \DateMalformedIntervalStringException
      */
     public function __invoke(ContainerInterface $container): EvenementTraiterCommand
     {
@@ -41,7 +43,11 @@ class EvenementTraiterCommandFactory extends Command
         $config = $container->get('Configuration');
         if (isset($config['unicaen-evenement']['max_time_execution'])) {
             $max_time_execution = $config['unicaen-evenement']['max_time_execution'];
-            $command->setMaxExecutionTime(intval($max_time_execution));
+            $command->setMaxExecutionTime($max_time_execution);
+        }
+        if (isset($config['unicaen-evenement']['delai-peremption'])) {
+            $delai = $config['unicaen-evenement']['delai-peremption'];
+            $command->setDelaiPeremption($delai);
         }
         $env = ($config['console-cli']['console_env']) ??  EnvironnementProvider::TEST;
         $command->setEnvironnement($env);

@@ -1,5 +1,10 @@
 CHANGELOG
 =========
+1.4.3 (30/09/2025)
+------------------
+- [UnicaenEvenement] : 6.1.0 - annulation d'événement trop vieux
+  - Nouvelle variable d'environnement optionnel : EVENEMENTS_DELAI_PEREMPTION
+  - EVENEMENTS_MAX_TIME_EXECUTION : valeur en DateInterval et non plus en seconde
 1.4.2 (26/09/2025)
 ------------------
 - [UnicaenTag] : mise en place de UnicaenTag

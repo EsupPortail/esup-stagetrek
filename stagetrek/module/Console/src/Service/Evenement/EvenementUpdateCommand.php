@@ -2,8 +2,10 @@
 
 namespace Console\Service\Evenement;
 
+use DateInterval;
 use DateTime;
 use Exception;
+use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -91,21 +93,24 @@ class EvenementUpdateCommand extends Command
             }
             //Annulation d'événement qui aurais du petre traiter la veille
             if ($evenement->getEtat()->getCode() == Etat::EN_ATTENTE) {
-                // calcul du temps d'exécution
-                $time = new DateTime();
-                $executionTime = $time->getTimestamp() - $evenement->getDatePlanification()->getTimestamp();
-                $delayBeforeError = 60 * 60 * 24; // Un non traité en attente depuis plus de 24h sera annulée
-                if ($executionTime >= $delayBeforeError) {
-                    $this->io->warning("Annulation de de l'événement #" . $evenement->getId());
-                    $log = $evenement->getLog();
-                    $log .= "<br/>-----------<br/>";
-                    $log .= sprintf("Annulée le %s à %s car non traiter à temps <br/>", $time->format('d/m/Y'), $time->format('H:i'));
-                    $log .= "-----------<br/>";
-                    $evenement->setLog($log);
-                    $evenement->setEtat($cancelEtat);
-                    $evenement->setDateFin($time);
-                    $this->getEvenementService()->update($evenement);
-                    $cptCancel++;
+                if ($this->delaiPeremption !== null) {
+                    try {
+                        $dateLimiteTraitement = DateTime::createFromFormat('d/m/Y H:i:s', $evenement->getDatePlanification()->format('d/m/Y H:i:s'));
+                        $dateLimiteTraitement->add(new DateInterval($this->delaiPeremption));
+                    } catch (Exception $e) {
+                        throw new RuntimeException("Impossible de calcul la date limite de traitement",0,$e);
+                    }
+
+                    if ($dateLimiteTraitement < new DateTime()) {
+                        $evenement->setEtat($cancelEtat);
+                        $evenement->setLog("Date Limite de Traitement dépassée, événement annulé");
+                        $msg = sprintf("Annulation due traitement de l'événement #%s - %s : délai dépassé", $evenement->getId(), $evenement->getType()->getLibelle());
+                        $this->io->writeln("");
+                        $this->io->info($msg);
+                        $this->evenementService->update($evenement);
+                        $cptCancel++;
+                        break;
+                    }
                 }
             }
             $this->io->progressAdvance();
@@ -139,4 +144,18 @@ class EvenementUpdateCommand extends Command
         $this->maxExecutionTime = $maxExecutionTime;
         return $this;
     }
+
+
+    protected ?string $delaiPeremption = null;
+
+    public function getDelaiPeremption(): ?string
+    {
+        return $this->delaiPeremption;
+    }
+
+    public function setDelaiPeremption(?string $delaiPeremption): void
+    {
+        $this->delaiPeremption = $delaiPeremption;
+    }
+
 }

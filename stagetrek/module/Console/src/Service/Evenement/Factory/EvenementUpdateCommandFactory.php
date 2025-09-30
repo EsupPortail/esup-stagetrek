@@ -40,6 +40,10 @@ class EvenementUpdateCommandFactory extends Command
             $max_time_execution = $config['unicaen-evenement']['max_time_execution'];
             $command->setMaxExecutionTime(intval($max_time_execution));
         }
+        if (isset($config['unicaen-evenement']['delai-peremption'])) {
+            $delai = $config['unicaen-evenement']['delai-peremption'];
+            $command->setDelaiPeremption($delai);
+        }
 
         return $command;
     }
