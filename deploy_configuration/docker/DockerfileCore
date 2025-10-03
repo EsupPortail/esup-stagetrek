@@ -37,7 +37,7 @@ WORKDIR /var/www/html/stagetrek/
 COPY ./stagetrek /var/www/html/stagetrek/
 
 # Préparation des variables d'environnement
-COPY ../.env.example /var/www/html/stagetrek
+COPY ../.env_example /var/www/html/stagetrek
 
 WORKDIR /var/www/html/stagetrek/
 
