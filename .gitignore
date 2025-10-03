@@ -4,6 +4,6 @@ bin/
 data/cache-apache
 data/stagetrek-db
 doccumentation/notes/
-!.env_exemple
+!.env_example
 .env
 deploy_configuration/shibconf/key/
