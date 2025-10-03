@@ -71,7 +71,7 @@ class CategorieStageViewHelper extends AbstractEntityActionViewHelper
         if (!$this->actionAllowed(Controller::ACTION_LISTER)) {
             return "";
         }
-        $libelle = ($libelle) ?? sprintf("%s Liste des catégories", Icone::LISTE);
+        $libelle = ($libelle) ?? Label::render("Liste des catégories", Icone::LISTE);
         $url = $this->getUrl(Controller::ROUTE_INDEX, [], [], true);
         $attributes['title'] = ($attributes['title']) ??  "Listes des catégories de stages";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-secondary";

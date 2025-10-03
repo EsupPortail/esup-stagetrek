@@ -22,7 +22,7 @@ class Label
         if(isset($icone)){
             $icone = Icone::render($icone)." ";
         }
-        return sprintf("<span title='%s'>%s%s", $title, $icone, $label);
+        return sprintf("<span title='%s'>%s%s</span>", $title, $icone, $label);
     }
 
     const LABEL_AJOUTER = "<span class='".Icone::AJOUTER."'></i> Ajouter";

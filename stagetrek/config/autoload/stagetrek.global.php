@@ -62,8 +62,8 @@ return [
         'http_client' => [
             'uri_host' => ($_ENV['URI_HOST']) ?? "",
             'uri_scheme' => ($_ENV['URI_SCHEMA']) ?? "",
-//            'proxyhost' => ($_ENV['PROXY_HOST']) ?? "",
-//            'proxyport' => ($_ENV['PROXY_PORT']) ?? "",
+            'proxyhost' => ($_ENV['PROXY_HOST']) ?? "",
+            'proxyport' => ($_ENV['PROXY_PORT']) ?? "",
 
             'api' => [
                 'geo_gouv' => [
