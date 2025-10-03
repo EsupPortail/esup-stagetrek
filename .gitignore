@@ -1,5 +1,9 @@
+.idea
+.DS_Store
+bin/
 data/cache-apache
 data/stagetrek-db
 doccumentation/notes/
+!.env_exemple
 .env
 deploy_configuration/shibconf/key/
