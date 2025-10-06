@@ -165,7 +165,8 @@ $today = new DateTime();
                     $affectation->hasEtatEnDisponibilite(),
                     $affectation->hasEtatStageNonEffectue()
                     => "table-muted",
-                    $affectation->hasEtatNonAffecte()
+                    $affectation->hasEtatNonAffecte(),
+                    $affectation->hasEtatEnCours()
                     => "",
                     $affectation->hasEtatProposition()
                     => "table-info",
@@ -176,7 +177,7 @@ $today = new DateTime();
                     $affectation->hasEtatEnRetard(),
                     $affectation->hasEtatEnAlerte()
                     => "table-warning",
-                    $affectation->hasEtatEnErreur()
+                    $affectation->hasEtatEnErreur(),
                     => "table-danger",
                     default => "table-danger"
                 };
