@@ -177,7 +177,8 @@ $today = new DateTime();
                     $affectation->hasEtatEnAlerte()
                     => "table-warning",
                     $affectation->hasEtatEnErreur()
-                    => "table-danger"
+                    => "table-danger",
+                    default => "table-danger"
                 };
                 ?>
                 <tr class="<?= $bg ?>">
@@ -224,8 +225,8 @@ $today = new DateTime();
                     <td class="hidden no-search no-sort"><?=  $affectation->getBonusMalus() ?></td>
                     <td class="hidden no-search no-sort"><?=  $affectation->getScorePreAffectation() ?></td>
                     <td class="hidden no-search no-sort"><?=  $affectation->getScorePostAffectation() ?></td>
-                    <td class="hidden no-search no-sort"><?=  (isset($etat)) ? $etat->getTypeLibelle() : "Indéterminée"?></td>
-                    <td class="hidden no-search no-sort"><?=  $etat->getInfos() ?></td>
+                    <td class="hidden no-search no-sort"><?=  (isset($etat)) ? $etat->getTypeLibelle() : "Indéterminée" ?></td>
+                    <td class="hidden no-search no-sort"><?=  (isset($etat)) ? $etat->getTypeLibelle() : null ?></td>
                 </tr>
             <?php endforeach; ?>
             </tbody>
