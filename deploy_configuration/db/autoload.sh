@@ -7,7 +7,7 @@ sql_scripts_dir="/scripts_to_init/init-db"
 db_user="$POSTGRES_USER"
 
 # Nom de la base de données PostgreSQL
-db_name=$POSTGRES_DB"
+db_name="$POSTGRES_DB"
 
 # Options pour psql
 psql_options="-U $db_user -d $db_name -a -v ON_ERROR_STOP=0"
