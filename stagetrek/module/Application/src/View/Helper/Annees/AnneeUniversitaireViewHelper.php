@@ -179,7 +179,7 @@ class AnneeUniversitaireViewHelper extends AbstractEntityActionViewHelper
             return "";
         }
         $url = $this->getUrl(Controller::ROUTE_SUPPRIMER, ['anneeUniversitaire' => $this->getAnneeUniversitaire()->getId()], [], true);
-        $libelle = Label::render(Label::SUPPRIMER, Icone::SUPPRIMER);
+        $libelle = ($libelle) ?? Label::render(Label::SUPPRIMER, Icone::SUPPRIMER);
         $attributes['title'] = ($attributes['title']) ?? "Supprimer l'année universitaire";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-danger ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ??  Controller::EVENT_SUPPRIMER;

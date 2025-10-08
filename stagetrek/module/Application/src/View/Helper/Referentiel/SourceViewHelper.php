@@ -103,7 +103,7 @@ class SourceViewHelper extends AbstractEntityActionViewHelper
         }
         $source = $this->getSource();
         $url = $this->getUrl(Controller::ROUTE_SUPPRIMER, ['source' => $source->getId()], [], true);
-        $libelle = Label::render(Label::SUPPRIMER, Icone::SUPPRIMER);
+        $libelle = ($libelle) ?? Label::render(Label::SUPPRIMER, Icone::SUPPRIMER);
         $attributes['title'] = ($attributes['title']) ?? "Supprimer la source de données";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-danger ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ??  Controller::EVENT_SUPPRIMER;

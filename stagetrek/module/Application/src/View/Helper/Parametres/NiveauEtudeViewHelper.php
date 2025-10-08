@@ -90,7 +90,7 @@ class NiveauEtudeViewHelper extends AbstractEntityActionViewHelper
         }
         $niveau = $this->getNiveauEtude();
         $url = $this->getUrl(Controller::ROUTE_SUPPRIMER, ['niveauEtude' => $niveau->getId()], [], true);
-        $libelle = Label::render(Label::SUPPRIMER, Icone::SUPPRIMER);
+        $libelle = ($libelle) ?? Label::render(Label::SUPPRIMER, Icone::SUPPRIMER);
         $attributes['title'] = ($attributes['title']) ?? "Supprimer le niveau d'étude";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-danger ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ??  Controller::EVENT_SUPPRIMER;

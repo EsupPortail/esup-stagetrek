@@ -92,7 +92,7 @@ class ParametreCoutTerrainViewHelper extends AbstractEntityActionViewHelper
         }
         $parametre = $this->getParametreTerrainCoutAffectationFixe();
         $url = $this->getUrl(Controller::ROUTE_SUPPRIMER, ['parametreTerrainCoutAffectationFixe' => $parametre->getId()], [], true);
-        $libelle = Label::render(Label::SUPPRIMER, Icone::SUPPRIMER);
+        $libelle = ($libelle) ?? Label::render(Label::SUPPRIMER, Icone::SUPPRIMER);
         $attributes['title'] = ($attributes['title']) ?? "Supprimer le cout fixe du terrain";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-danger ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ??  Controller::EVENT_SUPPRIMER;
