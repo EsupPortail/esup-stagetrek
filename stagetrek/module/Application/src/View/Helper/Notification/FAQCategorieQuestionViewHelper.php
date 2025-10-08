@@ -93,7 +93,7 @@ class FAQCategorieQuestionViewHelper extends AbstractEntityActionViewHelper
         }
         $categorie = $this->getFaqCategorieQuestion();
         $url = $this->getUrl(Controller::ROUTE_SUPPRIMER, ['faqCategorieQuestion' => $categorie->getId()], [], true);
-        $libelle = Label::render(Label::SUPPRIMER, Icone::SUPPRIMER);
+        $libelle = ($libelle) ?? Label::render(Label::SUPPRIMER, Icone::SUPPRIMER);
         $attributes['title'] = ($attributes['title']) ?? "Supprimer la categorie";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-danger ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ??  Controller::EVENT_SUPPRIMER;

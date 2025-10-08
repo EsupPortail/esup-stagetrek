@@ -99,7 +99,7 @@ class FAQViewHelper extends AbstractEntityActionViewHelper
         }
         $question = $this->getQuestion();
         $url = $this->getUrl(Controller::ROUTE_SUPPRIMER, ['faq' => $question->getId()], [], true);
-        $libelle = Label::render(Label::SUPPRIMER, Icone::SUPPRIMER);
+        $libelle = ($libelle) ?? Label::render(Label::SUPPRIMER, Icone::SUPPRIMER);
         $attributes['title'] = ($attributes['title']) ?? "Supprimer la question";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-danger ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ??  Controller::EVENT_SUPPRIMER;

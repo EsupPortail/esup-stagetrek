@@ -52,7 +52,7 @@ class UnicaenRoleDataProvider implements DataProviderInterface {
                 'displayed' => true,
             ],
             [
-                'role_id' => RolesProvider::SCOLARTIE,
+                'role_id' => RolesProvider::SCOLARITE,
                 'libelle' => "Scolarité",
                 'description' => "Gestionaire de scolarité",
                 'is_default' => false,

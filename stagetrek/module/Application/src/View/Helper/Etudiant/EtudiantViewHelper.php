@@ -158,7 +158,7 @@ class EtudiantViewHelper extends AbstractEntityActionViewHelper
         }
         $etudiant = $this->getEtudiant();
         $url = $this->getUrl(Controller::ROUTE_SUPPRIMER, ['etudiant' => $etudiant->getId()], [], true);
-        $libelle = Label::render(Label::SUPPRIMER, Icone::SUPPRIMER);
+        $libelle = ($libelle) ?? Label::render(Label::SUPPRIMER, Icone::SUPPRIMER);
         $attributes['title'] = ($attributes['title']) ?? "Supprimer l'étudiant";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-danger ajax-modal";
         $attributes['data-event'] = ($attributes['data-event']) ??  Controller::EVENT_SUPPRIMER;

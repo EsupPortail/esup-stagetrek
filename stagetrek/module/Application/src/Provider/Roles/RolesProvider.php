@@ -10,6 +10,6 @@ class RolesProvider
     const ADMIN_FONC = 'Admin_fonc';
     const ETUDIANT = 'Etudiant';
     const GARDE = 'Garde';
-    const SCOLARTIE = 'Scolarite';
+    const SCOLARITE = 'Scolarite';
     const OBSERVATEUR = 'Observateur';
 }

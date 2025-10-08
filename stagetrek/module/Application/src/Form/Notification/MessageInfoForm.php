@@ -12,7 +12,6 @@ use Application\Provider\Misc\Label;
  * @package Application\Form\Message
  */
 class MessageInfoForm extends AbstractEntityForm
-implements Label
 {
 
     public function init() : static
