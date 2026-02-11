@@ -31,6 +31,17 @@ class ContactCsvImportValidator extends AbstractCsvImportValidator
         ];
     }
 
+    public static function isChampsObligatoire(string $key) : bool
+    {
+        $champsObligatoire = [
+            self::HEADER_LIBELLE => true,
+            self::HEADER_NOM => true,
+            self::HEADER_MAIl => true,
+        ];
+        return ($champsObligatoire[$key]) ?? false;
+    }
+
+
     protected ?string $code = null;
     protected ?string $libelle = null;
     protected ?string $nom = null;

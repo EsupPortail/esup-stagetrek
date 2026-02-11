@@ -130,7 +130,7 @@ class TerrainStage implements ResourceInterface,
             $c2 = $t2->getCategorieStage();
 //            On trie par type (Principale/secondaire)
             if ($t1->isTerrainPrincipal() != $t2->isTerrainPrincipal()) {
-                return ($t1->isTerrainPrincipal()) ? -$ordre : $ordre;
+                return ($t1->isTerrainPrincipal()) ? $ordre : -$ordre;
             }
             //On trie par ordre de la catégorie
             if ($c1->getId() != $c2->getId()) {

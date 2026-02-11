@@ -2,7 +2,7 @@
 SHELL=/bin/sh
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 # Pour vérifier que les crons sont fonctionnels
-#*/1 * * * * root date >> /var/log/crontab.logs 2>&1
+#*/1 * * * * root date >> /var/log/stagetrek/test.log 2>&1
 
 # Example of job definition:
 # .---------------- minute (0 - 59)
@@ -19,12 +19,15 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 #Traitement des evenements toutes les 5 mins
 */5 * * * * root (/bin/stagetrek/traiter_evenements | ts) >> /var/log/stagetrek/evenements.log 2>&1
 
+#Recalcul automatiques des indicateurs
+0 8,12,16 * * 1-5 root (/bin/stagetrek/console refresh-indicateurs | ts) > /var/log/stagetrek/indicateurs.log 2>&1
+
 #Clear des logs
-0 3 * * * root /bin/stagetrek/console evenement:purger-journal >> /var/log/stagetrek/clear.log 2>&1
-10 3 * * * root /bin/stagetrek/console evenement:purger-evenement >> /var/log/stagetrek/clear.log 2>&1
-20 3 * * * root /bin/stagetrek/console mail:purge >> /var/log/stagetrek/clear.log 2>&1
+0 3 * * * root (/bin/stagetrek/console evenement:purger-journal | ts) >> /var/log/stagetrek/clear.log 2>&1
+10 3 * * * root (/bin/stagetrek/console evenement:purger-evenement | ts) >> /var/log/stagetrek/clear.log 2>&1
+20 3 * * * root (/bin/stagetrek/console mail:purge | ts) >> /var/log/stagetrek/clear.log 2>&1
 
 #Déclencehement de logrotate (au cas ou)
-30 3    * * *   root logrotate -f /etc/logrotate.d/stagetrek >>  /var/log/stagetrek/clear.log 2>&1
+30 3    * * *   root logrotate -f /etc/logrotate.d/stagetrek
 
 ### !!! important : finir par un saut de ligne

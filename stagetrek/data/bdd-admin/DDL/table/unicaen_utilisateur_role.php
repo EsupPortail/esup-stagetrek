@@ -54,7 +54,7 @@ return [
             'scale'       => NULL,
             'precision'   => 4,
             'nullable'    => FALSE,
-            'default'     => NULL,
+            'default'     => 'nextval(\'unicaen_utilisateur_role_id_seq\'::regclass)',
             'position'    => 1,
             'commentaire' => NULL,
         ],

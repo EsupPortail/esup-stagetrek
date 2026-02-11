@@ -16,9 +16,9 @@ class NiveauEtudeDataProvider implements DataProviderInterface {
         switch ($table) {
             case 'niveau_etude' :
                 $defaultConfig = [
-                    'actions' => [DataManager::ACTION_INSTALL, DataManager::ACTION_UPDATE],
+                    'actions' => [DataManager::ACTION_INSTALL],
                     'key'     => 'id',
-                    'options'                 => ['update'  => true, 'soft-delete' => false, 'delete' => false,],
+                    'options'                 => ['update'  => false, 'soft-delete' => false, 'delete' => false,],
                 ];
                 break;
         }

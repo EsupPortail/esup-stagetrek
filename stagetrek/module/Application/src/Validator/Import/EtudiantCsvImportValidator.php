@@ -4,6 +4,7 @@ namespace Application\Validator\Import;
 
 use Application\Entity\Db\Etudiant;
 use Application\Exceptions\ImportException;
+use Application\Misc\Util;
 use Application\Service\Groupe\Traits\GroupeServiceAwareTrait;
 use Application\Service\Misc\CSVService;
 use Application\Validator\Import\Interfaces\AbstractCsvImportValidator;
@@ -125,7 +126,7 @@ class EtudiantCsvImportValidator extends AbstractCsvImportValidator
             throw new ImportException($msg);
         }
         if (strlen($numEtu) > 25) {
-            $msg = "Le numéro l'étudiant.e ne doit pas dépasser les 25 caractéres";
+            $msg = "Le numéro l'étudiant".Util::POINT_MEDIANT."e ne doit pas dépasser les 25 caractéres";
             throw new ImportException($msg);
         }
 
@@ -141,19 +142,19 @@ class EtudiantCsvImportValidator extends AbstractCsvImportValidator
         $nom = $this->nom;
         $prenom = $this->prenom;
         if ($nom == "") {
-            $msg = "Le nom de l'étudiant.e n'a pas été fourni'";
+            $msg = "Le nom de l'étudiant".Util::POINT_MEDIANT."e n'a pas été fourni'";
             throw new ImportException($msg);
         }
         if ($prenom == "") {
-            $msg = "Le prénom de l'étudiant.e n'a pas été fourni'";
+            $msg = "Le prénom de l'étudiant".Util::POINT_MEDIANT."e n'a pas été fourni'";
             throw new ImportException($msg);
         }
         if (strlen($nom) > 255) {
-            $msg = "Le numéro l'étudiant.e ne doit pas dépasser les 255 caractéres";
+            $msg = "Le numéro l'étudiant".Util::POINT_MEDIANT."e ne doit pas dépasser les 255 caractéres";
             throw new ImportException($msg);
         }
         if (strlen($prenom) > 255) {
-            $msg = "Le prénom l'étudiant.e ne doit pas dépasser les 255 caractéres";
+            $msg = "Le prénom l'étudiant".Util::POINT_MEDIANT."e ne doit pas dépasser les 255 caractéres";
             throw new ImportException($msg);
         }
         return true;

@@ -2,6 +2,7 @@
 
 use Application\Controller\Groupe\GroupeController;
 use Application\Entity\Db\Groupe;
+use Application\Misc\Util;
 use Application\View\Helper\Annees\AnneeUniversitaireViewHelper;
 use Application\View\Helper\Groupe\GroupeViewHelper;
 
@@ -128,7 +129,7 @@ $anneeEtat = $annee->getEtatActif();
                     </div>
                     <div class="row">
                         <div class="col-md-12 text-small text-muted">
-                            Lors d'un import depuis l'un de ces référentiels, les étudiants seront automatiquement
+                            Lors d'un import depuis l'un de ces référentiels, les étudiant<?=Util::POINT_MEDIANT?>s seront automatiquement
                             ajoutés dans ce groupe
                         </div>
                     </div>

@@ -8,6 +8,7 @@ use Application\Entity\Db\Groupe;
 use Application\Entity\Db\SessionStage;
 use Application\Entity\Timeline\TimeFrame;
 use Application\Entity\Timeline\Timeline;
+use Application\Entity\Timeline\TimePeriode;
 use Application\View\Helper\Groupe\GroupeViewHelper;
 use Application\View\Helper\SessionsStages\SessionStageViewHelper;
 use Application\View\Helper\Timeline\TimelineHelper;
@@ -71,6 +72,7 @@ class CalendrierStageViewHelper extends AbstractHelper
      * @param AnneeUniversitaire $annee
      * @param Groupe[] $groupes //Précisez les groupes que l'on souhaites afficher
      * @return string
+     * @throws \Exception
      */
     public function renderCalendrierTimeline($annee, $groupes=[])
     {
@@ -99,11 +101,30 @@ class CalendrierStageViewHelper extends AbstractHelper
             $groupeVh = $this->view->groupe($groupe);
             $groupeLibelle = $groupeVh->lienAfficher();
             $timeline = new Timeline($groupe->getId(), $groupeLibelle, $annee->getDateDebut(), $annee->getDateFin());
+            /** @var SessionStage $session */
             foreach ($sessions[$groupe->getId()] as $session) {
                 $timeFrame = new TimeFrame($session->getId(), $session->getLibelle());
                 $timeFrame->setStart($session->getDateDebutStage());
                 $timeFrame->setEnd($session->getDateFinStage());
                 $timeline->addTimeFrame($timeFrame);
+//                Rajout des timesPeriodes pour les périodes de stages
+                $periodes = $session->getDatesPeriodesStages();
+                if(!isset($periodes) || empty($periodes)){
+                    $timePeriode = new TimePeriode($session->getId());
+                    $timePeriode->setStart($session->getDateDebutStage());
+                    $timePeriode->setEnd($session->getDateFinStage());
+                    $timeline->addTimePeriode($timePeriode);
+                }
+                else{
+                    foreach ($periodes as $periode) {
+                        $timePeriode = new TimePeriode($periode->getId());
+                        $timePeriode->setStart($periode->getDebut());
+                        $timePeriode->setEnd($periode->getFin());
+                        $timeline->addTimePeriode($timePeriode);
+                    }
+                }
+
+
             }
             $calendrier[$groupe->getId()] = $timeline;
         }

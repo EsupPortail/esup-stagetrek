@@ -22,6 +22,18 @@ return [
             'position'    => 3,
             'commentaire' => NULL,
         ],
+        'calendrier_id'                   => [
+            'name'        => 'calendrier_id',
+            'type'        => 'int',
+            'bdd-type'    => 'bigint',
+            'length'      => 0,
+            'scale'       => NULL,
+            'precision'   => 8,
+            'nullable'    => TRUE,
+            'default'     => NULL,
+            'position'    => 18,
+            'commentaire' => NULL,
+        ],
         'date_calcul_ordres_affectations' => [
             'name'        => 'date_calcul_ordres_affectations',
             'type'        => 'date',

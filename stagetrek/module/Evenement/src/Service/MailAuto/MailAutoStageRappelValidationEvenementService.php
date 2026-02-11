@@ -39,7 +39,6 @@ class MailAutoStageRappelValidationEvenementService extends AbstractMailAutoEven
             $date1 = clone($session->getDateFinValidation());
             $date1->sub(new DateInterval('P' . $parametreNbJourRappel . 'D'));
             $date2 = clone($session->getDateFinValidation());
-            $date1->sub(new DateInterval('P' . $parametreNbJourRappel . 'D'));
             $date1->setTime(0,0);
             $date2->setTime(23,59);
 //            Choix fait d'autoriser des mails de rappels 1 mois après la date de fin du stage afin de pouvoir gerer des échecs éventuelle
@@ -129,10 +128,10 @@ class MailAutoStageRappelValidationEvenementService extends AbstractMailAutoEven
         $datePlanification->sub(new DateInterval('P' . $parametreNbJourRappel . 'D'));
         $datePlanification->setTime(8, 0);
         $today = new DateTime();
-        $parametres['session-id'] = "".$session->getId();
-        $parametres['stage-id'] = "".$stage->getId();
-        $parametres['etudiant-id'] = "".$stage->getEtudiant()->getId();
-        $parametres['contact-stage-id'] = "".$contactStage->getId();
+        $parametres['session_id'] = "".$session->getId();
+        $parametres['stage_id'] = "".$stage->getId();
+        $parametres['etudiant_id'] = "".$stage->getEtudiant()->getId();
+        $parametres['contact_stage_id'] = "".$contactStage->getId();
         $parametres['stage'] = $stage->getLibelle();
         $parametres['etudiant'] = $etudiant->getDisplayName();
         $parametres['contact'] = $destinataireName;
@@ -179,8 +178,8 @@ class MailAutoStageRappelValidationEvenementService extends AbstractMailAutoEven
         $this->changerEtat($evenement, $this->getEventEtat(EvenementEtatProvider::EN_COURS));
         //Rechercher les datas nessaires pour l'envoie du mail
         $parametres = Json::decode($evenement->getParametres(), Json::TYPE_ARRAY);
-        $stageId = ($parametres['stage-id']) ?? 0;
-        $contactId = ($parametres['contact-stage-id']) ?? 0;
+        $stageId = ($parametres['stage_id']) ?? 0;
+        $contactId = ($parametres['contact_stage_id']) ?? 0;
         /** @var Stage $stage */
         $stage = $this->getObjectManager()->getRepository(Stage::class)->find($stageId);
         /** @var ContactStage $contact */

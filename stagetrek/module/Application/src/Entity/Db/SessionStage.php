@@ -5,6 +5,7 @@ namespace Application\Entity\Db;
 use Application\Entity\Db;
 use Application\Entity\Interfaces\HasLibelleInterface;
 use Application\Entity\Traits\AnneeUniversitaire\HasAnneeUniversitaireTrait;
+use Application\Entity\Traits\Calendrier\HasCalendrierTrait;
 use Application\Entity\Traits\Etudiant\HasEtudiantsTrait;
 use Application\Entity\Traits\Groupe\HasGroupeTrait;
 use Application\Entity\Traits\InterfaceImplementation\HasIdTrait;
@@ -13,12 +14,14 @@ use Application\Entity\Traits\Stage\HasAffectationsStagesTrait;
 use Application\Entity\Traits\Stage\HasStagesTrait;
 use Application\Entity\Traits\Terrain\HasTerrainsStagesTrait;
 use Application\Provider\EtatType\SessionEtatTypeProvider;
+use Application\Provider\Tag\TagProvider;
 use DateInterval;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
+use UnicaenCalendrier\Entity\Db\Date;
 use UnicaenEtat\Entity\Db\HasEtatsInterface;
 use UnicaenEtat\Entity\Db\HasEtatsTrait;
 use UnicaenTag\Entity\Db\HasTagsInterface;
@@ -464,6 +467,8 @@ class SessionStage implements ResourceInterface, HasLibelleInterface, HasEtatsIn
 
     /**
      * @var bool $sessionRattrapage
+     * @deprecated La session de rattapage passe desormais par le tag
+     * conservé pour le momment le temps de passer à API plateforme pour éviter des pb d'effet de bords
      */
     protected bool $sessionRattrapage = false;
 
@@ -473,13 +478,15 @@ class SessionStage implements ResourceInterface, HasLibelleInterface, HasEtatsIn
      */
     public function isSessionRattrapge() : bool
     {
-        return $this->getSessionRattrapage();
+        return $this->hasTagWithCode(TagProvider::SESSION_RATTRAPAGE);
+//        return $this->getSessionRattrapage();
     }
 
     /**
      * Get sessionRattrapage.
-     *
      * @return bool
+     * @deprecated La session de rattapage passe desormais par le tag
+     * conservé pour le momment le temps de passer à API plateforme pour éviter des pb d'effet de bords
      */
     public function getSessionRattrapage() : bool
     {
@@ -490,7 +497,8 @@ class SessionStage implements ResourceInterface, HasLibelleInterface, HasEtatsIn
      * Set sessionRattrapage.
      *
      * @param bool $sessionRattrapage
-     *
+     * @deprecated La session de rattapage passe desormais par le tag
+     * conservé pour le momment le temps de passer à API plateforme pour éviter des pb d'effet de bords
      * @return SessionStage
      */
     public function setSessionRattrapage(bool $sessionRattrapage) : static
@@ -901,4 +909,53 @@ class SessionStage implements ResourceInterface, HasLibelleInterface, HasEtatsIn
     {
         return $this->isEtatActif(SessionEtatTypeProvider::TERMINE);
     }
+
+    /**
+     * Gestion des dates clés par UnicaenCalendrier
+     * @desc une bonne partie des dates restes géré par l'ancienne méthode en parraléles
+     * Le module UnicaenDate permet surtout de gérer les sessions ayant plusieurs période de stages entrecoupé de court, en attendant la refonte de stagetrek via API_Plateforme / Vue
+     */
+    const CALENDRIER_TYPE = "session_stage";
+    const DATE_CALCUL_ORDRES_AFFECTATIONS = "dates_calcul_ordres_affectations";
+    const DATES_CHOIX = "dates_choix";
+    const DATES_COMMISSION = "dates_commission";
+    const DATES_SESSIONS = "dates_session"; //Dates compléte de la sessions de stages
+    const DATES_PERIODE_STAGES = "dates_periode_stages"; //Dates d'une période de stage (pour les cas ou la session est entrecoupé)
+    const DATES_VALIDATIONS = "dates_validations";
+    const DATES_EVALUATIONS = "dates_evaluations";
+
+    use HasCalendrierTrait;
+
+    public function hasMultiplesPeriodesStage() : bool
+    {
+        return $this->hasTagWithCode(TagProvider::SESSION_MUlTIPLES_PERIODES);
+//        $dates = $this->getDatesPeriodesStages();
+//        return isset($dates) && count($dates) > 1;
+    }
+
+
+    /** @return ?Date[] */
+    public function getDatesPeriodesStages() : ?array
+    {
+        $calendrier = $this->getCalendrier();
+        if(!isset($calendrier)){return null;}
+        $dates = [];
+        foreach ($calendrier->getDates() as $d) {
+            if($d->getType()->getCode() !=  self::DATES_PERIODE_STAGES){continue;}
+            $dates[] = $d;
+        }
+        usort($dates, function (Date $d1, Date $d2) {
+           if($d1->getDebut() != $d2->getDebut()){
+               return ($d1->getDebut() < $d2->getDebut()) ? -1 : 1;
+           }
+            if($d1->getFin() != $d2->getFin()){
+               return $d1->getFin() < $d2->getDebut()? -1 : 1;
+           }
+           return 0;
+        });
+        return $dates;
+
+
+    }
+
 }

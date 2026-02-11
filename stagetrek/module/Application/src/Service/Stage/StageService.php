@@ -139,6 +139,7 @@ class StageService extends CommonEntityService
 
 
     //mise à jours des ordres d'affectations automatique
+    //Doublon avec la fonction dans session stage service, a revoir lors du passage en API Plateform
     //A ne faire qu'une seul fois ! lorsque l'on est dans la bonne période si le calcul n'as pas encore été fait
     /**
      * @throws \Exception

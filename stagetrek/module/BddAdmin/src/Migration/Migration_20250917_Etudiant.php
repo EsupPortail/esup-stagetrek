@@ -3,6 +3,7 @@
 namespace BddAdmin\Migration;
 
 use Application\Entity\Db\Source;
+use Application\Misc\Util;
 use Application\Provider\Roles\UserProvider;
 use Unicaen\BddAdmin\Migration\MigrationAction;
 use UnicaenUtilisateur\Provider\Role\Username;
@@ -11,7 +12,7 @@ class Migration_20250917_Etudiant extends MigrationAction {
 
     public function description(): string
     {
-        return "Insertion des sources et historique ppour les étudiants";
+        return "Insertion des sources et historique pour les étudiant".Util::POINT_MEDIANT."s";
     }
 
     // Retoure si le script doit être executé ou nom
@@ -35,7 +36,6 @@ class Migration_20250917_Etudiant extends MigrationAction {
     public function after():void
     {
         $bdd = $this->getBdd();
-        $this->manager()->sauvegarderTable('etudiant', 'save_etudiant');
 
         //Source code = num etu + champ non null
         $bdd->exec("update etudiant set source_code = num_etu where source_code is null");
@@ -57,7 +57,6 @@ class Migration_20250917_Etudiant extends MigrationAction {
 //        $bdd->exec("update faq_categorie_question set code = 'generale' where libelle='Générale'");
 //        $bdd->exec('CREATE UNIQUE INDEX IF NOT EXISTS faq_categorie_code_unique ON "faq_categorie_question" ( code )');
 //        $bdd->exec('alter table faq_categorie_question alter column code set not null');
-        $this->manager()->supprimerSauvegarde('save_etudiant');
     }
 
 }

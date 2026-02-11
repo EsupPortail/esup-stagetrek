@@ -7,6 +7,7 @@ use Application\Entity\Db\Contact;
 use Application\Provider\Privilege\ContactPrivileges;
 use Application\View\Helper\Contacts\ContactViewHelper;
 use Laminas\View\Renderer\PhpRenderer;
+use UnicaenMail\Provider\Privilege\MailPrivileges;
 
 /**
  * @see ContactController::afficherAction()
@@ -22,6 +23,7 @@ $canDelete = $vh->hasPrivilege(ContactPrivileges::CONTACT_SUPPRIMER);
 
 $canSeeCT = $vh->hasPrivilege(ContactPrivileges::CONTACT_TERRAIN_AFFICHER);
 $canSeeCS = $vh->hasPrivilege(ContactPrivileges::CONTACT_STAGE_AFFICHER);
+$canSeeMails = $vh->hasPrivilege(MailPrivileges::MAIL_AFFICHER);
 ?>
 
 <h1 class="page-header">
@@ -45,6 +47,12 @@ $canSeeCS = $vh->hasPrivilege(ContactPrivileges::CONTACT_STAGE_AFFICHER);
         <?php if($canSeeCS) :?>
         <button class="nav-link" id="nav-contacts-stages" data-bs-toggle="tab" data-bs-target="#contacts-stages" type="button"
                 role="tab" aria-controls="contacts-stages" aria-selected="false">Stages
+        </button>
+        <?php endif; ?>
+
+        <?php if($canSeeMails) :?>
+        <button class="nav-link" id="nav-contacts-mails" data-bs-toggle="tab" data-bs-target="#contacts-mails" type="button"
+                role="tab" aria-controls="contacts-mails" aria-selected="false">Mails
         </button>
         <?php endif; ?>
     </div>
@@ -108,7 +116,6 @@ $canSeeCS = $vh->hasPrivilege(ContactPrivileges::CONTACT_STAGE_AFFICHER);
         ?>
     <div class="tab-pane fade" id="contacts-stages" role="tabpanel" aria-labelledby="nav-contacts-stages">
         <div class="card-body">
-
             <div class="card">
                 <div class="card-header">Informations</div>
                 <div class="card-body">
@@ -139,6 +146,34 @@ $canSeeCS = $vh->hasPrivilege(ContactPrivileges::CONTACT_STAGE_AFFICHER);
     </div>
     <?php endif; ?>
 
+    <?php if($canSeeCT) :?>
+    <div class="tab-pane fade" id="contacts-mails" role="tabpanel" aria-labelledby="nav-contacts-mails">
+        <div class="card-body">
+            <div class="card">
+                <div class="card-header">Informations</div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            Listes des mails envoyés au contact
+                        </li>
+                        <?php if($vh->hasPrivilege(MailPrivileges::MAIL_SUPPRIMER)) :?>
+                            <div class="alert alert-warning">
+                                Attention supprimer des mails automatiques peux provoquer des ré-envoies non désirés
+                            </div>
+                        <?php endif; ?>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="row my-3">
+                <div class="col-md-12">
+                    <?php //echo $this->mails($contact->getMails(), ['droits' => ['reenvoyer' => true, 'supprimer' => false]]); ?>
+                    <?php echo $this->mails($contact->getMails()); ?>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
 </div>
 
 <script type="text/javascript">
@@ -185,5 +220,44 @@ $canSeeCS = $vh->hasPrivilege(ContactPrivileges::CONTACT_STAGE_AFFICHER);
                     window.location.href = "<?= $this->url(ContactController::ROUTE_INDEX)?>";
                 }, 2000);
             });
+
+
+        if ($.fn.DataTable.isDataTable("#mails-liste")) {
+            $('#mails-liste').DataTable().destroy();
+        }
+
+        $('#mails-liste').DataTable({
+            "stateSave": true,
+            "retrieve": true,
+            "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Tous"]],
+            order: [[0, 'desc']],
+            "columnDefs": [
+                {targets: 5, orderable: false, searchable: false},
+            ],
+            "language": {
+                'lengthMenu': "Afficher _MENU_ &eacute;l&eacute;ments",
+                "search": "Filtre de recherche : _INPUT_",
+                "loadingRecords": "Chargement en cours...",
+                'info': "<small class=\"text-highlight\">Affichage : <strong><i class=\"icon icon-listing\"></i> _START_ - _END_ sur _TOTAL_</strong></small>",
+                'infoEmpty': "",
+                'infoFiltered': "<small class=\"text-highlight\">(_MAX_ &eacute;l&eacute;ments au total)</small>",
+                'emptyTable': "Aucune donnée disponible.",
+                'zeroRecords': "Aucun enregistrement trouvé.",
+                "paginate": {
+                    "previous": "<span class=\"icon icon-precedent\"></span>",
+                    "next": "<span class=\"icon icon-suivant\"></span>"
+                }
+            },
+            "createdRow": function (row) {
+                $('.pop-ajax', row).popAjax();
+            },
+        });
+
+        //Rechargement complet de la page
+        body.on("modification", function (event) {
+            event.div.modal('hide');
+            window.location.reload();
+        });
+
     });
 </script>

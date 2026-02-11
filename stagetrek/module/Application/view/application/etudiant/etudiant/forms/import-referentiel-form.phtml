@@ -2,6 +2,7 @@
 
 use Application\Controller\Etudiant\EtudiantController;
 use Application\Form\Referentiel\ReferentielImportEtudiantsForm;
+use Application\Misc\Util;
 
 /**
  * @see EtudiantController::importerAction()
@@ -45,7 +46,7 @@ $fh = $this->formHidden();
             Lors de l'ajout des étudiants
             <ul>
                 <li> Si le référentiel est associé à 1 groupe pour l'année selectionnée,
-                    les étudiants qui le peuvent (c'est-à dire ceux n'étant pas déjà inscrit dans un groupe pour l'année en question)
+                    les étudiant<?=Util::POINT_MEDIANT?>s qui le peuvent (c'est-à dire ceux n'étant pas déjà inscrit dans un groupe pour l'année en question)
                     sont automatiquement inscrit dans ce groupe.
                 </li>
                 <li>

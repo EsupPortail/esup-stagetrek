@@ -116,7 +116,18 @@ class SessionStageService extends CommonEntityService
 
         //Création de la session
         $this->getObjectManager()->persist($session);
-        $this->getObjectManager()->flush($session);
+        $res = [$session];
+        //Ajout également du calendrier et des dates. Sans doute mieux a faire
+        $c = $session->getCalendrier();
+        if(isset($c)){
+            $this->getObjectManager()->persist($c);
+            $res[] = $c;
+            foreach ($c->getDates() as $d){
+                $this->getObjectManager()->persist($d);
+                $res[] = $d;
+            }
+        }
+        $this->getObjectManager()->flush($res);
         $this->recomputeOrdresSessions();
         $this->updateEtat($session);
 
@@ -171,10 +182,39 @@ class SessionStageService extends CommonEntityService
         $unitOfwork = $this->getObjectManager()->getUnitOfWork();
         $oldData = $unitOfwork->getOriginalEntityData($session);
 
-        $this->getObjectManager()->persist($session);
-
         if ($this->hasUnitOfWorksChange()) {
-            $this->getObjectManager()->flush();
+
+            $res = [$session];
+            //Ajout également du calendrier et des dates. Sans doute mieux a faire
+            $c = $session->getCalendrier();
+            if(isset($c)){
+                if($c->getId() == null) {
+                    $this->getObjectManager()->persist($c);
+                }
+                $res[] = $c;
+                foreach ($c->getDates() as $d){
+                    if($d->getId() == null) {
+                        $this->getObjectManager()->persist($d);
+                    }
+                    $res[] = $d;
+                }
+            }
+
+            $hasPeriodes = $session->hasMultiplesPeriodesStage();
+            //Si l'on a enlevé la parties péri
+            if(!$hasPeriodes){
+//            On supprime toutes les dates de périodes existantes si l'on a enlevé le tags
+                $periodes = $session->getDatesPeriodesStages();
+                if(isset($periodes)) {
+                    foreach ($periodes as $periode) {
+                        $session->removeDate($periode);
+                        $this->getObjectManager()->remove($periode);
+                    }
+                }
+            }
+
+            $this->getObjectManager()->flush($res);
+
             $this->updateEtat($session);
             if((isset($oldData['dateDebutStage']) && $oldData['dateDebutStage'] != $session->getDateDebutStage())
                 || (isset($oldData['dateFinStage']) && $oldData['dateFinStage'] != $session->getDateFinStage())
@@ -225,7 +265,19 @@ class SessionStageService extends CommonEntityService
             if (isset($affectation) && $affectation->hasEtatValidee()) {
                 throw new Exception("Le stage %s de %s a une affectation validée par la commission et ne peux donc pas être supprimé", $stage->getNumero(), $stage->getEtudiant()->getDisplayName());
             }
+            //Sinon suppresion du stage
+            $this->getObjectManager()->remove($stage);
         }
+
+        //La suppression de la session implique aussi celle de son calendrier
+        $c = $session->getCalendrier();
+        if(isset($c)){
+            foreach ($c->getDates() as $d){
+                $this->getObjectManager()->remove($d);
+            }
+            $this->getObjectManager()->remove($c);
+        }
+
         $this->getObjectManager()->remove($session);
 
         if ($this->hasUnitOfWorksChange()) {
@@ -269,6 +321,16 @@ class SessionStageService extends CommonEntityService
 
         $this->getObjectManager()->flush($sessions);
         return $this;
+    }
+
+
+    /** Fait appel a la procédure de recalculer
+     * @throws \Exception
+     */
+    public function recomputeOrdresAffectations(SessionStage $session)
+    {
+        $this->execProcedure("recompute_ordre_affectation_auto",[$session->getId()]);
+        $this->execProcedure("recompute_ordre_affectation",[$session->getId()]);
     }
 
 
@@ -453,8 +515,6 @@ class SessionStageService extends CommonEntityService
     }
 
 //
-
-
 
     use EntityEtatServiceAwareTrait;
     protected function computeEtat(HasEtatsInterface $entity): string

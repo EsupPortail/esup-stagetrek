@@ -12,6 +12,7 @@ use Application\Form\Misc\Traits\ConfirmationFormAwareTrait;
 use Application\Form\Referentiel\Interfaces\AbstractImportEtudiantsForm;
 use Application\Form\Referentiel\Interfaces\ImportEtudiantsFormInterface;
 use Application\Form\Referentiel\Traits\ImportEtudiantsFormsAwareTrait;
+use Application\Misc\Util;
 use Application\Service\Affectation\Traits\AffectationStageServiceAwareTrait;
 use Application\Service\AnneeUniversitaire\Traits\AnneeUniversitaireServiceAwareTrait;
 use Application\Service\Contrainte\Traits\ContrainteCursusServiceAwareTrait;
@@ -183,7 +184,7 @@ class EtudiantController extends AbstractActionController
         $etudiant = $this->getEtudiantFromRoute();
         /** @var Etudiant $etudiant */
         $form = $this->getConfirmationForm();
-        $question = sprintf("Voulez-vraiment supprimer l'étudiant.e %s de l'application ?", $etudiant->getDisplayName());
+        $question = sprintf("Voulez-vraiment supprimer l'étudiant".Util::POINT_MEDIANT."e %s de l'application ?", $etudiant->getDisplayName());
         $form->setConfirmationQuestion($question);
         if ($this->actionConfirmed()) {
             try {

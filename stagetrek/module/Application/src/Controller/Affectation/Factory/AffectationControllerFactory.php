@@ -15,6 +15,7 @@ use Application\Service\Preference\PreferenceService;
 use Application\Service\Stage\SessionStageService;
 use Doctrine\ORM\EntityManager;
 use Evenement\Service\MailAuto\MailAutoAffectationEvenementService;
+use Evenement\Service\MailAuto\MailAutoListeEtudiantsEncadresEvenementService;
 use Interop\Container\ContainerInterface;
 use Laminas\Form\FormElementManager;
 use Laminas\ServiceManager\Factory\FactoryInterface;
@@ -76,6 +77,10 @@ class AffectationControllerFactory implements FactoryInterface
         /** @var MailAutoAffectationEvenementService $mailAutoService */
         $mailAutoService = $container->get(ServiceManager::class)->get(MailAutoAffectationEvenementService::class);
         $controller->setMailAutoAffectationEvenementService($mailAutoService);
+
+        /** @var MailAutoListeEtudiantsEncadresEvenementService $mailAutoService */
+        $mailAutoService = $container->get(ServiceManager::class)->get(MailAutoListeEtudiantsEncadresEvenementService::class);
+        $controller->setMailAutoListeEtudiantsEncadresEvenementService($mailAutoService);
 
         /** @var ContactStageService $contactStageService */
         $contactStageService = $container->get(ServiceManager::class)->get(ContactStageService::class);

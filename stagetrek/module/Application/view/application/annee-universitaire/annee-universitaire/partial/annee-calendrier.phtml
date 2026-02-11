@@ -60,6 +60,8 @@ $sessionVh = $this->sessionStage();
             //TODO : faire une pseudo fiches des sessiosn et gérer l'affichage au click
         })
 
+
+
         $.each(sessionStorage, function (key, id){
             sessionStorage.removeItem("session-"+id);
             if(key == "session-"+id){

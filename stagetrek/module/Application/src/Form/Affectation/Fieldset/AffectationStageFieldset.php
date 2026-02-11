@@ -45,7 +45,9 @@ class AffectationStageFieldset  extends AbstractEntityFieldset
     const PRE_VALIDER = "prevalidee";
     const VALIDER = "validee";
     const INFOS = "informationsComplementaires";
-    const SEND_MAIL = "sendMail";
+    const SEND_MAIL_ETUDIANT = "sendMailEtudiant";
+    const SEND_MAIL_CONTACTS = "sendMailContacts";
+
     public function init(): static
     {
         $this->initIdInput();
@@ -263,7 +265,7 @@ class AffectationStageFieldset  extends AbstractEntityFieldset
 
 
         $this->add([
-            'name' => self::SEND_MAIL,
+            'name' => self::SEND_MAIL_ETUDIANT,
             'type' => Checkbox::class,
             'options' => [
                 'label' => "Prévenir l'étudiant d'une modification sur son affectation ?",
@@ -272,11 +274,36 @@ class AffectationStageFieldset  extends AbstractEntityFieldset
                 'unchecked_value' => "0",
             ],
             'attributes' => [
-                'id' => self::SEND_MAIL,
+                'id' => self::SEND_MAIL_ETUDIANT,
                 'value' => 0,
                 'class' => 'form-check-input'
             ],
         ]);
+
+        $this->add([
+            'name' => self::SEND_MAIL_CONTACTS,
+            'type' => Checkbox::class,
+            'options' => [
+                'label' => "Prévenir les contacts du stages d'une modification ?",
+                'use_hidden_element' => true,
+                'checked_value' => "1",
+                'unchecked_value' => "0",
+            ],
+            'attributes' => [
+                'id' => self::SEND_MAIL_CONTACTS,
+                'value' => 0,
+                'class' => 'form-check-input'
+            ],
+        ]);
+
+        $this->setInputfilterSpecification(self::SEND_MAIL_CONTACTS, [
+            'name' => self::SEND_MAIL_CONTACTS,
+            'required' => false,
+            'filters' => [
+                ['name' => ToInt::class],
+            ],
+        ]);
+
 
         $this->add([
             'name' => self::INFOS,
@@ -301,8 +328,8 @@ class AffectationStageFieldset  extends AbstractEntityFieldset
             ],
         ]);
 
-        $this->setInputfilterSpecification(self::SEND_MAIL, [
-            'name' => self::SEND_MAIL,
+        $this->setInputfilterSpecification(self::SEND_MAIL_ETUDIANT, [
+            'name' => self::SEND_MAIL_ETUDIANT,
             'required' => false,
             'filters' => [
                 ['name' => ToInt::class],

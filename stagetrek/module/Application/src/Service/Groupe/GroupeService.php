@@ -205,8 +205,9 @@ class GroupeService extends CommonEntityService
      */
     public function delete(mixed $entity, string $serviceEntityClass = null): static
     {
+        $sessions = $entity->getSessionsStages()->toArray();
         /** @var SessionStage $session */
-        foreach ($entity->getSessionsStages() as $session) {
+        foreach ($sessions as $session) {
             /** @var Stage $stage */
             foreach ($session->getStages() as $stage) {
                 $affectation = $stage->getAffectationStage();
@@ -214,6 +215,10 @@ class GroupeService extends CommonEntityService
                     throw new Exception(sprintf("Le stage %s de %s a une affectation validée par la commission et ne peux donc pas être supprimé", $stage->getLibelle(), $stage->getEtudiant()->getDisplayName()));
                 }
             }
+        }
+        foreach ($sessions as $s){
+            //Suppression des session de stages (qui implique également le calendrier de la session and co
+            $this->getSessionStageService()->delete($s);
         }
 
         $this->getObjectManager()->remove($entity);

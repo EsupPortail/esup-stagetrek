@@ -3,6 +3,7 @@
 namespace Application\Service\Renderer\Factory;
 
 use Application\Service\Renderer\ContactRendererService;
+use Application\Service\Renderer\UrlService;
 use Interop\Container\ContainerInterface;
 
 class ContactRendererServiceFactory
@@ -14,6 +15,8 @@ class ContactRendererServiceFactory
      */
     public function __invoke(ContainerInterface $container): ContactRendererService
     {
-        return new ContactRendererService();
+        $service = new ContactRendererService();
+        $service->setUrlService($container->get(UrlService::class));
+        return $service;
     }
 }

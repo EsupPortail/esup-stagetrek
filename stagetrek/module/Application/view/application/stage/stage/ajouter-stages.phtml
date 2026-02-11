@@ -4,7 +4,7 @@ use Application\Controller\Stage\SessionStageController;
 use Application\Controller\Stage\StageController;
 use Application\Entity\Db\Etudiant;
 use Application\Entity\Db\SessionStage;
-
+use Application\Misc\Util;
 use UnicaenApp\View\Helper\Messenger;
 
 /**
@@ -75,7 +75,7 @@ $msg = $this->messenger()->addCurrentMessagesFromFlashMessengerWithNamespace($na
 
 <?php if (!empty($etudiants)) : ?>
     <div class="card my-3">
-        <div class="card-header">Selectionner les étudiants pour qui créer le stage</div>
+        <div class="card-header">Selectionner les étudiant<?=Util::POINT_MEDIANT?>s pour qui créer le stage</div>
         <div class="card-footer">
             <div class="row">
                 <div class="col-md-8">

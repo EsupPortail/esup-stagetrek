@@ -5,6 +5,7 @@ use Application\Controller\Stage\SessionStageController;
 use Application\Entity\Db\SessionStage;
 use Application\Provider\Misc\Icone;
 use Application\Provider\Privilege\StagePrivileges;
+use Application\Provider\Tag\TagProvider;
 use Application\View\Helper\Groupe\GroupeViewHelper;
 use Application\View\Helper\SessionsStages\SessionStageViewHelper;
 
@@ -49,7 +50,12 @@ $groupeVh->setGroupe($session->getGroupe());
                 <div> Commission d'affectation
                     le <?= $session->getDateCommission()->format('d/m/Y') ?> </div>
                 <div> Stages du <?= $session->getDateDebutStage()->format('d/m/Y') ?>
-                    au <?= $session->getDateFinStage()->format('d/m/Y') ?> </div>
+                    au <?= $session->getDateFinStage()->format('d/m/Y') ?>
+                    <?php if($session->hasMultiplesPeriodesStage()){
+                        $tag = $session->getTagWithCode(TagProvider::SESSION_MUlTIPLES_PERIODES);
+                        echo $this->unicaenTag($tag, ['display-libelle' => false, 'display-categorie' => false]);
+                    }?>
+                </div>
                 <div> Validation des stages <?= $session->getDateDebutValidation()->format('d/m/Y') ?>
                     au <?= $session->getDateFinValidation()->format('d/m/Y') ?> </div>
             </div>

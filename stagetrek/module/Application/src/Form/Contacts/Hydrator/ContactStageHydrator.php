@@ -41,6 +41,7 @@ class ContactStageHydrator extends AbstractHydrator implements HydratorInterface
         $data[ContactStageFieldset::IS_VISIBLE_ETUDIANT] = $contactStage->isVisibleParEtudiant();
         $data[ContactStageFieldset::IS_RESPONSABLE_STAGE] = $contactStage->isResponsableStage();
         $data[ContactStageFieldset::CAN_VALIDER_STAGE] = $contactStage->canValiderStage();
+//        $data[ContactStageFieldset::SEND_MAIL_AUTO_LISTE_ETUDIANT_STAGE] = $contactStage->sendMailAutoListeEtudiantsStage();
         $data[ContactStageFieldset::SEND_MAIL_AUTO_VALIDATION_STAGE] = $contactStage->sendMailAutoValidationStage();
         $data[ContactStageFieldset::SEND_MAIL_AUTO_RAPPEL_VALIDATION_STAGE] = $contactStage->sendMailAutoRappelValidationStage();
 
@@ -87,6 +88,7 @@ class ContactStageHydrator extends AbstractHydrator implements HydratorInterface
         $visible =  isset($data[ContactStageFieldset::IS_VISIBLE_ETUDIANT]) ? boolval($data[ContactStageFieldset::IS_VISIBLE_ETUDIANT]) : false;
         $responsable =  isset($data[ContactStageFieldset::IS_RESPONSABLE_STAGE]) ? boolval($data[ContactStageFieldset::IS_RESPONSABLE_STAGE]) : false;
         $canValidate =  isset($data[ContactStageFieldset::CAN_VALIDER_STAGE]) ? boolval($data[ContactStageFieldset::CAN_VALIDER_STAGE]) : false;
+//        $mailListeEtudiants =  isset($data[ContactStageFieldset::SEND_MAIL_AUTO_LISTE_ETUDIANT_STAGE]) ? boolval($data[ContactStageFieldset::SEND_MAIL_AUTO_LISTE_ETUDIANT_STAGE]) : false;
         $mailValidation =  isset($data[ContactStageFieldset::SEND_MAIL_AUTO_VALIDATION_STAGE]) ? boolval($data[ContactStageFieldset::SEND_MAIL_AUTO_VALIDATION_STAGE]) : false;
         $mailRappelValidation =  isset($data[ContactStageFieldset::SEND_MAIL_AUTO_RAPPEL_VALIDATION_STAGE]) ? boolval($data[ContactStageFieldset::SEND_MAIL_AUTO_RAPPEL_VALIDATION_STAGE]) : false;
 
@@ -104,12 +106,13 @@ class ContactStageHydrator extends AbstractHydrator implements HydratorInterface
         $contactStage->setVisibleParEtudiant($visible);
         $contactStage->setIsResponsableStage($responsable);
         $contactStage->setCanValiderStage($canValidate);
+//        $contactStage->setSendMailAutoListeEtudiantsStage($mailListeEtudiants);
+        $contactStage->setSendMailAutoListeEtudiantsStage(false);
         $contactStage->setSendMailAutoValidationStage($mailValidation);
         $contactStage->setSendMailAutoRappelValidationStage($mailRappelValidation);
 
         $contactStage->setIsSignataireConvention($isSingataire);
         $contactStage->setPrioriteOrdreSignature($priorite);
-        $contactStage->setSendMailAutoListeEtudiantsStage(false);
         return $contactStage;
     }
 }

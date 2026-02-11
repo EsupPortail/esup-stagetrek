@@ -6,6 +6,7 @@ use Application\Entity\Db\Disponibilite;
 use Application\Entity\Db\Etudiant;
 use Application\Entity\Db\SessionStage;
 use Application\Form\Etudiant\Fieldset\DisponibiliteFieldset;
+use Application\Misc\Util;
 use DateTime;
 use DoctrineModule\Persistence\ObjectManagerAwareInterface;
 use DoctrineModule\Persistence\ProvidesObjectManager;
@@ -42,7 +43,7 @@ class DisponibiliteValidator extends AbstractValidator implements ObjectManagerA
     protected $messageTemplates = [
         self::CALLBACK_FUNCTION_NOT_DEFIND_ERROR => "La fonction de validation n'a pas été founrie.",
         self::CALLBACK_FUNCTION_NOT_IMPLEMENTED_ERROR => "La fonction de validation n'a pas été définie.",
-        self::ETUDIANT_NOT_FOUND_ERROR => "L'étudiant.e associé.e à la disponibilité n'a pas été trouvé.e",
+        self::ETUDIANT_NOT_FOUND_ERROR => "L'étudiant".Util::POINT_MEDIANT."e associé".Util::POINT_MEDIANT."e à la disponibilité n'a pas été trouvé".Util::POINT_MEDIANT."e",
         self::INVALIDE_DATE_DEBUT_ERROR => "La date de début n'est pas valide",
         self::INVALIDE_DATE_FIN_ERROR => "La date de fin n'est pas valide",
         self::DATE_ORDER_ERROR => "La date de début doit précéder la date de fin",

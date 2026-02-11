@@ -1,0 +1,76 @@
+<?php
+
+//@formatter:off
+
+return [
+    'schema'      => 'public',
+    'name'        => 'unicaen_indicateur_abonnement',
+    'temporary'   => FALSE,
+    'logging'     => TRUE,
+    'commentaire' => NULL,
+    'sequence'    => 'unicaen_indicateur_abonnement_id_seq',
+    'columns'     => [
+        'dernier_envoi' => [
+            'name'        => 'dernier_envoi',
+            'type'        => 'date',
+            'bdd-type'    => 'timestamp without time zone',
+            'length'      => 0,
+            'scale'       => NULL,
+            'precision'   => 6,
+            'nullable'    => TRUE,
+            'default'     => NULL,
+            'position'    => 5,
+            'commentaire' => NULL,
+        ],
+        'frequence'     => [
+            'name'        => 'frequence',
+            'type'        => 'string',
+            'bdd-type'    => 'character varying',
+            'length'      => 256,
+            'scale'       => NULL,
+            'precision'   => NULL,
+            'nullable'    => TRUE,
+            'default'     => NULL,
+            'position'    => 4,
+            'commentaire' => NULL,
+        ],
+        'id'            => [
+            'name'        => 'id',
+            'type'        => 'int',
+            'bdd-type'    => 'integer',
+            'length'      => 0,
+            'scale'       => NULL,
+            'precision'   => 4,
+            'nullable'    => FALSE,
+            'default'     => 'nextval(\'unicaen_indicateur_abonnement_id_seq\'::regclass)',
+            'position'    => 1,
+            'commentaire' => NULL,
+        ],
+        'indicateur_id' => [
+            'name'        => 'indicateur_id',
+            'type'        => 'int',
+            'bdd-type'    => 'integer',
+            'length'      => 0,
+            'scale'       => NULL,
+            'precision'   => 4,
+            'nullable'    => TRUE,
+            'default'     => NULL,
+            'position'    => 3,
+            'commentaire' => NULL,
+        ],
+        'user_id'       => [
+            'name'        => 'user_id',
+            'type'        => 'int',
+            'bdd-type'    => 'integer',
+            'length'      => 0,
+            'scale'       => NULL,
+            'precision'   => 4,
+            'nullable'    => TRUE,
+            'default'     => NULL,
+            'position'    => 2,
+            'commentaire' => NULL,
+        ],
+    ],
+];
+
+//@formatter:on

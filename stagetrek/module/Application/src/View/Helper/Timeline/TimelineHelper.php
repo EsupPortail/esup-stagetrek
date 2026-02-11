@@ -5,6 +5,7 @@ namespace Application\View\Helper\Timeline;
 
 use Application\Entity\Timeline\TimeFrame;
 use Application\Entity\Timeline\Timeline;
+use Application\Entity\Timeline\TimePeriode;
 use DateInterval;
 use DateTime;
 use Exception;
@@ -187,6 +188,19 @@ class TimelineHelper extends AbstractHelper
 //            $html .= $this->indent($depth++) . "<ol class='tl_timeframes' style='grid-template-columns: repeat(" . $timelineDuration . ", 1fr);'>";
             $html .= $this->indent($depth++) . "<ol class='tl_timeframes' style='grid-template-columns: repeat(" . $timelineDuration . ", minmax(0.1rem, 1fr));'>";
 
+//            TODO : modifier cest pseudoclass pour qu'elle couvre les zone de péride ou non période"
+//            Modifier le css pour que ce soit de la vrais transparance.
+            /** @var TimePeriode $timePeriode */
+            foreach ($timeline->getTimesPeriodes() as $timePeriode) {
+                $start_position = $start->diff($timePeriode->getStart())->days + 1;
+                $duration = $timePeriode->getStart()->diff($timePeriode->getEnd())->days +1;
+                $html .= $this->indent($depth++) . "<li class='tl_periode' ";
+                $html .= "data-id='" . $timePeriode->getId() . "' ";
+                $html.= "style='";
+                $html .= "grid-column-start: " . $start_position . ";";
+                $html .= "grid-column-end: span " . $duration . ";'>";
+                $html .= $this->indent($depth--) . "</li>";
+            }
             /** @var TimeFrame $timeFrame */
             foreach ($timeline->getTimeFrames() as $timeFrame) {
                 $start_position = $start->diff($timeFrame->getStart())->days + 1;

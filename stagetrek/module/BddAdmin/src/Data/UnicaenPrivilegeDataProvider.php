@@ -2,6 +2,7 @@
 
 namespace BddAdmin\Data;
 
+use Application\Misc\Util;
 use Application\Provider\Roles\RolesProvider;
 
 use BddAdmin\Data\Interfaces\DataProviderInterface;
@@ -208,6 +209,54 @@ class UnicaenPrivilegeDataProvider implements DataProviderInterface {
                 "namespace" => "Fichier\Provider\Privilege",
                 "ordre" => $ordre++,
             ],
+            [
+                "code" => "indicateur",
+                "libelle" => "Gestions des indicateurs",
+                "namespace" => "UnicaenIndicateur\Provider\Privilege",
+                "ordre" => $ordre++,
+            ],
+            [
+                "code" => "abonnement",
+                "libelle" => "Gestions des abonnement",
+                "namespace" => "UnicaenIndicateur\Provider\Privilege",
+                "ordre" => $ordre++,
+            ],
+            [
+                "code" => "tableaudebord",
+                "libelle" => "Gestions des tableaux de bord",
+                "namespace" => "UnicaenIndicateur\Provider\Privilege",
+                "ordre" => $ordre++,
+            ],
+            [
+                "code" => "unicaencalendrier_index",
+                "libelle" => "Paramétrage du module de gestion des calendrier",
+                "namespace" => "UnicaenCalendrier\Provider\Privilege",
+                "ordre" => ++$ordre
+            ],
+            [
+                "code" => "calendriertype",
+                "libelle" => "Gestion des types de calendriers",
+                "namespace" => "UnicaenCalendrier\Provider\Privilege",
+                "ordre" => ++$ordre
+            ],
+            [
+                "code" => "calendrier",
+                "libelle" => "Gestion des calendriers",
+                "namespace" => "UnicaenCalendrier\Provider\Privilege",
+                "ordre" => ++$ordre
+            ],
+            [
+                "code" => "datetype",
+                "libelle" => "Gestion des types de dates",
+                "namespace" => "UnicaenCalendrier\Provider\Privilege",
+                "ordre" => ++$ordre
+            ],
+            [
+                "code" => "date",
+                "libelle" => "Gestion des dates",
+                "namespace" => "UnicaenCalendrier\Provider\Privilege",
+                "ordre" => ++$ordre
+            ],
         ];
     }
 
@@ -219,7 +268,7 @@ class UnicaenPrivilegeDataProvider implements DataProviderInterface {
             [
                 "categorie_id" => "etudiant",
                 "code" => "etudiant_afficher",
-                "libelle" => "Afficher les étudiants",
+                "libelle" => "Afficher les étudiant".Util::POINT_MEDIANT."s",
                 "ordre" => $ordre++,
             ],
             [
@@ -231,7 +280,7 @@ class UnicaenPrivilegeDataProvider implements DataProviderInterface {
             [
                 "categorie_id" => "etudiant",
                 "code" => "etudiant_modifier",
-                "libelle" => "Modifier les étudiants",
+                "libelle" => "Modifier les étudiant".Util::POINT_MEDIANT."s",
                 "ordre" => $ordre++,
             ],
             [
@@ -273,7 +322,7 @@ class UnicaenPrivilegeDataProvider implements DataProviderInterface {
             [
                 "categorie_id" => "etudiant",
                 "code" => "groupe_administrer_etudiants",
-                "libelle" => "Administrer les étudiants inscrit dans un groupe",
+                "libelle" => "Administrer les étudiant".Util::POINT_MEDIANT."s inscrit dans un groupe",
                 "ordre" => $ordre++,
             ],
             [
@@ -1377,7 +1426,219 @@ class UnicaenPrivilegeDataProvider implements DataProviderInterface {
                 "libelle" => "Supprimer une categorie de tag",
                 "ordre" => ++$ordre
             ],
+//            Indicateur
+            [
+                "categorie_id" => "indicateur",
+                "code" => "afficher_indicateur",
+                "libelle" => "Afficher un indicateur",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "indicateur",
+                "code" => "afficher_indicateur_tous",
+                "libelle" => "Afficher tous les indicateurs",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "indicateur",
+                "code" => "editer_indicateur",
+                "libelle" => "Éditer un indicateur",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "indicateur",
+                "code" => "detruire_indicateur",
+                "libelle" => "Effacer un indicateur",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "indicateur",
+                "code" => "indicateur_index",
+                "libelle" => "Accéder à l''index",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "indicateur",
+                "code" => "indicateur_mes_indicateurs",
+                "libelle" => "Affichage du menu - Mes Indicateurs -",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "abonnement",
+                "code" => "afficher_abonnement",
+                "libelle" => "Afficher un abonnement",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "abonnement",
+                "code" => "editer_abonnement",
+                "libelle" => "Éditer un abonnement",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "abonnement",
+                "code" => "detruire_abonnement",
+                "libelle" => "Effacer un abonnement",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "tableaudebord",
+                "code" => "afficher_tableaudebord",
+                "libelle" => "Afficher un tableau de bord",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "tableaudebord",
+                "code" => "editer_tableaudebord",
+                "libelle" => "Éditer un tableau de bord",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "tableaudebord",
+                "code" => "detruire_tableaudebord",
+                "libelle" => "Effacer un tableau de bord",
+                "ordre" => ++$ordre
+            ],
 
+            /** UnicaenCalendrier */
+            [
+                "categorie_id" => "unicaencalendrier_index",
+                "code" => "index",
+                "libelle" => "Accès à l'administration du module",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "calendriertype",
+                "code" => "calendriertype_index",
+                "libelle" => "Accéder à l'index",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "calendriertype",
+                "code" => "calendriertype_afficher",
+                "libelle" => "Afficher",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "calendriertype",
+                "code" => "calendriertype_ajouter",
+                "libelle" => "Ajouter",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "calendriertype",
+                "code" => "calendriertype_modifier",
+                "libelle" => "Modifier",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "calendriertype",
+                "code" => "calendriertype_supprimer",
+                "libelle" => "Supprimer",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "calendrier",
+                "code" => "calendrier_index",
+                "libelle" => "Accéder à l'index",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "calendrier",
+                "code" => "calendrier_afficher",
+                "libelle" => "Afficher",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "calendrier",
+                "code" => "calendrier_ajouter",
+                "libelle" => "Ajouter",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "calendrier",
+                "code" => "calendrier_modifier",
+                "libelle" => "Modifier",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "calendrier",
+                "code" => "calendrier_historiser",
+                "libelle" => "Historiser/Restaurer",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "calendrier",
+                "code" => "calendrier_supprimer",
+                "libelle" => "Supprimer",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "datetype",
+                "code" => "datetype_index",
+                "libelle" => "Accéder à l'index",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "datetype",
+                "code" => "datetype_afficher",
+                "libelle" => "Afficher",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "datetype",
+                "code" => "datetype_ajouter",
+                "libelle" => "Ajouter",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "datetype",
+                "code" => "datetype_modifier",
+                "libelle" => "Modifier",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "datetype",
+                "code" => "datetype_supprimer",
+                "libelle" => "Supprimer",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "date",
+                "code" => "date_index",
+                "libelle" => "Accéder à l'index",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "date",
+                "code" => "date_afficher",
+                "libelle" => "Afficher",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "date",
+                "code" => "date_ajouter",
+                "libelle" => "Ajouter",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "date",
+                "code" => "date_modifier",
+                "libelle" => "Modifier",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "date",
+                "code" => "date_historiser",
+                "libelle" => "Historiser/Restaurer",
+                "ordre" => ++$ordre
+            ],
+            [
+                "categorie_id" => "date",
+                "code" => "date_supprimer",
+                "libelle" => "Supprimer",
+                "ordre" => ++$ordre
+            ],
         ];
         return $res;
     }
@@ -1649,8 +1910,54 @@ class UnicaenPrivilegeDataProvider implements DataProviderInterface {
                 "categorie_tag_modifier" => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
                 "categorie_tag_supprimer" => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
             ],
-        ];
+            /** UnicaenIndicateur */
+            "indicateur" => [
+                "afficher_indicateur" => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "afficher_indicateur_tous" => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "editer_indicateur" => [RolesProvider::ADMIN_TECH],
+                "detruire_indicateur" => [RolesProvider::ADMIN_TECH],
+                "indicateur_index" => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "indicateur_mes_indicateurs" => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+            ],
+            "abonnement" => [
+                "afficher_abonnement" => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "editer_abonnement" => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "detruire_abonnement" => [RolesProvider::ADMIN_TECH],
+            ],
+            "tableaudebord" => [
+                "afficher_tableaudebord" => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "editer_tableaudebord" => [RolesProvider::ADMIN_TECH, RolesProvider::ADMIN_FONC],
+                "detruire_tableaudebord" => [RolesProvider::ADMIN_TECH],
+            ],
 
+            /** UnicaenCalendrier */
+            "calendrier" => [ //Seul l'administrateur Technique peux acceder directement aux calendrier
+                //La modifications des instances de dates passe par l'entité associé (ie : les dates d'une session de stage)
+                "index" => [RolesProvider::ADMIN_TECH],
+                "calendriertype_afficher" => [RolesProvider::ADMIN_TECH],
+                "calendriertype_index" => [RolesProvider::ADMIN_TECH],
+                "calendriertype_ajouter" => [RolesProvider::ADMIN_TECH],
+                "calendriertype_modifier" => [RolesProvider::ADMIN_TECH],
+                "calendriertype_supprimer" => [RolesProvider::ADMIN_TECH],
+                "calendrier_afficher" => [RolesProvider::ADMIN_TECH],
+                "calendrier_index" => [RolesProvider::ADMIN_TECH],
+                "calendrier_ajouter" => [RolesProvider::ADMIN_TECH],
+                "calendrier_modifier" => [RolesProvider::ADMIN_TECH],
+                "calendrier_historiser" => [RolesProvider::ADMIN_TECH],
+                "calendrier_supprimer" => [RolesProvider::ADMIN_TECH],
+                "datetype_afficher" => [RolesProvider::ADMIN_TECH],
+                "datetype_index" => [RolesProvider::ADMIN_TECH],
+                "datetype_ajouter" => [RolesProvider::ADMIN_TECH],
+                "datetype_modifier" => [RolesProvider::ADMIN_TECH],
+                "datetype_supprimer" => [RolesProvider::ADMIN_TECH],
+                "date_afficher" => [RolesProvider::ADMIN_TECH],
+                "date_index" => [RolesProvider::ADMIN_TECH],
+                "date_ajouter" => [RolesProvider::ADMIN_TECH],
+                "date_modifier" => [RolesProvider::ADMIN_TECH],
+                "date_historiser" => [RolesProvider::ADMIN_TECH],
+                "date_supprimer" => [RolesProvider::ADMIN_TECH],
+            ],
+        ];
         $res = [];
         foreach ($data as $categorie  => $privileges) {
             foreach ($privileges as $privilege => $roles) {

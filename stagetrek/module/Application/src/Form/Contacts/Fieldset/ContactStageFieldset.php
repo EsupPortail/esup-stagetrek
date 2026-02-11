@@ -176,7 +176,7 @@ class ContactStageFieldset extends AbstractEntityFieldset
     const CAN_VALIDER_STAGE = "canValiderStage";
     const IS_SIGNATAIRE_CONVENTION = "isSignataireConvention";
     const PRIORITE_ORDRE_SIGNATURE = "prioriteOrdreSignature";
-//    const SEND_MAIL_AUTO_LISTE_ETUDIANT_STAGE = "sendMailAutoListeEtudiantsStage";
+    const SEND_MAIL_AUTO_LISTE_ETUDIANT_STAGE = "sendMailAutoListeEtudiantsStage";
     const SEND_MAIL_AUTO_VALIDATION_STAGE = "sendMailAutoValidationStage";
     const SEND_MAIL_AUTO_RAPPEL_VALIDATION_STAGE = "sendMailAutoRappelValidationStage";
     private function initPropertiesInput() : void
@@ -269,11 +269,30 @@ class ContactStageFieldset extends AbstractEntityFieldset
             ]
         ]);
 
+//        $this->add([
+//            'name' => self::SEND_MAIL_AUTO_LISTE_ETUDIANT_STAGE,
+//            'type' => Checkbox::class,
+//            'options' => [
+//                'label' => "Envoie automatique de la liste des affectations sur ce terrain de stage ?",
+//                'label_options' => [
+//                    'disable_html_escape' => true,
+//                    'checked_value' => "1",
+//                    'unchecked_value' => "0",
+//                ],
+//                'use_hidden_element' => true,
+//            ],
+//            'attributes' => [
+//                'id' => self::SEND_MAIL_AUTO_LISTE_ETUDIANT_STAGE,
+//                'value' => 1,
+//                'class' => 'form-check-input',
+//            ]
+//        ]);
+
         $this->add([
             'name' => self::SEND_MAIL_AUTO_VALIDATION_STAGE,
             'type' => Checkbox::class,
             'options' => [
-                'label' => "Envoie automatique du lien de validation du stage ?",
+                'label' => "Envoi automatique du lien de validation du stage ?",
                 'label_options' => [
                     'disable_html_escape' => true,
                     'checked_value' => "1",
@@ -292,7 +311,7 @@ class ContactStageFieldset extends AbstractEntityFieldset
             'name' => self::SEND_MAIL_AUTO_RAPPEL_VALIDATION_STAGE,
             'type' => Checkbox::class,
             'options' => [
-                'label' => "Envoie automatique du mail de rappel si la validation n'as pas été effectué ?",
+                'label' => "Envoi automatique du mail de rappel si la validation n'as pas été effectué ?",
                 'label_options' => [
                     'disable_html_escape' => true,
                     'checked_value' => "1",
@@ -337,6 +356,12 @@ class ContactStageFieldset extends AbstractEntityFieldset
             'required' => true,
             'filters' => [$toIntFilter],
         ]) ;
+
+//        $this->setInputfilterSpecification(self::SEND_MAIL_AUTO_LISTE_ETUDIANT_STAGE, [
+//            "name" => self::SEND_MAIL_AUTO_LISTE_ETUDIANT_STAGE,
+//            'required' => true,
+//            'filters' => [$toIntFilter],
+//        ]);
 
         $this->setInputfilterSpecification(self::SEND_MAIL_AUTO_VALIDATION_STAGE, [
             "name" => self::SEND_MAIL_AUTO_VALIDATION_STAGE,

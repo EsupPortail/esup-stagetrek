@@ -9,6 +9,10 @@ use Application\Service\Parametre\ParametreService;
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Laminas\ServiceManager\ServiceManager;
+use UnicaenCalendrier\Service\CalendrierType\CalendrierTypeService;
+use UnicaenCalendrier\Service\CalendrierType\CalendrierTypeServiceAwareTrait;
+use UnicaenCalendrier\Service\DateType\DateTypeService;
+use UnicaenCalendrier\Service\DateType\DateTypeServiceAwareTrait;
 use UnicaenTag\Service\Tag\TagService;
 
 /**
@@ -40,6 +44,9 @@ class SessionStageHydratorFactory implements FactoryInterface
         /** @var ParametreService $parametreService */
         $parametreService = $container->get(ServiceManager::class)->get(ParametreService::class);
         $hydrator->setParametreService($parametreService);
+
+        $hydrator->setCalendrierTypeService($container->get(CalendrierTypeService::class));
+        $hydrator->setDateTypeService($container->get(DateTypeService::class));
 
         $hydrator->setTagService($container->get(TagService::class));
         return $hydrator;

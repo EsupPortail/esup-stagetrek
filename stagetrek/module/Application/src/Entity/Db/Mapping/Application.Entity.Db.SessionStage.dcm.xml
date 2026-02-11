@@ -33,6 +33,13 @@
       </options>
     </field>
 
+    <one-to-one field="calendrier" target-entity="UnicaenCalendrier\Entity\Db\Calendrier">
+      <cascade>
+        <cascade-persist/>
+      </cascade>
+      <join-column name="calendrier_id" referenced-column-name="id" />
+    </one-to-one>
+
     <many-to-one field="anneeUniversitaire" target-entity="Application\Entity\Db\AnneeUniversitaire" fetch="LAZY">
       <join-columns>
         <join-column name="annee_universitaire_id" referenced-column-name="id"/>

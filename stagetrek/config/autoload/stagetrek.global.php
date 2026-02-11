@@ -5,6 +5,7 @@ use Laminas\Session\Storage\SessionArrayStorage;
 use Laminas\Session\Validator\HttpUserAgent;
 use Laminas\Session\Validator\RemoteAddr;
 
+
 return [
     'unicaen-app' => [
         /**
@@ -13,8 +14,8 @@ return [
         'app_infos' => [
             'nom'     => "StageTrek",
             'desc'    => "Application de gestion des stages de médecine de second cycle",
-            'version' => "1.3.2",
-            'date'    => "28/08/2025",
+            'version' => "1.X.X",
+            'date' => '09/12/2025',
             'contact' => ['mail' => "assistance-stagetrek@unicaen.fr"],
         ],
 
@@ -44,12 +45,13 @@ return [
         'hostlocalization' => [
             'activated' => false,
             'proxies' => [
-                //xxx.xx.xx.xxx
+                "xxx.xx.xx.xxx"
             ],
             'reverse-proxies' => [
-                //xxx.xx.xx.xxx
+                "xxx.xx.xx.xxx"
             ],
-            'masque-ip' => '',
+            'masque-ip' => 'aaaa',
+            //TODO : se renseigner sur les paramétre d'ip a configurer pour l'utiliser
 
         ],
 
@@ -76,8 +78,8 @@ return [
 
 //    Layout de base
     'view_manager' => [
-        'display_not_found_reason' =>  (isset($_ENV['APP_ENV']) && $_ENV['APP_ENV'] == EnvironnementProvider::DEVELOPPEMENT) ? true : false,
-        'display_exceptions'       =>  (isset($_ENV['APP_ENV']) && $_ENV['APP_ENV'] == EnvironnementProvider::DEVELOPPEMENT) ? true : false,
+        'display_not_found_reason' =>  ($_ENV['DISPLAY_EXCEPTIONS'] && $_ENV['DISPLAY_EXCEPTIONS']=="true") ?? false,
+        'display_exceptions'       =>  ($_ENV['DISPLAY_EXCEPTIONS'] && $_ENV['DISPLAY_EXCEPTIONS']=="true") ?? false,
         'template_map' => [
             'layout/layout' => realpath('./module/Application/view/layout/layout.phtml'),
         ],

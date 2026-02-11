@@ -129,7 +129,6 @@ abstract class CommonEntityService
         }
         return $this;
     }
-
     /**
      * Préparation des paramètres à passer à la requête
      *

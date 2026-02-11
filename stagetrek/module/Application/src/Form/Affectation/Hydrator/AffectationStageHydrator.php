@@ -39,6 +39,7 @@ class AffectationStageHydrator extends AbstractHydrator implements HydratorInter
         $data[AffectationStageFieldset::STAGE] = $affectation->getStage()->getId();
         $data[AffectationStageFieldset::TERRAIN_STAGE] = ($affectation->getTerrainStage()) ? $affectation->getTerrainStage()->getId() : 0;
         $data[AffectationStageFieldset::TERRAIN_STAGE_SECONDAIRE] = ($affectation->getTerrainStageSecondaire()) ? $affectation->getTerrainStageSecondaire()->getId() : 0;
+
         $data[AffectationStageFieldset::COUT_TERRAIN] = $affectation->getCoutTerrain();
         $data[AffectationStageFieldset::BONUS_MALUS] = $affectation->getBonusMalus();
         $data[AffectationStageFieldset::INFOS] = $affectation->getInformationsComplementaires();
@@ -46,7 +47,7 @@ class AffectationStageHydrator extends AbstractHydrator implements HydratorInter
 
         $data[AffectationStageFieldset::PRE_VALIDER] = ($affectation->isPreValidee());
         $data[AffectationStageFieldset::VALIDER] = false; //On force ainsi a revalider l'affectation
-        $data[AffectationStageFieldset::SEND_MAIL] = false; //par défaut
+        $data[AffectationStageFieldset::SEND_MAIL_ETUDIANT] = false; //par défaut
 
         foreach ($affectation->getTags() as $t) {
             $data[AffectationStageFieldset::TAGS][] = $t->getId();

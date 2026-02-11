@@ -58,6 +58,7 @@ $etudiant = $fieldset->getEtudiant();
     $inputs[] = $fieldset->get($fieldset::IS_VISIBLE_ETUDIANT);
     $inputs[] = $fieldset->get($fieldset::IS_RESPONSABLE_STAGE);
     $inputs[] = $fieldset->get($fieldset::CAN_VALIDER_STAGE);
+//    $inputs[] = $fieldset->get($fieldset::SEND_MAIL_AUTO_LISTE_ETUDIANT_STAGE);
     $inputs[] = $fieldset->get($fieldset::SEND_MAIL_AUTO_VALIDATION_STAGE);
     $inputs[] = $fieldset->get($fieldset::SEND_MAIL_AUTO_RAPPEL_VALIDATION_STAGE); ?>
     <?php foreach ($inputs as $input): ?>

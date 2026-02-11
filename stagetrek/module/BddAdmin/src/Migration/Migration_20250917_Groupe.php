@@ -32,14 +32,11 @@ class Migration_20250917_Groupe extends MigrationAction {
     {
 
         $bdd = $this->getBdd();
-        $this->manager()->sauvegarderTable('groupe', 'save_groupe');
 
         //Source code = num etu + champ non null
         $bdd->exec("update groupe set code = 'g_'||id  where code is null");
         $bdd->exec("alter table groupe alter column code set not null");
         $bdd->exec("alter table groupe add CONSTRAINT groupe_code_unique UNIQUE (code)");
-
-        $this->manager()->supprimerSauvegarde('save_groupe');
     }
 
 }

@@ -6,9 +6,8 @@ namespace Application\Form\Stages\Hydrator;
 use Application\Entity\Db\Groupe;
 use Application\Entity\Db\Parametre;
 use Application\Entity\Db\SessionStage;
-use Application\Form\Contacts\Fieldset\ContactFieldset;
 use Application\Form\Stages\Fieldset\SessionStageFieldset;
-use Application\Form\TerrainStage\Fieldset\TerrainStageFieldset;
+use Application\Provider\Tag\TagProvider;
 use Application\Service\AnneeUniversitaire\Traits\AnneeUniversitaireServiceAwareTrait;
 use Application\Service\Groupe\Traits\GroupeServiceAwareTrait;
 use Application\Service\Parametre\Traits\ParametreServiceAwareTrait;
@@ -16,6 +15,11 @@ use DateInterval;
 use DateTime;
 use Laminas\Hydrator\AbstractHydrator;
 use Laminas\Hydrator\HydratorInterface;
+use UnicaenCalendrier\Entity\Db\Calendrier;
+use UnicaenCalendrier\Entity\Db\CalendrierType;
+use UnicaenCalendrier\Entity\Db\Date;
+use UnicaenCalendrier\Service\CalendrierType\CalendrierTypeServiceAwareTrait;
+use UnicaenCalendrier\Service\DateType\DateTypeServiceAwareTrait;
 use UnicaenTag\Entity\Db\Tag;
 use UnicaenTag\Service\Tag\TagServiceAwareTrait;
 
@@ -29,6 +33,8 @@ class SessionStageHydrator extends AbstractHydrator implements HydratorInterface
     use GroupeServiceAwareTrait;
     use TagServiceAwareTrait;
     use ParametreServiceAwareTrait;
+    use CalendrierTypeServiceAwareTrait;
+    use DateTypeServiceAwareTrait;
 
     /**
      * @param object $object
@@ -69,7 +75,7 @@ class SessionStageHydrator extends AbstractHydrator implements HydratorInterface
                 $session->getDateDebutEvaluation()->format('Y-m-d') : $defaultDates[SessionStageFieldset::DATE_DEBUT_EVALUATION],
             SessionStageFieldset::DATE_FIN_EVALUATION => ($session->getDateFinEvaluation()) ?
                 $session->getDateFinEvaluation()->format('Y-m-d') : $defaultDates[SessionStageFieldset::DATE_FIN_EVALUATION],
-            SessionStageFieldset::INPUT_SESSION_RATTRAPAGE => $session->isSessionRattrapge(),
+//            SessionStageFieldset::INPUT_SESSION_RATTRAPAGE => $session->isSessionRattrapge(),
             SessionStageFieldset::TAGS => ($tags) ?? [],
         ];
     }
@@ -151,6 +157,7 @@ class SessionStageHydrator extends AbstractHydrator implements HydratorInterface
      * @param $object
      * @return SessionStage
      * @throws \Doctrine\ORM\Exception\NotSupported
+     * @throws \DateMalformedIntervalStringException
      */
     public function hydrate(array $data, $object): SessionStage
     {
@@ -273,9 +280,64 @@ class SessionStageHydrator extends AbstractHydrator implements HydratorInterface
                 $session->setDateFinEvaluation($date);
             }
         }
-        $rattrapage = boolval(($data[SessionStageFieldset::INPUT_SESSION_RATTRAPAGE]) ?? 0);
-        $session->setSessionRattrapage($rattrapage);
+//        $rattrapage = boolval(($data[SessionStageFieldset::INPUT_SESSION_RATTRAPAGE]) ?? 0);
+//        $session->setSessionRattrapage($rattrapage);
 
+
+        /** Création du calendrier s'il n'existe pas */
+        if($session->getCalendrier() == null){
+            /** @var CalendrierType $ct */
+            $ct = $this->getCalendrierTypeService()->getObjectManager()->getRepository(CalendrierType::class)->findOneBy(['code' => SessionStage::CALENDRIER_TYPE]);
+            $calendrier = new Calendrier();
+            $calendrier->setCalendrierType($ct);
+            $session->setCalendrier($calendrier);
+            $calendrier->setLibelle($ct->getLibelle()." ".$session->getLibelle()." - ".$session->getAnneeUniversitaire()->getLibelle()." - ".$session->getGroupe()->getLibelle());
+        }
+        // Création/modification des dates types
+        $calendrier = $session->getCalendrier();
+
+        /** @var \UnicaenCalendrier\Entity\Db\DateType $dt */
+        foreach ($calendrier->getCalendrierType()->getDatesTypes() as $dt) {
+            $date = $session->getDateByCode($dt->getCode());
+            if(!isset($date) && !($dt->getCode() == SessionStage::DATES_PERIODE_STAGES )) {
+                    $date = new Date();
+                    $date->setType($dt);
+                    $session->addDate($date);
+            }
+            switch ($dt->getCode()){
+                case SessionStage::DATE_CALCUL_ORDRES_AFFECTATIONS :
+                    $date->setDebut($session->getDateCalculOrdresAffectations());
+                break;
+                case SessionStage::DATES_CHOIX :
+                    $date->setDebut($session->getDateDebutChoix());
+                    $date->setFin($session->getDateFinChoix());
+                break;
+                case SessionStage::DATES_COMMISSION :
+                    $date->setDebut($session->getDateCommission());
+                    $df = clone $session->getDateCommission();
+                    $delta = $this->getParametreService()->getParametreValue(Parametre::DATE_PHASE_AFFECTATION);
+                    $df->sub(new DateInterval('P' . $delta . 'D'));
+                    $date->setFin($df);
+                break;
+                case SessionStage::DATES_SESSIONS :
+                    $date->setDebut($session->getDateDebutStage());
+                    $date->setFin($session->getDateFinStage());
+                break;
+                case SessionStage::DATES_PERIODE_STAGES :
+////                    Si l'on a une seul période de stage (cas de la création par exemple, on la définie par la période de la session
+//                    $date->setDebut($session->getDateDebutStage());
+//                    $date->setFin($session->getDateFinStage());
+                break;
+                case SessionStage::DATES_VALIDATIONS :
+                    $date->setDebut($session->getDateDebutValidation());
+                    $date->setFin($session->getDateFinValidation());
+                break;
+                case SessionStage::DATES_EVALUATIONS :
+                    $date->setDebut($session->getDateDebutEvaluation());
+                    $date->setFin($session->getDateFinEvaluation());
+                break;
+            }
+        }
 
         if (isset($data[SessionStageFieldset::TAGS])) {
             $tagsSelected = $data[SessionStageFieldset::TAGS];
@@ -288,10 +350,14 @@ class SessionStageHydrator extends AbstractHydrator implements HydratorInterface
             foreach ($tags as $t) {
                 $session->addTag($t);
             }
+
         } else {
             $session->getTags()->clear();
         }
 
+//            Pour conserver pour le momment le booléan SessionDeRattrapage
+        $rattrapage = $session->hasTagWithCode(TagProvider::SESSION_RATTRAPAGE);
+        $session->setSessionRattrapage($rattrapage);
         return $session;
     }
 

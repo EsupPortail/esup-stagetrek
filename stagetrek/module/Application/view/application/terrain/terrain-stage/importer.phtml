@@ -33,14 +33,20 @@ $fcg = $this->formControlGroup();
                 </div>
                 <div class="col-md-8 text-muted text-small">
                     <ul>
-                        <li>Le fichier CSV doit utiliser comme séparateur le '
-                            <?= CSVService::SEPARATOR ?>' et avoir les champs suivants : <br/>
-                            <?php $h = "";
-                            foreach (TerrainStageCsvImportValidator::getImportHeader() as $key) {
-                                $h .= sprintf("<strong><span class='mx-2'>%s</span></strong>; ", $key);
-                            }
-                            echo $h;
-                            ?>
+                        <li>Le fichier CSV doit :
+                            <ul>
+                                <li> utiliser comme séparateur le '<?= CSVService::SEPARATOR ?>'</li>
+                                <li> être encodé en utf8</li>
+                                <?php  $ob = "<sup title='Champs obligatoire'>*</sup>"; ?>
+                                <li> avoir les champs suivants : (<?=$ob?> = Champs obligatoires)<br/>
+                                    <?php $h = "";
+                                    foreach (TerrainStageCsvImportValidator::getImportHeader() as $key) {
+                                        $obligatoire =  TerrainStageCsvImportValidator::isChampsObligatoire($key);
+                                        $h .= sprintf("<strong><span class='mx-2'>%s %s </span></strong>; ", $key, (($obligatoire) ? $ob : ''));
+                                    }
+                                    echo $h;
+                                    ?>
+                            </ul>
                         </li>
                         <li>
                             Le champ
@@ -50,16 +56,23 @@ $fcg = $this->formControlGroup();
                         <li>
                             Laissez le champ
                             <strong><?= TerrainStageCsvImportValidator::HEADER_CODE_TERRAIN ?></strong>
-                            vide pour tout nouveau terrain de stage.
+                            vide pour tout nouveau terrain de stage utilisant la nomenclature par défaut : "[Code de la catégorie]_XXX".
                         </li>
                         <li>
-                            Le champs <strong><?= TerrainStageCsvImportValidator::HEADER_LIBELLE ?></strong>
+                            Le champ <strong><?= TerrainStageCsvImportValidator::HEADER_LIBELLE ?></strong>
                             doit être unique.
                         </li>
                         <?php //Message éventuelle pour l'import
                         $msg = $this->messenger()->addCurrentMessagesFromFlashMessengerWithNamespace(TerrainStageController::ACTION_IMPORTER . Messenger::NAMESPACED_SEVERITY_SEPARATOR . "*");
                         ?>
                     </ul>
+                </div>
+            </div>
+
+            <hr/>
+            <div class="row">
+                <div class="col-md-12">
+                    <?= $fcg($form->get($form::INPUT_SUBMIT)); ?>
                 </div>
             </div>
 
@@ -72,12 +85,7 @@ $fcg = $this->formControlGroup();
                     </div>
                 </div>
             <?php endif; ?>
-            <hr/>
-            <div class="row">
-                <div class="col-md-12">
-                    <?= $fcg($form->get($form::INPUT_SUBMIT)); ?>
-                </div>
-            </div>
+
             <?= $this->formHidden($form->get($form::CSRF)); ?>
             <?= $this->form()->closeTag(); ?>
         </div>

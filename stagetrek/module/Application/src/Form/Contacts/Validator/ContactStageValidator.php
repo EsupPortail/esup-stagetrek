@@ -7,6 +7,7 @@ use Application\Entity\Db\Etudiant;
 use Application\Entity\Db\SessionStage;
 use Application\Entity\Db\Stage;
 use Application\Form\Contacts\Fieldset\ContactStageFieldset;
+use Application\Misc\Util;
 use DoctrineModule\Persistence\ObjectManagerAwareInterface;
 use DoctrineModule\Persistence\ProvidesObjectManager;
 use Exception;
@@ -40,10 +41,10 @@ class ContactStageValidator extends AbstractValidator implements ObjectManagerAw
         self::CALLBACK_FUNCTION_NOT_DEFIND_ERROR => "La fonction de validation n'a pas été founrie.",
         self::CALLBACK_FUNCTION_NOT_IMPLEMENTED_ERROR => "La fonction de validation n'a pas été définie.",
         self::CONTACT_NOT_FOUND_ERROR => "Le contact demandé n'as pas été trouvée",
-        self::ETUDIANT_NOT_FOUND_ERROR => "L'étudiant.e demandé.e n'as pas été trouvé.e",
+        self::ETUDIANT_NOT_FOUND_ERROR => "L'étudiant".Util::POINT_MEDIANT."e demandé".Util::POINT_MEDIANT."e n'as pas été trouvé".Util::POINT_MEDIANT."e",
         self::SESSION_NOT_FOUND_ERROR => "La session de stage demandée n'as pas été trouvée",
-        self::ETUDIANT_NO_STAGE_FOR_SESSION_ERROR => "L'étudiant.e  n'est pas inscrit.e  dans la session de stage demandée",
-        self::ETUDIANT_NO_AFFECTATION_FOR_STAGE_ERROR => "L'étudiant.e  n'a pas d'affectation valide pour le stage demandé",
+        self::ETUDIANT_NO_STAGE_FOR_SESSION_ERROR => "L'étudiant".Util::POINT_MEDIANT."e  n'est pas inscrit".Util::POINT_MEDIANT."e  dans la session de stage demandée",
+        self::ETUDIANT_NO_AFFECTATION_FOR_STAGE_ERROR => "L'étudiant".Util::POINT_MEDIANT."e  n'a pas d'affectation valide pour le stage demandé",
         self::CONTACT_STAGE_ALREADY_EXIST => "Le contact est déjà associé au stage demandé",
         self::EXCEPTION => "Une erreur est survenue : %exceptionMessage%",
     ];

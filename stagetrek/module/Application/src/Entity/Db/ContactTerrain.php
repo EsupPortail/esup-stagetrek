@@ -89,6 +89,14 @@ class ContactTerrain implements ResourceInterface,
      * @var bool
      */
     protected bool $sendMailAutoRappelValidationStage = false;
+
+
+    /**
+     * @var bool
+     * @desc est-ce que le contact recoit automatiquement les mails d'affectations sur ce terrains de stage
+     */
+    protected bool $sendMailAutoAffectationTerrains = false;
+
     /**
      * @var bool
      */

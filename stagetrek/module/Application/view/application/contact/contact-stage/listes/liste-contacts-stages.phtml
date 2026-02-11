@@ -3,6 +3,7 @@
 use Application\Controller\Contact\ContactStageController;
 use Application\Entity\Db\Contact;
 use Application\Entity\Db\ContactStage;
+use Application\Misc\Util;
 use Application\Provider\Misc\Icone;
 use Application\View\Helper\Contacts\ContactStageViewHelper;
 use Application\View\Helper\Etudiant\EtudiantViewHelper;
@@ -28,7 +29,7 @@ $vh->setContact($contact);
             <th class="no-search hidden"></th>
             <th class="no-search hidden"></th>
             <th></th>
-            <th class="no-search no-sort rotate-45"><div class="first"><span> Visbile par l'étudiant</span></div></th>
+            <th class="no-search no-sort rotate-45"><div class="first"><span> Visbile par les étudiant<?=Util::POINT_MEDIANT?>s</span></div></th>
             <th class="no-search no-sort rotate-45"><div><span>Responsable du stage </span></div></th>
             <th class="no-search no-sort rotate-45"><div><span>Peut valider le stage</span></div></th>
             <th class="no-search no-sort rotate-45"><div><span>Signataire de la convention</span></div></th>

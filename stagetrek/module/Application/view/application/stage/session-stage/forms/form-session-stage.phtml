@@ -4,6 +4,8 @@ use Application\Controller\Stage\SessionStageController;
 use Application\Entity\Db\Parametre;
 use Application\Form\Stages\Fieldset\SessionStageFieldset;
 use Application\Form\Stages\SessionStageForm;
+use Application\Misc\Util;
+use Application\Provider\Tag\TagProvider;
 use Application\View\Helper\Parametres\ParametreViewHelper;
 use Application\View\Helper\SessionsStages\SessionStageViewHelper;
 
@@ -20,6 +22,7 @@ $fe = $this->formErrors();
 $fcg = $this->formControlGroup();
 $fr = $this->formrow();
 $fct = $this->formControlText();
+$tagVh =  $this->unicaenTag();
 
 $title = $form->getTitle();
 $fieldset = $form->getEntityFieldset();
@@ -73,28 +76,34 @@ $dureeEvaluation = $parametreVh->getParametreService()->getParametreValue(Parame
                             <?= $fcg($fieldset->get($fieldset::GROUPE)); ?>
                         </div>
                     </div>
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="d-flex">
-                                <?php
-                                $input = $fieldset->get($fieldset::INPUT_SESSION_RATTRAPAGE);
-                                echo $this->formlabel($input);
-                                $input->setLabel("");
-                                ?>
-                                <div class="form-check form-switch">
-                                    <?= $fcg($input) ?>
-                                </div>
-                            </div>
-                            <div class="text-small">
-                                L'inscription des étudiant.e.s pour les sessions de rattrapage doit être effectué
-                                manuellement.
-                            </div>
-                        </div>
-                    </div>
+<!--                        La déclaration des sessions de rattrapage passe par les tags-->
+<!--                    <div class="row">-->
+<!--                        <div class="col-md-12">-->
+<!--                            <div class="d-flex">-->
+<!--                                --><?php
+//                                $input = $fieldset->get($fieldset::INPUT_SESSION_RATTRAPAGE);
+//                                echo $this->formlabel($input);
+//                                $input->setLabel("");
+//                                ?>
+<!--                                <div class="form-check form-switch">-->
+<!--                                    --><?php //= $fcg($input) ?>
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="text-small">-->
+<!--                                L'inscription des étudiant--><?php //= Util::POINT_MEDIANT ?><!--e--><?php //= Util::POINT_MEDIANT ?><!--s pour les sessions de rattrapage doit être effectué-->
+<!--                                manuellement.-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
                     <div class="row">
                         <div class="col-md-6">
                             <?= $fcg($fieldset->get($fieldset::TAGS)); ?>
+                        </div>
+                        <div class="col-md-6 text-small">
+                            <ul>
+                                <li>L'inscription des étudiant<?= Util::POINT_MEDIANT ?>e<?= Util::POINT_MEDIANT ?>s à une <?= $tagVh->renderTag(TagProvider::SESSION_RATTRAPAGE, ['display-libelle' => true]) ?> doit être effectuée manuellement.</li>
+                                <li>Une <?= $tagVh->renderTag(TagProvider::SESSION_MUlTIPLES_PERIODES, ['display-libelle' => true]) ?> requiére de définir les différentes périodes de stages effectives depuis la fiche du stage</li>
+                            </ul>
                         </div>
                     </div>
                 </div>

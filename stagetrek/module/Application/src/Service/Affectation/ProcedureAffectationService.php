@@ -10,6 +10,7 @@ use Application\Service\Affectation\Algorithmes\AlgorithmeAffectationInterface;
 use Application\Service\Affectation\Traits\AffectationStageServiceAwareTrait;
 use Application\Service\Misc\CommonEntityService;
 use Application\Service\Parametre\Traits\ParametreServiceAwareTrait;
+use Application\Service\Stage\Traits\SessionStageServiceAwareTrait;
 
 /**
  * Class PreferenceService
@@ -19,6 +20,7 @@ class ProcedureAffectationService extends CommonEntityService
 {
     use AffectationStageServiceAwareTrait;
     use ParametreServiceAwareTrait;
+    use SessionStageServiceAwareTrait;
     /** @return string */
     public function getEntityClass(): string
     {
@@ -54,10 +56,12 @@ class ProcedureAffectationService extends CommonEntityService
             $msg = sprintf("L'algorithme d'affectation correspondant a la procédure %s n'as pas été correctement configuré", $procedure->getCode());
             throw new ProcedureAffectationException($msg);
         }
-        $algo->run($sessionStage);
+//        $algo->run($sessionStage);
 
         //Pour être sur de prendre en compte les modification
         $this->objectManager->refresh($sessionStage);
+        //Mise à jours du nombres de places des affectations
+        $this->getSessionStageService()->computePlacesForSessions();
 //        Misse à jours des états et des préférences satisfaites
         $affectations = $sessionStage->getAffectations();
         foreach ($affectations as $affectation) {

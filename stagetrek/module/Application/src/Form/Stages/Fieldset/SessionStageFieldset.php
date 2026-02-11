@@ -14,6 +14,7 @@ use Application\Form\Misc\Traits\IdInputAwareTrait;
 use Application\Form\Misc\Traits\LibelleInputAwareTrait;
 use Application\Form\Misc\Traits\TagInputAwareTrait;
 use Application\Form\Stages\Validator\SessionStageValidator;
+use Application\Misc\Util;
 use Application\Provider\Tag\CategorieTagProvider;
 use Laminas\Filter\DateTimeSelect;
 use Laminas\Form\Element\Checkbox;
@@ -38,7 +39,7 @@ class SessionStageFieldset extends AbstractEntityFieldset
         $this->initLibelleInput();
         $this->initGroupeInput();
         $this->initDatesInputs();
-        $this->initPropertiesInputs();
+//        $this->initPropertiesInputs();
         $this->initTagsInputs();
         return $this;
     }
@@ -211,7 +212,7 @@ class SessionStageFieldset extends AbstractEntityFieldset
             'type' => Date::class,
             'name' => self::DATE_DEBUT_EVALUATION,
             'options' => [
-                'label' => "Début des évaluations par les étudiants le",
+                'label' => "Début des évaluations par les étudiant".Util::POINT_MEDIANT."s le",
             ],
             'attributes' => [
                 'id' => self::DATE_DEBUT_EVALUATION,
@@ -278,25 +279,25 @@ class SessionStageFieldset extends AbstractEntityFieldset
         }
     }
 
-    const INPUT_SESSION_RATTRAPAGE = "isSessionRattrapge";
-    private function initPropertiesInputs(): void
-    {
-        $this->add([
-            'name' => self::INPUT_SESSION_RATTRAPAGE,
-            'type' => Checkbox::class,
-            'options' => [
-                'label' =>  "Session de rattrapage",
-                'use_hidden_element' => true,
-                'checked_value' => "1",
-                'unchecked_value' => "0",
-            ],
-            'attributes' => [
-                'id' => self::INPUT_SESSION_RATTRAPAGE,
-                'value' => 0,
-                'class' => 'form-check-input'
-            ],
-        ]);
-    }
+//    const INPUT_SESSION_RATTRAPAGE = "isSessionRattrapge";
+//    private function initPropertiesInputs(): void
+//    {
+//        $this->add([
+//            'name' => self::INPUT_SESSION_RATTRAPAGE,
+//            'type' => Checkbox::class,
+//            'options' => [
+//                'label' =>  "Session de rattrapage",
+//                'use_hidden_element' => true,
+//                'checked_value' => "1",
+//                'unchecked_value' => "0",
+//            ],
+//            'attributes' => [
+//                'id' => self::INPUT_SESSION_RATTRAPAGE,
+//                'value' => 0,
+//                'class' => 'form-check-input'
+//            ],
+//        ]);
+//    }
 
 
     public function getTagsAvailables(): array

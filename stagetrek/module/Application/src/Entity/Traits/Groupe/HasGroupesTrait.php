@@ -31,6 +31,9 @@ trait HasGroupesTrait
      */
     public function addGroupe(Groupe $groupe) : static
     {
+        if(!$this->groupes){
+            $this->initGroupesCollection();
+        }
         if(!$this->groupes->contains($groupe)){
             $this->groupes->add($groupe);
         }

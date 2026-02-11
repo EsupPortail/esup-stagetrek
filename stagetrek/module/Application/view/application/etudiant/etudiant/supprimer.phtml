@@ -2,6 +2,7 @@
 
 use Application\Controller\Etudiant\EtudiantController;
 use Application\Form\Misc\ConfirmationForm;
+use Application\Misc\Util;
 use Application\View\Helper\Misc\ConfirmationFormViewHelper;
 
 
@@ -27,7 +28,7 @@ $vh = $this->confirmation($form)
         <?php if(!$form->hasBeenConfirmed()) :?>
         <div class='alert alert-warning'>
             <strong>Cette action est irréversible</strong>
-            <div>Toutes les informations liées à l'étudiant.e seront <strong>définitivement supprimées</strong></div>
+            <div>Toutes les informations liées à l'étudiant<?=Util::POINT_MEDIANT?>e seront <strong>définitivement supprimées</strong></div>
         </div>
         <?php endif; ?>
 

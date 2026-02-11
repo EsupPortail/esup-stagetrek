@@ -31,7 +31,6 @@ class ProcedureAffectationControllerFactory implements FactoryInterface
 
         $entityManager = $container->get(EntityManager::class);
         $controller->setObjectManager($entityManager);
-
         /** @var ProcedureAffectationService $procedureAffectationService */
         $procedureAffectationService = $container->get(ServiceManager::class)->get(ProcedureAffectationService::class);
         $controller->setProcedureAffectationService($procedureAffectationService);

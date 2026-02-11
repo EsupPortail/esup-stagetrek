@@ -6,6 +6,7 @@ use DateTime;
 
 /**
  * Version
+ * @desc non fonctionnel si l'on est sur docker
  */
 class Version
 {

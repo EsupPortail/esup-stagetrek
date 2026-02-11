@@ -8,6 +8,7 @@ use Application\Entity\Db\Etudiant;
 use Application\Exceptions\ImportException;
 use Application\Form\Adresse\Fieldset\AdresseFieldset;
 use Application\Form\Etudiant\Fieldset\EtudiantFieldset;
+use Application\Misc\Util;
 use Application\Service\Referentiel\Interfaces\ReferentielEtudiantInterface;
 use DateTime;
 use Exception;
@@ -79,16 +80,16 @@ class EtudiantHydrator extends AbstractHydrator implements HydratorInterface
         $email = ($data[self::KEY_EMAIL]) ?? null;
         $dateNaissance = ($data[self::KEY_DATE_NAISSANCE]) ?? null;
         if(!isset($numEtu)){
-            throw new ImportException("Le numéro de l'étudiant.e n'est pas défini");
+            throw new ImportException("Le numéro de l'étudiant".Util::POINT_MEDIANT."e n'est pas défini");
         }
         if(!isset($nom)){
-            throw new ImportException("Le nom de l'étudiant.e n'est pas défini");
+            throw new ImportException("Le nom de l'étudiant".Util::POINT_MEDIANT."e n'est pas défini");
         }
         if(!isset($prenom)){
-            throw new ImportException("Le prénom de l'étudiant.e n'est pas défini");
+            throw new ImportException("Le prénom de l'étudiant".Util::POINT_MEDIANT."e n'est pas défini");
         }
         if(!isset($email)){
-            throw new ImportException("L'adresse mail de l'étudiant.e n'est pas défini");
+            throw new ImportException("L'adresse mail de l'étudiant".Util::POINT_MEDIANT."e n'est pas défini");
         }
 
         $object->setNumEtu($numEtu);

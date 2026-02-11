@@ -49,6 +49,9 @@ class EvenementTraiterCommandFactory extends Command
             $delai = $config['unicaen-evenement']['delai-peremption'];
             $command->setDelaiPeremption($delai);
         }
+        if (isset($config['unicaen-evenement']['simulate_execution'])) {
+            $command->setHasToSimulatate($config['unicaen-evenement']['simulate_execution']);
+        }
         $env = ($config['console-cli']['console_env']) ??  EnvironnementProvider::TEST;
         $command->setEnvironnement($env);
         return $command;

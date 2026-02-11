@@ -8,3 +8,4 @@ data/stagetrek-db/
 vendor/
 public/supervisord.log
 public/supervisord.pid
+./composer.lock

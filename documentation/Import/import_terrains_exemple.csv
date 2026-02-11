@@ -1,0 +1,2 @@
+categorie   ; code      ; libelle           ; min_place ; ideal_place   ; max_place ; hors_subdivision  ; preferences   ; service   ; lien  ; adresse   ; adresse_complement    ; cp    ; ville ; cedex ;
+CS-exemple  ; T-exemple ; Terrain d'exemple ; 1         ; 1             ; 1          ; non              ; oui           ;           ;        ;          ;                       ;       ;       ;       ;

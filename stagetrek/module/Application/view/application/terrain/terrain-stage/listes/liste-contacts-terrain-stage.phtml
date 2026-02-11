@@ -3,6 +3,7 @@
 use Application\Controller\Terrain\TerrainStageController;
 use Application\Entity\Db\ContactTerrain;
 use Application\Entity\Db\TerrainStage;
+use Application\Misc\Util;
 use Application\Provider\Misc\Icone;
 use Application\Provider\Privilege\ContactPrivileges;
 use Application\View\Helper\Contacts\ContactTerrainViewHelper;
@@ -31,7 +32,7 @@ $canDelete = $vh->hasPrivilege(ContactPrivileges::CONTACT_TERRAIN_SUPPRIMER);
                 <th class="col-md-3" data-priority="1">Libellé</th>
                 <th class="col-md-4" data-priority="3">Mail</th>
                 <th class="col-md-2" data-priority="9">Téléphone</th>
-                <th class="none">Visible par les étudiants ?</th>
+                <th class="none">Visible par les étudiant<?=Util::POINT_MEDIANT?>s ?</th>
                 <th class="none">Responsable de stage ?</th>
                 <th class="none">Peut valider le stage ?</th>
                 <th class="none">Signataire de la convention de stage ?</th>
@@ -83,7 +84,7 @@ $canDelete = $vh->hasPrivilege(ContactPrivileges::CONTACT_TERRAIN_SUPPRIMER);
                                 </div>
                             <?php endif; ?>
                             <?php if ($ct->sendMailAutoListeEtudiantsStage()) : ?>
-                                <div class="mx-3 text-small">Liste des étudiants inscrits à une session de stage
+                                <div class="mx-3 text-small">Liste des étudiant<?=Util::POINT_MEDIANT?>e<?=Util::POINT_MEDIANT?>s affecté<?=Util::POINT_MEDIANT?>e<?=Util::POINT_MEDIANT?>s sur ce terrain de stage
                                 </div>
                             <?php endif; ?>
                             <?php if ($ct->sendMailAutoValidationStage()) : ?>

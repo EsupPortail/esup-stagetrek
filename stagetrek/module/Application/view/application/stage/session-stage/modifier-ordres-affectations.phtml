@@ -4,11 +4,12 @@ use Application\Controller\Stage\SessionStageController;
 use Application\Controller\Stage\StageController;
 use Application\Entity\Db\SessionStage;
 use Application\Entity\Db\Stage;
+use Application\Misc\Util;
 use Application\View\Helper\SessionsStages\SessionStageViewHelper;
 use Application\View\Helper\Stages\StageViewHelper;
 
 /**
- * @see StageController::modifierOrdresAffectationsAction()
+ * @see SessionStageController::modifierOrdresAffectationsAction()
  * @var String $title
  * @var SessionStage $session
  * @var Stage[] $stages
@@ -50,7 +51,7 @@ $stageVh = $this->stage();
             <?php elseif ($session->getDateDebutChoix() < $today && $today <= $session->getDateFinChoix()) : ?>
                 <div class="card-text alert alert-warning">
                     <strong>La phase de définition des préférences est en cours.</strong>
-                    <br/> Merci d'informer les étudiants des modifications.
+                    <br/> Merci d'informer les étudiant<?=Util::POINT_MEDIANT?>s des modifications.
                 </div>
             <?php elseif ($session->getDateCalculOrdresAffectations() < $today) : ?>
                 <div class="card-text alert alert-info">
@@ -84,8 +85,11 @@ $stageVh = $this->stage();
             <form id="<?= $formId ?>" method="post" class="loadingForm"
                   action="<?= $this->url(SessionStageController::ROUTE_MODIFIER_ORDRES_AFFECTAIONS, ["sessionStage" => $session->getId()], [], true) ?>"
             >
+
+                <?= $vh->lienRecalculerOrdresAfectations(); ?>
                 <button name=submit" id="submit" type="submit" class="btn btn-primary">
                     <i class="fas fa-save"></i> Valider les modifications
+                </button>
             </form>
         </div>
         <div class="card-body">
@@ -231,6 +235,12 @@ $stageVh = $this->stage();
                     "<'row' <'col-sm-12 col-md-5'i> <'col-sm-12 col-md-7'p> >",
             })
             $("#<?= $tableId ?>").DataTable(options);
+
+            let body = $("body");
+            body.on("<?= SessionStageController::EVENT_MODIFIER ?> "
+                , function (event) {
+                    window.location.href = window.location.href; //equivalent à reload mais sans la ressoumission du formlaire
+                });
         });
     </script>
 <?php endif; ?>

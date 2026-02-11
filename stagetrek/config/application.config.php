@@ -7,6 +7,7 @@ $dotenv->load();
 
 $modules = [
     'Laminas\Cache',
+//    'Laminas\Cache\Storage\Adapter\Filesystem',
     'Laminas\Filter',
     'Laminas\Form',
     'Laminas\Hydrator',
@@ -43,11 +44,14 @@ $modules = [
     'UnicaenFichier',
     'UnicaenStorage',
     'UnicaenDbImport',
+    'UnicaenIndicateur',
+    'UnicaenCalendrier',
     'Application',
     'Console',
     'Evenement',
     'API',
     'BddAdmin',
+    'Indicateur',
 ];
 
 //Ajout de Faker qui pose pb en l'incluant depuis modules

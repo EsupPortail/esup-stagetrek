@@ -15,6 +15,7 @@ use Application\Form\Parametre\Element\NiveauEtudeSelectPicker;
 use Application\Form\TerrainStage\Element\CategorieStageSelectPicker;
 use Application\Form\TerrainStage\Element\TerrainStagePrincipalSelectPicker;
 use Application\Form\TerrainStage\Element\TerrainStageSecondaireSelectPicker;
+use Application\Misc\Util;
 use Application\Provider\Tag\CategorieTagProvider;
 use Laminas\Filter\StringTrim;
 use Laminas\Filter\StripTags;
@@ -373,7 +374,7 @@ class TerrainStageFieldset extends AbstractEntityFieldset
             'name' => self::RESTRICTIONS_TERRAIN_NIVEAU_ETUDE,
             'type' => NiveauEtudeSelectPicker::class,
             'options' => [
-                'label' => "Restreindre le terrain de stage pour les étudiants de :",
+                'label' => "Restreindre le terrain de stage pour les étudiant".Util::POINT_MEDIANT."s de :",
                 'use_hidden_element' => true,
             ],
             'attributes' => [

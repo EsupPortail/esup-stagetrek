@@ -103,6 +103,8 @@ class ReferentielDbImportEtudiantService extends AbstractImportEtudiantsService 
             $where = $this->getWhereClause($referentiel, $annee);
             $import->getSource()->setWhere($where);
 
+//            dd($import);
+
             $synchro = $this->synchroService->getSynchroByName(self::SYNCHRO_NAME);
             $this->importService->runImport($import);
             $importLog = $this->importLogService->findLastLogForImport($import);

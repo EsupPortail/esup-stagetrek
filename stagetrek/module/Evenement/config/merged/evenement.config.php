@@ -4,9 +4,12 @@ namespace Evenement;
 
 use Evenement\Provider\TypeEvenementProvider;
 use Evenement\Service\Evenement\EvenementService;
+use Evenement\Service\Evenement\EvenementTestService;
 use Evenement\Service\Evenement\Factory\EvenementServiceFactory;
+use Evenement\Service\Evenement\Factory\EvenementTestServiceFactory;
 use Evenement\Service\MailAuto\Factory\MailAutoEvenementServiceFactory;
 use Evenement\Service\MailAuto\MailAutoAffectationEvenementService;
+use Evenement\Service\MailAuto\MailAutoListeEtudiantsEncadresEvenementService;
 use Evenement\Service\MailAuto\MailAutoStageDebutChoixEvenementService;
 use Evenement\Service\MailAuto\MailAutoStageDebutValidation;
 use Evenement\Service\MailAuto\MailAutoStageRappelChoixEvenementService;
@@ -35,6 +38,8 @@ return [
             MailAutoStageRappelValidationEvenementService::class => MailAutoEvenementServiceFactory::class,
             MailAutoStageValidationEffectueEvenementService::class => MailAutoEvenementServiceFactory::class,
             MailAutoAffectationEvenementService::class => MailAutoEvenementServiceFactory::class,
+            MailAutoListeEtudiantsEncadresEvenementService::class => MailAutoEvenementServiceFactory::class,
+            EvenementTestService::class => EvenementTestServiceFactory::class,
         ],
     ],
 
@@ -47,6 +52,8 @@ return [
             TypeEvenementProvider::MAIL_AUTO_DEBUT_VALIDATION_STAGE => MailAutoStageDebutValidation::class,
             TypeEvenementProvider::MAIL_AUTO_RAPPEL_STAGE_VALIDATION => MailAutoStageRappelValidationEvenementService::class,
             TypeEvenementProvider::MAIL_AUTO_STAGE_VALIDATION_EFFECTUE => MailAutoStageValidationEffectueEvenementService::class,
+            TypeEvenementProvider::MAIL_AUTO_LISTE_ETUDIANTS_STAGES => MailAutoListeEtudiantsEncadresEvenementService::class,
+            TypeEvenementProvider::TEST => EvenementTestService::class,
         ],
     ],
 

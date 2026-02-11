@@ -126,8 +126,9 @@ class AffectationController extends AbstractActionController
                 } catch (Exception $e) {
                     return $this->failureAction($title, null, $e);
                 }
-                $sendMail = (isset($data['affectationStage'][AffectationStageFieldset::SEND_MAIL])
-                    && boolval($data['affectationStage'][AffectationStageFieldset::SEND_MAIL]));
+
+                $sendMail = (isset($data['affectationStage'][AffectationStageFieldset::SEND_MAIL_ETUDIANT])
+                    && boolval($data['affectationStage'][AffectationStageFieldset::SEND_MAIL_ETUDIANT]));
                 if ($sendMail){
                     try {
                         $event = $this->getMailAutoAffectationEvenementService()->create($affectationStage->getStage());
@@ -137,11 +138,30 @@ class AffectationController extends AbstractActionController
                     }
                 }
 
+                $sendMail = (isset($data['affectationStage'][AffectationStageFieldset::SEND_MAIL_CONTACTS])
+                    && boolval($data['affectationStage'][AffectationStageFieldset::SEND_MAIL_CONTACTS]));
+                if ($sendMail){
+                    try {
+                        $events = $this->getMailAutoListeEtudiantsEncadresEvenementService()->createFromStage($affectationStage->getStage());
+                        foreach ($events as $event){
+                            $this->getMailAutoListeEtudiantsEncadresEvenementService()->traiter($event);
+                        }
+                        $stage2 = $affectationStage->getStage()->getStageSecondaire();
+                        if($stage2){
+                            $events = $this->getMailAutoListeEtudiantsEncadresEvenementService()->createFromStage($stage2);
+                            foreach ($events as $event){
+                                $this->getMailAutoListeEtudiantsEncadresEvenementService()->traiter($event);
+                            }
+                        }
+                    } catch (Exception $e) {
+                        return $this->failureAction($title, null, $e);
+                    }
+                }
+
             }
         }
         return new ViewModel(['title' => $title, 'form' => $form, 'affectationStage' => $affectationStage]);
     }
-
     /**
      * @throws \Doctrine\ORM\Exception\NotSupported
      */
@@ -149,7 +169,6 @@ class AffectationController extends AbstractActionController
     {
         $title = "Modifier les affectations de stages";
         $sessionStage = $this->getSessionStageFromRoute();
-
         if ($data = $this->params()->fromPost()) {
             if(isset($data['preValidations']) || isset($data['validations'])) {
                 $affectationsUpdated=[];
@@ -183,9 +202,14 @@ class AffectationController extends AbstractActionController
                     $this->sendSuccessMessage("Les affectations de stages ont été mise à jours");
                     $cpt=0;
                     foreach ($affectations as $affectation){
-                        if($affectation->hasEtatValidee()){//on planifie l'envoie des mails pour le signaler aux étudiants
-                            $cpt++;
+                        if($affectation->hasEtatValidee()){//on planifie l'envoi des mails pour le signaler aux étudiants et aux responsable une mise à jours de l'affectation
                             $this->getMailAutoAffectationEvenementService()->create($affectation->getStage());
+//                            TODO : a revoir pour ne faire qu'un seul evenement pour toutes les sessiosn de stage ? (attendre la passage par API-Plateforme ?)
+                            $this->getMailAutoListeEtudiantsEncadresEvenementService()->createFromStage($affectation->getStage());
+                            $stage2 = $affectation->getStage()->getStageSecondaire();
+                            if($stage2){
+                                $this->getMailAutoListeEtudiantsEncadresEvenementService()->createFromStage($stage2);
+                            }
                         }
                     }
                     //Rechargement des données

@@ -1,0 +1,77 @@
+<?php
+
+use Application\Controller\Stage\SessionStageController;
+use Application\Entity\Db\SessionStage;
+use Application\Form\Stages\PeriodeStageForm;
+use Application\Form\Stages\SessionStageForm;
+use Application\Provider\Misc\Icone;
+use Application\View\Helper\SessionsStages\SessionStageViewHelper;
+
+/**
+ * @see SessionStageController::ajouterPeriodeStageAction()
+ * @var String $title
+ * @var PeriodeStageForm $form
+ * @var SessionStage $session
+ */
+
+/** @var SessionStageViewHelper $vh */
+$vh = $this->sessionStage();
+?>
+
+<div class="card card-success">
+    <h1 class="page-header card-header">
+        <span class="icon icon-ajouter"></span>
+        <?= $title ?>
+    </h1>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-2">
+                <strong>Session</strong>
+            </div>
+            <div class="col-md-10">
+                <?= $session->getLibelle() ?>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+                <strong>Dates de la session</strong>
+            </div>
+            <div class="col-md-10">
+                du <?= $session->getDateDebutStage()->format('d/m/Y') ?>
+                au <?= $session->getDateFinStage()->format('d/m/Y') ?>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+                <strong>Périodes existantes</strong>
+            </div>
+            <div class="col-md-10">
+                <?php $periodesStages = $session->getDatesPeriodesStages(); ?>
+                <?php if(!isset($periodesStages) || empty($periodesStages)): ?>
+                    <div class="text-small text-muted">
+                        Aucune période n'est actuellement définie
+                    </div>
+                <?php else: ?>
+                <?php foreach($periodesStages as $periode):
+                    ?>
+                    <div class="text-small">
+                        <span class="ms-3 <?= Icone::FA_ARROW_RIGHT ?>"></span>
+                        du <?= $periode->getDebut()->format('d/m/Y') ?>
+                        au <?= $periode->getFin()->format('d/m/Y') ?>
+                    </div>
+                <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
+        </div>
+        <hr/>
+        <?= $vh->renderPeriodeStageForm($form); ?>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        let body = $("body");
+        body.off("<?= SessionStageController::EVENT_MODIFIER?>", closeModal)
+            .one("<?= SessionStageController::EVENT_MODIFIER?>", closeModal);
+    })
+</script>

@@ -36,29 +36,22 @@ install: ## Build des conteneurs de l'application
 	docker compose $(PROFILS) up -d
 .PHONY: install
 
-
 uninstall: ## Désinstallation
 	docker compose $(ALL_PROFILS) down --rmi all --volumes --remove-orphans
 	docker network rm stagetrek-network -f
 .PHONY: uninstall
 
-
 start: ## Démarre les conteneurs de l'application
 	docker compose $(PROFILS) start
 .PHONY: start
-
-
 
 stop: ## Stoppe les conteneurs de l'application
 	docker compose $(PROFILS) stop
 .PHONY: stop
 
-
-
 bash: ## Entrer dans le bash du container php
 	docker exec -it stagetrek-core /bin/bash
 .PHONY: bash
-
 
 bash-db: ## Entrer dans le container de la base de données
 	docker exec -it stagetrek-db /bin/bash
@@ -67,7 +60,6 @@ bash-db: ## Entrer dans le container de la base de données
 bash-service: ## Entrer dans le container Apache
 	docker exec -it stagetrek-service /bin/bash
 .PHONY: bash-service
-
 
 logs: ## Afficher les logs des containers docker
 	docker compose $(PROFILS) logs -f --tail=100

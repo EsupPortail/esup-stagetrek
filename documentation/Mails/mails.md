@@ -27,7 +27,7 @@ MAIL_SMTP_PASSWORD="ChangeMe!"
 A noter que Unicaen mail gére 3 protocoles de communication :
 - Non sécurisé (`MAIL_SMTP_PORT=25, MAIL_SMTP_TLS=false, MAIL_SMTP_USE_AUTH=false`)
 - TLS : (`MAIL_SMTP_PORT="465", MAIL_SMTP_TLS="true", MAIL_SMTP_USE_AUTH="true"`)
-- START_TLS : (`MAIL_SMTP_PORT="587", MAIL_SMTP_TLS="fallse", MAIL_SMTP_USE_AUTH="true"`)
+- START_TLS : (`MAIL_SMTP_PORT="587", MAIL_SMTP_TLS="false", MAIL_SMTP_USE_AUTH="true"`)
 
 ### Gestion des mails
 La gestion des mails depuis le menu `Administation > Mails` permet de consulter les logs des mails envoyés, vérifier la configuration, réenvoyer un mails échoués ...

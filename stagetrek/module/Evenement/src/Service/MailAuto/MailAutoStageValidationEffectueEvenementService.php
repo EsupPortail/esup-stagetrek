@@ -3,6 +3,7 @@
 namespace Evenement\Service\MailAuto;
 
 use Application\Entity\Db\Stage;
+use Application\Misc\Util;
 use Application\Provider\Mailing\CodesMailsProvider;
 use Application\Provider\Roles\UserProvider;
 use Application\Service\Contact\ContactStageService;
@@ -43,9 +44,9 @@ class MailAutoStageValidationEffectueEvenementService extends AbstractMailAutoEv
         //Calcul d'une date de traitement adaptès selon la situation
         //Cette événement est généré/traité des que la validation à été effectué
         $datePlanification = new DateTime();
-        $parametres['session-id'] = "".$session->getId();
-        $parametres['stage-id'] = "".$stage->getId();
-        $parametres['etudiant-id'] = "".$stage->getEtudiant()->getId();
+        $parametres['session_id'] = "".$session->getId();
+        $parametres['stage_id'] = "".$stage->getId();
+        $parametres['etudiant_id'] = "".$stage->getEtudiant()->getId();
         $parametres['stage'] = $stage->getLibelle();
         $parametres['etudiant'] = $etudiant->getDisplayName();
         $params = ['type_code' => TypeEvenementProvider::MAIL_AUTO_STAGE_VALIDATION_EFFECTUE, 'stage_id' => $stage->getId()];
@@ -70,7 +71,7 @@ class MailAutoStageValidationEffectueEvenementService extends AbstractMailAutoEv
         $mailService = $this->getMailService();
         //Rechercher les datas nessaires pour l'envoie du mail
         $parametres = Json::decode($evenement->getParametres(), Json::TYPE_ARRAY);
-        $stageId = ($parametres['stage-id']) ?? 0;
+        $stageId = ($parametres['stage_id']) ?? 0;
         /** @var Stage $stage */
         $stage = $this->getObjectManager()->getRepository(Stage::class)->find($stageId);
         if (!$stage) {
@@ -87,7 +88,7 @@ class MailAutoStageValidationEffectueEvenementService extends AbstractMailAutoEv
             try {
                 $mailData = ['stage' => $stage];
                 $mail = $mailService->sendMailType(CodesMailsProvider::VALIDATION_STAGE_EFFECTUEE, $mailData);
-                $log .= sprintf("Envoie du mail#%s à l'étudiant.e %s <br/>", $mail->getId(), $etudiant->getDisplayName());
+                $log .= sprintf("Envoie du mail#%s à l'étudiant".Util::POINT_MEDIANT."e %s <br/>", $mail->getId(), $etudiant->getDisplayName());
             } catch (Exception $e) {
                 $evenement->setDateTraitement(new DateTime());
                 $log .= sprintf("Une erreur est survenue : %s <br/>", $e->getMessage());
