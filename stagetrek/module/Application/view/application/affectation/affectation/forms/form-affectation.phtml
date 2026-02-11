@@ -91,7 +91,14 @@ $fieldset = $form->getEntityFieldset();
         </div>
         <div class="col-md-6 col-xs-12">
             <div class="form-check form-switch">
-                <?= $fcg($fieldset->get(AffectationStageFieldset::SEND_MAIL)) ?>
+                <?= $fcg($fieldset->get(AffectationStageFieldset::SEND_MAIL_ETUDIANT)) ?>
+            </div>
+            <div class="form-check form-switch">
+                <?= $fcg($fieldset->get(AffectationStageFieldset::SEND_MAIL_CONTACTS)) ?>
+            </div>
+            <div class="alert alert-warning">
+                Cette option envoi automatiquement aux contacts du terrain de stage la liste de tous les étudiants mise à jour.
+                <div class="text-small text-muted">En cas d'autres modifications à effectuer, préférez une validation groupée afin de n'envoyer qu'un seul mail aux référents.</div>
             </div>
         </div>
     </div>

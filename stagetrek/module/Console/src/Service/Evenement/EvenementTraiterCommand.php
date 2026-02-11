@@ -294,11 +294,18 @@ class EvenementTraiterCommand extends Command
         $this->environnement = $environnement;
     }
 
+    protected bool $hasToSimulatate = false;
     public function hasToSimultateTraitement(): bool
     {
-//        return false;
+        return $this->hasToSimulatate;
         return $this->environnement != EnvironnementProvider::PRODUCTION;
     }
+    public function setHasToSimulatate(bool $hasToSimulatate): void
+    {
+        $this->hasToSimulatate = $hasToSimulatate;
+    }
+
+
     public function simulateTraitement(Evenement $evenement): Evenement
     {
         $success = $this->getEtatEvenementService()->findByCode(EvenementEtatProvider::SUCCES);

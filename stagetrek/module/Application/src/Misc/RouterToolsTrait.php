@@ -38,6 +38,7 @@ use Application\Provider\Roles\RolesProvider;
 use DoctrineModule\Persistence\ProvidesObjectManager;
 use Laminas\Mvc\Controller\Plugin\Params;
 use Laminas\Permissions\Acl\Role\RoleInterface;
+use UnicaenCalendrier\Entity\Db\Date;
 use UnicaenMail\Entity\Db\Mail;
 use UnicaenRenderer\Entity\Db\Macro;
 
@@ -132,6 +133,12 @@ trait RouterToolsTrait
     {
         return $this->getEntityFromRoute(ConventionStage::class, $param, $default);
     }
+
+    public function getDateFromRoute(?string $param='date', mixed $default=null): ?Date
+    {
+        return $this->getEntityFromRoute(Date::class, $param, $default);
+    }
+
 
     public function getModeleConventionStageFromRoute(?string $param='modeleConventionStage', mixed $default=null): ?ModeleConventionStage
     {

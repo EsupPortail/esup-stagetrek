@@ -126,15 +126,17 @@ class ContactTerrainService extends CommonEntityService
            $ct->setContact($contact);
            $ct->setTerrainStage($terrain);
         }
-        $visible =  CSVService::yesNoValueToBoolean($rowData[ContactTerrainCsvImportValidator::HEADER_VISIBLE] ?? "");
-        $responsable =  CSVService::yesNoValueToBoolean($rowData[ContactTerrainCsvImportValidator::HEADER_RESPONSABLE] ?? "");
-        $valideur =  CSVService::yesNoValueToBoolean($rowData[ContactTerrainCsvImportValidator::HEADER_VALIDEUR] ?? "");
-        $signataire =  CSVService::yesNoValueToBoolean($rowData[ContactTerrainCsvImportValidator::HEADER_CONVENTION] ?? "");
-        $ordre =  CSVService::textToInt($rowData[ContactTerrainCsvImportValidator::HEADER_CONVENTION_ORDRE] ?? "");
+        $visible =  CSVService::yesNoValueToBoolean($rowData[ContactTerrainCsvImportValidator::HEADER_VISIBLE] ?? "oui", true);
+        $responsable =  CSVService::yesNoValueToBoolean($rowData[ContactTerrainCsvImportValidator::HEADER_RESPONSABLE] ?? "oui", true);
+        $valideur =  CSVService::yesNoValueToBoolean($rowData[ContactTerrainCsvImportValidator::HEADER_VALIDEUR] ?? "oui", true);
+        $mailsListeEtudiants =  CSVService::yesNoValueToBoolean($rowData[ContactTerrainCsvImportValidator::HEADER_LISTE_ETUDIANTS] ?? "oui", true);
+        $signataire =  CSVService::yesNoValueToBoolean($rowData[ContactTerrainCsvImportValidator::HEADER_CONVENTION] ?? "oui", true);
+        $ordre =  CSVService::textToInt($rowData[ContactTerrainCsvImportValidator::HEADER_CONVENTION_ORDRE] ?? 1, 1);
 
         $ct->setVisibleParEtudiant($visible);
         $ct->setIsResponsableStage($responsable);
         $ct->setCanValiderStage($valideur);
+        $ct->setSendMailAutoListeEtudiantsStage($mailsListeEtudiants);
         $ct->setSendMailAutoValidationStage($valideur);
         $ct->setSendMailAutoRappelValidationStage($valideur);
         $ct->setIsSignataireConvention($signataire);

@@ -3,6 +3,7 @@
 namespace BddAdmin\Data;
 
 
+use Application\Misc\Util;
 use Application\Provider\Misc\Color;
 use Application\Provider\Misc\Icone;
 use Application\Provider\Tag\CategorieTagProvider;
@@ -29,7 +30,7 @@ class UnicaenTagDataProvider implements DataProviderInterface
             case 'unicaen_tag' :
                 $defaultConfig = [
                     'actions' => [DataManager::ACTION_INSTALL, DataManager::ACTION_UPDATE],
-                    'key'     => ['categorie_id', 'code'],
+                    'key'     => ['code'],
                     'options' => ['update' => true, 'soft-delete' => false, 'delete' => false,
                         'columns' => [
                             'categorie_id'      => ['transformer' => 'select id from unicaen_tag_categorie where code = %s'],
@@ -39,20 +40,6 @@ class UnicaenTagDataProvider implements DataProviderInterface
         }
         return ArrayUtils::merge($defaultConfig, $config);
     }
-
-//    const ICONE_INFO_CIRCLE = "fas fa-info-circle";
-//    const ICONE_ANNEE = "fas fa-calendar";
-//    const ICONE_ETUDIANT = "fas fa-user";
-//    const ICONE_GROUPE = "fas fa-users";
-//    const ICONE_SESSION_STAGE = "fas fa-briefcase-medical";
-//    const ICONE_STAGE = "fas fa-notes-medical";
-//    const ICONE_TERRAIN = "fas fa-house-medical";
-//    const ICONE_CHECK = "fas fa-check";
-//    const ICONE_CONTACT = "fas fa-user-doctor";
-//    const ICONE_WARNING= "fas fa-exclamation-triangle";
-//    const ICONE_ERROR= "fas fa-exclamation-triangle";
-//    const ICONE_LOCK= "fas fa-lock";
-
 
 
     public function unicaen_tag_categorie(): array
@@ -70,7 +57,7 @@ class UnicaenTagDataProvider implements DataProviderInterface
             [
                 "code" => CategorieTagProvider::ETUDIANT,
                 "libelle" => "Étudiant",
-                "description" => "Tags concernants les étudiants",
+                "description" => "Tags concernants les étudiant".Util::POINT_MEDIANT."s",
                 "icone" => Icone::ETUDIANT,
                 "couleur" => Color::PRIMARY,
                 "ordre" => ++$ordre,
@@ -145,7 +132,25 @@ class UnicaenTagDataProvider implements DataProviderInterface
     public function unicaen_tag(): array
     {
         $ordre = 0;
-        return[
+        return [
+            [
+                "code" => TagProvider::SESSION_MUlTIPLES_PERIODES,
+                "categorie_id" => CategorieTagProvider::SESSION_STAGE,
+                "libelle" => "Session de stage entrecoupée",
+                "description" => "Session contenant de multiples périodes de stages",
+                "icone" => Icone::FA_TIMELINE,
+                "couleur" => COLOR::DARK_GREEN,
+                "ordre" => ++$ordre,
+            ],
+            [
+                "code" => TagProvider::SESSION_RATTRAPAGE,
+                "categorie_id" => CategorieTagProvider::SESSION_STAGE,
+                "libelle" => "Session de rattrapage",
+                "description" => "Session de rattrapage",
+                "icone" => Icone::FA_REPLY,
+                "couleur" => COLOR::SUCCESS,
+                "ordre" => ++$ordre,
+            ],
             [
                 "code" => TagProvider::ETAT_SUCCESS,
                 "categorie_id" => CategorieTagProvider::ETAT,

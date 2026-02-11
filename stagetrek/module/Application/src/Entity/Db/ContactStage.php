@@ -242,7 +242,7 @@ class ContactStage implements ResourceInterface
 
     /**
      * Get sendMailAutoListeEtudiantsStage.
-     *
+     * @deprecated Cette envoie de mails est sur le contact de terrain et non du stage
      * @return bool
      */
     public function getSendMailAutoListeEtudiantsStage(): bool
@@ -252,9 +252,9 @@ class ContactStage implements ResourceInterface
 
     /**
      * Set sendMailAutoListeEtudiantsStage.
-     *
      * @param bool $sendMailAutoListeEtudiantsStage
      * @return \Application\Entity\Db\ContactStage
+     * @deprecated Cette envoie de mails est sur le contact de terrain et non du stage
      */
     public function setSendMailAutoListeEtudiantsStage(bool $sendMailAutoListeEtudiantsStage) : static
     {

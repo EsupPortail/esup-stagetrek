@@ -3,6 +3,7 @@
 use Application\Controller\Stage\StageController;
 use Application\Entity\Db\ContactStage;
 use Application\Entity\Db\Stage;
+use Application\Misc\Util;
 use Application\Provider\Misc\Icone;
 use Application\View\Helper\Contacts\ContactStageViewHelper;
 use Application\View\Helper\Misc\ApplicationViewHelper;
@@ -45,7 +46,7 @@ $appVh = $this->app();
                     <th class="col-md-3" data-priority="1">Nom / Prénom</th>
                     <th class="col-md-3" data-priority="2">Mail</th>
                     <th class="col-md-2" data-priority="2">Téléphone</th>
-                    <th class="none">Visible par les étudiants ?</th>
+                    <th class="none">Visible par les étudiant<?=Util::POINT_MEDIANT?>s ?</th>
                     <th class="none">Responsable de stage ?</th>
                     <th class="none">Peut valider le stage ?</th>
                     <th class="none">Signataire de la convention de stage ?</th>

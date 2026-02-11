@@ -94,20 +94,14 @@ class DateRendererService
     }
 
 
-    /** Session de stage */
+    /** alias pour les session de stage pour les macros qui utilise l'ancienne méthode */
     public function getDateDebutSessionStage(): ?string
     {
-        /** @var SessionStage $session */
-        $session = $this->getVariable('sessionStage');
-        if ($session === null) return null;
-        return $this->formatDate($session->getDateDebutStage());
+        return $this->getDateDebutSession();
     }
     public function getDateFinSessionStage(): ?string
     {
-        /** @var SessionStage $session */
-        $session = $this->getVariable('sessionStage');
-        if ($session === null) return null;
-        return $this->formatDate($session->getDateFinStage());
+        return $this->getDateFinSession();
     }
 
     /** Stages */
@@ -430,6 +424,17 @@ class DateRendererService
         $session = $this->getVariable('session');
         if ($session === null) return null;
         return $this->formatTime($session->getDateFinEvaluation());
+    }
+
+
+    public function getDateCourante(): ?string
+    {
+        return $this->formatDate(new DateTime());
+    }
+
+    public function getHeureCourante(): ?string
+    {
+        return $this->formatTime(new DateTime());
     }
 
 }

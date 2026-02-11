@@ -128,7 +128,7 @@ class CsvEtudiantService extends AbstractImportEtudiantsService implements  Impo
                 if(!empty($etudiantsCanBeAdd)) {
                     $this->getGroupeService()->addEtudiants($groupe, $etudiantsCanBeAdd);
                 }
-                $msg = sprintf("%s étudiants inscrits dans le groupe %s - %s",
+                $msg = sprintf("%s nouveaux étudiants inscrits dans le groupe %s - %s",
                     sizeof($etudiantsCanBeAdd), $groupe->getLibelle(), $groupe->getAnneeUniversitaire()->getLibelle()
                 );
                 $this->addLog($msg);
@@ -183,11 +183,10 @@ class CsvEtudiantService extends AbstractImportEtudiantsService implements  Impo
 
     private function getGroupeFromCSVData(array $rowData) : ?Groupe
     {
-        $groupes = $this->getGroupes();
         $codeGroupe =trim($this->getCsvService()->readDataAt(EtudiantCsvImportValidator::HEADER_CODE_GROUPE, $rowData, ""));
         $groupe = $this->getGroupeService()->findOneBy(['code' => $codeGroupe]);
         if(isset($groupe)){
-            $groupes->add($groupe);
+            $this->addGroupe($groupe);
         }
         return $groupe;
 

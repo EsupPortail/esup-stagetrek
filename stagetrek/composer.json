@@ -10,7 +10,7 @@
     "require": {
         "unicaen/app": "7.2.1",
         "unicaen/ldap": "6.0.6",
-        "unicaen/authentification": "6.4.6",
+        "unicaen/authentification": "6.4.8",
         "unicaen/utilisateur": "7.0.4",
         "unicaen/privilege": "6.2.1",
         "unicaen/bjy-authorize": "6.1.4",
@@ -19,7 +19,7 @@
         "unicaen/console": "6.1.1",
 
         "unicaen/mail": "7.3.0",
-        "unicaen/renderer": "^7.1.0",
+        "unicaen/renderer": "7.2.1",
         "unicaen/pdf": "6.1.1",
         "unicaen/evenement": "6.1.0",
         "unicaen/etat": "6.1.6",
@@ -28,6 +28,8 @@
         "unicaen/fichier": "1.0.1",
         "unicaen/storage": "1.0.0",
         "unicaen/tag": "1.0.4",
+        "unicaen/indicateur": "6.4.1",
+        "unicaen/calendrier": "0.0.5",
 
         "doctrine/doctrine-orm-module": "5.3.0",
         "doctrine/doctrine-laminas-hydrator": "^3.4.0",
@@ -42,7 +44,7 @@
         "vlucas/phpdotenv": "5.6.1",
         "ext-zip": "*",
         "ext-fileinfo": "*",
-        "aws/aws-sdk-php" : " 3.351.5"
+        "aws/aws-sdk-php" : "3.369.8"
     },
     "require-dev": {
         "phpunit/phpunit": ">=3.7",
@@ -70,14 +72,16 @@
             "Console\\": "module/Console/src",
             "Evenement\\": "module/Evenement/src",
             "API\\": "module/API/src",
-            "BddAdmin\\": "module/BddAdmin/src"
+            "BddAdmin\\": "module/BddAdmin/src",
+            "Indicateur\\": "module/Indicateur/src"
         },
         "files": [
             "module/Application/Module.php",
             "module/Console/Module.php",
             "module/Evenement/Module.php",
             "module/API/Module.php",
-            "module/BddAdmin/Module.php"
+            "module/BddAdmin/Module.php",
+            "module/Indicateur/Module.php"
         ]
     },
     "autoload-dev": {

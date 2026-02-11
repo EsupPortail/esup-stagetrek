@@ -39,6 +39,7 @@ class Timeline
             $this->defaultEnd = $date;
         }
         $this->timeFrames = [];
+        $this->timesPeriodes = [];
     }
 
     use HasIdTrait;
@@ -123,6 +124,47 @@ class Timeline
             $i++;
         }
         $this->timeFrames= $res;
+        return $this;
+    }
+
+
+    /** @var TimePeriode[] $timesPeriodes */
+    protected array $timesPeriodes;
+    /**
+     * @return TimePeriode[]
+     */
+    public function getTimesPeriodes(): array
+    {
+        return $this->timesPeriodes;
+    }
+
+
+    /**
+     * @param TimePeriode $periode
+     * @return \Application\Entity\Timeline\Timeline
+     * @throws \Exception
+     */
+    public function addTimePeriode(TimePeriode $periode): static
+    {
+        /* Changement éventuelle des dates aux limites */
+        if($this->start > $periode->getStart()){ $this->start = $periode->getStart();}
+        if($this->end < $periode->getEnd()){ $this->end = $periode->getEnd();}
+        //On insére en réordonnat les timeframe
+        $res = [];
+        $i=0;
+        while($i<sizeof($this->timesPeriodes)){
+            if($periode->commpare($this->timesPeriodes[$i])>0){
+                $res[] = $this->timesPeriodes[$i];
+                $i++;
+            }
+            else{break;}
+        }
+        $res[] = $periode;
+        while($i<sizeof($this->timesPeriodes)){
+            $res[] = $this->timesPeriodes[$i];
+            $i++;
+        }
+        $this->timesPeriodes= $res;
         return $this;
     }
 

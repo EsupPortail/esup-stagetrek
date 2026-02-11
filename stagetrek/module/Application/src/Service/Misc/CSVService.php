@@ -227,6 +227,7 @@ class CSVService
         $key = str_replace(" ", '', $key);
         $key = str_replace("'", '', $key);
         $key = str_replace("\"", '', $key);
+        $key = str_replace("\u{FEFF}", "", $key);
         return $key;
     }
 
@@ -256,7 +257,7 @@ class CSVService
 
     public static function textToInt(?string $value, mixed $valueIfFail=null) :mixed
     {
-        if($value==null){return $valueIfFail;}
+        if($value===null){ return $valueIfFail;}
         $str = trim($value);
         $str = str_replace(' ', '', $str);
         $nb = intval($str);

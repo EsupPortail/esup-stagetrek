@@ -38,13 +38,15 @@ class TypeViewHelper extends \UnicaenEvenement\View\Helper\TypeViewHelper
         if(!isset($type)){return "";}
         $class = match ($type->getCode()) {
             TypeEvenementProvider::COLLECTION => "fas fa-bars",
+            TypeEvenementProvider::TEST => "fas fa-check-square",
             TypeEvenementProvider::MAIL,
             TypeEvenementProvider::MAIL_AUTO_STAGE_DEBUT_CHOIX,
             TypeEvenementProvider::MAIL_AUTO_RAPPEL_STAGE_CHOIX,
             TypeEvenementProvider::MAIL_AUTO_AFFECTATION_VALIDEE,
             TypeEvenementProvider::MAIL_AUTO_DEBUT_VALIDATION_STAGE,
             TypeEvenementProvider::MAIL_AUTO_RAPPEL_STAGE_VALIDATION,
-            TypeEvenementProvider::MAIL_AUTO_STAGE_VALIDATION_EFFECTUE
+            TypeEvenementProvider::MAIL_AUTO_STAGE_VALIDATION_EFFECTUE,
+            TypeEvenementProvider::MAIL_AUTO_LISTE_ETUDIANTS_STAGES
                 => 'fas fa-envelope',
             default => "far fa-question-circle",
         };

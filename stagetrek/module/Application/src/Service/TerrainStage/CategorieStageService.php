@@ -83,7 +83,7 @@ class CategorieStageService extends CommonEntityService
         $code = trim($this->getCsvService()->readDataAt(CategorieStageCsvImportValidator::HEADER_CODE_CATEGORIE, $rowData, ""));
         $acronyme = trim($this->getCsvService()->readDataAt(CategorieStageCsvImportValidator::HEADER_ACRONYME, $rowData, ""));
         $libelle = trim($this->getCsvService()->readDataAt(CategorieStageCsvImportValidator::HEADER_LIBELLE, $rowData, ""));
-        $ordre = CSVService::textToInt($this->getCsvService()->readDataAt(CategorieStageCsvImportValidator::HEADER_ORDRE, $rowData, 0));
+        $ordre = CSVService::textToInt($this->getCsvService()->readDataAt(CategorieStageCsvImportValidator::HEADER_ORDRE, $rowData),1);
         $principale = CSVService::yesNoValueToBoolean($this->getCsvService()->readDataAt(CategorieStageCsvImportValidator::HEADER_PRINCIPAL, $rowData, false));
 
         /** @var CategorieStage $categorie */

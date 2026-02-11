@@ -3,6 +3,7 @@
 namespace Evenement\Service\MailAuto;
 
 use Application\Entity\Db\Stage;
+use Application\Misc\Util;
 use Application\Provider\Mailing\CodesMailsProvider;
 use Application\Service\Contact\ContactStageService;
 use Application\Service\Mail\MailService;
@@ -38,19 +39,19 @@ class MailAutoAffectationEvenementService extends AbstractMailAutoEvenementServi
 
         $now = new DateTime();
         // Vérification que l'événement n'existe pas déjà
-        if($stage->getDateFinCommission() < $now) {
-            $params = [
-                'type_code' => TypeEvenementProvider::MAIL_AUTO_AFFECTATION_VALIDEE,
-                'stage_id' => $stage->getId()
-            ];
-        }
-        else{ //Si on en as déjà un de planifié
+//        if($stage->getDateFinCommission() < $now) {
+//            $params = [
+//                'type_code' => TypeEvenementProvider::MAIL_AUTO_AFFECTATION_VALIDEE,
+//                'stage_id' => $stage->getId()
+//            ];
+//        }
+//        else{ //Si on en as déjà un de planifié
             $params = [
                 'type_code' => TypeEvenementProvider::MAIL_AUTO_AFFECTATION_VALIDEE,
                 'etat_code' => EvenementEtatProvider::EN_ATTENTE,
                 'stage_id' => $stage->getId()
             ];
-        }
+//        }
         $events = $this->findEvenementsWithParametres($params);
         if(!empty($events)){return current($events);}
         $eventName = sprintf("Affectation validée - Stage %s de %s", $stage->getLibelle(), $etudiant->getDisplayName());
@@ -65,10 +66,10 @@ class MailAutoAffectationEvenementService extends AbstractMailAutoEvenementServi
             $datePlanification = $now;
         }
 
-        $parametres['session-id'] =  "".$session->getId();
-        $parametres['stage-id'] =  "".$stage->getId();
-        $parametres['etudiant-id'] =  "".$stage->getEtudiant()->getId();
-        $parametres['affectation-stage-id'] =  "".$affectation->getId();
+        $parametres['session_id'] =  "".$session->getId();
+        $parametres['stage_id'] =  "".$stage->getId();
+        $parametres['etudiant_id'] =  "".$stage->getEtudiant()->getId();
+        $parametres['affectation_stage_id'] =  "".$affectation->getId();
         $parametres['stage'] = $stage->getLibelle();
         $parametres['etudiant'] = $etudiant->getDisplayName();
 
@@ -90,7 +91,7 @@ class MailAutoAffectationEvenementService extends AbstractMailAutoEvenementServi
         $mailService = $this->getMailService();
         //Rechercher les datas nessaires pour l'envoie du mail
         $parametres = Json::decode($evenement->getParametres(), Json::TYPE_ARRAY);
-        $stageId = ($parametres['stage-id']) ?? 0;
+        $stageId = ($parametres['stage_id']) ?? 0;
 
 //        TODO : a modifier pour pouvoir en creer a partir d'une session pour pouvoir envoyer tout ceux d'une session
 //          idée : pouvoir spécifier la session et non le stage
@@ -111,15 +112,14 @@ class MailAutoAffectationEvenementService extends AbstractMailAutoEvenementServi
         try {
             $mailData = ['stage'=>$stage];
             $mail = $mailService->sendMailType(CodesMailsProvider::AFFECTATION_STAGE_VALIDEE, $mailData);
-            $evenement->setLog(sprintf("Envoie du mail#%s à l'étudiant.e" . $mail->getId(), $etudiant->getDisplayName()));
+            $evenement->setLog(sprintf("Envoie du mail#%s à l'étudiant".Util::POINT_MEDIANT."e" . $mail->getId(), $etudiant->getDisplayName()));
             $this->changerEtat($evenement, $this->getEventEtat(EvenementEtatProvider::SUCCES));
         } catch (Exception $e) {
             $evenement->setEtat($this->getEventEtat(EvenementEtatProvider::ECHEC));
             $evenement->setLog($e->getMessage());
-
+            $this->changerEtat($evenement, $this->getEventEtat(EvenementEtatProvider::ECHEC));
             return $evenement->getEtat()->getCode();
         }
-
         return $evenement->getEtat()->getCode();
     }
 

@@ -83,9 +83,9 @@ class MailAutoStageDebutChoixEvenementService extends AbstractMailAutoEvenementS
         $datePlanification->setTime(8, 0);
         $today = new DateTime();
 //        On met les id en temps que chaine car celà permet ensuite de les distingué et de retrouver les event correspondant
-        $parametres['session-id'] = "".$session->getId();
-        $parametres['stage-id'] = "".$stage->getId();
-        $parametres['etudiant-id'] = "".$stage->getEtudiant()->getId();
+        $parametres['session_id'] = "".$session->getId();
+        $parametres['stage_id'] = "".$stage->getId();
+        $parametres['etudiant_id'] = "".$stage->getEtudiant()->getId();
         $parametres['stage'] = $stage->getLibelle();
         $parametres['etudiant'] = $etudiant->getDisplayName();
 
@@ -103,6 +103,7 @@ class MailAutoStageDebutChoixEvenementService extends AbstractMailAutoEvenementS
         return $evenement;
     }
 
+    //2146
     public function traiter(Evenement $evenement): string
     {
 //        if($evenement->getEtat()->getCode() != EvenementEtatProvider::EN_ATTENTE){
@@ -111,7 +112,7 @@ class MailAutoStageDebutChoixEvenementService extends AbstractMailAutoEvenementS
         $this->changerEtat($evenement, $this->getEventEtat(EvenementEtatProvider::EN_COURS));
         //Rechercher les datas nessaires pour l'envoie du mail
         $parametres = Json::decode($evenement->getParametres(), Json::TYPE_ARRAY);
-        $stageId = ($parametres['stage-id']) ?? 0;
+        $stageId = ($parametres['stage_id']) ?? 0;
         /** @var Stage $stage */
         $stage = $this->getObjectManager()->getRepository(Stage::class)->find($stageId);
         if (!$stage) {

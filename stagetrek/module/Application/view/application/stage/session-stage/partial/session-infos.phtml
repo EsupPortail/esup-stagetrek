@@ -1,6 +1,7 @@
 <?php
 
 use Application\Entity\Db\SessionStage;
+use Application\Misc\Util;
 use Application\View\Helper\Annees\AnneeUniversitaireViewHelper;
 use Application\View\Helper\Groupe\GroupeViewHelper;
 use Application\View\Helper\SessionsStages\SessionStageViewHelper;
@@ -81,7 +82,7 @@ $anneeVh = $this->anneeUniversitaire($sessionStage->getAnneeUniversitaire());
                 <hr/>
                 <div class="row">
                     <div class="col-md-5">
-                        <strong>Visible par les étudiants</strong>
+                        <strong>Visible par les étudiant<?=Util::POINT_MEDIANT?>s</strong>
                     </div>
                     <div class="col-md-7">
                         <?= ($sessionStage->isVisibleByEtudiants()) ? "Oui" : "Non" ?>

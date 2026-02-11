@@ -71,6 +71,7 @@ class UpdateAffectationCommand extends AbstractUpdateEntityCommand
         $affectations = $service->findAll();
         $io->progressStart(sizeof($affectations));
 
+
         /** @var AffectationStage $affectation */
         foreach ($affectations as $affectation) {
             $etat = $affectation->getEtatActif();

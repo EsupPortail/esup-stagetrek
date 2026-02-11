@@ -2,6 +2,8 @@
 
 namespace BddAdmin\Data;
 
+use Application\Misc\Util;
+use Application\Provider\Mailing\CodesMailsProvider;
 use BddAdmin\Data\Interfaces\DataProviderInterface;
 use Laminas\Stdlib\ArrayUtils;
 use Unicaen\BddAdmin\Data\DataManager;
@@ -65,44 +67,68 @@ class UnicaenRendererDataProvider implements DataProviderInterface {
                 "methode_name" => "getNomCHU",
             ],
             [
+                "code" => "Contact#listeEtudiantsEncadres",
+                "description" => "<p>Liste des liens des étudiants encadrés par un responsable sur une session</p>",
+                "variable_name" => "contactRendererService",
+                "methode_name" => "getlisteEtudiantsEncadres",
+            ],
+            [
+                "code" => "Contact#listeUrlValidations",
+                "description" => "<p>Liste des liens de validations d'un responsable de stage</p>",
+                "variable_name" => "contactRendererService",
+                "methode_name" => "getListeUrlValidations",
+            ],
+            [
+                "code" => "Date#dateCoutrante",
+                "description" => "<p>Date d'envoie du mail</p>",
+                "variable_name" => "dateRendererService",
+                "methode_name" => "getDateCourante",
+            ],
+            [
+                "code" => "Date#heureCoutrante",
+                "description" => "<p>Heure d'envoie du mail</p>",
+                "variable_name" => "dateRendererService",
+                "methode_name" => "getHeureCourante",
+            ],
+            [
                 "code" => "Etudiant#adresse",
-                "description" => "<p>Adresse personnel de l'étudiant.e</p>",
+                "description" => "<p>Adresse personnel de l'étudiant".Util::POINT_MEDIANT."e</p>",
                 "variable_name" => "adresseRendererService",
                 "methode_name" => "getAdresseEtudiant",
             ],
             [
                 "code" => "Etudiant#dateNaissance",
-                "description" => "<p>Date de naissance de l'étudiant.e</p>",
+                "description" => "<p>Date de naissance de l'étudiant".Util::POINT_MEDIANT."e</p>",
                 "variable_name" => "etudiant",
                 "methode_name" => "getDateNaissance",
             ],
             [
                 "code" => "Etudiant#mail",
-                "description" => "<p>Adresse mail de l'étudiant.e</p>",
+                "description" => "<p>Adresse mail de l'étudiant".Util::POINT_MEDIANT."e</p>",
                 "variable_name" => "etudiant",
                 "methode_name" => "getEmail",
             ],
             [
                 "code" => "Etudiant#nom",
-                "description" => "<p>Nom de l'étudiant.e</p>",
+                "description" => "<p>Nom de l'étudiant".Util::POINT_MEDIANT."e</p>",
                 "variable_name" => "etudiant",
                 "methode_name" => "getNom",
             ],
             [
                 "code" => "Etudiant#nomPrenom",
-                "description" => "<p>Nom Prénom de l'étudiant.e</p>",
+                "description" => "<p>Nom Prénom de l'étudiant".Util::POINT_MEDIANT."e</p>",
                 "variable_name" => "etudiant",
                 "methode_name" => "getDisplayName",
             ],
             [
                 "code" => "Etudiant#numero",
-                "description" => "<p>Numéro l'étudiant.e</p>",
+                "description" => "<p>Numéro l'étudiant".Util::POINT_MEDIANT."e</p>",
                 "variable_name" => "etudiant",
                 "methode_name" => "getNumEtu",
             ],
             [
                 "code" => "Etudiant#prenom",
-                "description" => "<p>Prénom de l'étudiant.e</p>",
+                "description" => "<p>Prénom de l'étudiant".Util::POINT_MEDIANT."e</p>",
                 "variable_name" => "etudiant",
                 "methode_name" => "getPrenom",
             ],
@@ -134,13 +160,25 @@ class UnicaenRendererDataProvider implements DataProviderInterface {
                 "code" => "Session#dateDebutStage",
                 "description" => "<p>Date de début d'une session de stage</p>",
                 "variable_name" => "dateRendererService",
-                "methode_name" => "getDateDebutSessionStage",
+                "methode_name" => "getDateDebutSession",
             ],
             [
                 "code" => "Session#dateFinStage",
                 "description" => "<p>Date de fin d'une session de stage</p>",
                 "variable_name" => "dateRendererService",
-                "methode_name" => "getDateFinSessionStage",
+                "methode_name" => "getDateFinSession",
+            ],
+            [
+                "code" => "Session#dateFinValidation",
+                "description" => "<p>Date de fin de la phase de validation de la session de stage</p>",
+                "variable_name" => "dateRendererService",
+                "methode_name" => "getDateFinValidationSession",
+            ],
+            [
+                "code" => "Session#heureFinValidation",
+                "description" => "<p>Heure de fin de la phase de validation de la session de stage</p>",
+                "variable_name" => "dateRendererService",
+                "methode_name" => "getHeureFinValidationSession",
             ],
             [
                 "code" => "Stage#dateDebut",
@@ -306,7 +344,7 @@ class UnicaenRendererDataProvider implements DataProviderInterface {
             ],
 //        Modéle des mails automatique
             [
-                "code" => "StageDebutChoix-Rappel",
+                "code" => CodesMailsProvider::STAGE_DEBUT_CHOIX_RAPPEL,
                 "description" => "Mail de rappel envoyé avant la date de fin de la procédure aux étudiants qui n'ont pas définie de préférence pour une session de stage",
                 'engine' => 'default',
                 "namespace" => "Mail",
@@ -316,7 +354,7 @@ class UnicaenRendererDataProvider implements DataProviderInterface {
                 "document_corps" => "<p>Cher(e), VAR[Etudiant#prenom]<br /><br />La procédure de choix pour stage clinique VAR[Stage#libelle] arrive a son terme.<br /><br />Vous pouvez définir ou modifier vos préférences jusqu'au VAR[Stage#dateFinChoix] - VAR[Stage#heureFinChoix] en vous connectant sur la plateforme VAR[Application#url].<br /><br /><strong>En l'absence de préférences la commission stage et garde procédera à votre affectation en fonction des places disponibles restantes. Aucune réclamation ne sera acceptée.</strong><br /><br />Bien cordialement,<br />La commission Stages et Gardes du DFASM</p>",
             ],
             [
-                "code" => "StageDebutChoix",
+                "code" => CodesMailsProvider::STAGE_DEBUT_CHOIX,
                 "description" => "Mail envoyé aux étudiants pour les prévenir du début de la phase de définition des préférences d'une session de stage",
                 'engine' => 'default',
                 "namespace" => "Mail",
@@ -326,7 +364,7 @@ class UnicaenRendererDataProvider implements DataProviderInterface {
                 "document_corps" => "<p>Cher(e), VAR[Etudiant#prenom]<br /><br />Ce courriel vous est adressé car vous êtes inscrit pour le stage clinique VAR[Stage#libelle] qui aura lieux du VAR[Stage#dateDebut] au VAR[Stage#dateFin].<br /><br />La procédure de choix est ouverte jusqu'au <strong>VAR[Stage#dateFinChoix] - VAR[Stage#heureFinChoix]</strong>.<br />Vous pouvez dès à présent définir vos préférences pour ce stage en vous connectant sur la plateforme VAR[Application#url].<br /><br /><br />Bien cordialement,<br />La commission Stages et Gardes du DFASM</p>",
             ],
             [
-                "code" => "ValidationStage-Effectuee",
+                "code" => CodesMailsProvider::VALIDATION_STAGE_EFFECTUEE,
                 "description" => "Mail envoyé automatiquement la première fois que le responsable pédagogique a procédé à la validation (ou l'invalidation) du stage",
                 'engine' => 'default',
                 "namespace" => "Mail",
@@ -336,7 +374,7 @@ class UnicaenRendererDataProvider implements DataProviderInterface {
                 "document_corps" => "<p>Cher(e), VAR[Etudiant#prenom]<br /><br />Votre encadrant pédagogique s'est prononcé sur la validation de votre stage VAR[Stage#libelle].<br />Cette évaluation sera disponible sur la plateforme VAR[Application#url] à partir du VAR[Stage#dateFinValidation].<br /><br />Bien cordialement,<br />La commission Stages et Gardes du DFASM</p>",
             ],
             [
-                "code" => "AffectationStage-Validee",
+                "code" => CodesMailsProvider::AFFECTATION_STAGE_VALIDEE,
                 "description" => "Mail envoyé aux étudiants pour les informer d'une modification de leurs affectations.",
                 'engine' => 'default',
                 "namespace" => "Mail",
@@ -346,7 +384,7 @@ class UnicaenRendererDataProvider implements DataProviderInterface {
                 "document_corps" => "<p>Cher(e), VAR[Etudiant#prenom]<br /><br /> Ce courriel vous est adressé car vous êtes inscrit pour le stage clinique VAR[Stage#libelle] qui aura lieux du VAR[Stage#dateDebut] au VAR[Stage#dateFin].<br /><br /> De nouvelles informations concernant votre affectation de stage sont disponibles.<br />Vous pouvez dès à présent les consulter en vous connectant sur la plateforme VAR[Application#url].<br /> <br />Bien cordialement,<br />La commission Stages et Gardes du DFASM</p>",
             ],
             [
-                "code" => "ValidationStage-Rappel",
+                "code" => CodesMailsProvider::VAlIDATION_STAGE_RAPPEL,
                 "description" => "Ré-envoie du token de validation au responsable d'un stage si celui ci n'as pas effectuer la validation",
                 'engine' => 'default',
                 "namespace" => "Mail",
@@ -355,15 +393,43 @@ class UnicaenRendererDataProvider implements DataProviderInterface {
                 "document_css" => "",
                 "document_corps" => "<p>Bonjour,<br /><br />Vous recevez ce mail en tant qu'encadrant pédagogique du stage de VAR[Etudiant#nomPrenom] sur la période du VAR[Stage#dateDebut] au VAR[Stage#dateFin].<br /><br />A ce jour, nous n'avons pas reçu de validation de son stage.<br />La validation est rapide et s'effectue en allant sur le lien suivant VAR[Stage#urlValidation].<br /><br />Nous vous remercions par avance.<br /><br /> Bien cordialement,<br />La commission Stages et Gardes du DFASM<br /><br />Si vous recevez ce mail par erreur, merci de le signaler en envoyant un mail à assistance-stagetrek@unicaen.fr</p>",
             ],
-            [
-                "code" => "ValidationStage",
-                "description" => "Envoie du token de validation au responsable d'un stage",
+            [ //Mails manuels
+                "code" => CodesMailsProvider::VALIDATION_STAGE,
+                "description" => "Mail (manuelle) envoyé à un responsable de stage contenant le lien de validation (pour un stage spécifique)",
                 'engine' => 'default',
                 "namespace" => "Mail",
                 "document_type" => "mail",
                 "document_sujet" => "Validation du stage de VAR[Etudiant#nomPrenom]",
                 "document_css" => "",
-                "document_corps" => "<p>Bonjour,<br /><br />Vous recevez ce mail en tant qu'encadrant pédagogique du stage de VAR[Etudiant#nomPrenom] sur la période du VAR[Stage#dateDebut] au VAR[Stage#dateFin].<br /><br />Merci de procéder à l'évaluation du stage en allant sur le lien suivant VAR[Stage#urlValidation] avant le VAR[Stage#dateFinValidation].<br /><br />Bien cordialement,<br />La commission Stages et Gardes du DFASM<br /><br /> <em>Si vous recevez ce mail par erreur, merci de le signaler en envoyant un mail à assistance-stagetrek@unicaen.fr</em></p>",
+                "document_corps" => "<p>Bonjour,<br><br>Vous recevez ce mail en tant qu'encadrant pédagogique du stage de VAR[Etudiant#nomPrenom] sur la période du VAR[Stage#dateDebut] au VAR[Stage#dateFin].<br><br>Merci de procéder à l'évaluation du stage en allant sur le lien suivant VAR[Stage#urlValidation] avant le VAR[Stage#dateFinValidation].<br><br>Bien cordialement,<br>La commission Stages et Gardes du DFASM<br><br><em>Si vous recevez ce mail par erreur, merci de le signaler en envoyant un mail à assistance-stagetrek@unicaen.fr</em></p>",
+            ],
+            [ //Mails automatique
+                "code" => CodesMailsProvider::MAIL_AUTO_VALIDATIONS_STAGES,
+                "description" => "Mail (automatique) envoyé aux responsables des stages contenant les liens de validations des stages qu'ils doivent valider",
+                'engine' => 'default',
+                "namespace" => "Mail",
+                "document_type" => "mail",
+                "document_sujet" => "Validations des stages",
+                "document_css" => "",
+                "document_corps" => "<p>Bonjour,<br><br>Vous recevez ce mail en tant qu'encadrant pédagogique des stages sur la période du VAR[Session#dateDebutStage] au VAR[Session#dateFinStage].</p>
+<p>Vous trouverez ci dessous les liens de validation pour les stages que vous avez encadrés.</p>
+<p>Merci de procéder à l'évaluation de ces derniers avant le VAR[Session#dateFinValidation] - VAR[Session#heureFinValidation].</p>
+<p>VAR[Contact#listeUrlValidations]</p>
+<p>Bien cordialement,<br>La commission Stages et Gardes du DFASM<br><br><em>Si vous recevez ce mail par erreur, merci de le signaler en envoyant un mail à assistance-stagetrek@unicaen.fr</em></p>",
+            ],
+            [ //Mails automatique
+                "code" => CodesMailsProvider::MAIL_AUTO_LISTE_ETUDIANTS_STAGES,
+                "description" => "Mail (automatique) envoyé aux responsables des stages contenant la liste des étudiants affectés dans leurs services",
+                'engine' => 'default',
+                "namespace" => "Mail",
+                "document_type" => "mail",
+                "document_sujet" => "Liste des étudiants en stages",
+                "document_css" => "",
+                "document_corps" => "<<p>Bonjour,<br><br>Vous recevez ce mail en tant qu'encadrant pédagogique des stages sur la période du VAR[Session#dateDebutStage] au VAR[Session#dateFinStage].</p>
+<p>La liste des étudiants devant effectuer leur stage dans votre service sur cette période a été mise à jour.</p>
+<p><em>(mise à jour le VAR[Date#dateCoutrante] à VAR[Date#heureCoutrante])</em></p>
+<p>VAR[Contact#listeEtudiantsEncadres]</p>
+<p>Bien cordialement,<br>La commission Stages et Gardes du DFASM<br><br><em>Si vous recevez ce mail par erreur, merci de le signaler en envoyant un mail à assistance-stagetrek@unicaen.fr</em></p>",
             ]
     ];
 

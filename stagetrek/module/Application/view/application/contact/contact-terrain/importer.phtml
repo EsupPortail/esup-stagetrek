@@ -3,6 +3,7 @@
 use Application\Controller\Contact\ContactController;
 use Application\Controller\Terrain\TerrainStageController;
 use Application\Form\Misc\ImportForm;
+use Application\Misc\Util;
 use Application\Service\Misc\CSVService;
 use Application\Validator\Import\ContactTerrainCsvImportValidator;
 use UnicaenApp\View\Helper\Messenger;
@@ -33,14 +34,20 @@ $fcg = $this->formControlGroup();
                 </div>
                 <div class="col-md-8 text-muted text-small">
                     <ul>
-                        <li>Le fichier CSV doit utiliser comme séparateur le '
-                            <?= CSVService::SEPARATOR ?>' et avoir les champs suivants : <br/>
-                            <?php $h = "";
-                            foreach (ContactTerrainCsvImportValidator::getImportHeader() as $key) {
-                                $h .= sprintf("<strong><span class='mx-2'>%s</span></strong>; ", $key);
-                            }
-                            echo $h;
-                            ?>
+                        <li>Le fichier CSV doit :
+                            <ul>
+                                <li> utiliser comme séparateur le '<?= CSVService::SEPARATOR ?>'</li>
+                                <li> être encodé en utf8</li>
+                                <?php  $ob = "<sup title='Champs obligatoire'>*</sup>"; ?>
+                                <li> avoir les champs suivants : (<?=$ob?> = Champs obligatoires)<br/>
+                                    <?php $h = "";
+                                    foreach (ContactTerrainCsvImportValidator::getImportHeader() as $key) {
+                                        $obligatoire =  ContactTerrainCsvImportValidator::isChampsObligatoire($key);
+                                        $h .= sprintf("<strong><span class='mx-2'>%s %s </span></strong>; ", $key, (($obligatoire) ? $ob : ''));
+                                    }
+                                    echo $h;
+                                    ?>
+                            </ul>
                         </li>
                         <li>Les modifications n'impacterons que les futurs stages associés aux terrains.</li>
                         <li>
@@ -55,6 +62,9 @@ $fcg = $this->formControlGroup();
                         <li>
                             <strong><?= ContactTerrainCsvImportValidator::HEADER_RESPONSABLE ?></strong> : Le contact sera
                             il le responsable des stages ? <span class="mx-3">(Oui / Non)</span>
+                        </li>
+                        <li>
+                            <strong><?= ContactTerrainCsvImportValidator::HEADER_LISTE_ETUDIANTS ?></strong> : Le contact doit-il recevoir par mail la liste des étudiant<?=Util::POINT_MEDIANT ?>s affecté<?=Util::POINT_MEDIANT ?>s ? <span class="mx-3">(Oui / Non)</span>
                         </li>
                         <li>
                             <strong><?= ContactTerrainCsvImportValidator::HEADER_VALIDEUR ?></strong> : Le contact pourra-il
@@ -75,6 +85,13 @@ $fcg = $this->formControlGroup();
                 </div>
             </div>
 
+            <hr/>
+            <div class="row">
+                <div class="col-md-12">
+                    <?= $fcg($form->get($form::INPUT_SUBMIT)); ?>
+                </div>
+            </div>
+
             <?php if ($msg && $msg->hasMessages()) : ?>
                 <div class="row">
                     <div class="col-md-12">
@@ -84,12 +101,7 @@ $fcg = $this->formControlGroup();
                     </div>
                 </div>
             <?php endif; ?>
-            <hr/>
-            <div class="row">
-                <div class="col-md-12">
-                    <?= $fcg($form->get($form::INPUT_SUBMIT)); ?>
-                </div>
-            </div>
+
             <?= $this->formHidden($form->get($form::CSRF)); ?>
             <?= $this->form()->closeTag(); ?>
         </div>

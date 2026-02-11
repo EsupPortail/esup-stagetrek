@@ -7,13 +7,19 @@ use Application\Entity\Db\SessionStage;
 use Application\Form\Misc\Factory\SelectPickerFactory;
 use Application\Form\Stages\Element\SessionStageEtatSelectPicker;
 use Application\Form\Stages\Element\SessionStageSelectPicker;
+use Application\Form\Stages\Factory\PeriodeStageFieldsetFactory;
+use Application\Form\Stages\Factory\PeriodeStageFormFactory;
+use Application\Form\Stages\Factory\PeriodeStageHydratorFactory;
 use Application\Form\Stages\Factory\SessionStageFieldsetFactory;
 use Application\Form\Stages\Factory\SessionStageFormFactory;
 use Application\Form\Stages\Factory\SessionStageHydratorFactory;
 use Application\Form\Stages\Factory\SessionStageRechercheFormFactory;
 use Application\Form\Stages\Factory\SessionStageValidatorFactory;
+use Application\Form\Stages\Fieldset\PeriodeStageFieldset;
 use Application\Form\Stages\Fieldset\SessionStageFieldset;
+use Application\Form\Stages\Hydrator\PeriodeStageHydrator;
 use Application\Form\Stages\Hydrator\SessionStageHydrator;
+use Application\Form\Stages\PeriodeStageForm;
 use Application\Form\Stages\SessionStageForm;
 use Application\Form\Stages\SessionStageRechercheForm;
 use Application\Form\Stages\Validator\SessionStageValidator;
@@ -58,6 +64,9 @@ return [
                     'controller' => SessionStageController::class,
                     'action' => [
                         SessionStageController::ACTION_MODIFIER,
+                        SessionStageController::ACTION_AJOUTER_PERIODE_STAGE,
+                        SessionStageController::ACTION_MODIFIER_PERIODE_STAGE,
+                        SessionStageController::ACTION_SUPPRIMER_PERIODE_STAGE,
                         SessionStageController::ACTION_MODIFIER_PLACES_TERRAINS,
                         SessionStageController::ACTION_IMPORTER_PLACES_TERRAINS,
                     ],
@@ -70,6 +79,7 @@ return [
                     'controller' => SessionStageController::class,
                     'action' => [
                         SessionStageController::ACTION_MODIFIER_ORDRES_AFFECTATIONS,
+                        SessionStageController::ACTION_RECALCULER_ORDRES_AFFECTATIONS,
                     ],
                     'privileges' => [
                         StagePrivileges::STAGE_MODIFIER,
@@ -222,8 +232,76 @@ return [
                                 ],
                                 'may_terminate' => true,
                             ],
+                            'recalculer-ordres' => [
+                                'type' => Segment::class,
+                                'options' => [
+                                    'route' => '/recalculer-ordres[/:sessionStage]',
+                                    'constraints' => [
+                                        "sessionStage" => '[0-9]+',
+                                    ],
+                                    'defaults' => [
+                                        'controller' => SessionStageController::class,
+                                        'action' => SessionStageController::ACTION_RECALCULER_ORDRES_AFFECTATIONS,
+                                    ],
+                                ],
+                                'may_terminate' => true,
+                            ],
                         ],
                     ],
+                    'periode-stage' => [
+                        'type' => Segment::class,
+                        'options' => [
+                            'route' => '/periode-stage',
+                        ],
+                        'may_terminate' => false,
+                        'child_routes' => [
+                            'ajouter' => [
+                                'type' => Segment::class,
+                                'options' => [
+                                    'route' => '/ajouter[/:sessionStage]',
+                                    'constraints' => [
+                                        "sessionStage" => '[0-9]+',
+                                    ],
+                                    'defaults' => [
+                                        'controller' => SessionStageController::class,
+                                        'action' => SessionStageController::ACTION_AJOUTER_PERIODE_STAGE
+                                    ],
+                                ],
+                                'may_terminate' => true,
+                            ],
+                            'modifier' => [
+                                'type' => Segment::class,
+                                'options' => [
+                                    'route' => '/modifier[/:sessionStage/:date]',
+                                    'constraints' => [
+                                        "sessionStage" => '[0-9]+',
+                                        "date" => '[0-9]+',
+                                    ],
+                                    'defaults' => [
+                                        'controller' => SessionStageController::class,
+                                        'action' => SessionStageController::ACTION_MODIFIER_PERIODE_STAGE
+                                    ],
+                                ],
+                                'may_terminate' => true,
+                            ],
+                            'supprimer' => [
+                                'type' => Segment::class,
+                                'options' => [
+                                    'route' => '/supprimer[/:sessionStage/:date]',
+                                    'constraints' => [
+                                        "sessionStage" => '[0-9]+',
+                                        "date" => '[0-9]+',
+                                    ],
+                                    'defaults' => [
+                                        'controller' => SessionStageController::class,
+                                        'action' => SessionStageController::ACTION_SUPPRIMER_PERIODE_STAGE
+                                    ],
+                                ],
+                                'may_terminate' => true,
+                            ],
+                        ],
+                    ],
+
                     'terrains' => [
                         'type' => Segment::class,
                         'options' => [
@@ -276,8 +354,10 @@ return [
             SessionStageSelectPicker::class => SelectPickerFactory::class,
             SessionStageEtatSelectPicker::class => SelectPickerFactory::class,
             SessionStageForm::class => SessionStageFormFactory::class,
+            PeriodeStageForm::class => PeriodeStageFormFactory::class,
             SessionStageRechercheForm::class => SessionStageRechercheFormFactory::class,
             SessionStageFieldset::class => SessionStageFieldsetFactory::class,
+            PeriodeStageFieldset::class => PeriodeStageFieldsetFactory::class,
         ],
     ],
     'service_manager' => [
@@ -288,6 +368,7 @@ return [
     'hydrators' => [
         'factories' => [
             SessionStageHydrator::class => SessionStageHydratorFactory::class,
+            PeriodeStageHydrator::class => PeriodeStageHydratorFactory::class,
         ],
     ],
     'validators' => [

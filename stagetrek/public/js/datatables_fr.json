@@ -1,0 +1,15 @@
+{
+    "--readme--" : "Fichier requit pour UnicaenMail",
+    "lengthMenu": "Afficher _MENU_ &eacute;l&eacute;ments",
+    "search": "Filtre de recherche : _INPUT_",
+    "loadingRecords": "Chargement en cours...",
+    "info": "<small class=\"text-highlight\">Affichage : <strong> _START_ - _END_ sur _TOTAL_</strong></small>",
+    "infoEmpty": "",
+    "infoFiltered": "<small class=\"text-highlight\">(_MAX_ &eacute;l&eacute;ments au total)</small>",
+    "emptyTable": "Aucune donnée disponible.",
+    "zeroRecords": "Aucun enregistrement trouvé.",
+    "paginate": {
+    "previous": "<span class=\"icon icon-precedent\"></span>",
+        "next": "<span class=\"icon icon-suivant\"></span>"
+    }
+}

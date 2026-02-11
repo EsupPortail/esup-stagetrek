@@ -54,6 +54,17 @@ class TerrainStageCsvImportValidator extends AbstractCsvImportValidator
         ];
     }
 
+
+    public static function isChampsObligatoire(string $key) : bool
+    {
+        $champsObligatoire = [
+            self::HEADER_CODE_CATEGORIE => true,
+            self::HEADER_LIBELLE => true,
+        ];
+        return ($champsObligatoire[$key]) ?? false;
+    }
+
+
     protected bool $modeEdit = false;
     protected ?string $codeCategorie = null;
     protected ?string $codeTerrain = null;
@@ -77,9 +88,9 @@ class TerrainStageCsvImportValidator extends AbstractCsvImportValidator
         $this->codeTerrain = trim($this->getCsvService()->readDataAt(self::HEADER_CODE_TERRAIN, $rowData, ""));
         $this->libelle = trim($this->getCsvService()->readDataAt(self::HEADER_LIBELLE, $rowData, ""));
         $this->service = trim($this->getCsvService()->readDataAt(self::HEADER_SERVICE, $rowData, ""));
-        $this->min = CSVService::textToInt($this->getCsvService()->readDataAt(self::HEADER_CAPA_MIN, $rowData, 0));
-        $this->ideal = CSVService::textToInt($this->getCsvService()->readDataAt(self::HEADER_CAPA_IDEAL, $rowData, 0));
-        $this->max = CSVService::textToInt($this->getCsvService()->readDataAt(self::HEADER_CAPA_MAX, $rowData, 0));
+        $this->min = CSVService::textToInt($this->getCsvService()->readDataAt(self::HEADER_CAPA_MIN, $rowData),0);
+        $this->ideal = CSVService::textToInt($this->getCsvService()->readDataAt(self::HEADER_CAPA_IDEAL, $rowData),0);
+        $this->max = CSVService::textToInt($this->getCsvService()->readDataAt(self::HEADER_CAPA_MAX, $rowData),0);
         $this->horsSubdivision = CSVService::yesNoValueToBoolean($this->getCsvService()->readDataAt(self::HEADER_HORS_SUBDIVISION, $rowData, ""), false);
         $this->allowPreferences = CSVService::yesNoValueToBoolean($this->getCsvService()->readDataAt(self::HEADER_PREFERENCES, $rowData, ""), true);
         $this->lien = trim($this->getCsvService()->readDataAt(self::HEADER_LIEN, $rowData, ""));

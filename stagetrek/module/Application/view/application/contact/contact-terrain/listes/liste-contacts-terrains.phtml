@@ -3,6 +3,7 @@
 use Application\Controller\Contact\ContactTerrainController;
 use Application\Entity\Db\Contact;
 use Application\Entity\Db\ContactTerrain;
+use Application\Misc\Util;
 use Application\Provider\Misc\Icone;
 use Application\View\Helper\Contacts\ContactTerrainViewHelper;
 
@@ -28,10 +29,11 @@ $canAdd = $vh->actionAllowed(ContactTerrainController::ACTION_AJOUTER);
         <thead>
         <tr>
             <th></th>
-            <th class="no-search no-sort rotate-45"><div class="first"><span> Visbile par l'étudiant</span></div></th>
-            <th class="no-search no-sort rotate-45"><div><span> Responsable du stage </span></div></th>
+            <th class="no-search no-sort rotate-45"><div class="first"><span>Visbile par les étudiant<?=Util::POINT_MEDIANT?>s<?=Util::POINT_MEDIANT?>s</span></div></th>
+            <th class="no-search no-sort rotate-45"><div><span>Responsable du stage </span></div></th>
             <th class="no-search no-sort rotate-45"><div><span>Peut valider le stage</span></div></th>
             <th class="no-search no-sort rotate-45"><div><span>Signataire de la convention</span></div></th>
+            <th class="no-search no-sort rotate-45"><div><span>Mail liste des étudiants<?=Util::POINT_MEDIANT?>s affecté<?=Util::POINT_MEDIANT?>s</span></div></th>
             <th class="no-search no-sort rotate-45"><div><span>Mail de validation</span></div></th>
             <th class="no-search no-sort rotate-45"><div><span>Mail de rappel de validation</span></div></th>
             <th class="no-search no-sort"></th>
@@ -39,6 +41,7 @@ $canAdd = $vh->actionAllowed(ContactTerrainController::ACTION_AJOUTER);
             </tr>
             <tr>
                 <th class="col-md-6">Terrain</th>
+                <th class="no-search"></th>
                 <th class="no-search"></th>
                 <th class="no-search"></th>
                 <th class="no-search"></th>
@@ -70,6 +73,9 @@ $canAdd = $vh->actionAllowed(ContactTerrainController::ACTION_AJOUTER);
                    "></span></td>
                     <td class="text-center"><span class="icon
                         <?= ($ct->isSignataireConvention()) ? "icon-checked text-success" : "icon-unchecked text-danger" ?>
+                   "></span></td>
+                    <td class="text-center"><span class="icon
+                        <?= ($ct->sendMailAutoListeEtudiantsStage()) ? "icon-checked text-success" : "icon-unchecked text-danger" ?>
                    "></span></td>
                     <td class="text-center"><span class="icon
                         <?= ($ct->sendMailAutoValidationStage()) ? "icon-checked text-success" : "icon-unchecked text-danger" ?>

@@ -10,6 +10,7 @@ use Application\Entity\Traits\InterfaceImplementation\HasCodeTrait;
 use Application\Entity\Traits\InterfaceImplementation\HasIdTrait;
 use Application\Entity\Traits\InterfaceImplementation\HasLibelleTrait;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
+use UnicaenMail\Entity\HasMailsTrait;
 use UnicaenTag\Entity\Db\HasTagsInterface;
 use UnicaenTag\Entity\Db\HasTagsTrait;
 
@@ -58,6 +59,8 @@ class Contact implements ResourceInterface
     use HasContactsStagesTrait;
     use HasContactsTerrainsTrait;
     use HasTagsTrait;
+
+    use HasMailsTrait;
 
     /**
      * @var string|null

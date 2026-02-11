@@ -8,14 +8,16 @@ use Application\Entity\Traits\Contact\HasContactTrait;
 use Application\Entity\Traits\Etudiant\HasEtudiantTrait;
 use Application\Entity\Traits\Stage\HasValidationStageTrait;
 use Application\Form\Contacts\Traits\ContactStageFormAwareTrait;
+use Application\Provider\Mailing\CodesMailsProvider;
 use Application\Service\Contact\Traits\ContactStageServiceAwareTrait;
-use Evenement\Provider\EvenementEtatProvider;
-use Evenement\Service\MailAuto\Traits\MailAutoEvenementServiceAwareTrait;
 use Exception;
 use Laminas\Form\Element\Radio;
 use Laminas\Http\PhpEnvironment\Request;
 use Laminas\View\Model\ViewModel;
+use PHPUnit\Event\RuntimeException;
 use UnicaenApp\View\Helper\Messenger;
+use UnicaenMail\Entity\Db\Mail;
+use UnicaenMail\Service\Mail\MailServiceAwareTrait;
 
 /**
  * Class ContactStageController
@@ -160,7 +162,7 @@ class ContactStageController extends AbstractActionController
         return new ViewModel(['title' => $title, 'form'=>$form, 'contactStage' => $contactStage]);
     }
 
-    use MailAutoEvenementServiceAwareTrait;
+    use MailServiceAwareTrait;
 
     /**
      * @throws \Doctrine\ORM\Exception\NotSupported
@@ -206,15 +208,21 @@ class ContactStageController extends AbstractActionController
                 if($genererToken) {
                     $this->getContactStageService()->genererTokenValidation($contactStage);
                 }
-                $evenement = $this->getMailAutoStageDebutValidationService()->create($contactStage);
-                $codeRetour = $this->getMailAutoStageDebutValidationService()->traiter($evenement);
-                $mailSend = ($codeRetour == EvenementEtatProvider::SUCCES);
+                $stage = $contactStage->getStage();
+                $mailData = ['stage' => $stage, 'contactStage' => $contactStage];
+
+                /** @var \Application\Service\Mail\MailService $mailService */
+                $mailService = $this->getMailService();
+                //On vérifie que l'on a bien tout
+                $mailService->canSendMailType(CodesMailsProvider::VALIDATION_STAGE, $mailData);
+                /** @var Mail $mail */
+                $mail = $mailService->sendMailType(CodesMailsProvider::VALIDATION_STAGE, $mailData);
+                $mailSend = (isset($mail) && $mail->getStatusEnvoi() == Mail::SUCCESS);
                 if(!$mailSend){
-                    $this->getObjectManager()->refresh($evenement);
-                    return $this->failureAction("Echec de l'envoie du mail", $evenement->getLog());
+                    return $this->failureAction("Echec de l'envoie du mail", $mail->getLog());
                 }
                 return compact('title', 'contactStage', 'mailSend');
-            } catch (Exception $e) {
+            } catch (Exception|RuntimeException $e) {
                 return $this->failureAction($title, null, $e);
             }
         }

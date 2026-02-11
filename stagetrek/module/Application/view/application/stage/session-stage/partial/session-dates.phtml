@@ -1,7 +1,11 @@
 <?php
 
+use Application\Controller\Stage\SessionStageController;
 use Application\Entity\Db\SessionStage;
+use Application\Provider\Misc\Icone;
+use Application\Provider\Tag\TagProvider;
 use Application\View\Helper\SessionsStages\SessionStageViewHelper;
+use UnicaenTag\View\Helper\TagViewHelper;
 
 /**
  * @see SessionStageViewHelper::renderDates()
@@ -9,7 +13,17 @@ use Application\View\Helper\SessionsStages\SessionStageViewHelper;
  * @var Boolean $vueEtudiante
  */
 
+/** @var TagViewHelper $tagVh */
+$tagVh = $this->unicaenTag();
 if(!isset($vueEtudiante)){$vueEtudiante = false;}
+
+/** @var SessionStageViewHelper $vh */
+$vh = $this->sessionStage($sessionStage);
+$canEdit = (!$vueEtudiante)
+    && $sessionStage->hasMultiplesPeriodesStage() &&
+    $vh->actionAllowed(SessionStageController::ACTION_MODIFIER);
+
+
 //Background selon les dates
 $today = new DateTime();
 $bgDateCalculOrdre = ($sessionStage->getDateCalculOrdresAffectations() <= $today && $today <= $sessionStage->getDateFinCalculOrdresAffectations())
@@ -25,16 +39,18 @@ $bgDateValidation = ($sessionStage->getDateDebutValidation() <= $today && $today
 $bgDateEvaluation = ($sessionStage->getDateDebutEvaluation() <= $today && $today <= $sessionStage->getDateFinEvaluation())
     ? "bg-light-success" : (($sessionStage->getDateFinEvaluation() < $today) ? "bg-muted" : "");
 
+
+$periodesStages = $sessionStage->getDatesPeriodesStages();
+
 ?>
 <div class="row">
 <div class="col-md-12">
         <table class='table table-hover table-condensed mt-1'>
             <thead>
             <tr>
-                <th class="col-md-6">Date</th>
+                <th class="col-md-8">Date</th>
                 <th class="col-md-2">Début</th>
                 <th class="col-md-2">Fin</th>
-                <th class="col-md-2"></th>
             </tr>
             </thead>
             <tbody>
@@ -42,8 +58,8 @@ $bgDateEvaluation = ($sessionStage->getDateDebutEvaluation() <= $today && $today
             <tr class="<?=$bgDateCalculOrdre ?>">
                 <td>Calcul automatique des ordres d'affectations</td>
                 <td>
-                    <?= ($sessionStage->getDateCalculOrdresAffectations()) ? $sessionStage->getDateCalculOrdresAffectations()->format('d/m/Y') : "Date indéterminée"?></td>
-                <td></td>
+                    <?= ($sessionStage->getDateCalculOrdresAffectations()) ? $sessionStage->getDateCalculOrdresAffectations()->format('d/m/Y') : "Date indéterminée"?>
+                </td>
                 <td></td>
             </tr>
             <?php endif; ?>
@@ -51,32 +67,54 @@ $bgDateEvaluation = ($sessionStage->getDateDebutEvaluation() <= $today && $today
                 <td>Procédure de choix</td>
                 <td><?=$sessionStage->getDateDebutChoix()->format('d/m/Y')?></td>
                 <td><?=$sessionStage->getDateFinChoix()->format('d/m/Y')?></td>
-                <td></td>
             </tr>
             <tr class="<?=$bgDateCommission ?>">
                 <td>Commission d'affectation des stages</td>
                 <td><?=$sessionStage->getDateCommission()->format('d/m/Y')?></td>
                 <td></td>
-                <td></td>
             </tr>
             <tr class="<?=$bgDateStage ?>">
-                <td>Stage</td>
+                <td>Stage
+                    <?php if($sessionStage->hasMultiplesPeriodesStage()):?>
+                        <?php if(empty($periodesStages) && (!$vueEtudiante)):?>
+                            <div class="alert alert-warning">
+                                La session de stage est taguée <?= $tagVh->renderTag(TagProvider::SESSION_MUlTIPLES_PERIODES,  ['display-libelle' => true]); ?>, mais les périodes effectives de stages ne sont pas définies.
+                            </div>
+                        <?php elseif(!empty($periodesStages)) :?>
+                            <div class="text-small">Périodes de stages effectives</div>
+                            <?php foreach($periodesStages as $periode):
+                                $vh->setPeriodeStage($periode);
+                                ?>
+                                <div class="text-small">
+                                    <span class="ms-3 <?= Icone::FA_ARROW_RIGHT ?>"></span>
+                                    <span class="mx-1">du</span> <span class="mx-1"><?= $periode->getDebut()->format('d/m/Y') ?></span>
+                                    <span class="mx-1">au</span> <span class="mx-1"><?= $periode->getFin()->format('d/m/Y') ?></span>
+                                    <?= $vh->lienModifierPeriode(Icone::render(Icone::MODIFIER),['class' => 'mx-1 text-primary ajax-modal']); ?>
+                                    <?= $vh->lienSupprimerPeriode(Icone::render(Icone::SUPPRIMER),['class' => 'mx-1 text-danger ajax-modal']); ?>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                        <?php if($canEdit) :?>
+                            <div class="text-small">
+                            <?= $vh->lienAjouterPeriode(Icone::render(Icone::AJOUTER). "Ajouter une période de stage", ['class' => 'mx-3 text-success ajax-modal']) ?>
+                            </div>
+                        <?php endif;?>
+                    <?php endif;?>
+                </td>
                 <td><?=$sessionStage->getDateDebutStage()->format('d/m/Y')?></td>
                 <td><?=$sessionStage->getDateFinStage()->format('d/m/Y')?></td>
-                <td></td>
             </tr>
+
             <tr class="<?=$bgDateValidation ?>">
                 <td>Phase de validation du stage</td>
                 <td><?=$sessionStage->getDateDebutValidation()->format('d/m/Y')?></td>
                 <td><?=$sessionStage->getDateFinValidation()->format('d/m/Y')?></td>
-                <td></td>
             </tr>
             <?php if(!$vueEtudiante) : //TODO : a dévelloper?>
             <tr class="<?=$bgDateEvaluation ?>">
                 <td>Phase d'évaluation du stage</td>
                 <td><?=$sessionStage->getDateDebutEvaluation()->format('d/m/Y')?></td>
                 <td><?=$sessionStage->getDateFinEvaluation()->format('d/m/Y')?></td>
-                <td></td>
             </tr>
             <?php endif; ?>
             </tbody>

@@ -6,6 +6,7 @@ use Application\Controller\Contact\ContactStageController;
 use Application\Form\Contacts\ContactStageForm;
 use Application\Form\Misc\ConfirmationForm;
 use Application\Service\Contact\ContactStageService;
+use Application\Service\Mail\MailService;
 use Doctrine\ORM\EntityManager;
 use Evenement\Service\MailAuto\MailAutoStageDebutValidation;
 use Interop\Container\ContainerInterface;
@@ -46,9 +47,9 @@ class ContactStageControllerFactory implements FactoryInterface
         $contactStageForm = $container->get(FormElementManager::class)->get(ContactStageForm::class);
         $controller->setContactStageForm($contactStageForm);
 
-        /** @var MailAutoStageDebutValidation $mailAutoService */
-        $mailAutoService = $container->get(ServiceManager::class)->get(MailAutoStageDebutValidation::class);
-        $controller->setMailAutoStageDebutValidationService($mailAutoService);
+        /** @var \Application\Service\Mail\MailService $mailService */
+        $mailService = $container->get(ServiceManager::class)->get(MailService::class);
+        $controller->setMailService($mailService);
 
         return $controller;
     }

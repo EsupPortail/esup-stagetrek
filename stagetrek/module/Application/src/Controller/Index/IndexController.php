@@ -25,7 +25,7 @@ class IndexController extends AbstractActionController
     use MessageInfoServiceAwareTrait;
     //Envoie d'un flash messages si l'étudiant doit faire une action
 
-    /**
+      /**
      * @return ViewModel
      * @throws \Doctrine\ORM\Exception\NotSupported
      */

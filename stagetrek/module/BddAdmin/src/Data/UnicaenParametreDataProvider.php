@@ -92,7 +92,7 @@ class UnicaenParametreDataProvider implements DataProviderInterface {
             ],
             [
                 "code" =>  ParametreCategorie::PROCEDURE_AFFECTATION,
-                "libelle" => "Procédure d''affectation",
+                "libelle" => "Procédure d'affectation",
                 "ordre" => $ordre++,
             ],
             [

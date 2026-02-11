@@ -16,52 +16,32 @@ use Application\Controller\Parametre\NiveauEtudeController;
 use Application\Controller\Parametre\ParametreController;
 use Application\Controller\Parametre\ParametreCoutAffectationController;
 use Application\Controller\Parametre\ParametreCoutTerrainController;
-use Application\Controller\Referentiel\ReferentielController;
 use Application\Controller\Referentiel\ReferentielPromoController;
 use Application\Controller\Referentiel\SourceController;
 use Application\Controller\Stage\SessionStageController;
 use Application\Controller\Stage\StageController;
 use Application\Controller\Terrain\CategorieStageController;
 use Application\Controller\Terrain\TerrainStageController;
-use Application\Provider\Privilege\AnneePrivileges;
-use Application\Provider\Privilege\ContactPrivileges;
-use Application\Provider\Privilege\ConventionsPrivileges;
-use Application\Provider\Privilege\EtudiantPrivileges;
-use Application\Provider\Privilege\FaqPrivileges;
-use Application\Provider\Privilege\MessagePrivilege;
-use Application\Provider\Privilege\ParametrePrivileges;
-use Application\Provider\Privilege\ReferentielPrivilege;
-use Application\Provider\Privilege\SessionPrivileges;
-use Application\Provider\Privilege\StagePrivileges;
-use Application\Provider\Privilege\TerrainPrivileges;
-use Laminas\DeveloperTools\Collector\MailCollector;
 use Laminas\Router\Http\Literal;
 use UnicaenDbImport\Privilege\ImportPrivilege;
-use UnicaenDbImport\Privilege\LogPrivilege;
-use UnicaenDbImport\Privilege\ObservationPrivilege;
 use UnicaenDbImport\Privilege\SynchroPrivilege;
 use UnicaenEtat\Controller\EtatCategorieController;
 use UnicaenEtat\Controller\EtatTypeController;
-use UnicaenEtat\Provider\Privilege\EtatPrivileges;
-use UnicaenEvenement\Controller\IndexController;
+use UnicaenIndicateur\Controller\IndexController as IndicateurIndexController;
+use \UnicaenRenderer\Controller\IndexController as RendererIndexController;
+use UnicaenCalendrier\Controller\IndexController as CalendrierIndexController;
 use UnicaenEvenement\Provider\Privilege\EvenementinstancePrivileges;
-use UnicaenMail\Controller\MailController;
+use UnicaenIndicateur\Controller\IndicateurController;
 use UnicaenMail\Provider\Privilege\MailPrivileges;
 use UnicaenPrivilege\Controller\PrivilegeCategorieController;
 use UnicaenPrivilege\Guard\PrivilegeController;
-use UnicaenPrivilege\Provider\Privilege\PrivilegePrivileges;
 use UnicaenRenderer\Controller\MacroController;
 use UnicaenRenderer\Controller\RenduController;
 use UnicaenRenderer\Controller\TemplateController;
-use UnicaenRenderer\Provider\Privilege\DocumentcontenuPrivileges;
-use UnicaenRenderer\Provider\Privilege\DocumentmacroPrivileges;
-use UnicaenRenderer\Provider\Privilege\DocumenttemplatePrivileges;
 use UnicaenTag\Controller\TagCategorieController;
 use UnicaenTag\Controller\TagController;
 use UnicaenUtilisateur\Controller\RoleController;
 use UnicaenUtilisateur\Controller\UtilisateurController;
-use UnicaenUtilisateur\Provider\Privilege\RolePrivileges;
-use UnicaenUtilisateur\Provider\Privilege\UtilisateurPrivileges;
 
 //TODO : revoir les roles et les priviléges permettant d'accéder à certains "sous-menue"
 //Reprendre la corrections des fautes de francais
@@ -285,6 +265,20 @@ return [
                                 "icon" => "fas fa-angle-right",
                                 "order" => $order++,
                             ],
+                            'indicateurs' => [
+                                'label' => 'Indicateurs',
+                                'route' => 'indicateurs',
+                                'resource' => PrivilegeController::getResourceId(IndicateurController::class, 'index'),
+                                'order' => $order++,
+                                'icon' => 'fas fa-angle-right',
+                            ],
+                            'mes-indicateurs' => [
+                                'label' => 'Mes indicateurs',
+                                'route' => 'mes-indicateurs',
+                                'resource' => PrivilegeController::getResourceId(IndicateurIndexController::class, 'index'),
+                                'order' => $order++,
+                                'icon' => 'fas fa-angle-right',
+                            ],
                             [
                                 "label" => "Mails",
                                 "title" => "Gestion des mails",
@@ -302,7 +296,7 @@ return [
                                 "route" => "contenu/rendu",
                                 "dropdown-header" => true,
                                 "icon" => "fas fa-file",
-                                "resource" => PrivilegeController::getResourceId(\UnicaenRenderer\Controller\IndexController::class, 'index'),
+                                "resource" => PrivilegeController::getResourceId(RendererIndexController::class, 'index'),
                                 "order" => $order++,
                             ],
                             [
@@ -515,6 +509,27 @@ return [
                                 'resource' => EvenementinstancePrivileges::getResourceId(EvenementinstancePrivileges::INSTANCE_CONSULTATION),
                                 'order'    => $order++,
                                 'icon' => 'fas fa-angle-right',
+                            ],
+
+                            [
+                                "label" => "Calendrier",
+                                "title" => "Gestion des calendrier",
+                                "route" => "unicaen-calendrier",
+
+                                'resource' => PrivilegeController::getResourceId(CalendrierIndexController::class, 'index'),
+                                "dropdown-header" => true,
+                                "icon" => "fas fa-calendar",
+                                "order" => $order++,
+                            ],
+
+                            'unicaen-calendrier' => [
+                                'label' => 'Gestion des calendriers',
+                                'route' => 'unicaen-calendrier',
+                                'resource' => PrivilegeController::getResourceId(CalendrierIndexController::class, 'index'),
+                                'order' => $order++,
+                                'icon' => 'fas fa-angle-right',
+                                'pages' => [
+                                ],
                             ],
                         ],
                     ],

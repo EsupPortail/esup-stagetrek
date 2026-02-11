@@ -46,7 +46,6 @@ EOS;
     public function before():void
     {
         $bdd = $this->getBdd();
-        $this->manager()->sauvegarderTable('etudiant', 'save_etudiant');
         foreach ($this->etudiantsViewRef as $row) {
             $viewName = $row['view_name'];
             $bdd->getLogger()->msg("Suppression de la vue ".$viewName);
@@ -56,7 +55,6 @@ EOS;
 
     public function after():void
     {
-        $this->manager()->supprimerSauvegarde('save_etudiant');
     }
 
 }

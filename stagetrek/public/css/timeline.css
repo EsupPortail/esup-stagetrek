@@ -58,7 +58,13 @@
 
 .timeline .tl_timeframes .tl_timeframe{
     border: solid black 1px;
+    /*background-color: lightgray;*/
+    /*La couleur de fond sera gérer par les tl_periode correspondante au période de stage effctive*/
+    background-color: transparent;
+}
+.timeline .tl_periode{
     background-color: lightgray;
+    border: 0;
 }
 
 /* Positionnement et taille */
@@ -77,6 +83,13 @@
 }
 
 .timeline .tl_timeframes .tl_timeframe{
+    min-height: 5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+.timeline .tl_timeframes .tl_periode{
     min-height: 5em;
     display: flex;
     align-items: center;
@@ -119,6 +132,9 @@
     width:100%;
 }
 .timeline .tl_row .tl_timeframes .tl_timeframe{
+    grid-row: 1;
+}
+.timeline .tl_row .tl_timeframes .tl_periode{
     grid-row: 1;
 }
 

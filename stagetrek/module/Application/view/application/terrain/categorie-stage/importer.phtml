@@ -33,19 +33,25 @@ $fcg = $this->formControlGroup();
                 </div>
                 <div class="col-md-8 text-muted text-small">
                     <ul>
-                        <li>Le fichier CSV doit utiliser comme séparateur le '
-                            <?= CSVService::SEPARATOR ?>' et avoir les champs suivants : <br/>
-                            <?php $h = "";
-                            foreach (CategorieStageCsvImportValidator::getImportHeader() as $key) {
-                                $h .= sprintf("<strong><span class='mx-2'>%s</span></strong>; ", $key);
-                            }
-                            echo $h;
-                            ?>
+                        <li>Le fichier CSV doit :
+                            <ul>
+                                <li> utiliser comme séparateur le '<?= CSVService::SEPARATOR ?>'</li>
+                                <li> être encodé en utf8</li>
+                                <?php  $ob = "<sup title='Champs obligatoire'>*</sup>"; ?>
+                                <li> avoir les champs suivants : (<?=$ob?> = Champs obligatoires)<br/>
+                                    <?php $h = "";
+                                    foreach (CategorieStageCsvImportValidator::getImportHeader() as $key) {
+                                        $obligatoire =  CategorieStageCsvImportValidator::isChampsObligatoire($key);
+                                        $h .= sprintf("<strong><span class='mx-2'>%s %s </span></strong>; ", $key, (($obligatoire) ? $ob : ''));
+                                    }
+                                    echo $h;
+                                    ?>
+                            </ul>
                         </li>
                         <li>
                             Laissez le champ
                             <strong><?= CategorieStageCsvImportValidator::HEADER_CODE_CATEGORIE ?></strong>
-                            vide pour toute nouvelle catégorie.
+                            vide pour une nouvelle catégorie utilisant la nomenclature par défaut : l'acroynme en minuscule.
                         </li>
                         <li>
                             Les champs <strong><?= CategorieStageCsvImportValidator::HEADER_ACRONYME ?></strong>
@@ -59,6 +65,13 @@ $fcg = $this->formControlGroup();
                 </div>
             </div>
 
+            <hr/>
+            <div class="row">
+                <div class="col-md-12">
+                    <?= $fcg($form->get($form::INPUT_SUBMIT)); ?>
+                </div>
+            </div>
+
             <?php if ($msg && $msg->hasMessages()) : ?>
                 <div class="row">
                     <div class="col-md-12">
@@ -68,12 +81,7 @@ $fcg = $this->formControlGroup();
                     </div>
                 </div>
             <?php endif; ?>
-            <hr/>
-            <div class="row">
-                <div class="col-md-12">
-                    <?= $fcg($form->get($form::INPUT_SUBMIT)); ?>
-                </div>
-            </div>
+
             <?= $this->formHidden($form->get($form::CSRF)); ?>
             <?= $this->form()->closeTag(); ?>
         </div>

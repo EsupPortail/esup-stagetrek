@@ -1,11 +1,12 @@
 /var/log/stagetrek/evenements.log
 /var/log/stagetrek/updates.log
-/var/log/stagetrek/clears.log
+/var/log/stagetrek/indicateurs.log
+/var/log/stagetrek/test.log
+/var/log/stagetrek/clear.log
  {
         su root root
         rotate 10
         daily
         missingok
         notifempty
-        dateext
 }

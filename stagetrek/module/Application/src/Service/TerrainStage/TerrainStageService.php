@@ -134,9 +134,9 @@ class TerrainStageService extends CommonEntityService
         $codeTerrain = trim($this->getCsvService()->readDataAt(TerrainStageCsvImportValidator::HEADER_CODE_TERRAIN, $rowData, ""));
         $libelle = trim($this->getCsvService()->readDataAt(TerrainStageCsvImportValidator::HEADER_LIBELLE, $rowData, ""));
         $service = trim($this->getCsvService()->readDataAt(TerrainStageCsvImportValidator::HEADER_SERVICE, $rowData, ""));
-        $min = CSVService::textToInt($this->getCsvService()->readDataAt(TerrainStageCsvImportValidator::HEADER_CAPA_MIN, $rowData, 0));
-        $ideal = CSVService::textToInt($this->getCsvService()->readDataAt(TerrainStageCsvImportValidator::HEADER_CAPA_IDEAL, $rowData, 0));
-        $max = CSVService::textToInt($this->getCsvService()->readDataAt(TerrainStageCsvImportValidator::HEADER_CAPA_MAX, $rowData, 0));
+        $min = CSVService::textToInt($this->getCsvService()->readDataAt(TerrainStageCsvImportValidator::HEADER_CAPA_MIN, $rowData),0);
+        $ideal = CSVService::textToInt($this->getCsvService()->readDataAt(TerrainStageCsvImportValidator::HEADER_CAPA_IDEAL, $rowData),0);
+        $max = CSVService::textToInt($this->getCsvService()->readDataAt(TerrainStageCsvImportValidator::HEADER_CAPA_MAX, $rowData),0);
         $horsSubdivision = CSVService::yesNoValueToBoolean($this->getCsvService()->readDataAt(TerrainStageCsvImportValidator::HEADER_HORS_SUBDIVISION, $rowData, ""), false);
         $preferences = CSVService::yesNoValueToBoolean($this->getCsvService()->readDataAt(TerrainStageCsvImportValidator::HEADER_PREFERENCES, $rowData, ""), true);
         $lien = trim($this->getCsvService()->readDataAt(TerrainStageCsvImportValidator::HEADER_LIEN, $rowData, ""));

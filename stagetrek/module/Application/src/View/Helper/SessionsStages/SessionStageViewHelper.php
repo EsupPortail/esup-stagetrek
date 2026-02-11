@@ -14,6 +14,7 @@ use Application\Entity\Traits\AnneeUniversitaire\HasAnneeUniversitaireTrait;
 use Application\Entity\Traits\Etudiant\HasEtudiantTrait;
 use Application\Entity\Traits\Stage\HasSessionStageTrait;
 use Application\Entity\Traits\Stage\HasValidationStageTrait;
+use Application\Form\Stages\PeriodeStageForm;
 use Application\Form\Stages\SessionStageForm;
 use Application\Form\Stages\SessionStageRechercheForm;
 use Application\Misc\ArrayRessource;
@@ -26,6 +27,8 @@ use Application\Service\Stage\Traits\SessionStageServiceAwareTrait;
 use Application\View\Helper\Interfaces\AbstractEntityActionViewHelper;
 use Application\View\Helper\Interfaces\EtudiantActionViewHelperInterface;
 use Application\View\Helper\Interfaces\Implementation\EtudiantActionViewHelperTrait;
+use UnicaenCalendrier\Entity\Db\Date;
+
 /**
  * Class SessionStageViewHelper
  * @package Application\View\Helper\SessionsStages
@@ -65,6 +68,12 @@ class SessionStageViewHelper extends AbstractEntityActionViewHelper
     {
         $params = ['form' => $form];
         return $this->getView()->render('application/stage/session-stage/forms/form-recherche-session-stage', $params);
+    }
+
+    public function renderPeriodeStageForm(PeriodeStageForm $form): string
+    {
+        $params = ['form' => $form];
+        return $this->getView()->render('application/stage/session-stage/forms/form-periode-stage', $params);
     }
 
 
@@ -126,6 +135,13 @@ class SessionStageViewHelper extends AbstractEntityActionViewHelper
         $ressources = new ArrayRessource();
         if($this->hasSessionStage()){$ressources->add(SessionStage::RESOURCE_ID, $this->getSessionStage());}
         if($this->hasAnneeUniversitaire()){$ressources->add(AnneeUniversitaire::RESOURCE_ID, $this->getAnneeUniversitaire());}
+
+        $ressources->add("action", $action);
+        $periode = $this->getPeriodeStage();
+        if(isset($periode)){
+            $ressources->add(Date::class, $periode);
+        }
+
         return match ($action) {
             Controller::ACTION_AFFICHER => $this->hasSessionStage() && $this->hasPrivilege(SessionPrivileges::SESSION_STAGE_AFFICHER),
             Controller::ACTION_AJOUTER => $this->hasAnneeUniversitaire() && $this->callAssertion($ressources, SessionPrivileges::SESSION_STAGE_AJOUTER),
@@ -134,6 +150,10 @@ class SessionStageViewHelper extends AbstractEntityActionViewHelper
             Controller::ACTION_SUPPRIMER => $this->hasSessionStage() && $this->callAssertion($ressources, SessionPrivileges::SESSION_STAGE_SUPPRIMER),
             Controller::ACTION_IMPORTER_PLACES_TERRAINS =>  false && $this->hasSessionStage(),
             Controller::ACTION_MODIFIER_ORDRES_AFFECTATIONS => $this->hasSessionStage() && $this->callAssertion($ressources, StagePrivileges::STAGE_MODIFIER),
+            Controller::ACTION_RECALCULER_ORDRES_AFFECTATIONS => $this->hasSessionStage() && $this->callAssertion($ressources, StagePrivileges::STAGE_MODIFIER),
+            Controller::ACTION_AJOUTER_PERIODE_STAGE => $this->hasSessionStage() && $this->callAssertion($ressources, SessionPrivileges::SESSION_STAGE_MODIFIER),
+            Controller::ACTION_MODIFIER_PERIODE_STAGE, Controller::ACTION_SUPPRIMER_PERIODE_STAGE
+                => isset($periode) && $this->hasSessionStage() && $this->callAssertion($ressources, SessionPrivileges::SESSION_STAGE_MODIFIER),
             default => false,
         };
         //            case Controller::ACTION_MODIFIER_PLACES_TERRAINS :
@@ -223,6 +243,61 @@ class SessionStageViewHelper extends AbstractEntityActionViewHelper
         return $this->generateActionLink($url, $libelle, $attributes);
     }
 
+
+    /** Période de stage éffective */
+    protected ?Date $periodeStage = null;
+    public function getPeriodeStage(): ?Date
+    {
+        return $this->periodeStage;
+    }
+
+    public function setPeriodeStage(?Date $periodeStage): void
+    {
+        $this->periodeStage = $periodeStage;
+    }
+
+    public function lienAjouterPeriode(?string $libelle = null, ?array $attributes = []): string
+    {
+        if (!$this->actionAllowed(Controller::ACTION_AJOUTER_PERIODE_STAGE)) {
+            return "";
+        }
+        $url = $this->getUrl(Controller::ROUTE_AJOUTER_PERIODE, ['sessionStage' => $this->getSessionStage()->getId()], [], true);
+        $libelle = ($libelle) ?? Label::render(Label::AJOUTER, Icone::AJOUTER);
+        $attributes['title'] = ($attributes['title']) ?? "Ajouter une période de stage";
+        $attributes['class'] = ($attributes['class']) ?? "btn btn-success ajax-modal";
+        $attributes['data-event'] = ($attributes['data-event']) ??  Controller::EVENT_MODIFIER;
+
+        return $this->generateActionLink($url, $libelle, $attributes);
+    }
+    public function lienModifierPeriode(?string $libelle = null, ?array $attributes = []): string
+    {
+        if (!$this->actionAllowed(Controller::ACTION_MODIFIER_PERIODE_STAGE)) {
+            return "";
+        }
+        $url = $this->getUrl(Controller::ROUTE_MODIFIER_PERIODE, ['sessionStage' => $this->getSessionStage()->getId(), 'date' => $this->getPeriodeStage()->getId()], [], true);
+        $libelle = ($libelle) ?? Label::render(Label::MODIFIER, Icone::MODIFIER);
+        $attributes['title'] = ($attributes['title']) ?? "Modifier la période de stage";
+        $attributes['class'] = ($attributes['class']) ?? "btn btn-primary ajax-modal";
+        $attributes['data-event'] = ($attributes['data-event']) ??  Controller::EVENT_MODIFIER;
+
+        return $this->generateActionLink($url, $libelle, $attributes);
+    }
+
+    public function lienSupprimerPeriode(?string $libelle = null, ?array $attributes = []): string
+    {
+        if (!$this->actionAllowed(Controller::ACTION_SUPPRIMER_PERIODE_STAGE)) {
+            return "";
+        }
+        $url = $this->getUrl(Controller::ROUTE_SUPPRIMER_PERIODE, ['sessionStage' => $this->getSessionStage()->getId(), 'date' => $this->getPeriodeStage()->getId()], [], true);
+        $libelle = ($libelle) ?? Label::render(Label::SUPPRIMER, Icone::SUPPRIMER);
+        $attributes['title'] = ($attributes['title']) ?? "Supprimer ma période de stage";
+        $attributes['class'] = ($attributes['class']) ?? "btn btn-danger ajax-modal";
+        $attributes['data-event'] = ($attributes['data-event']) ??  Controller::EVENT_MODIFIER;
+
+        return $this->generateActionLink($url, $libelle, $attributes);
+    }
+
+
     public function lienModifierPlaces(?string $libelle = null, ?array $attributes = []): string
     {
         if (!$this->actionAllowed(Controller::ACTION_MODIFIER_PLACES_TERRAINS)) {
@@ -243,7 +318,20 @@ class SessionStageViewHelper extends AbstractEntityActionViewHelper
         $url = $this->getUrl(Controller::ROUTE_MODIFIER_ORDRES_AFFECTAIONS,  ['sessionStage' => $this->getSessionStage()->getId()], [], true);
         $libelle = ($libelle) ?? sprintf("%s %s", "<span class='icon icon-ordre'></span>","Ordres d'affectations");
         $attributes['title'] = ($attributes['title']) ?? "Modifier les ordres d'affectations";
+        $attributes['class'] = ($attributes['class']) ?? "btn btn-primary";
+        return $this->generateActionLink($url, $libelle, $attributes);
+    }
+
+    public function lienRecalculerOrdresAfectations(?string $libelle = null, ?array $attributes = []): string
+    {
+        if (!$this->actionAllowed(Controller::ACTION_RECALCULER_ORDRES_AFFECTATIONS)) {
+            return "";
+        }
+        $url = $this->getUrl(Controller::ROUTE_RECALCULER_ORDRES_AFFECTAIONS,  ['sessionStage' => $this->getSessionStage()->getId()], [], true);
+        $libelle = ($libelle) ?? sprintf("%s %s", "<span class='fas fa-cogs'></span>","Recalculer les ordres d'affectations");
+        $attributes['title'] = ($attributes['title']) ?? "Recalculer les ordres d'affectations";
         $attributes['class'] = ($attributes['class']) ?? "btn btn-primary ajax-modal";
+        $attributes['data-event'] = ($attributes['data-event']) ?? Controller::EVENT_MODIFIER;
         return $this->generateActionLink($url, $libelle, $attributes);
     }
 

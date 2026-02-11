@@ -26,7 +26,6 @@ class Migration_20250924_Annee extends MigrationAction {
     public function after():void
     {
         $bdd = $this->getBdd();
-        $this->manager()->sauvegarderTable('annee_universitaire', 'save_annee_universitaire');
 
         # ajout du tag lock aux années universitaires vérouillée
         $sql = <<<EOS
@@ -38,8 +37,6 @@ INSERT into annee_tag_linker (annee_universitaire_id, tag_id)
 ON CONFLICT do NOTHING ;
 EOS;
         $bdd->exec($sql);
-
-        $this->manager()->supprimerSauvegarde('save_annee_universitaire');
     }
 
 }

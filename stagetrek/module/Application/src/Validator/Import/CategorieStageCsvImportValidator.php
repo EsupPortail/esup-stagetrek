@@ -17,7 +17,7 @@ class CategorieStageCsvImportValidator extends AbstractCsvImportValidator
     CONST HEADER_ACRONYME = "acronyme";
     CONST HEADER_LIBELLE = "libelle";
     CONST HEADER_ORDRE = "ordre";
-    CONST HEADER_PRINCIPAL = "princpal";
+    CONST HEADER_PRINCIPAL = "principal";
 
     /**
      * @return array
@@ -33,6 +33,17 @@ class CategorieStageCsvImportValidator extends AbstractCsvImportValidator
         ];
     }
 
+    public static function isChampsObligatoire(string $key) : bool
+    {
+        $champsObligatoire = [
+            self::HEADER_ACRONYME => true,
+            self::HEADER_LIBELLE => true,
+            self::HEADER_ORDRE => true,
+            self::HEADER_PRINCIPAL => true,
+        ];
+        return ($champsObligatoire[$key]) ?? false;
+    }
+
     protected ?string $code = null;
     protected ?string $acronyme = null;
     protected ?string $libelle = null;
@@ -44,7 +55,8 @@ class CategorieStageCsvImportValidator extends AbstractCsvImportValidator
         $this->code = trim($this->getCsvService()->readDataAt(self::HEADER_CODE_CATEGORIE, $rowData, ""));
         $this->acronyme = trim($this->getCsvService()->readDataAt(self::HEADER_ACRONYME, $rowData, ""));
         $this->libelle = trim($this->getCsvService()->readDataAt(self::HEADER_LIBELLE, $rowData, ""));
-        $this->ordre = CSVService::textToInt($this->getCsvService()->readDataAt(self::HEADER_ORDRE, $rowData, 0));
+        $this->ordre = CSVService::textToInt($this->getCsvService()->readDataAt(self::HEADER_ORDRE, $rowData),1);
+
         $this->principal = CSVService::yesNoValueToBoolean($this->getCsvService()->readDataAt(self::HEADER_PRINCIPAL, $rowData, false));
         return $this;
     }

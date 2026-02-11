@@ -51,7 +51,10 @@ return [
             /* array des filtres dédié à la mise à jour de la DDL, afin d'éviter que ne se retrouvent en DDL certains objets présents en base
              * le format d'array doit respecter la spécification des DdlFilters
              */
-            'update-ddl-filters'     => [],
+            'update-ddl-filters'     => [
+                'view'               => ['excludes' => ['v_diff%' ]],
+                'materialized-view'  => ['excludes' => ['iv_%' ],],
+            ],
         ],
 
         /* Nom des colonnes servant de clé primaire dans vos tables, généralement 'id' pour la compatibilité avec Doctrine

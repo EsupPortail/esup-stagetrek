@@ -2,6 +2,7 @@
 namespace Evenement\Service\MailAuto\Traits;
 
 use Evenement\Service\MailAuto\MailAutoAffectationEvenementService;
+use Evenement\Service\MailAuto\MailAutoListeEtudiantsEncadresEvenementService;
 use Evenement\Service\MailAuto\MailAutoStageDebutChoixEvenementService;
 use Evenement\Service\MailAuto\MailAutoStageDebutValidation;
 use Evenement\Service\MailAuto\MailAutoStageRappelChoixEvenementService;
@@ -23,11 +24,15 @@ trait MailAutoEvenementServiceAwareTrait
     /** @var MailAutoStageValidationEffectueEvenementService|null  $mailAutoStageValidationEffectueEvenementService*/
     protected ?MailAutoStageValidationEffectueEvenementService $mailAutoStageValidationEffectueEvenementService = null;
 
+    /** @var MailAutoListeEtudiantsEncadresEvenementService|null $mailAutoListeEtudiantsEncadresEvenementService*/
+    protected ?MailAutoListeEtudiantsEncadresEvenementService $mailAutoListeEtudiantsEncadresEvenementService = null;
+
     /**
      * @return MailAutoStageDebutValidation
      */
     public function getMailAutoStageDebutValidationService(): ?MailAutoStageDebutValidation
     {
+        /** MailAutoStageDebutValidation */
         return $this->mailAutoStageDebutValidationService;
     }
 
@@ -104,6 +109,20 @@ trait MailAutoEvenementServiceAwareTrait
     public function setMailAutoStageValidationEffectueEvenementService(MailAutoStageValidationEffectueEvenementService $mailAutoStageValidationEffectueEvenementService): static
     {
         $this->mailAutoStageValidationEffectueEvenementService = $mailAutoStageValidationEffectueEvenementService;
+        return $this;
+    }
+
+    /**
+     * @return MailAutoListeEtudiantsEncadresEvenementService
+     */
+    public function getMailAutoListeEtudiantsEncadresEvenementService(): ?MailAutoListeEtudiantsEncadresEvenementService
+    {
+        return $this->mailAutoListeEtudiantsEncadresEvenementService;
+    }
+
+    public function setMailAutoListeEtudiantsEncadresEvenementService(MailAutoListeEtudiantsEncadresEvenementService $mailAutoListeEtudiantsEncadresEvenementService): static
+    {
+        $this->mailAutoListeEtudiantsEncadresEvenementService = $mailAutoListeEtudiantsEncadresEvenementService;
         return $this;
     }
 

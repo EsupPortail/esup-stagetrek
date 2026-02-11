@@ -23,7 +23,8 @@ class Icone
     const FA_UNLOCK = "fas fa-lock-open";
     const FA_COGS = "fas fa-cogs";
     const FA_BAN = "fas fa-ban";
-    const FA_TIMES = "fas fa-ban";
+    const FA_TIMES = "fas fa-times";
+    const FA_TIMELINE = "fas fa-timeline";
     const FA_CLOCK = "fas fa-clock";
     const FA_PLAY = "fas fa-clock";
     const FA_PAUSE = "fas fa-pause";
@@ -34,6 +35,11 @@ class Icone
     const FA_EXCLATION_TRIANGLE = "fas fa-exclamation-triangle";
     const FA_EXCLATION_CIRCLE = "fas fa-exclamation-circle";
     const FA_INFO_CIRCLE = "fas fa-info-circle";
+    const FA_REPLY = "fas fa-reply";
+    const FA_ARROW_RIGHT = "fas fa-arrow-right";
+    const FA_ARROW_LEFT = "fas fa-arrow-left";
+    const FA_ARROW_UP = "fas fa-arrow-up";
+    const FA_ARROW_DOWN = "fas fa-arrow-down";
 
     const ETUDIANT = self::FA_USER;
     const GROUPE = self::FA_USERS;

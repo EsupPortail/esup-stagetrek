@@ -32,6 +32,7 @@ class ContactTerrainHydrator extends AbstractHydrator implements HydratorInterfa
         $data[ContactTerrainFieldset::CAN_VALIDER_STAGE] = $contactTerrain->canValiderStage();
         $data[ContactTerrainFieldset::SEND_MAIL_AUTO_VALIDATION_STAGE] = $contactTerrain->sendMailAutoValidationStage();
         $data[ContactTerrainFieldset::SEND_MAIL_AUTO_RAPPEL_VALIDATION_STAGE] = $contactTerrain->sendMailAutoRappelValidationStage();
+        $data[ContactTerrainFieldset::SEND_MAIL_AUTO_LISTE_ETUDIANT_STAGE] = $contactTerrain->sendMailAutoListeEtudiantsStage();
         $data[ContactTerrainFieldset::IS_SIGNATAIRE_CONVENTION] = $contactTerrain->isSignataireConvention();
         if($contactTerrain->isSignataireConvention()){
             $data[ContactTerrainFieldset::PRIORITE_ORDRE_SIGNATURE] = $contactTerrain->getPrioriteOrdreSignature();
@@ -68,6 +69,7 @@ class ContactTerrainHydrator extends AbstractHydrator implements HydratorInterfa
             $priorite=null;
         }
 
+        $mailListeEtudiants =  isset($data[ContactTerrainFieldset::SEND_MAIL_AUTO_LISTE_ETUDIANT_STAGE]) ? boolval($data[ContactTerrainFieldset::SEND_MAIL_AUTO_LISTE_ETUDIANT_STAGE]) : false;
         $mailValidation =  isset($data[ContactTerrainFieldset::SEND_MAIL_AUTO_VALIDATION_STAGE]) ? boolval($data[ContactTerrainFieldset::SEND_MAIL_AUTO_VALIDATION_STAGE]) : false;
         $mailRappelValidation =  isset($data[ContactTerrainFieldset::SEND_MAIL_AUTO_RAPPEL_VALIDATION_STAGE]) ? boolval($data[ContactTerrainFieldset::SEND_MAIL_AUTO_RAPPEL_VALIDATION_STAGE]) : false;
 
@@ -80,8 +82,7 @@ class ContactTerrainHydrator extends AbstractHydrator implements HydratorInterfa
         $contactTerrain->setSendMailAutoRappelValidationStage($mailRappelValidation);
         $contactTerrain->setIsSignataireConvention($isSingataire);
         $contactTerrain->setPrioriteOrdreSignature($priorite);
-        //Les autres données sont mise à null pour le momment
-        $contactTerrain->setSendMailAutoListeEtudiantsStage(false);
+        $contactTerrain->setSendMailAutoListeEtudiantsStage($mailListeEtudiants);
         return $contactTerrain;
     }
 }

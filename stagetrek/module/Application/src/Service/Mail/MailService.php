@@ -5,6 +5,7 @@ namespace Application\Service\Mail;
 use Application\Entity\Db\AffectationStage;
 use Application\Entity\Db\AnneeUniversitaire;
 use Application\Entity\Db\CategorieStage;
+use Application\Entity\Db\Contact;
 use Application\Entity\Db\ContactStage;
 use Application\Entity\Db\Etudiant;
 use Application\Entity\Db\SessionStage;
@@ -51,7 +52,12 @@ class MailService extends \UnicaenMail\Service\Mail\MailService
         $sujet = $rendu->getSujet();
         $corps = $rendu->getCorps();
 
+        $to = $this->getMailTypeDestinataires($codeMail, $data);
+
         $mail = $this->sendMail($to, $sujet, $corps);
+        if(!isset($mail)){
+            throw new Exception("Echec lors de l'envoi du mail");
+        }
         $motsClef = $this->getMailTypeKeyWords($codeMail, $data);
         $mail->setMotsClefs($motsClef);
         $this->update($mail);
@@ -89,6 +95,18 @@ class MailService extends \UnicaenMail\Service\Mail\MailService
                 if (!$contactStage) break;
                 $destinataires[] = $contactStage->getEmail();
                 break;
+            case CodesMailsProvider::MAIL_AUTO_VALIDATIONS_STAGES:
+            case CodesMailsProvider::MAIL_AUTO_LISTE_ETUDIANTS_STAGES:
+                /** @var SessionStage $session */
+                $session = ($data['session']) ?? null;
+                if (!$session) break;
+                /** @var Contact $contact */
+                $contact = ($data['contact']) ?? null;
+                if (!$contact) break;
+                $destinataires[] = $contact->getEmail();
+                break;
+            default:
+                throw new Exception("Type de mails non géré");
         }
         return $destinataires;
     }
@@ -100,7 +118,8 @@ class MailService extends \UnicaenMail\Service\Mail\MailService
         $stage = ($data['stage']) ?? null;
         /** @var ContactStage $contactStage */
         $contactStage = ($data['contactStage']) ?? null;
-        $session = ($data['sessionStage']) ?? null;
+        $session = ($data['session']) ?? null;
+        $contact = ($data['contact']) ?? null;
         if(!isset($session) && isset($stage)){
             $session = $stage->getSessionStage();
         }
@@ -114,7 +133,12 @@ class MailService extends \UnicaenMail\Service\Mail\MailService
                 $motsClef[] = sprintf("StageId=%s", (isset($stage)) ? $stage->getId() : '-1');
                 $motsClef[] = sprintf("SessionStageId=%s", (isset($session)) ? $session->getId() : '-1');
                 $motsClef[] = sprintf("ContactStageId=%s", (isset($contactStage)) ? $contactStage->getId() : '-1');
-                break;
+            break;
+            case CodesMailsProvider::MAIL_AUTO_VALIDATIONS_STAGES:
+            case CodesMailsProvider::MAIL_AUTO_LISTE_ETUDIANTS_STAGES:
+                $motsClef[] = sprintf("SessionStageId=%s", (isset($session)) ? $session->getId() : '-1');
+                $motsClef[] = sprintf("ContactId=%s", (isset($contact)) ? $contact->getId() : '-1');
+            break;
         }
         return $motsClef;
     }
@@ -137,6 +161,7 @@ class MailService extends \UnicaenMail\Service\Mail\MailService
         $annee = ($data['anneeUniversitaire']) ?? null;
         /** @var ContactStage $contactStage */
         $contactStage = ($data['contactStage']) ?? null;
+        $contact = ($data['contact']) ?? null;
 
         if(isset($stage) && !isset($etudiant)){
             $etudiant = $stage->getEtudiant();
@@ -161,26 +186,41 @@ class MailService extends \UnicaenMail\Service\Mail\MailService
         /** @var CategorieStage $categorieTerrain */
         $categorieStage =  (isset($terrain)) ? $terrain->getCategorieStage() : null;
 
+        if(!isset($contact) && isset($contact)){
+            $contact = $contactStage->getContact();
+        }
+
+
         $dataUrlService = [];
         $dataDateService = [];
+        $dataContactService = [];
         if(isset($stage)){
             $dataUrlService['stage'] = $stage;
             $dataDateService['stage'] = $stage;
         }
+        if(isset($contact)){
+            $dataContactService['contact'] = $contact;
+        }
         if(isset($contactStage)){
             $dataUrlService['contactStage'] = $contactStage;
+            $dataContactService['contactStage'] = $contactStage;
         }
         if(isset($etudiant)){
             $dataDateService['etudiant'] = $etudiant;
+            $dataContactService['etudiant'] = $etudiant;
         }
         if(isset($session)){
             $dataDateService['session'] = $session;
+            $dataContactService['session'] = $session;
         }
         if(isset($annee)){
             $dataDateService['anneeUniversitaire'] = $annee;
         }
+
+
         $macroService->getUrlService()->setVariables($dataUrlService);
         $macroService->getDateRendererService()->setVariables($dataDateService);
+        $macroService->getContactRendererService()->setVariables($dataContactService);
 
         if(isset($stage)) $variables['stage'] = $stage;
         if(isset($etudiant)) $variables['etudiant'] = $etudiant;
@@ -193,6 +233,7 @@ class MailService extends \UnicaenMail\Service\Mail\MailService
         $variables['urlService'] = $macroService->getUrlService();
         $variables['dateRendererService'] = $macroService->getDateRendererService();
         $variables['parametreRendererService'] = $macroService->getParametreRendererService();
+        $variables['contactRendererService'] = $macroService->getContactRendererService();
 
         return $variables;
     }

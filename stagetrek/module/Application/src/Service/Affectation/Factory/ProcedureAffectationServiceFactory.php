@@ -8,6 +8,7 @@ use Application\Service\Affectation\Algorithmes\AlgoScoreV1;
 use Application\Service\Affectation\Algorithmes\AlgoScoreV2;
 use Application\Service\Affectation\ProcedureAffectationService;
 use Application\Service\Parametre\ParametreService;
+use Application\Service\Stage\SessionStageService;
 use Doctrine\ORM\EntityManager;
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
@@ -42,6 +43,11 @@ class ProcedureAffectationServiceFactory implements FactoryInterface
         /** @var AffectationStageService $affectationStageService */
         $affectationStageService = $container->get(ServiceManager::class)->get(AffectationStageService::class);
         $serviceProvider->setAffectationStageService($affectationStageService);
+
+
+        /** @var SessionStageService $sessionStageService */
+        $sessionStageService = $container->get(ServiceManager::class)->get(SessionStageService::class);
+        $serviceProvider->setSessionStageService($sessionStageService);
 
 //        TODO : déplacer la définition en configuration
 //        Transformer en un adaptater dans un module a part

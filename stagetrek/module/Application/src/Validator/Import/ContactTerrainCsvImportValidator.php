@@ -20,6 +20,7 @@ class ContactTerrainCsvImportValidator extends AbstractCsvImportValidator
     CONST HEADER_CONVENTION = "convention";
     CONST HEADER_CONVENTION_ORDRE = "convention-ordre";
     CONST HEADER_RESPONSABLE = "responsable";
+    CONST HEADER_LISTE_ETUDIANTS = "liste-etudiants";
     CONST HEADER_VALIDEUR = "valideur";
 
     /**
@@ -32,17 +33,32 @@ class ContactTerrainCsvImportValidator extends AbstractCsvImportValidator
             self::HEADER_CODE_TERRAIN,
             self::HEADER_VISIBLE,
             self::HEADER_RESPONSABLE,
+            self::HEADER_LISTE_ETUDIANTS,
+            self::HEADER_RESPONSABLE,
             self::HEADER_VALIDEUR,
             self::HEADER_CONVENTION,
             self::HEADER_CONVENTION_ORDRE,
         ];
     }
 
+
+
+    public static function isChampsObligatoire(string $key) : bool
+    {
+        $champsObligatoire = [
+            self::HEADER_CODE_CONTACT => true,
+            self::HEADER_CODE_TERRAIN => true,
+        ];
+        return ($champsObligatoire[$key]) ?? false;
+    }
+
+
     protected ?string $codeContact = null;
     protected ?string $codeTerrain = null;
     protected ?bool $visible = null;
     protected ?bool $responsable = null;
     protected ?bool $valideur = null;
+    protected ?bool $mailsListeEtudiants = null;
     protected ?bool $signataire = null;
     protected ?bool $ordre = null;
 
@@ -50,11 +66,12 @@ class ContactTerrainCsvImportValidator extends AbstractCsvImportValidator
     { //Transforme les données au bon types
         $this->codeContact = trim(($rowData[self::HEADER_CODE_CONTACT]) ?? "");
         $this->codeTerrain = trim(($rowData[self::HEADER_CODE_TERRAIN]) ?? "");
-        $this->visible =  CSVService::yesNoValueToBoolean($rowData[self::HEADER_VISIBLE] ?? "");
-        $this->responsable =  CSVService::yesNoValueToBoolean($rowData[self::HEADER_RESPONSABLE] ?? "");
-        $this->valideur =  CSVService::yesNoValueToBoolean($rowData[self::HEADER_VALIDEUR] ?? "");
-        $this->signataire =  CSVService::yesNoValueToBoolean($rowData[self::HEADER_CONVENTION] ?? "");
-        $this->ordre =  CSVService::textToInt($rowData[self::HEADER_CONVENTION_ORDRE] ?? "");
+        $this->visible =  CSVService::yesNoValueToBoolean((isset($rowData[self::HEADER_VISIBLE])) ? $rowData[self::HEADER_VISIBLE] : "", true);
+        $this->responsable =  CSVService::yesNoValueToBoolean((isset($rowData[self::HEADER_RESPONSABLE])) ? $rowData[self::HEADER_RESPONSABLE] : "", true);
+        $this->valideur =  CSVService::yesNoValueToBoolean((isset($rowData[self::HEADER_VALIDEUR])) ?$rowData[self::HEADER_VALIDEUR] : "", true);
+        $this->mailsListeEtudiants =  CSVService::yesNoValueToBoolean((isset($rowData[self::HEADER_LISTE_ETUDIANTS])) ? $rowData[self::HEADER_LISTE_ETUDIANTS] : "", true);
+        $this->signataire =  CSVService::yesNoValueToBoolean((isset($rowData[self::HEADER_CONVENTION])) ? $rowData[self::HEADER_CONVENTION] : "", true);
+        $this->ordre =  CSVService::textToInt((isset($rowData[self::HEADER_CONVENTION_ORDRE])) ? $rowData[self::HEADER_CONVENTION_ORDRE] : "", 1);
         return $this;
     }
 
@@ -180,12 +197,25 @@ class ContactTerrainCsvImportValidator extends AbstractCsvImportValidator
             $msg = "Le champs ". self::HEADER_VALIDEUR ." ne contient pas l'une des valeurs attendues : Oui/Non (ou vide)";
             throw new ImportException($msg);
         }
+        if($this->mailsListeEtudiants === null){
+            $msg = "Le champs ". self::HEADER_LISTE_ETUDIANTS ." ne contient pas l'une des valeurs attendues : Oui/Non (ou vide)";
+            throw new ImportException($msg);
+        }
         if($this->valideur){
             $code = $this->codeContact;
             $contact = $this->findContactWithCode($code);
             $mail = $contact->getEmail();
             if(!isset($mail) || !filter_var($mail, FILTER_VALIDATE_EMAIL)){
                 $msg = "L'adresse mail du contact n'est pas correctement définie. Il ne peut pas recevoir les liens de validations.";
+                throw new ImportException($msg);
+            }
+        }
+        if($this->mailsListeEtudiants){
+            $code = $this->codeContact;
+            $contact = $this->findContactWithCode($code);
+            $mail = $contact->getEmail();
+            if(!isset($mail) || !filter_var($mail, FILTER_VALIDATE_EMAIL)){
+                $msg = "L'adresse mail du contact n'est pas correctement définie. Il ne peut pas recevoir la liste des étudiants.";
                 throw new ImportException($msg);
             }
         }

@@ -86,9 +86,9 @@ class MailAutoStageRappelChoixEvenementService extends AbstractMailAutoEvenement
         $datePlanification->setTime(8, 0);
 
         $today = new DateTime();
-        $parametres['session-id'] = "".$session->getId();
-        $parametres['stage-id'] = "".$stage->getId();
-        $parametres['etudiant-id'] = "".$stage->getEtudiant()->getId();
+        $parametres['session_id'] = "".$session->getId();
+        $parametres['stage_id'] = "".$stage->getId();
+        $parametres['etudiant_id'] = "".$stage->getEtudiant()->getId();
         $parametres['stage'] = $stage->getLibelle();
         $parametres['etudiant'] = $etudiant->getDisplayName();
 
@@ -114,7 +114,7 @@ class MailAutoStageRappelChoixEvenementService extends AbstractMailAutoEvenement
         $this->changerEtat($evenement, $this->getEventEtat(EvenementEtatProvider::EN_COURS));
         //Rechercher les datas nessaires pour l'envoie du mail
         $parametres = Json::decode($evenement->getParametres(), Json::TYPE_ARRAY);
-        $stageId = ($parametres['stage-id']) ?? 0;
+        $stageId = ($parametres['stage_id']) ?? 0;
         /** @var Stage $stage */
         $stage = $this->getObjectManager()->getRepository(Stage::class)->find($stageId);
         if (!$stage) {

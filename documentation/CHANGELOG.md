@@ -1,12 +1,103 @@
 CHANGELOG
 =========
+1.8.1 (11/02/2026)
+------------------
+- [Bug Fixe] : recalcul du nombre de places affectés après l'execution de l'algorithme
+
+1.8.0 (03/02/2026)
+------------------
+- [Update / Bug Fixe] Passage du core en Debian 13
+  - Correction du problème d'envoie des mails avec la nouvelle chaîne de certification Harica
+- [A prévoir] Montée de version des autres images
+
+1.7.7 (07/01/2026)
+------------------
+- [Bug Fixe] : Suppresion des sessions de stages en même temps que le groupe
+- [Bug Fixe] : Import manquant
+- Clé étrangére manquante pour la validation des stages
+
+1.7.6 (07/01/2026)
+------------------
+- [Secu] : Update de la lib AWS
+- [Bug Fixe] : non envoie des événements de validation des stages
+
+1.7.5 (10/12/2025)
+------------------
+- [Bug Fixe] : import manquant lors du retrait d'un étudiant
+- [Bug Fixe] : Correction sur la séquence de UnicaenUtilisateur
+- [Bug Fixe] : crontab et logrotate
+- [New] - création d'un evenement de test permettant de vérifier le fonctionnement des crons
+- [New] - variables d'environnement EVENEMENTS_SIMULATE_EXECUTION qui permet en pré-prod de ne pas traiter les événements (ou au contraire de les activer pour des tests)
+
+1.7.4 (09/12/2025)
+------------------
+- [Secu] : Possibilité d'interdire des rôles par filtrage IP
+- Autre modif mineure
+
+1.7.3 (01/12/2025) 
+------------------
+- [Correctif mineur] : Relecture de certaines pages
+
+1.7.2 (28/11/2025) [En test]
+------------------
+- [Bug fixe] import : correctif mineur sur les valeurs par défaut, synthaxe du HEADER
+- [Bug fixe] import : suppression du caractére spécial mis automatiquement par excel en début de fichier
+- [Bug fixe] page étudiant : suppression du Point médiant en JS
+
+1.7.1 (27/11/2025) [En test]
+------------------
+- [Bug fixe] mail d'affectation a des contacts qui ne sont pas liée a un terrain
+- Action pour lancer le recalcul des ordres d'affectations
+
+1.7.0 (30/10/2025) [En test]
+------------------
+- Contact des terrains :
+  - nouvelle propriété : send_mail_auto_liste_etudiants_stage pour définir si le contacts doit recevoir la liste des étudiants affectées
+  - import : nouveau champs de le csv "liste-etudiants" pour définir cet attribue
+
+-  Envoie manuel des liens de validation : on ne passe plus par les événements, mais directement par UnicaenMail
+  - On ne renvoie bien qu'un seul token, pour un stage bien précis à 1 et un seul responsable de stage bien précis
+
+- Envoie automatiques des liens de validation :
+  - Les valideurs recoivent 1 seul mail par session contenant tout les stages (et les tokens) qu'ils doivent valider
+  - 1 seul événement gérant l'envoie de tout les mails (à vérifier en cas de bug sur l'un des mails si celà ne poserais pas des problèmes)
+  - Reste toujours la possibilité de faire un envoie 1 à 1 pour les responsable de stage n'ayant pas recu certains mails
+  - Liste des mails envoyés aux différents contacts
+  - Ne réenvoie pas le mails si le mails a déjà été envoyées. Permet en cas d'arrêt en cours de l'événement de ne pas réenvoyer les mails aux contacts qui l'on déjà recu.
+
+- Modification manuel d'une affectation
+  - si case coché : mail prévenant l'étudiant 
+  - si case coché : mails prévenant les contacts du terrain de la modification de la liste des étudiants qu'ils encadrent
+
+- Modification multiples d'affectations
+  - Pour les affectation passant dans l'état "Validée" envoie d'un mail a l'étudiant et d'un mail par contact avec la listes des étudiants qui leurs sont affectés.
+
+1.6.0 (29/10/2025) [En test]
+------------------
+- Les stages peuvent être découpé en multiples périodes (alternance Stage/cours par exemple)
+- Tag pour les sessions de rattrapages
+
+1.5.1 (28/10/2025)
+------------------
+- Import : précisions des champs obligatoires
+
+1.5.0 (28/10/2025)
+------------------
+- Mise en place de UnicaenIndicateur
+
+1.4.4 (30/09/2025)
+------------------
+- [Bug Fixe] : mail auto qui n'utilisait pas la conf tls
+
 1.4.3 (30/09/2025)
 ------------------
 - [UnicaenEvenement] : 6.1.0 - annulation d'événement trop vieux
-  - Nouvelle variable d'environnement optionnel : EVENEMENTS_DELAI_PEREMPTION
-  - EVENEMENTS_MAX_TIME_EXECUTION : valeur en DateInterval et non plus en seconde
+- Nouvelle variable d'environnement optionnel : EVENEMENTS_DELAI_PEREMPTION
+- EVENEMENTS_MAX_TIME_EXECUTION : valeur en DateInterval et non plus en seconde
+- BugFixe : label des liens supprimées
+
 1.4.2 (26/09/2025)
-------------------
+------------------n
 - [UnicaenTag] : mise en place de UnicaenTag
 - [Bug fixe] : Cron et logrotate  + autre fixe mineur
 

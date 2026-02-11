@@ -12,6 +12,7 @@ use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\ServiceManager;
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mailer\Transport\Smtp\EsmtpTransport;
+use UnicaenMail\Exception\NotFoundConfigException;
 use UnicaenRenderer\Service\Rendu\RenduService;
 use UnicaenRenderer\Service\Template\TemplateService;
 
@@ -24,26 +25,34 @@ class MailServiceFactory
      */
     public function __invoke(ContainerInterface $container)
     {
+        $config = $container->get('Configuration')['unicaen-mail'];
+        $host  = ($config['transport_options']['host']) ?? null;
+        $port  = ($config['transport_options']['port']) ?? null;
 
-        $config = $container->get('Configuration');
-        if(!isset($config['unicaen-mail'])){
-            throw new Exception("Configuration parametre 'unicaen-mail' non définie");
+        //TODO : a voir si l'on garde tls a true par défaut et si l'on peut merger avec use_auth
+        //A priori non car on peut utiliser le protocole starttls qui requiére que tls soit a false mais que l'on envoie quand même les paramétres d'authentifiation
+        //Gestion de cas ou l'auto_tls s'active pour une raison a déterminer, ce qui skip le paramétre tls=true. TODO : a revoir
+        $tls = ($config['transport_options']['tls']) ?? null;
+        if(!isset($tls)){
+            throw new NotFoundConfigException("La clé d'accès aux paramètres de configuration ['unicaen-mail']['transport_options']['tls'] n'est pas définie.");
         }
-        $config = $config['unicaen-mail'];
-        if(!isset($config['transport_options'])){
-            throw new Exception("Configuration parametre 'unicaen-mail/transport_options' non définie");
+        $transport = new EsmtpTransport(host: $host, port: $port, tls: $tls);
+        $auto_tls = ($config['transport_options']['auto_tls']) ?? null;
+        if(isset($auto_tls)){
+            $transport->setAutoTLS($auto_tls);
         }
-        if(!isset($config['transport_options']['host']) || $config['transport_options']['host']==""){
-            throw new Exception("Configuration parametre 'unicaen-mail/transport_options/host' non définie");
-        }
-        if(!isset($config['transport_options']['port']) || $config['transport_options']['port']==""){
-            throw new Exception("Configuration parametre 'unicaen-mail/transport_options/port' non définie");
-        }
-        if(!isset($config['mail_entity_class']) || $config['mail_entity_class']==""){
-            throw new Exception("Configuration parametre 'unicaen-mail/mail_entity_class' non définie");
+        $useAuth =  ($config['transport_options']['connection_config']['use_auth']) ?? false;
+
+        if($useAuth){
+            $username = ($config['transport_options']['connection_config']['username']) ?? null;
+            $password = ($config['transport_options']['connection_config']['password']) ?? null;
+            if(!isset($username) || !isset($password)){
+                throw new NotFoundConfigException("Les paramétres d'authentifications ne sont pas définies.");
+            }
+            $transport->setUsername($username);
+            $transport->setPassword($password);
         }
 
-        $transport = new EsmtpTransport(host: $config['transport_options']['host'], port: $config['transport_options']['port']);
         $mailer = new Mailer($transport);
 
         /**

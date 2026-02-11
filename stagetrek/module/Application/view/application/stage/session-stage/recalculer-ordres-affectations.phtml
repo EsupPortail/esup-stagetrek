@@ -1,0 +1,43 @@
+<?php
+
+use Application\Controller\Stage\SessionStageController;
+use Application\Form\Misc\ConfirmationForm;
+use Application\View\Helper\Misc\ConfirmationFormViewHelper;
+
+
+/**
+ * @see SessionStageController::recalculerOrdresAffectationsAction()
+ * @var string              $title
+ * @var ConfirmationForm    $form
+ */
+
+/** @var ConfirmationFormViewHelper $vh */
+$vh = $this->confirmation($form)
+?>
+
+<div class="card card-primary">
+    <h1 class="page-header card-header">
+        <span class="fas fa-cogs"></span>
+        <?= $title ?>
+    </h1>
+    <div class="card-body">
+
+        <?php if(!$form->hasBeenConfirmed()) :?>
+            <div class='alert alert-warning'>
+                <strong>Cette action est irréversible</strong>
+                <div>Les ordres automatiques des étudiants ne seront modifier.</div>
+                <div>Ces modifications seront directement visible par les étudiants.</div>
+            </div>
+        <?php endif; ?>
+
+        <?= $vh->render(); ?>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        let body = $("body");
+        body.off("<?= SessionStageController::EVENT_MODIFIER?>", closeModal)
+            .one("<?= SessionStageController::EVENT_MODIFIER?>", closeModal);
+    });
+</script>

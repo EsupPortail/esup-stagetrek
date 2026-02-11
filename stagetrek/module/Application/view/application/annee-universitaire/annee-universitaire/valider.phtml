@@ -3,7 +3,7 @@
 use Application\Controller\AnneeUniversitaire\AnneeUniversitaireController;
 use Application\Entity\Db\AnneeUniversitaire;
 use Application\Form\Misc\ConfirmationForm;
-
+use Application\Misc\Util;
 
 /**
  * @see AnneeUniversitaireController::validerAction()
@@ -22,7 +22,7 @@ $vh = $this->confirmation($form)
     </h1>
     <div class="card-body">
         <div class='alert alert-warning'>
-            <div>L'ensemble des stages liées à l'année seront <strong>visible par les étudiants</strong></div>
+            <div>L'ensemble des stages liés à l'année seront <strong>visible par les étudiant<?=Util::POINT_MEDIANT?>s</strong></div>
         </div>
         <?= $vh->render(); ?>
     </div>

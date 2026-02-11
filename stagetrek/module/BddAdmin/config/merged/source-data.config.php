@@ -11,6 +11,7 @@ use BddAdmin\Data\FAQDataProvider;
 use BddAdmin\Data\NiveauEtudeDataProvider;
 use BddAdmin\Data\SourceDataProvider;
 use BddAdmin\Data\TerrainDataProvider;
+use BddAdmin\Data\UnicaenCalendrierDataProvider;
 use BddAdmin\Data\UnicaenEtatDataProvider;
 use BddAdmin\Data\UnicaenEvenementDataProvider;
 use BddAdmin\Data\UnicaenFichierDataProvider;
@@ -67,6 +68,15 @@ return [
                 /** UnicaenRenderer */
                 'unicaen_renderer_macro' => UnicaenRendererDataProvider::getConfig('unicaen_renderer_macro'),
                 'unicaen_renderer_template' => UnicaenRendererDataProvider::getConfig('unicaen_renderer_template'),
+
+                /**
+                 * UnicaenCalendrier *
+                 */
+                'unicaen_calendrier_calendrier_type' => UnicaenCalendrierDataProvider::getConfig('unicaen_calendrier_calendrier_type'),
+                'unicaen_calendrier_date_type' => UnicaenCalendrierDataProvider::getConfig('unicaen_calendrier_date_type'),
+                'unicaen_calendrier_calendriertype_datetype' => UnicaenCalendrierDataProvider::getConfig('unicaen_calendrier_calendriertype_datetype'),
+
+
             ],
 
             'sources' => [
@@ -109,7 +119,12 @@ return [
                 /** UnicaenFichier */
                 'unicaen_renderer_macro' => UnicaenRendererDataProvider::class,
                 'unicaen_renderer_template' => UnicaenRendererDataProvider::class,
-
+                /**
+                 * UnicaenCalendrier
+                 */
+                'unicaen_calendrier_calendrier_type' => UnicaenCalendrierDataProvider::class,
+                'unicaen_calendrier_date_type' => UnicaenCalendrierDataProvider::class,
+                'unicaen_calendrier_calendriertype_datetype' => UnicaenCalendrierDataProvider::class,
             ],
         ],
 

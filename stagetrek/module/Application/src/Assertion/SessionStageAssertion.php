@@ -14,6 +14,7 @@ use Application\Provider\Privilege\StagePrivileges;
 use DateTime;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 use Laminas\Permissions\Acl\Role\RoleInterface;
+use UnicaenCalendrier\Entity\Db\Date;
 
 class SessionStageAssertion extends AbstractAssertion
 {
@@ -24,6 +25,8 @@ class SessionStageAssertion extends AbstractAssertion
 
         $session = $this->getSessionStage();
         $annee = $this->getAnneeUniversitaire();
+        $periode = $this->getDate();
+
         // si le rôle n'est pas renseigné
         if (!$role instanceof RoleInterface) return false;
         return match ($action) {
@@ -35,9 +38,14 @@ class SessionStageAssertion extends AbstractAssertion
                 => $this->assertModifier($session),
             Controller::ACTION_MODIFIER_ORDRES_AFFECTATIONS
                 => $this->assertModifierOrdreAffectation($session),
+            Controller::ACTION_RECALCULER_ORDRES_AFFECTATIONS
+                => $this->assertRecacluerOrdreAffectation($session),
             Controller::ACTION_SUPPRIMER => $this->assertSupprimer($session),
             Controller::ACTION_IMPORTER_PLACES_TERRAINS => $this->assertImporter($session),
-            default => false,
+            Controller::ACTION_AJOUTER_PERIODE_STAGE => $this->assertAjouterPeriode($session),
+            Controller::ACTION_MODIFIER_PERIODE_STAGE => $this->assertModifierPeriode($session, $periode),
+            Controller::ACTION_SUPPRIMER_PERIODE_STAGE => $this->assertSupprimerPeriode($session,$periode),
+            default =>false,
         };
     }
 
@@ -54,9 +62,27 @@ class SessionStageAssertion extends AbstractAssertion
 
         $session = ($entity instanceof SessionStage) ? $entity : null;
         $annee = ($entity instanceof AnneeUniversitaire) ? $entity : null;
+        $periode = null;
+        $action = null;
         if ($entity instanceof ArrayRessource) {
             $session = $entity->get(SessionStage::RESOURCE_ID);
             $annee = $entity->get(AnneeUniversitaire::RESOURCE_ID);
+            $periode = $entity->get(Date::class);
+            $action = $entity->get('action');
+        }
+        if($privilege == SessionPrivileges::SESSION_STAGE_MODIFIER) {
+            if ($action == Controller::ACTION_RECALCULER_ORDRES_AFFECTATIONS) {
+                return $this->assertRecacluerOrdreAffectation($session);
+            }
+            if ($action == Controller::ACTION_AJOUTER_PERIODE_STAGE) {
+                return $this->assertAjouterPeriode($session);
+            }
+            if ($action == Controller::ACTION_MODIFIER_PERIODE_STAGE) {
+                return $this->assertModifierPeriode($session, $periode);
+            }
+            elseif ($action == Controller::ACTION_SUPPRIMER_PERIODE_STAGE) {
+                return $this->assertSupprimerPeriode($session, $periode);
+            }
         }
 
         return match ($privilege) {
@@ -96,6 +122,12 @@ class SessionStageAssertion extends AbstractAssertion
         if(empty($sessionStage->getStagesPrincipaux())){return false;}
         return true;
     }
+    private function assertRecacluerOrdreAffectation(?SessionStage $sessionStage) : bool
+    {
+        if(!isset($sessionStage)){return false;}
+        if(empty($sessionStage->getStagesPrincipaux())){return false;}
+        return true;
+    }
 
     private function assertSupprimer(?SessionStage $sessionStage) : bool
     {
@@ -122,11 +154,56 @@ class SessionStageAssertion extends AbstractAssertion
         $id = intval($this->getParam('sessionStage'));
         return $this->getObjectManager()->getRepository(SessionStage::class)->find($id);
     }
+    protected function getDate() : ?Date
+    {
+        $id = intval($this->getParam('date'));
+        return $this->getObjectManager()->getRepository(Date::class)->find($id);
+    }
 
 
     private function assertImporter(?SessionStage $session) : bool
     {
         if(!isset($session)){return false;}
         return false; // Pages d'import a revoir
+    }
+
+    private function assertAjouterPeriode(?SessionStage $session) : bool
+    {
+        if(!isset($session)){return false;}
+        if(!$session->hasMultiplesPeriodesStage()){return false;}
+        return true;
+    }
+    private function assertModifierPeriode(?SessionStage $session, ?Date $periode) : bool
+    {
+        return true;
+        if(!isset($session)){return false;}
+        if(!isset($periode)){return false;}
+        if(!$session->hasMultiplesPeriodesStage()){return false;}
+        if(!$periode->getType()->getCode() != SessionStage::DATES_PERIODE_STAGES){return false;}
+        $periodes = $session->getDatesPeriodesStages();
+        if(!isset($periodes) || empty($periodes)){return false;}
+        foreach ($periodes as $periode2) {
+            if($periode2->getId() == $periode->getId()){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private function assertSupprimerPeriode(?SessionStage $session, ?Date $periode) : bool
+    {
+        return true;
+        if(!isset($session)){return false;}
+        if(!isset($periode)){return false;}
+        if(!$session->hasMultiplesPeriodesStage()){return false;}
+        if(!$periode->getType()->getCode() != SessionStage::DATES_PERIODE_STAGES){return false;}
+        $periodes = $session->getDatesPeriodesStages();
+        if(!isset($periodes) || empty($periodes)){return false;}
+        foreach ($periodes as $periode2) {
+            if($periode2->getId() == $periode->getId()){
+                return true;
+            }
+        }
+        return false;
     }
 }
