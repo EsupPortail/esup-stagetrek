@@ -56,7 +56,7 @@ class ProcedureAffectationService extends CommonEntityService
             $msg = sprintf("L'algorithme d'affectation correspondant a la procédure %s n'as pas été correctement configuré", $procedure->getCode());
             throw new ProcedureAffectationException($msg);
         }
-//        $algo->run($sessionStage);
+        $algo->run($sessionStage);
 
         //Pour être sur de prendre en compte les modification
         $this->objectManager->refresh($sessionStage);
