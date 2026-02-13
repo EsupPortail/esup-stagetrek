@@ -1,5 +1,5 @@
 ENV_FILE=/var/www/html/stagetrek/.env
-ENV_FILE_EXAMPLE=/var/www/html/stagetrek/.env.example
+ENV_FILE_EXAMPLE=/var/www/html/stagetrek/.env_example
 
 #rm $ENV_FILE 
 
